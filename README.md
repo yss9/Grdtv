@@ -1,4 +1,6 @@
-<h2>Git Clone 후 application.properties 설정(Mysql) <h2/>
+<h1>Travien</h1>
+
+Git Clone 후 application.properties 설정(Mysql)
 
 src/main/resources/application.properties<br>
 없을 시 resources 폴더 생성 후 application.properties 파일 생성<br>
@@ -39,4 +41,4 @@ git checkout main ->메인으로 브랜치 이동<br>
 git merge 브랜치이름 (충돌나면 수정)<br>
 git push<br>
 
-**돌 시 충돌나는 본인 코드 주석 후 merge하고 다시 코드  수정**
+**충돌 시 충돌나는 본인 코드 주석 후 merge하고 다시 코드  수정**
