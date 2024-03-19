@@ -11,7 +11,7 @@ public class TestController {
 
     @GetMapping("/data")
     public String getTest(){
-        return "test5";
+        return "test6";
     }
 
 }
