@@ -4,15 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.Post;
 import proj.travien.dto.Post.PostForm;
 import proj.travien.service.Post.PostService;
 
-@Controller
+@RestController
 @RequestMapping("/posts")
 @Slf4j
 public class PostController {
