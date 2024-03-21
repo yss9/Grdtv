@@ -3,10 +3,7 @@ package proj.travien.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.Post;
 import proj.travien.dto.AddPostRequest;
 import proj.travien.dto.PostResponse;
@@ -37,5 +34,13 @@ public class PostController {
 
         return ResponseEntity.ok()
                 .body(posts);
+    }
+
+    @GetMapping("/api/posts/{id}")
+    public ResponseEntity<PostResponse> findPost(@PathVariable long id){
+        Post post = postService.findById(id);
+
+        return ResponseEntity.ok()
+                .body(new PostResponse(post));
     }
 }
