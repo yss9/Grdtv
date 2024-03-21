@@ -19,7 +19,14 @@ public class PostService {
         return postRepository.save(request.toEntity());
     }
 
+    // 게시글 글 목록 조회
     public List<Post> findAll(){
         return postRepository.findAll();
     }
+
+    // 게시글 글 조회
+    public Post findById(long id){
+            return postRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("not found:" + id));
+        }
 }
