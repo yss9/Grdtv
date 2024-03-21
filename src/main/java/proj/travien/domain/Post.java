@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,4 +32,10 @@ public class Post {
 
     private Integer likesCount;
     private Boolean verified;
+
+    @Builder    // 빌더 패턴으로 객체 생성
+    public Post(String title, String body){
+        this.title = title;
+        this.body = body;
+    }
 }
