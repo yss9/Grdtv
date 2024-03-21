@@ -20,6 +20,7 @@ function TestPage() {
     return (
         <div>
             <h1>Greeting from Spring Boot:</h1>
+            <h3>우덩이 테스트중</h3>
             <p>{greeting}</p>
         </div>
     );
