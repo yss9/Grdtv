@@ -6,6 +6,8 @@ import proj.travien.domain.Post;
 import proj.travien.dto.AddPostRequest;
 import proj.travien.repository.PostRepository;
 
+import java.util.List;
+
 @RequiredArgsConstructor  // final 이 붙거나 @NotNull 이 붙은 필드의 생성자 추가
 @Service
 public class PostService {
@@ -15,5 +17,9 @@ public class PostService {
     // 게시물 글 추가 메서드
     public Post save(AddPostRequest request){
         return postRepository.save(request.toEntity());
+    }
+
+    public List<Post> findAll(){
+        return postRepository.findAll();
     }
 }
