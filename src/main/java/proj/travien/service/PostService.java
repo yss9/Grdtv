@@ -2,8 +2,10 @@ package proj.travien.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import proj.travien.domain.Post;
 import proj.travien.dto.AddPostRequest;
+import proj.travien.dto.UpdatePostRequest;
 import proj.travien.repository.PostRepository;
 
 import java.util.List;
@@ -28,5 +30,20 @@ public class PostService {
     public Post findById(long id){
             return postRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("not found:" + id));
-        }
+    }
+
+    // 게시글 글 삭제
+    public void delete(long id){
+        postRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Post update(long id, UpdatePostRequest request){
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
+        post.update(request.getTitle(), request.getBody());
+
+        return post;
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.Post;
 import proj.travien.dto.AddPostRequest;
 import proj.travien.dto.PostResponse;
+import proj.travien.dto.UpdatePostRequest;
 import proj.travien.service.PostService;
 
 import java.util.List;
@@ -42,5 +43,23 @@ public class PostController {
 
         return ResponseEntity.ok()
                 .body(new PostResponse(post));
+    }
+
+    @DeleteMapping("/api/posts/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable long id){
+        postService.delete(id);
+
+        return ResponseEntity.ok()
+                .build();
+
+    }
+
+
+    @PutMapping("/api/posts/{id}")
+    public ResponseEntity<Post> updatePost(@PathVariable long id, @RequestBody UpdatePostRequest request){
+        Post updatedPost = postService.update(id, request);
+
+        return ResponseEntity.ok()
+                .body(updatedPost);
     }
 }
