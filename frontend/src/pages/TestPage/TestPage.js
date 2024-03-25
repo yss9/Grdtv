@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function TestPage() {
+export default function TestPage() {
     const [greeting, setGreeting] = useState('');
 
     useEffect(() => {
@@ -26,4 +26,4 @@ function TestPage() {
     );
 }
 
-export default TestPage;
+// export default TestPage;
