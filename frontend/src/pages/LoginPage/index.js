@@ -33,7 +33,7 @@ export default function LoginPage(){
             axios
                 .post("http://localhost:8080/api/users/login", { email:id ,password: pw })
                 .then((response) => {
-                    if (response.data.success) {
+                    if (response.status === 200) {
                         // 로그인 성공 시 쿠키에 토큰 저장
                         Cookies.set("access_token", response.data.access_token, { expires: 7 });
                         Cookies.set("refresh_token", response.data.refresh_token, { expires: 7 });// 7일간 유지
