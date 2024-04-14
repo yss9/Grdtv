@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Chat Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+<label for="messageInput"></label><input type="text" id="messageInput" placeholder="Enter a message">
+<button onclick="sendMessage()">Send</button>
+<ul id="messageArea"></ul>
+
+<script>
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function(message) {
+                showMessage(message.body);
+            });
+        });
+    }
+
+    function sendMessage() {
+        var message = document.getElementById('messageInput').value;
+        stompClient.send("/app/chat", {}, message);
+        document.getElementById('messageInput').value = '';  // Clear the input after sending
+    }
+
+    function showMessage(message) {
+        var messageArea = document.getElementById('messageArea');
+        var messageElement = document.createElement('li');
+        messageElement.textContent = message;
+        messageArea.appendChild(messageElement);
+    }
+
+    window.onload = connect;  // Connect when the page is fully loaded
+</script>
+
+</body>
+</html>
