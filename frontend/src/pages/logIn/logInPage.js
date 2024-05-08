@@ -3,6 +3,7 @@ import {useState} from "react";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function LoginPage(){
 
@@ -39,10 +40,7 @@ export default function LoginPage(){
                 password: pw
             })
                 .then(response => {
-                    const token = response.data;
-                    console.log('Received token:', token);
-                    // 토큰을 로컬 스토리지에 저장하거나 상태 관리에 저장할 수 있습니다.
-                    localStorage.setItem('token', token);
+                    // Cookies.set("token", response.data);
                     alert("로그인 성공!");
                     navigate('/chat');
 

@@ -1,6 +1,8 @@
+import Cookies from "js-cookie";
 export default function ChatPage() {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
 
+    console.log(token);
 
     // fetch('/경로~', {
     //     headers: {
