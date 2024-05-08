@@ -98,7 +98,7 @@ export const FindId = styled.button`
   background-color: transparent;
   padding: 0; 
   margin: 0;
-  margin-left: 610px;
+  margin-left: 500px;
   margin-top: 15px;
   cursor: pointer;
 `

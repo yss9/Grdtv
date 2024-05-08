@@ -1,8 +1,12 @@
-import {Wrapper, SubTitle, Bar, Title, Check, FindId, FindPw, ConsentWrapper, InputIdWrapper, InputPw, InputWrapper, InputPwWrapper, SignIn, LoginButton, InputId} from '../../styles/LoginPageStyle'
+import {Wrapper, SubTitle, Bar, Title, Check, FindId, FindPw, ConsentWrapper, InputIdWrapper, InputPw, InputWrapper, InputPwWrapper, SignIn, LoginButton, InputId} from './logInStyle'
 import {useState} from "react";
 import axios from "axios";
-import Cookies from "js-cookie"
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function LoginPage(){
+
+    const navigate = useNavigate();
 
     const [id, setId]= useState("");
     const [pw, setPw] = useState("");
@@ -30,27 +34,27 @@ export default function LoginPage(){
             setPwError("비밀번호를 입력해주세요");
         }
         if (id && pw) {
-            axios
-                .post("http://localhost:8080/api/users/login", { email:id ,password: pw })
-                .then((response) => {
-                    if (response.status === 200) {
-                        // 로그인 성공 시 쿠키에 토큰 저장
-                        Cookies.set("access_token", response.data.access_token, { expires: 7 });
-                        Cookies.set("refresh_token", response.data.refresh_token, { expires: 7 });// 7일간 유지
-                        alert("로그인 성공!");
-                        // window.location.href = "http://localhost:3000/mainPage";
-                    } else {
-                        alert("로그인 실패: " + response.data.error);
-                    }
+            axios.post('http://localhost:8080/api/users/login', {
+                email: id,
+                password: pw
+            })
+                .then(response => {
+                    const token = response.data;
+                    console.log('Received token:', token);
+                    // 토큰을 로컬 스토리지에 저장하거나 상태 관리에 저장할 수 있습니다.
+                    localStorage.setItem('token', token);
+                    alert("로그인 성공!");
+                    navigate('/chat');
+
                 })
-                .catch((error) => {
-                    console.error("API 호출 중 오류 발생:", error);
+                .catch(error => {
+                    console.error('Login failed:', error.response.status);
                 });
         }
     }
 
     const onClickSignIn = () => {
-        window.location.href = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85";
+        navigate('/signIn');
     }
 
     const onClickHome = () => {

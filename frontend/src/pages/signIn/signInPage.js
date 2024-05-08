@@ -1,17 +1,13 @@
-import {Wrapper, ConsentWrapper, IdIcon, IconWrapper,
-    PwIcon, Line, EmailIcon, IdInput, IdWrapper,
-    NameIcon,NameInput,NameWrapper, PwWrapper,
+import {Wrapper, ConsentWrapper, IdInput, IdWrapper, NameInput, NameWrapper, PwWrapper,
     PwInput, EmailWrapper,EmailInput, NextButton,
-    SubTitle, ErrorMsg, PwCheckWrapper, PwCheckInput
-}from '../../styles/SigninPageStyle'
-
-// import {Title, TitleWrapper} from '../../../styles/styles/BoardsfindId'
-
-import {useState} from "react";
-import {useEffect} from "react";
+    SubTitle, ErrorMsg, PwCheckWrapper, PwCheckInput} from './signInStyle'
+import React, {useState, useEffect} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function BoardsSignInPage() {
+export default function SignInPage() {
+
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [id, setId] = useState("");
@@ -120,29 +116,22 @@ export default function BoardsSignInPage() {
         }
 
         // 모든 에러가 없을 때에만 회원가입 완료
-        if (isValidEmail && name && id && pw && pwCheck && !pwMatchError) {
-            const userData = {
+        if (isValidEmail && name && pw && pwCheck && !pwMatchError) {
+            axios.post('http://localhost:8080/api/users/signup', {
                 name: name,
-                userID: id,
-                password: pw,
                 email: email,
-            };
-
-            // Send data to the Django backend using Axios
-            axios.post('http://localhost:8080/api/users/signup', userData)
+                password: pw
+            })
                 .then(response => {
-                    // Handle successful response
                     console.log(response.data);
                     alert("회원가입 완료!");
-                    window.location.href = "http://localhost:3000/mks/welcome";
+                    navigate('/logIn');
                 })
                 .catch(error => {
-                    // Handle error
                     console.error(error);
                     alert("회원가입에 실패했습니다. 다시 시도해주세요.");
                 });
         } else {
-            // 이메일이 올바르지 않거나 다른 필수 정보가 누락되었거나 비밀번호 확인이 일치하지 않으면 에러 메시지 표시
             alert("모든 정보를 올바르게 기입해 주세요.");
         }
     };

@@ -1,5 +1,7 @@
 package proj.travien.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import proj.travien.service.UserService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -32,15 +36,23 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
-        String email = request.getEmail();
-        String password = request.getPassword();
+        try {
+            String email = request.getEmail();
+            String password = request.getPassword();
 
-        User user = userService.login(email, password);
-        if (user != null) {
-            String token = jwtUtil.generateToken(user.getEmail());
-            return ResponseEntity.ok(token); // 토큰 반환 확인
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            User user = userService.login(email, password);
+            if (user != null) {
+                String token = jwtUtil.generateToken(user.getEmail());
+                return ResponseEntity.ok(token); // 토큰 반환 확인
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (Exception e) {
+            // 로그 기록
+            log.error("Error during login", e);
+            // 클라이언트에게 오류 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login.");
         }
     }
+
 }

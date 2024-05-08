@@ -24,6 +24,7 @@ public class UserService {
             throw new EmailAlreadyUsedException("Email already in use");
         }
         User user = new User();
+        user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(hashPassword(userDTO.getPassword()));
         return userRepository.save(user);
