@@ -1,45 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-
-const WebSocketService = (() => {
-    let stompClient = null;
-
-    const connect = (onMessageReceived) => {
-        const socket = new SockJS('/ws', null, { withCredentials: false });
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, () => {
-            stompClient.subscribe('/topic/public', onMessageReceived);
-        });
-    };
-
-    const sendMessage = (message) => {
-        if (stompClient && stompClient.connected) {
-            stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(message));
-        }
-    };
-
-    const addUser = (user) => {
-        if (stompClient && stompClient.connected) {
-            stompClient.send('/app/chat.addUser', {}, JSON.stringify(user));
-        }
-    };
-
-    return {
-        connect,
-        sendMessage,
-        addUser
-    };
-})();
+import WebSocketService from './WebSocketService';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [username, setUsername] = useState('');
+    const [roomId, setRoomId] = useState('');
+    const [joined, setJoined] = useState(false);
 
     useEffect(() => {
-        WebSocketService.connect(onMessageReceived);
-    }, []);
+        if (joined) {
+            WebSocketService.connect(roomId, onMessageReceived);
+        }
+    }, [joined]);
 
     const onMessageReceived = (payload) => {
         const message = JSON.parse(payload.body);
@@ -62,30 +35,44 @@ const Chat = () => {
             type: 'JOIN'
         };
         WebSocketService.addUser(user);
+        setJoined(true);
     };
 
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Enter your name"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <button onClick={handleAddUser}>Join</button>
-            <div>
-                {messages.map((message, index) => (
-                    <div key={index}>
-                        <strong>{message.sender}: </strong>{message.content}
+            {!joined ? (
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Enter your name"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Enter room number"
+                        value={roomId}
+                        onChange={(e) => setRoomId(e.target.value)}
+                    />
+                    <button onClick={handleAddUser}>Join</button>
+                </div>
+            ) : (
+                <div>
+                    <div>
+                        {messages.map((message, index) => (
+                            <div key={index}>
+                                <strong>{message.sender}: </strong>{message.content}
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-            />
-            <button onClick={handleSendMessage}>Send</button>
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                    />
+                    <button onClick={handleSendMessage}>Send</button>
+                </div>
+            )}
         </div>
     );
 };
