@@ -1,6 +1,5 @@
 package proj.travien.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -10,13 +9,11 @@ import proj.travien.domain.ChatMessage;
 import proj.travien.repository.ChatMessageRepository;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/chat")
 public class ChatController {
 
-    @Autowired
     private ChatMessageRepository chatMessageRepository;
 
     @MessageMapping("/chat.sendMessage/{roomId}")
@@ -37,9 +34,7 @@ public class ChatController {
     }
 
     @GetMapping(value = "/history/{roomId}", produces = "application/json")
-    @ResponseBody
     public List<ChatMessage> getChatHistory(@PathVariable String roomId) {
-        System.out.println("Fetching chat history for room: " + roomId); // 디버깅 로그 추가
         return chatMessageRepository.findByRoomId(roomId);
     }
 }

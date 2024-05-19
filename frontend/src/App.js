@@ -6,7 +6,6 @@ import LoginPage from './pages/logIn/logInPage';
 import ReservationPage from './pages/reservation/reservation'
 import AdminPage from './pages/admin/admin'
 import SignInPage from './pages/signIn/signInPage';
-import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Chat from './pages/chat/Chat'
 
@@ -23,8 +22,7 @@ function App() {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
                 <Route path="/signIn" element={<SignInPage />} />
-                <Route path="/chat" element={<ChatPage />} />
-                <Route path="/chat1" element={<Chat />} />
+                <Route path="/chat" element={<Chat />} />
             </Routes>
         </BrowserRouter>
     );
