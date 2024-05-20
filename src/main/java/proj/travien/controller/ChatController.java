@@ -3,14 +3,15 @@ package proj.travien.controller;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import proj.travien.domain.ChatMessage;
 import proj.travien.repository.ChatMessageRepository;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/chat")
 public class ChatController {
 
@@ -34,7 +35,12 @@ public class ChatController {
     }
 
     @GetMapping(value = "/history/{roomId}", produces = "application/json")
-    public List<ChatMessage> getChatHistory(@PathVariable String roomId) {
-        return chatMessageRepository.findByRoomId(roomId);
+    public ResponseEntity<List<ChatMessage>> getChatHistory(@PathVariable String roomId) {
+        List<ChatMessage> chatMessages = chatMessageRepository.findByRoomId(roomId);
+        if (chatMessages.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(chatMessages, HttpStatus.OK);
+
     }
 }
