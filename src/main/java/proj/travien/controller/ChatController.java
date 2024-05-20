@@ -1,6 +1,5 @@
 package proj.travien.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatController {
 
-    @Autowired
     private ChatMessageRepository chatMessageRepository;
 
     @MessageMapping("/chat.sendMessage/{roomId}")
@@ -43,5 +41,6 @@ public class ChatController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
+
     }
 }
