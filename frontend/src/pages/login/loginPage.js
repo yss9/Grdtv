@@ -1,9 +1,14 @@
-import {Wrapper, SubTitle, Bar, Title, Check, FindId, FindPw, ConsentWrapper, InputIdWrapper, InputPw, InputWrapper, InputPwWrapper, SignIn, LoginButton, InputId} from './logInStyle'
+import {
+    Wrapper, Logo, LogInWrapper, RightImg, LogInInput,
+    LogInButton, SignInButton, FindButton,
+    LogInUnderWrapper, RightImgWrapper, ImgWrapper} from './loginStyle'
 import {useState} from "react";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+
+import { motion } from "framer-motion";
 
 export default function LoginPage(){
 
@@ -40,7 +45,8 @@ export default function LoginPage(){
                 password: pw
             })
                 .then(response => {
-                    // Cookies.set("token", response.data);
+                    Cookies.set("token", response.data);
+                    // console.log(response.data);
                     alert("로그인 성공!");
                     navigate('/chat');
 
@@ -80,35 +86,30 @@ export default function LoginPage(){
             {/*<p>pw</p>*/}
             {/*<input onChange={onChangePw}/>*/}
             {/*<button onClick={onClickLogin}>로그인</button>*/}
-            <Wrapper>
-                <ConsentWrapper>
-                    <Title onClick={onClickHome}>
-                        MOFY
-                    </Title>
 
-                    <SubTitle>
-                        My outfit of Yours
-                    </SubTitle>
-                    <InputWrapper>
-                        <InputIdWrapper>
-                            <InputId type="text " maxlength="11" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress}/>
-                            <Check>{idError}</Check>
-                        </InputIdWrapper>
-                        <InputPwWrapper>
-                            <InputPw type="password" maxlength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress}/>
-                            <Check>{pwError}</Check>
-                        </InputPwWrapper>
-                    </InputWrapper>
-                    <LoginButton type="button" onClick={onClickLogin}>
-                        로그인
-                    </LoginButton>
-                </ConsentWrapper>
-            </Wrapper>
-            <FindId type="button" onClick={onClickFindId}>아이디 찾기</FindId>
-            <Bar>｜</Bar>
-            <FindPw type="button" onClick={onClickFindPw}>비밀번호 찾기</FindPw>
-            <Bar>｜</Bar>
-            <SignIn type="button" onClick={onClickSignIn}>회원가입</SignIn>
+            <motion.div
+                className="loginPage"
+                intial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+            >
+                <Wrapper>
+                    <Logo>LOGO</Logo>
+                    <LogInWrapper>
+                        <LogInInput>&nbsp;&nbsp;&nbsp;아이디</LogInInput>
+                        <LogInInput>&nbsp;&nbsp;&nbsp;비밀번호</LogInInput>
+                        <LogInButton>로그인</LogInButton>
+                        <LogInUnderWrapper>
+                            <SignInButton onClick={onClickSignIn}>회원가입</SignInButton>
+                            <FindButton>아이디·비밀번호 찾기</FindButton>
+                        </LogInUnderWrapper>
+                    </LogInWrapper>
+                    <RightImgWrapper>
+                        <ImgWrapper><RightImg src="https://via.placeholder.com/500x300"></RightImg></ImgWrapper>
+
+                    </RightImgWrapper>
+                </Wrapper>
+            </motion.div>
         </>
     )
 }

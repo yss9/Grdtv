@@ -1,190 +1,156 @@
-import {Wrapper, ConsentWrapper, IdInput, IdWrapper, NameInput, NameWrapper, PwWrapper,
-    PwInput, EmailWrapper,EmailInput, NextButton,
-    SubTitle, ErrorMsg, PwCheckWrapper, PwCheckInput} from './signInStyle'
-import React, {useState, useEffect} from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    Wrapper,
+    Logo,
+    FormContainer,
+    Progress,
+    ProgressBar,
+    GenderButtonWrapper,
+    GenderButton,
+    NextButton,
+    FormGroup,
+    Input, Switch,
+    ContentsWrapper,
+    InputText,
+    NextButtonWrapper,
+    MBTIContainer,
+    MBTIWrapper,
+    MBTISwitch, InterestContainer, InterestButton, ButtonContainer, BackButton, MBTISwitchWrapper, Handle, BoldText
+} from "./signInStyle";
+// import {Switch} from "antd";
 
-export default function SignInPage() {
+export default function SignupPage() {
+    const [step, setStep] = useState(1);
+    const [isActive, setIsActive] = useState(true);
+    
 
-    const navigate = useNavigate();
-
-    const [name, setName] = useState("");
-    const [id, setId] = useState("");
-    const [pw, setPw] = useState("");
-    const [pwCheck, setPwCheck] = useState("");
-    const [email, setEmail] = useState("");
-
-    const [nameError, setNameError] = useState("");
-    const [idError, setIdError] = useState("");
-    const [pwError, setPwError] = useState("");
-    const [pwCheckError, setPwCheckError] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [pwMatchError, setPwMatchError] = useState("");
-
-    const onChangeName=(event)=>{
-        setName(event.target.value)
-        if(event.target.value !== ""){
-            setNameError("")
-        }
-    }
-
-    const onChangeId=(event)=>{
-        const userInput = event.target.value;
-
-        // 정규식을 사용하여 한글 여부 확인
-        const koreanRegex = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-        const isKorean = koreanRegex.test(userInput);
-
-        setId(userInput);
-
-        if (isKorean) {
-            setIdError("영어와 숫자로만 입력해주세요.");
-        } else {
-            setIdError("");
-        }
-    }
-    const onChangePw = (event) =>{
-        setPw(event.target.value)
-        if(event.target.value !== ""){
-            setPwError("")
-        }
-    }
-
-    const onChangePwCheck = (event) => {
-        const newPasswordCheck = event.target.value;
-        setPwCheck(newPasswordCheck);
-
-        if (newPasswordCheck !== pw) {
-            setPwMatchError("비밀번호가 일치하지 않습니다.");
-        } else {
-            setPwMatchError("");
-        }
-    }
-
-    const validateEmail = () => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailPattern.test(email)) {
-            setEmailError("");
-            return true; // 유효한 이메일 형식이면 true 반환
-        } else {
-            setEmailError("올바른 이메일 형식을 입력해주세요.");
-            return false; // 올바르지 않은 이메일 형식이면 false 반환
-        }
+    const handleNext = () => {
+        setStep(2);
+    };
+    const handleBack = () => {
+        setStep(1);
     };
 
-    const onClickNext = () => {
-        const isValidEmail = validateEmail();
+    const pageVariants = {
+        initial: { x: "100%" },
+        enter: { x: 0, transition: { duration: 0.5 } },
+        exit: { x: "-100%", transition: { duration: 0.5 } },
+    };
 
-        // 초기화
-        setNameError("");
-        setIdError("");
-        setPwError("");
-        setPwCheckError("");
-        setPwMatchError("");
-        setEmailError("");
+    const [MBTI, setMBTI] = useState([false, false, false, false]);
 
-        // 각 필드에 대한 에러 체크
-        if (!name) {
-            setNameError("이름을 입력해주세요.");
-        }
 
-        if (!id) {
-            setIdError("아이디를 입력해주세요.");
-        } else {
-            const koreanRegex = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-            const isKorean = koreanRegex.test(id);
-            if (isKorean) {
-                setIdError("영어와 숫자로만 입력해주세요.");
-            }
-        }
-
-        if (!pw) {
-            setPwError("비밀번호를 입력해주세요");
-        }
-
-        if (!pwCheck) {
-            setPwCheckError("비밀번호를 입력해주세요");
-        }
-
-        if (pw !== pwCheck) {
-            setPwMatchError("비밀번호가 일치하지 않습니다.");
-        }
-
-        if (!isValidEmail) {
-            setEmailError("올바른 이메일 형식을 입력해주세요.");
-        }
-
-        // 모든 에러가 없을 때에만 회원가입 완료
-        if (isValidEmail && name && pw && pwCheck && !pwMatchError) {
-            axios.post('http://localhost:8080/api/users/signup', {
-                name: name,
-                email: email,
-                password: pw
-            })
-                .then(response => {
-                    console.log(response.data);
-                    alert("회원가입 완료!");
-                    navigate('/logIn');
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-                });
-        } else {
-            alert("모든 정보를 올바르게 기입해 주세요.");
-        }
+    const toggleSwitch = (index) => {
+        setMBTI[index](!MBTI[index]);
+        setIsActive(!isActive);
+        console.log(MBTI[index])
     };
 
 
-    const enterKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            onClickNext();
-        }
-    }
-
-    return(
+    return (
         <>
             <Wrapper>
-                {/*<TitleWrapper>*/}
-                {/*    <Title>*/}
-                {/*        MOFY*/}
-                {/*    </Title>*/}
-                {/*</TitleWrapper>*/}
-                <SubTitle>
-                    회원가입
-                </SubTitle>
-                <ConsentWrapper>
-                    <NameWrapper>
-                        <NameInput type="text " maxlength={20} size="50" placeholder="이름" onChange={onChangeName} onKeyPress={enterKeyPress} />
-                        <ErrorMsg>{nameError}</ErrorMsg>
-                    </NameWrapper>
-                    <IdWrapper>
-                        <IdInput type="text " maxlength={20} size="50" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress}/>
-                        <ErrorMsg>{idError}</ErrorMsg>
-                    </IdWrapper>
-                    <PwWrapper>
-                        <PwInput type="password" maxlength={20} size="50" placeholder="비밀번호" onChange={onChangePw} onKeyPress={enterKeyPress}/>
-                        <ErrorMsg>{pwError}</ErrorMsg>
-                    </PwWrapper>
-                    <PwCheckWrapper>
-                        <PwCheckInput type="password" maxlength={20} size="50" placeholder="비밀번호 확인" onChange={onChangePwCheck} onKeyPress={enterKeyPress}/>
-                        <ErrorMsg>{pwCheckError}</ErrorMsg>
-                        <ErrorMsg>{pwMatchError}</ErrorMsg>
-                    </PwCheckWrapper>
-                    <EmailWrapper>
-                        <EmailInput type="text " maxlength={20} size="50" placeholder="이메일" value={email} onChange={(e) => {
-                            setEmail(e.target.value);
-                            validateEmail();
-                        }} onKeyPress={enterKeyPress}/>
-                        <ErrorMsg>{emailError}</ErrorMsg>
-                    </EmailWrapper>
-                </ConsentWrapper>
-                <NextButton onClick={onClickNext}>
-                    다음
-                </NextButton>
+                <Logo>LOGO</Logo>
+                <ContentsWrapper>
+                    <ProgressBar>
+                        <Progress style={{ marginLeft: step === 1 ? "0" : "25%" }}></Progress>
+                    </ProgressBar>
+                    <AnimatePresence>
+                        {step === 1 && (
+                            <FormContainer>
+                                <motion.div
+                                    key="step1"
+                                    initial="initial"
+                                    animate="enter"
+                                    exit="exit"
+                                    variants={pageVariants}
+                                    style={{width:"100%"}}
+                                >
+                                    <BoldText>이름과 나이,<br/>
+                                        성별을 알려주세요.</BoldText>
+                                    <FormGroup>
+                                        <InputText>이름</InputText>
+                                        <Input type="text" placeholder="이름을 입력해주세요."/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <InputText>생년월일</InputText>
+                                        <Input type="text" placeholder="ex)020323"/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <InputText>성별</InputText>
+                                        <GenderButtonWrapper>
+                                            <GenderButton>남성</GenderButton>
+                                            <GenderButton>여성</GenderButton>
+                                        </GenderButtonWrapper>
+                                    </FormGroup>
+                                    <NextButtonWrapper>
+                                        <NextButton onClick={handleNext}>다음</NextButton>
+                                    </NextButtonWrapper>
+                                </motion.div>
+                            </FormContainer>
+
+                        )}
+                        {step === 2 && (
+                            <FormContainer>
+                                <motion.div
+                                    key="step1"
+                                    initial="initial"
+                                    animate="enter"
+                                    exit="exit"
+                                    variants={pageVariants}
+                                    style={{width:"100%"}}
+                                >
+                                    <BoldText>MBTI를 알려주세요.</BoldText>
+                                    {/*<MBTIContainer>*/}
+                                    {/*    <MBTIWrapper>*/}
+                                    {/*        <MBTISwitch index={0} type="checkbox" />*/}
+                                    {/*    </MBTIWrapper>*/}
+                                    {/*    <MBTIWrapper>*/}
+                                    {/*        <MBTISwitch index={1} type="checkbox" />*/}
+                                    {/*    </MBTIWrapper>*/}
+                                    {/*    <MBTIWrapper>*/}
+                                    {/*        <MBTISwitch index={2} type="checkbox" />*/}
+                                    {/*    </MBTIWrapper>*/}
+                                    {/*    <MBTIWrapper>*/}
+                                    {/*        <MBTISwitch index={3} type="checkbox" />*/}
+                                    {/*    </MBTIWrapper>*/}
+                                    {/*</MBTIContainer>*/}
+
+                                    <MBTIWrapper>
+                                        <MBTISwitchWrapper onClick={toggleSwitch}>
+                                            <Switch isActive={isActive} active={MBTI[0]} style={MBTI[0] ? {backgroundColor: "pink"} : {backgroundColor: "skyblue"}}>
+                                                <Handle layout transition={{type: 'spring', stiffness: 700, damping: 30}}/>
+                                            </Switch>
+                                        </MBTISwitchWrapper>
+                                    </MBTIWrapper>
+
+
+                                    <BoldText>관심사를 알려주세요.</BoldText>
+                                    <InterestContainer>
+                                        <InterestButton>관심사1</InterestButton>
+                                        <InterestButton>관심사2</InterestButton>
+                                        <InterestButton>관심사3</InterestButton>
+                                        <InterestButton>관심사4</InterestButton>
+                                        <InterestButton>관심사5</InterestButton>
+                                        <InterestButton>관심사6</InterestButton>
+                                        <InterestButton>관심사7</InterestButton>
+                                        <InterestButton>관심사8</InterestButton>
+                                        <InterestButton>관심사9</InterestButton>
+                                        <InterestButton>관심사10</InterestButton>
+                                    </InterestContainer>
+                                    <ButtonContainer>
+                                        <BackButton onClick={handleBack}>이전</BackButton>
+                                        <NextButton onClick={handleNext}>다음</NextButton>
+                                    </ButtonContainer>
+                                </motion.div>
+                            </FormContainer>
+                        )}
+                    </AnimatePresence>
+                </ContentsWrapper>
+
             </Wrapper>
         </>
 
-    )
+    );
 }
