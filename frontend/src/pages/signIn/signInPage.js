@@ -38,13 +38,13 @@ export default function SignupPage() {
         exit: { x: "-100%", transition: { duration: 0.5 } },
     };
 
-    const [MBTI, setMBTI] = useState([false, false, false, false]);
+    // const [MBTI, setMBTI] = useState([false, false, false, false]);
 
 
     const toggleSwitch = (index) => {
-        setMBTI[index](!MBTI[index]);
+        // setMBTI[index](!MBTI[index]);
         setIsActive(!isActive);
-        console.log(MBTI[index])
+        // console.log(MBTI[index])
     };
 
 
@@ -119,7 +119,7 @@ export default function SignupPage() {
 
                                     <MBTIWrapper>
                                         <MBTISwitchWrapper onClick={toggleSwitch}>
-                                            <Switch isActive={isActive} active={MBTI[0]} style={MBTI[0] ? {backgroundColor: "pink"} : {backgroundColor: "skyblue"}}>
+                                            <Switch isActive={isActive} active={isActive} style={isActive ? {backgroundColor: "pink"} : {backgroundColor: "skyblue"}}>
                                                 <Handle layout transition={{type: 'spring', stiffness: 700, damping: 30}}/>
                                             </Switch>
                                         </MBTISwitchWrapper>
