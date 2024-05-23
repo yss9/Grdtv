@@ -43,15 +43,31 @@ public class UserController {
             User user = userService.login(email, password);
             if (user != null) {
                 String token = jwtUtil.generateToken(user.getEmail());
-                return ResponseEntity.ok(token); // 토큰 반환 확인
+                return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
             }
         } catch (Exception e) {
             // 로그 기록
             log.error("Error during login", e);
             // 클라이언트에게 오류 응답
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login.");
+        }
+    }
+
+    static class AuthResponse {
+        private String token;
+
+        public AuthResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 
