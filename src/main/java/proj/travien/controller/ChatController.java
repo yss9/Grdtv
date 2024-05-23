@@ -36,7 +36,7 @@ public class ChatController {
     @SendTo("/topic/public/{roomId}")
     public ChatMessage addUser(@DestinationVariable String roomId, ChatMessage chatMessage, HttpServletRequest request) {
         String token = getTokenFromRequest(request);
-        String username = jwtUtil.extractEmail(token);
+        String username = jwtUtil.extractName(token);
         chatMessage.setSender(username);
         chatMessage.setType(ChatMessage.MessageType.JOIN);
         chatMessage.setRoomId(roomId);

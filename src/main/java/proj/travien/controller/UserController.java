@@ -42,7 +42,7 @@ public class UserController {
 
             User user = userService.login(email, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getEmail());
+                String token = jwtUtil.generateToken(user.getEmail(),user.getName());
                 return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");

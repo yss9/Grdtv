@@ -50,7 +50,7 @@ const Chat = () => {
                     throw new Error('Invalid JWT token format');
                 }
                 const userPayload = JSON.parse(base64UrlDecode(parts[1]));
-                const extractedUsername = userPayload.sub; // 서버에서 subject로 이메일/이름을 설정한 경우
+                const extractedUsername = userPayload.name; //토큰의 name 값 가져오기
                 setUsername(extractedUsername);
 
                 const user = {
