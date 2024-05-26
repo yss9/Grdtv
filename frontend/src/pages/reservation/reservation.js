@@ -1,16 +1,13 @@
 import {Reset} from "styled-reset";
 import Agent from "../../components/Agent/Agent"
-import {
-    Community, Logo, LogoWrapper, MenuContainer, MyPage,
-    Recomendation, Reservation, TopBar, Wrapper
-} from "../review/reviewstyle";
+import {Wrapper} from "../review/reviewstyle";
 import {
     SubTitle, SubTitleWrapper, SearchBarWrapper,
     SearchBarContainer, Magnifier, Search, Icon,
     SubTitle2, AgentContainer, Agents, GaugeBar, GaugeBarWrapper
 } from './reservationstyle'
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import TopBarComponent from "../../components/TopBar/TopBar";
 
 const AgentData=[
     { title: 'Review 1', content: 'This is the first blog', author: 'Author 1' },
@@ -31,9 +28,6 @@ export default function ReservationPage() {
     const visibleAgents = AgentData.slice(startIndex, startIndex + reviewsPerPage);
 
     const totalIndicators = Math.ceil(AgentData.length / reviewsPerPage);
-
-    const navigate = useNavigate();
-
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
         const clickX = event.clientX - boundingRect.left;
@@ -41,31 +35,12 @@ export default function ReservationPage() {
         const newIndex = Math.floor((completionPercentage / 100) * totalIndicators);
         setActiveIndex(newIndex);
     };
-    const handleGoHome = () => {
-        navigate('/');
-    };
-    const handleGoReservation = () => {
-        navigate('/reservation');
-    };
-    const handleGoReview = () => {
-        navigate('/review');
-    };
 
     return(
         <>
             <Reset/>
             <Wrapper>
-                <TopBar>
-                    <LogoWrapper>
-                        <Logo onClick={handleGoHome}>LOGO</Logo>
-                    </LogoWrapper>
-                    <MenuContainer>
-                        <Reservation onClick={handleGoReservation}>여행지 예약</Reservation>
-                        <Recomendation>여행지 추천</Recomendation>
-                        <Community onClick={handleGoReview}>커뮤니티</Community>
-                        <MyPage>마이페이지</MyPage>
-                    </MenuContainer>
-                </TopBar>
+                <TopBarComponent />
                 <SubTitleWrapper>
                     <SubTitle>필터 검색을 통해 원하는 대행자와 예약을 진행</SubTitle>
                 </SubTitleWrapper>
