@@ -12,7 +12,7 @@ const TopBar = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  width: 58%;
+  width: 47%;
   text-align: left;
 `;
 
@@ -23,10 +23,11 @@ const Logo = styled.span`
 `;
 
 const MenuContainer = styled.div`
-  width: 32%;
+  width: 43%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  //background-color: pink;
 `;
 
 const Recomendation = styled.div`
@@ -52,8 +53,11 @@ const RecomendationList = styled.ul`
   transform: translateX(-50%);
   width: 140px;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.8s;
   pointer-events: none;
+  :hover{
+    background-color: white;
+  }
   ${Recomendation}:hover & {
     opacity: 1;
     pointer-events: auto;
@@ -61,8 +65,12 @@ const RecomendationList = styled.ul`
 `;
 
 const RecomendationItem = styled.li`
-  margin: 15px;
   text-align: center;
+  width: 100%;
+  height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const RecomendationDropdown = ({ children }) => {
@@ -129,10 +137,12 @@ export default function TopBarComponent() {
                     여행지 추천
                     <RecomendationDropdown>
                         <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
+                        <RecomendationItem>키워드 추천</RecomendationItem>
                         <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>여행 루트 추천</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
                 <Community onClick={handleGoReview}>커뮤니티</Community>
+                <Community>챗봇</Community>
                 <MyPage>마이페이지</MyPage>
             </MenuContainer>
         </TopBar>
