@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WebSocketService from './WebSocketService';
+import Cookies from 'js-cookie';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
@@ -19,6 +20,17 @@ const Chat = () => {
         setMessages((prevMessages) => [...prevMessages, message]);
     };
 
+    const base64UrlDecode = (str) => {
+        if (!str) {
+            throw new Error('Invalid base64 string');
+        }
+        let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) {
+            base64 += '=';
+        }
+        return atob(base64);
+    };
+
     const handleSendMessage = () => {
         const message = {
             sender: username,
@@ -30,24 +42,35 @@ const Chat = () => {
     };
 
     const handleAddUser = () => {
-        const user = {
-            sender: username,
-            type: 'JOIN'
-        };
-        WebSocketService.addUser(user);
-        setJoined(true);
+        const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+        if (token) {
+            try {
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid JWT token format');
+                }
+                const userPayload = JSON.parse(base64UrlDecode(parts[1]));
+                const extractedUsername = userPayload.name; //토큰의 name 값 가져오기
+                setUsername(extractedUsername);
+
+                const user = {
+                    sender: extractedUsername,
+                    type: 'JOIN'
+                };
+                WebSocketService.addUser(user);
+                setJoined(true);
+            } catch (error) {
+                console.error('Invalid token:', error);
+            }
+        } else {
+            console.error('No JWT token found in cookies');
+        }
     };
 
     return (
         <div>
             {!joined ? (
                 <div>
-                    <input
-                        type="text"
-                        placeholder="Enter your name"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
                     <input
                         type="text"
                         placeholder="Enter room number"
