@@ -7,6 +7,7 @@ import ChatListPage from './pages/chatList/chatList'
 import AdminPage from './pages/admin/admin'
 import SignInPage from './pages/signIn/signInPage';
 import ChatPage from './pages/chat/chatPage';
+import ChatBot from "./pages/chatbot/chatBot";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/chatList" element={<ChatListPage />} />
                 <Route path="/signIn" element={<SignInPage />} />
                 <Route path="/chat" element={<ChatPage />} />
+                <Route path="/chatbot" element={<ChatBot />} />
             </Routes>
         </BrowserRouter>
     );
