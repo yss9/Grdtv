@@ -25,6 +25,9 @@ public class SpeechToTextService {
             throw new IOException("GOOGLE_APPLICATION_CREDENTIALS 환경 변수가 설정되지 않았습니다.");
         }
 
+        // 오디오 파일의 샘플레이트 감지
+        int sampleRate = getSampleRate(audioBytes);
+
         // 스테레오를 모노로 변환
         byte[] monoAudioBytes = convertToMono(audioBytes);
 
@@ -35,11 +38,11 @@ public class SpeechToTextService {
                     .setContent(audioData)
                     .build();
 
-            // 파일의 샘플레이트를 44100 Hz로 설정
+            // 감지된 샘플레이트를 동적 설정
             RecognitionConfig config = RecognitionConfig.newBuilder()
                     .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                    .setSampleRateHertz(44100)
-                    .setLanguageCode("ko-KR") // 언어 설정 나라마다 바꾸도록
+                    .setSampleRateHertz(sampleRate)
+                    .setLanguageCode("ko-KR") // 언어 설정을 한국어로 설정 (나라에 따라 동적 설정 필요)
                     .build();
 
             RecognizeRequest request = RecognizeRequest.newBuilder()
@@ -56,6 +59,17 @@ public class SpeechToTextService {
             }
 
             return transcript.toString();
+        }
+    }
+
+    private int getSampleRate(byte[] audioBytes) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
+             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bais)) {
+
+            AudioFormat format = audioStream.getFormat();
+            return (int) format.getSampleRate();
+        } catch (UnsupportedAudioFileException e) {
+            throw new IOException("오디오 파일 형식이 지원되지 않습니다.", e);
         }
     }
 
@@ -85,3 +99,11 @@ public class SpeechToTextService {
         }
     }
 }
+//Test (curl -X POST -F "file=@C:\Users\허찬호\Downloads\샘플_1.wav" http://localhost:8080/api/convert --output transcript.txt --verbose)
+//spring.servlet.multipart.max-file-size=50MB
+//spring.servlet.multipart.max-request-size=50MB
+//application.properties에 위 두줄 추가
+//환경변수 설정: win+r -> sysdm.cpl -> 고급 들어가서 시스템 환경변수 새로만들기
+//변수이름: GOOGLE_APPLICATION_CREDENTIALS , 변수값:C:\Users\허찬호\Downloads\travien-52b10c6761f0.json -> 구글api 키 파일 경로 입력(찬호한테 파일 있음)
+//
+

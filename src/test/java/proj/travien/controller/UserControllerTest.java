@@ -67,7 +67,7 @@ class UserControllerTest {
     @Test
     void Login_Success() throws Exception {
         given(userService.login(email, password)).willReturn(user);
-        given(jwtUtil.generateToken(email)).willReturn(fakeToken);
+        given(jwtUtil.generateToken(email, "example")).willReturn(fakeToken);
 
         mockMvc.perform(post("/api/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
