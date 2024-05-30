@@ -21,13 +21,13 @@ public class SpeechController {
     private SpeechToTextService speechToTextService;
 
     @PostMapping("/convert")
-    public ResponseEntity<byte[]> convertSpeechToText(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<byte[]> convertSpeechToText(@RequestParam("file") MultipartFile file, @RequestParam("languageCode") String languageCode) throws IOException {
         if (file.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         byte[] audioBytes = file.getBytes();
-        String transcript = speechToTextService.convertSpeechToText(audioBytes);
+        String transcript = speechToTextService.convertSpeechToText(audioBytes, languageCode);
 
         Path transcriptFile = Files.createTempFile("transcript-", ".txt");
         Files.write(transcriptFile, transcript.getBytes());
