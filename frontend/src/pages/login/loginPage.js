@@ -58,7 +58,7 @@ export default function LoginPage(){
     }
 
     const onClickSignIn = () => {
-        navigate('/signIn');
+        navigate('/signup');
     }
 
     const onClickHome = () => {

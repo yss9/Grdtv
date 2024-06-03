@@ -5,7 +5,7 @@ import SearchBarAniTest from './pages/SearchBarAniTest/SearchBarAniTest';
 import LoginPage from './pages/login/loginPage';
 import ReservationPage from './pages/reservation/reservation'
 import AdminPage from './pages/admin/admin'
-import SignInPage from './pages/signIn/signInPage';
+import SignupPage from './pages/signup/signupPage';
 import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 
@@ -21,7 +21,7 @@ function App() {
                 <Route path="/searchbar" element={<SearchBarAniTest />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
-                <Route path="/signIn" element={<SignInPage />} />
+                <Route path="/signup" element={<SignupPage />} />
                 <Route path="/chat" element={<ChatPage />} />
             </Routes>
         </BrowserRouter>
