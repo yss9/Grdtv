@@ -7,7 +7,6 @@ import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 import { motion } from "framer-motion";
 
 export default function LoginPage(){
@@ -45,17 +44,21 @@ export default function LoginPage(){
                 password: pw
             })
                 .then(response => {
-                    Cookies.set("token", response.data);
-                    // console.log(response.data);
-                    alert("로그인 성공!");
-                    navigate('/chat');
-
+                    const token = response.data.token; // 서버로부터 받은 JWT 토큰
+                    if (token) {
+                        Cookies.set("jwt", token, { expires: 1 }); // 쿠키에 JWT 토큰 저장, expires 옵션으로 유효기간 설정
+                        alert("로그인 성공!");
+                        navigate('/chat');
+                    } else {
+                        alert("로그인 실패! 토큰이 없습니다.");
+                    }
                 })
                 .catch(error => {
-                    console.error('Login failed:', error.response.status);
+                    console.error('Login failed:', error.response ? error.response.status : error.message);
                 });
         }
     }
+
 
     const onClickSignIn = () => {
         navigate('/signup');
@@ -81,12 +84,6 @@ export default function LoginPage(){
 
     return(
         <>
-            {/*<p>id</p>*/}
-            {/*<input onChange={onChangeId}/>*/}
-            {/*<p>pw</p>*/}
-            {/*<input onChange={onChangePw}/>*/}
-            {/*<button onClick={onClickLogin}>로그인</button>*/}
-
             <motion.div
                 className="loginPage"
                 intial={{opacity: 0}}
@@ -96,9 +93,9 @@ export default function LoginPage(){
                 <Wrapper>
                     <Logo>LOGO</Logo>
                     <LogInWrapper>
-                        <LogInInput>&nbsp;&nbsp;&nbsp;아이디</LogInInput>
-                        <LogInInput>&nbsp;&nbsp;&nbsp;비밀번호</LogInInput>
-                        <LogInButton>로그인</LogInButton>
+                        <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />
+                        <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />
+                        <LogInButton type="button" onClick={onClickLogin}>로그인</LogInButton>
                         <LogInUnderWrapper>
                             <SignInButton onClick={onClickSignIn}>회원가입</SignInButton>
                             <FindButton>아이디·비밀번호 찾기</FindButton>

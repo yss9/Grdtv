@@ -49,7 +49,7 @@ export const RightImgWrapper = styled.div`
     //background-color: #b5ded1;
     //padding: 20px;
 `
-export const LogInInput = styled.div`
+export const LogInInput = styled.input`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -60,8 +60,9 @@ export const LogInInput = styled.div`
     background-color: lightgray;
     font-size: 13px;
     font-weight: bold;
+    border: none;
 `
-export const LogInButton = styled.div`
+export const LogInButton = styled.button`
     width: 70%;
     max-width: 400px;
     height: 50px;
@@ -72,6 +73,7 @@ export const LogInButton = styled.div`
     align-items: center;
     font-size: 13px;
     font-weight: bold;
+    border: none;
 
 `
 export const LogInUnderWrapper = styled.div`

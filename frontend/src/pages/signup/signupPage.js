@@ -28,9 +28,15 @@ import {
 import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 
 export default function SignupPage() {
+
+    const [name, setName] = useState("");
+    const [pw, setPw] = useState("");
+    const [email, setEmail] = useState("");
+
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
 
@@ -81,6 +87,34 @@ export default function SignupPage() {
             },
         }));
     };
+
+    const onClickSubmit = () => {
+
+        console.log(email);
+        console.log(name);
+        console.log(pw);
+
+        if ( name && email && pw ) {
+            axios.post('http://localhost:8080/api/users/signup', {
+                name: name,
+                email: email,
+                password: pw
+            })
+                .then(response => {
+                    console.log(response.data);
+                    alert("회원가입 완료!");
+                    navigate('/logIn');
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+                });
+        } else {
+            alert("모든 정보를 올바르게 기입해 주세요.");
+        }
+    };
+
+
     const MBTISwitch = ({ label1, label2, isActive, onToggle, percentage, onPercentageChange }) => {
         return (
             <MBTISwitchWrapper>
@@ -109,6 +143,15 @@ export default function SignupPage() {
     const onClickLogin = () => {
         navigate('/login');
     }
+    const onChangeName=(event)=>{
+        setName(event.target.value)
+    }
+    const onChangeEmail=(event)=>{
+        setEmail(event.target.value)
+    }
+    const onChangePw = (event) =>{
+        setPw(event.target.value)
+    }
     return (
         <>
             <Wrapper>
@@ -132,11 +175,15 @@ export default function SignupPage() {
                                         성별을 알려주세요.</BoldText>
                                     <FormGroup>
                                         <InputText>이름</InputText>
-                                        <Input type="text" placeholder="이름을 입력해주세요."/>
+                                        <Input type="text " maxlength={20} size="50" placeholder="이름" onChange={onChangeName}/>
                                     </FormGroup>
                                     <FormGroup>
                                         <InputText>생년월일</InputText>
-                                        <Input type="text" placeholder="ex)020323"/>
+                                        <Input type="password" maxlength={20} size="50" placeholder="비밀번호" onChange={onChangePw}/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <InputText>생년월일</InputText>
+                                        <Input type="text" maxlength={20} size="50" placeholder="이메일" onChange={onChangeEmail}/>
                                     </FormGroup>
                                     <FormGroup>
                                         <InputText>성별</InputText>
@@ -252,7 +299,7 @@ export default function SignupPage() {
 
                                     <ButtonContainer>
                                         <BackButton onClick={goToSecondPage}>이전</BackButton>
-                                        <NextButton onClick={goToFourthPage}>완료</NextButton>
+                                        <NextButton onClick={onClickSubmit}>완료</NextButton>
                                     </ButtonContainer>
                                 </motion.div>
                             </FormContainer>
