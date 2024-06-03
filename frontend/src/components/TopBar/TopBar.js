@@ -109,8 +109,8 @@ export default function TopBarComponent() {
         navigate('/review');
     };
 
-    const handleGoRecomendation = () => {
-        navigate('/recomendation');
+    const handleGoRoute = () => {
+        navigate('/route');
     };
 
     const handleGoMbti = () => {
@@ -137,15 +137,15 @@ export default function TopBarComponent() {
                         <RecomendationItem >채팅 목록</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
-                <Recomendation onClick={handleGoRecomendation}>
+                <Recomendation>
                     여행지 추천
                     <RecomendationDropdown>
                         <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
-                        <RecomendationItem>키워드 추천</RecomendationItem>
-                        <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>여행 루트 추천</RecomendationItem>
+                        <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>키워드 추천</RecomendationItem>
+                        <RecomendationItem>여행 루트 추천</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
-                <Community>루트 탐색</Community>
+                <Community onClick={handleGoRoute}>루트 탐색</Community>
                 <Community onClick={handleGoReview}>커뮤니티</Community>
                 <Community>챗봇</Community>
                 <MyPage onClick={handleGoMyPage}>마이페이지</MyPage>
