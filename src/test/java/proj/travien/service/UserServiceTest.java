@@ -10,10 +10,13 @@ import proj.travien.dto.UserDTO;
 import proj.travien.repository.UserRepository;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class UserServiceTest {
 
     @Mock
@@ -28,10 +31,20 @@ class UserServiceTest {
     }
 
     @Test
-    void testCreateUser_EmailAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+    void testCreateUser_UsernameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(new User());
+        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(new User());
+
+        boolean result = userService.createUser(userDTO);
+        assertFalse(result);
+    }
+
+    @Test
+    void testCreateUser_NicknameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+
+        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(new User());
 
         boolean result = userService.createUser(userDTO);
         assertFalse(result);
@@ -39,9 +52,10 @@ class UserServiceTest {
 
     @Test
     void testCreateUser_Success() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userRepository.findByEmail(userDTO.getEmail())).thenReturn(null);
+        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(null);
+        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenReturn(new User());
 
         boolean result = userService.createUser(userDTO);
@@ -50,37 +64,47 @@ class UserServiceTest {
 
     @Test
     void testLogin_Success() {
-        String email = "test@example.com";
+        String username = "username";
         String password = "password";
 
         User user = new User();
-        user.setEmail(email);
+        user.setUsername(username);
         user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
 
-        when(userRepository.findByEmail(email)).thenReturn(user);
+        when(userRepository.findByUsername(username)).thenReturn(user);
 
-        User result = userService.login(email, password);
+        User result = userService.login(username, password);
         assertNotNull(result);
     }
 
     @Test
     void testLogin_Failure() {
-        String email = "test@example.com";
+        String username = "username";
         String password = "password";
 
-        when(userRepository.findByEmail(email)).thenReturn(null);
+        when(userRepository.findByUsername(username)).thenReturn(null);
 
-        User result = userService.login(email, password);
+        User result = userService.login(username, password);
         assertNull(result);
     }
 
     @Test
-    void testCheckEmailExistence() {
-        String email = "test@example.com";
+    void testCheckUsernameExistence() {
+        String username = "username";
 
-        when(userRepository.findByEmail(email)).thenReturn(new User());
+        when(userRepository.findByUsername(username)).thenReturn(new User());
 
-        boolean result = userService.checkEmailExistence(email);
+        boolean result = userService.isUsernameInUse(username);
+        assertTrue(result);
+    }
+
+    @Test
+    void testCheckNicknameExistence() {
+        String nickname = "nickname";
+
+        when(userRepository.findByNickname(nickname)).thenReturn(new User());
+
+        boolean result = userService.isNicknameInUse(nickname);
         assertTrue(result);
     }
 }

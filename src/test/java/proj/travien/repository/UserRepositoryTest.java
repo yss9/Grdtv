@@ -1,59 +1,61 @@
 package proj.travien.repository;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import proj.travien.domain.User;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    public void cleanup() {
-        userRepository.deleteAll();
+    @Test
+    void testFindByUsername() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setPassword("password");
+        user.setName("Test User");
+        user.setDateOfBirth("1990-01-01");
+        user.setGender("M");
+        user.setMbti("INTJ");
+        user.setProfilePicture("picture");
+        user.setNickname("testnick");
+        user.setAdmin(false);
+        user.setVerificationFile("file");
+
+        userRepository.save(user);
+
+        User foundUser = userRepository.findByUsername("testuser");
+        assertNotNull(foundUser);
+        assertEquals("testuser", foundUser.getUsername());
     }
 
     @Test
-    void 회원가입_로그인() {
-        // given
-        String email = "test@test.com";
-        String password = "1234";
-        String name = "test";
+    void testFindByNickname() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setPassword("password");
+        user.setName("Test User");
+        user.setDateOfBirth("1990-01-01");
+        user.setGender("M");
+        user.setMbti("INTJ");
+        user.setProfilePicture("picture");
+        user.setNickname("testnick");
+        user.setAdmin(false);
+        user.setVerificationFile("file");
 
-        userRepository.save(User.builder()
-                .email(email)
-                .password(password)
-                .name(name)
-                .build());
+        userRepository.save(user);
 
-        // when
-        List<User> userList = userRepository.findAll();
-
-        // then
-        User user = userList.get(0);
-        System.out.println(user);
-        System.out.println("ID: " + user.getId());
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Password: " + user.getPassword());
-        System.out.println("Name: " + user.getName());
-        Assertions.assertEquals(email, user.getEmail());
-        Assertions.assertEquals(name, user.getName());
-
-        //로그인
-        email = "test@test.com";
-        password = "1234";
-
-        User foundUser = userRepository.findByEmailAndPassword(email, password);
-        System.out.println("login id= " + foundUser.getId());
-
-        Assertions.assertNotNull(foundUser);
+        User foundUser = userRepository.findByNickname("testnick");
+        assertNotNull(foundUser);
+        assertEquals("testnick", foundUser.getNickname());
     }
 }
-

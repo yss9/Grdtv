@@ -11,10 +11,13 @@ import proj.travien.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.service.UserService;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class UserControllerTest {
 
     @Mock
@@ -32,10 +35,20 @@ class UserControllerTest {
     }
 
     @Test
-    void testSignUp_EmailAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+    void testSignUp_UsernameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userService.isEmailInUse(userDTO.getEmail())).thenReturn(true);
+        when(userService.isUsernameInUse(userDTO.getUsername())).thenReturn(true);
+
+        ResponseEntity<?> response = userController.signUp(userDTO);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void testSignUp_NicknameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+
+        when(userService.isNicknameInUse(userDTO.getNickname())).thenReturn(true);
 
         ResponseEntity<?> response = userController.signUp(userDTO);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -43,9 +56,10 @@ class UserControllerTest {
 
     @Test
     void testSignUp_Success() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userService.isEmailInUse(userDTO.getEmail())).thenReturn(false);
+        when(userService.isUsernameInUse(userDTO.getUsername())).thenReturn(false);
+        when(userService.isNicknameInUse(userDTO.getNickname())).thenReturn(false);
         when(userService.createUser(userDTO)).thenReturn(true);
 
         ResponseEntity<?> response = userController.signUp(userDTO);
@@ -54,14 +68,14 @@ class UserControllerTest {
 
     @Test
     void testLogin_Success() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
         User user = new User();
-        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
         user.setName("Test User");
 
-        when(userService.login(userDTO.getEmail(), userDTO.getPassword())).thenReturn(user);
-        when(jwtUtil.generateToken(user.getEmail(), user.getName())).thenReturn("token");
+        when(userService.login(userDTO.getUsername(), userDTO.getPassword())).thenReturn(user);
+        when(jwtUtil.generateToken(user.getUsername(), user.getName())).thenReturn("token");
 
         ResponseEntity<?> response = userController.login(userDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -70,21 +84,32 @@ class UserControllerTest {
 
     @Test
     void testLogin_Failure() {
-        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userService.login(userDTO.getEmail(), userDTO.getPassword())).thenReturn(null);
+        when(userService.login(userDTO.getUsername(), userDTO.getPassword())).thenReturn(null);
 
         ResponseEntity<?> response = userController.login(userDTO);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test
-    void testCheckEmail() {
-        String email = "test@example.com";
+    void testCheckUsername() {
+        String username = "username";
 
-        when(userService.checkEmailExistence(email)).thenReturn(true);
+        when(userService.isUsernameInUse(username)).thenReturn(true);
 
-        ResponseEntity<?> response = userController.checkEmail(email);
+        ResponseEntity<?> response = userController.checkUsername(username);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue((Boolean) response.getBody());
+    }
+
+    @Test
+    void testCheckNickname() {
+        String nickname = "nickname";
+
+        when(userService.isNicknameInUse(nickname)).thenReturn(true);
+
+        ResponseEntity<?> response = userController.checkNickname(nickname);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue((Boolean) response.getBody());
     }

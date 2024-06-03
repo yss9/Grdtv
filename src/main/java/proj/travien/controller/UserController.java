@@ -25,8 +25,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
-        if (userService.isEmailInUse(userDTO.getEmail())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+        if (userService.isUsernameInUse(userDTO.getUsername()) || userService.isNicknameInUse(userDTO.getNickname())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or nickname already in use");
         }
 
         boolean userCreated = userService.createUser(userDTO);
@@ -41,15 +41,15 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
-            String email = request.getEmail();
+            String username = request.getUsername();
             String password = request.getPassword();
 
-            User user = userService.login(email, password);
+            User user = userService.login(username, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getEmail(), user.getName());
+                String token = jwtUtil.generateToken(user.getUsername(), user.getName());
                 return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
             }
         } catch (Exception e) {
             // 로그 기록
@@ -59,9 +59,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        boolean exists = userService.checkEmailExistence(email);
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        boolean exists = userService.isUsernameInUse(username);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+        boolean exists = userService.isNicknameInUse(nickname);
         return ResponseEntity.ok(exists);
     }
 
