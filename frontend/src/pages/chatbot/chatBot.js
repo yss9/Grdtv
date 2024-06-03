@@ -47,6 +47,10 @@ const Chatbot = () => {
                 content: input,
                 type: 'CHAT'
             };
+
+            // Add the user's message to the messages state
+            setMessages((prevMessages) => [...prevMessages, message]);
+
             client.publish({
                 destination: "/app/chat.sendMessage",
                 body: JSON.stringify(message)
