@@ -36,7 +36,7 @@ export const ProgressBar = styled.div`
 `
 export const Progress = styled.div`
     height: 100%;
-    width: 25%;
+    width: 20%;
     border-radius: 5px;
     background-color: #606060;
     transition: margin-left 0.5s ease;
@@ -90,6 +90,9 @@ export const GenderButton = styled.button`
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
+    &:hover {
+        cursor: pointer;
+    }
 `
 export const NextButtonWrapper = styled.div`
     width: 100%;
@@ -181,11 +184,16 @@ export const RadioButtonSubComment = styled.div`
 
 export const UserImg = styled.img`
     margin: 50px 0 10px 0;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 100%;
+    border: 2px solid lightgray;
     display: flex;
     justify-content: center;
+    background-color: lightgray;
+    &:hover {
+        cursor: pointer;
+    }
 `
 export const FinishText = styled.div`
     margin: 10px 0 10px 0;
@@ -200,4 +208,7 @@ export const GoToLoginPage = styled.button`
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+`
+export const OverlayImageInput = styled.input`
+    display: none;
 `

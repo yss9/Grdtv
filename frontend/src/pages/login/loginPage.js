@@ -40,7 +40,7 @@ export default function LoginPage(){
         }
         if (id && pw) {
             axios.post('http://localhost:8080/api/users/login', {
-                email: id,
+                username: id,
                 password: pw
             })
                 .then(response => {
@@ -55,6 +55,7 @@ export default function LoginPage(){
                 })
                 .catch(error => {
                     console.error('Login failed:', error.response ? error.response.status : error.message);
+                    alert("아이디와 비밀번호를 정확히 입력하세요.");
                 });
         }
     }

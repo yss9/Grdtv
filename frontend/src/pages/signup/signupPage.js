@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Wrapper,
@@ -23,7 +23,14 @@ import {
     SetCenter,
     RadioButton,
     RadioButtonComment,
-    RadioButtonWrapper, RadioButtonSubComment, BoldSubText, UserImg, FinishText, GoToLoginPage
+    RadioButtonWrapper,
+    RadioButtonSubComment,
+    BoldSubText,
+    UserImg,
+    FinishText,
+    GoToLoginPage,
+    OverlayImage,
+    OverlayImageInput
 } from "./signupStyle";
 import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
@@ -33,12 +40,40 @@ import axios from "axios";
 
 export default function SignupPage() {
 
-    const [name, setName] = useState("");
     const [pw, setPw] = useState("");
-    const [email, setEmail] = useState("");
+    const [id, setId] = useState("");
+    const [name, setName] = useState("");
+    const [birthday, setBirthday] = useState("");
+    const [gender, setGender] = useState("");
+    const [nickName, setNickName] = useState("");
+    const [glopler, setGlopler] = useState(false);
+    const imgRef = useRef();
+    const [imgFile, setImgFile] = useState("");
 
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
+
+    const [mbti, setMbti] = useState({
+        IE: { active: false, percentage: '' },
+        SN: { active: false, percentage: '' },
+        FT: { active: false, percentage: '' },
+        PJ: { active: false, percentage: '' },
+    });
+
+    const [IE, setIE] = useState("I");
+    const [SN, setSN] = useState("S");
+    const [FT, setFT] = useState("F");
+    const [PJ, setPJ] = useState("P");
+
+    const toggleMBTI = (key) => {
+        setMbti((prev) => ({
+            ...prev,
+            [key]: {
+                ...prev[key],
+                active: !prev[key].active,
+            },
+        }));
+    };
 
     const goToFirstPage = () => {
         setStep(1);
@@ -47,11 +82,19 @@ export default function SignupPage() {
         setStep(2);
     };
     const goToThirdPage = () => {
+        mbti.IE.active ? setIE("E") : setIE("I");
+        mbti.SN.active ? setSN("N") : setSN("S");
+        mbti.FT.active ? setFT("T") : setFT("F");
+        mbti.PJ.active ? setPJ("J") : setPJ("P");
+
         setStep(3);
     };
     const goToFourthPage = () => {
         setStep(4);
     };
+    const goToFifthPage = () => {
+        setStep(5);
+    }
 
     const handlePercentageChange = (key, value) => {
         setMbti((prev) => ({
@@ -70,40 +113,27 @@ export default function SignupPage() {
     };
 
 
-    const [mbti, setMbti] = useState({
-        IE: { active: true, percentage: '' },
-        SN: { active: true, percentage: '' },
-        FT: { active: true, percentage: '' },
-        PJ: { active: true, percentage: '' },
-    });
 
-
-    const toggleMBTI = (key) => {
-        setMbti((prev) => ({
-            ...prev,
-            [key]: {
-                ...prev[key],
-                active: !prev[key].active,
-            },
-        }));
-    };
 
     const onClickSubmit = () => {
 
-        console.log(email);
-        console.log(name);
-        console.log(pw);
+        const MBTI = IE + mbti.IE.percentage + "/" + SN + mbti.SN.percentage + "/" + FT + mbti.FT.percentage + "/" + PJ + mbti.PJ.percentage;
 
-        if ( name && email && pw ) {
+        if ( id && pw && name && birthday && gender && MBTI && nickName ) {
             axios.post('http://localhost:8080/api/users/signup', {
+                userId: id,
+                password: pw,
                 name: name,
-                email: email,
-                password: pw
+                dateOfBirth: birthday,
+                gender: gender,
+                mbti: MBTI,
+                nickname: nickName,
+                isAdmin: glopler,
             })
                 .then(response => {
                     console.log(response.data);
                     alert("회원가입 완료!");
-                    navigate('/logIn');
+                    navigate('/login');
                 })
                 .catch(error => {
                     console.error(error);
@@ -143,22 +173,52 @@ export default function SignupPage() {
     const onClickLogin = () => {
         navigate('/login');
     }
-    const onChangeName=(event)=>{
-        setName(event.target.value)
-    }
-    const onChangeEmail=(event)=>{
-        setEmail(event.target.value)
+
+    const onChangeId = (event)=>{
+        setId(event.target.value)
     }
     const onChangePw = (event) =>{
         setPw(event.target.value)
     }
+    const onChangeName = (event)=>{
+        setName(event.target.value)
+    }
+    const onChangeBirthday = (event)=>{
+        setBirthday(event.target.value)
+    }
+    const onClickMan = ()=>{
+        setGender("M");
+    }
+    const onClickWoman = ()=>{
+        setGender("W");
+    }
+    const onChangeNickName = (event) => {
+        setNickName(event.target.value)
+    }
+    const onClickGlopler = (isGlopler) =>{
+        setGlopler(isGlopler);
+    }
+
+    const saveImgFile = () => {
+        const file = imgRef.current.files[0];
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setImgFile(reader.result);
+        };
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+    };
     return (
         <>
             <Wrapper>
                 <Logo>LOGO</Logo>
                 <ContentsWrapper>
                     <ProgressBar>
-                        <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "25%" : step === 3 ? "50%" : "75%" }}></Progress>
+                        <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "20%" : step === 3 ? "40%" : step === 4 ? "60%" : "80%" }}></Progress>
                     </ProgressBar>
                     <AnimatePresence>
                         {step === 1 && (
@@ -174,22 +234,26 @@ export default function SignupPage() {
                                     <BoldText>이름과 나이,<br/>
                                         성별을 알려주세요.</BoldText>
                                     <FormGroup>
+                                        <InputText>아이디</InputText>
+                                        <Input type="text" maxlength={20} size="50" placeholder="아이디 입력 (6~20자)" onChange={onChangeId}/>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <InputText>비밀번호</InputText>
+                                        <Input type="password" maxlength={20} size="50" placeholder="비밀번호 입력 (문자, 숫자 포함 8~20자)" onChange={onChangePw}/>
+                                    </FormGroup>
+                                    <FormGroup>
                                         <InputText>이름</InputText>
-                                        <Input type="text " maxlength={20} size="50" placeholder="이름" onChange={onChangeName}/>
+                                        <Input type="text" maxlength={20} size="50" placeholder="이름을 입력해주세요." onChange={onChangeName}/>
                                     </FormGroup>
                                     <FormGroup>
                                         <InputText>생년월일</InputText>
-                                        <Input type="password" maxlength={20} size="50" placeholder="비밀번호" onChange={onChangePw}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <InputText>생년월일</InputText>
-                                        <Input type="text" maxlength={20} size="50" placeholder="이메일" onChange={onChangeEmail}/>
+                                        <Input type="text" maxlength={6} size="50" placeholder="ex)020331" onChange={onChangeBirthday}/>
                                     </FormGroup>
                                     <FormGroup>
                                         <InputText>성별</InputText>
                                         <GenderButtonWrapper>
-                                            <GenderButton>남성</GenderButton>
-                                            <GenderButton>여성</GenderButton>
+                                            <GenderButton onClick={onClickMan}>남성</GenderButton>
+                                            <GenderButton onClick={onClickWoman}>여성</GenderButton>
                                         </GenderButtonWrapper>
                                     </FormGroup>
                                     <NextButtonWrapper>
@@ -197,7 +261,6 @@ export default function SignupPage() {
                                     </NextButtonWrapper>
                                 </motion.div>
                             </FormContainer>
-
                         )}
                         {step === 2 && (
                             <FormContainer>
@@ -267,6 +330,33 @@ export default function SignupPage() {
                                     variants={pageVariants}
                                     style={{width: "100%"}}
                                 >
+                                    <BoldText>프로필을 설정해 주세요.</BoldText>
+                                    <label>
+                                        <UserImg src={imgFile ? imgFile :"images/firstImg.jpg"} />
+                                        <OverlayImageInput type="file" accept="image/*" onChange={saveImgFile} ref={imgRef}/>
+                                    </label>
+                                    <FormGroup>
+                                        <InputText>닉네임</InputText>
+                                        <Input type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)" onChange={onChangeNickName}/>
+                                    </FormGroup>
+
+                                    <ButtonContainer>
+                                        <BackButton onClick={goToSecondPage}>이전</BackButton>
+                                        <NextButton onClick={goToFourthPage}>다음</NextButton>
+                                    </ButtonContainer>
+                                </motion.div>
+                            </FormContainer>
+                        )}
+                        {step === 4 && (
+                            <FormContainer>
+                                <motion.div
+                                    key="step3"
+                                    initial="initial"
+                                    animate="enter"
+                                    exit="exit"
+                                    variants={pageVariants}
+                                    style={{width: "100%"}}
+                                >
                                     <BoldText>
                                         여행자들의 예약 대행을 돕는,<br/>
                                         글로플러로 활동하시겠어요?
@@ -275,12 +365,12 @@ export default function SignupPage() {
                                     <div style={{margin: "30px 0"}}>
                                         <RadioButtonWrapper>
                                             <label>
-                                                <RadioButton type="radio" name="glopler" />
+                                                <RadioButton type="radio" name="glopler" onClick={() => onClickGlopler(true)} />
                                                 <RadioButtonComment>네! 글로플러로 활동 하겠습니다.</RadioButtonComment>
                                             </label>
                                         </RadioButtonWrapper>
                                         <RadioButtonWrapper>
-                                            <RadioButton type="radio" name="glopler" />
+                                            <RadioButton type="radio" name="glopler" onClick={() => onClickGlopler(false)} />
                                             <RadioButtonComment>아니요, 예약만 진행할게요.</RadioButtonComment>
                                             <RadioButtonSubComment>나중에 변경할 수 있습니다.</RadioButtonSubComment>
                                         </RadioButtonWrapper>
@@ -298,14 +388,14 @@ export default function SignupPage() {
 
 
                                     <ButtonContainer>
-                                        <BackButton onClick={goToSecondPage}>이전</BackButton>
+                                        <BackButton onClick={goToThirdPage}>이전</BackButton>
                                         <NextButton onClick={onClickSubmit}>완료</NextButton>
                                     </ButtonContainer>
                                 </motion.div>
                             </FormContainer>
                         )}
 
-                        {step === 4 && (
+                        {step === 5 && (
                             <FormContainer>
                                 <motion.div
                                     key="step4"
@@ -315,7 +405,7 @@ export default function SignupPage() {
                                     variants={pageVariants}
                                     style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}
                                 >
-                                    <UserImg src="https://via.placeholder.com/100x100" />
+                                    <UserImg src={imgFile ? imgFile :"https://via.placeholder.com/100x100"} />
                                     <FinishText>회원가입이 완료 되었습니다.</FinishText>
                                     <BoldSubText>글로플과 함께 특별하고 신뢰성 있는 여행을 떠나보아요!</BoldSubText>
                                     <GoToLoginPage onClick={onClickLogin}>
