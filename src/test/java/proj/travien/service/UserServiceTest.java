@@ -1,74 +1,110 @@
 package proj.travien.service;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.mockito.MockitoAnnotations;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.repository.UserRepository;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private BCryptPasswordEncoder passwordEncoder;
-
     @InjectMocks
     private UserService userService;
 
-    @Test
-    void CreateUser_ThrowsEmailAlreadyUsed() {
-        UserDTO userDTO = new UserDTO("user@example.com", "password123");
-        when(userRepository.findByEmail("user@example.com")).thenReturn(new User());
-
-        assertThrows(EmailAlreadyUsedException.class, () -> {
-            userService.createUser(userDTO);
-        });
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void CreateUser_Success() {
-        UserDTO userDTO = new UserDTO("user@example.com", "password123");
-        User expectedUser = new User();
-        expectedUser.setEmail(userDTO.getEmail());
-        expectedUser.setPassword(userDTO.getPassword());
+    void testCreateUser_UsernameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userRepository.save(any(User.class))).thenReturn(expectedUser);
+        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(new User());
 
-        User actualUser = userService.createUser(userDTO);
-        assertNotNull(actualUser, "User should not be null");
-        assertEquals(expectedUser.getEmail(), actualUser.getEmail(), "Emails do not match");
-        assertEquals(expectedUser.getPassword(), actualUser.getPassword(), "Passwords do not match");
+        boolean result = userService.createUser(userDTO);
+        assertFalse(result);
     }
 
     @Test
-    void Login_Success() {
-        User mockUser = new User();
-        mockUser.setEmail("user@example.com");
-        mockUser.setPassword(BCrypt.hashpw("password123", BCrypt.gensalt()));
+    void testCreateUser_NicknameAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userRepository.findByEmail("user@example.com")).thenReturn(mockUser);
+        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(new User());
 
-        User result = userService.login("user@example.com", "password123");
+        boolean result = userService.createUser(userDTO);
+        assertFalse(result);
+    }
+
+    @Test
+    void testCreateUser_Success() {
+        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+
+        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(null);
+        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(null);
+        when(userRepository.save(any(User.class))).thenReturn(new User());
+
+        boolean result = userService.createUser(userDTO);
+        assertTrue(result);
+    }
+
+    @Test
+    void testLogin_Success() {
+        String username = "username";
+        String password = "password";
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+
+        when(userRepository.findByUsername(username)).thenReturn(user);
+
+        User result = userService.login(username, password);
         assertNotNull(result);
     }
 
     @Test
-    void Login_Failure() {
-        when(userRepository.findByEmail("user@example.com")).thenReturn(null);
+    void testLogin_Failure() {
+        String username = "username";
+        String password = "password";
 
-        User result = userService.login("user@example.com", "password123");
+        when(userRepository.findByUsername(username)).thenReturn(null);
+
+        User result = userService.login(username, password);
         assertNull(result);
+    }
+
+    @Test
+    void testCheckUsernameExistence() {
+        String username = "username";
+
+        when(userRepository.findByUsername(username)).thenReturn(new User());
+
+        boolean result = userService.isUsernameInUse(username);
+        assertTrue(result);
+    }
+
+    @Test
+    void testCheckNicknameExistence() {
+        String nickname = "nickname";
+
+        when(userRepository.findByNickname(nickname)).thenReturn(new User());
+
+        boolean result = userService.isNicknameInUse(nickname);
+        assertTrue(result);
     }
 }

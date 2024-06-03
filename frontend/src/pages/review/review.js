@@ -4,14 +4,14 @@ import Blog1 from '../../components/reviewPage/Blog1/Blog1';
 import { Reset } from 'styled-reset';
 import {useNavigate} from "react-router-dom";
 import {
-    Wrapper, TopBar, Logo, MyPage, Community, LogoWrapper, MenuContainer, Recomendation,
-    Reservation, BookMarked1, MyMenuWrapper, ButtonContainer, Blogs,
+    Wrapper, BookMarked1, MyMenuWrapper, ButtonContainer, Blogs,
     BookMarkContainer, MyMenuContainer, BestReiviewer, SearchBarContainer, BestReviewTitle,
     SubTitle1, SubTitleContainer, BestReviews, SubTitle2,
     MyWrites, GoWrite, BlogContainer, SearchBarWrapper, Pin, Magnifier, BestReviewContainer,
     IndicatorContainer, Indicator, SelectContainer, Select, GoTravelTitle, BlogWrapper,
     Profile, PContainer, Pname, PIntro, PImg, VirticalLine, BookMarkTitle
 } from './reviewstyle';
+import TopBarComponent from "../../components/TopBar/TopBar";
 
 const BestreviewsData = [
     { title: 'Review 1', author: 'Author 1' },
@@ -50,31 +50,16 @@ export default function ReviewPage() {
         setSelectedCountry(event.target.value);
     };
 
-    const handleGoHome = () => {
-        navigate('/');
-    };
-    const handleGoReservation = () => {
-        navigate('/reservation');
-    };
-    const handleGoReview = () => {
-        navigate('/review');
-    };
+    const handleGoWrite = (e)=>{
+        navigate('/review/write')
+    }
+
 
     return (
         <>
             <Reset />
             <Wrapper>
-                <TopBar>
-                    <LogoWrapper>
-                        <Logo onClick={handleGoHome}>LOGO</Logo>
-                    </LogoWrapper>
-                    <MenuContainer>
-                        <Reservation onClick={handleGoReservation}>여행지 예약</Reservation>
-                        <Recomendation>여행지 추천</Recomendation>
-                        <Community onClick={handleGoReview}>커뮤니티</Community>
-                        <MyPage>마이페이지</MyPage>
-                    </MenuContainer>
-                </TopBar>
+                <TopBarComponent />
                 <SearchBarWrapper>
                     <SearchBarContainer>
                         <Pin>
@@ -153,7 +138,7 @@ export default function ReviewPage() {
                                 <ButtonContainer>
                                     <MyWrites>나의 글</MyWrites>
                                     <VirticalLine/>
-                                    <GoWrite>글쓰기</GoWrite>
+                                    <GoWrite onClick={handleGoWrite}>글쓰기</GoWrite>
                                 </ButtonContainer>
                                 <BookMarkContainer>
                                     <BookMarkTitle>즐겨찾기</BookMarkTitle>

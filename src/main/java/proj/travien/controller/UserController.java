@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import proj.travien.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.service.UserService;
 
 @RestController
@@ -26,26 +25,31 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
-        try {
-            userService.createUser(userDTO);
+        if (userService.isUsernameInUse(userDTO.getUsername()) || userService.isNicknameInUse(userDTO.getNickname())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or nickname already in use");
+        }
+
+        boolean userCreated = userService.createUser(userDTO);
+
+        if (userCreated) {
             return ResponseEntity.ok().build();
-        } catch (EmailAlreadyUsedException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User could not be created");
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
-            String email = request.getEmail();
+            String username = request.getUsername();
             String password = request.getPassword();
 
-            User user = userService.login(email, password);
+            User user = userService.login(username, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getEmail());
-                return ResponseEntity.ok(token); // 토큰 반환 확인
+                String token = jwtUtil.generateToken(user.getUsername(), user.getName());
+                return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
             }
         } catch (Exception e) {
             // 로그 기록
@@ -55,4 +59,31 @@ public class UserController {
         }
     }
 
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        boolean exists = userService.isUsernameInUse(username);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+        boolean exists = userService.isNicknameInUse(nickname);
+        return ResponseEntity.ok(exists);
+    }
+
+    static class AuthResponse {
+        private String token;
+
+        public AuthResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+    }
 }

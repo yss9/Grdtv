@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.repository.UserRepository;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -19,23 +18,39 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
-            throw new EmailAlreadyUsedException("Email already in use");
+    public boolean createUser(UserDTO userDTO) {
+        if (isUsernameInUse(userDTO.getUsername()) || isNicknameInUse(userDTO.getNickname())) {
+            return false;
         }
         User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
         user.setPassword(hashPassword(userDTO.getPassword()));
-        return userRepository.save(user);
+        user.setName(userDTO.getName());
+        user.setDateOfBirth(userDTO.getDateOfBirth());
+        user.setGender(userDTO.getGender());
+        user.setMbti(userDTO.getMbti());
+        user.setProfilePicture(userDTO.getProfilePicture());
+        user.setNickname(userDTO.getNickname());
+        user.setAdmin(userDTO.isAdmin());
+        user.setVerificationFile(userDTO.getVerificationFile());
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean isUsernameInUse(String username) {
+        return userRepository.findByUsername(username) != null;
+    }
+
+    public boolean isNicknameInUse(String nickname) {
+        return userRepository.findByNickname(nickname) != null;
     }
 
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public User login(String email, String password) {
-        User user = userRepository.findByEmail(email);
+    public User login(String username, String password) {
+        User user = userRepository.findByUsername(username);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             return user;
         }

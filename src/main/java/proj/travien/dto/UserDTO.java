@@ -6,9 +6,17 @@ import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
-@AllArgsConstructor // 모든 매개변수를 받는 생성자 자동 생성
+@AllArgsConstructor
 public class UserDTO {
-    private String name;
-    private String email;
-    private String password;
+    private String username; // 아이디
+    private String password; // 비밀번호
+    private String name; // 이름
+    private String dateOfBirth; // 생년월일
+    private String gender; // 성별
+    private String mbti; // MBTI
+    private String profilePicture; // 프로필사진
+    private String nickname; // 닉네임
+    private boolean isAdmin; // 관리자여부
+    private String verificationFile; // 검증파일
 }
+
