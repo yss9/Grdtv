@@ -12,8 +12,9 @@ const TopBar = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  width: 47%;
+  width: 34%;
   text-align: left;
+  //background-color: #61dafb;
 `;
 
 const Logo = styled.span`
@@ -23,7 +24,7 @@ const Logo = styled.span`
 `;
 
 const MenuContainer = styled.div`
-  width: 43%;
+  width: 56%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -119,6 +120,9 @@ export default function TopBarComponent() {
     const handleGoPersonal = () => {
         navigate('/recomendation/personal');
     };
+    const handleGoMyPage = () => {
+        navigate('/my');
+    };
 
     return (
         <TopBar>
@@ -141,9 +145,10 @@ export default function TopBarComponent() {
                         <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>여행 루트 추천</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
+                <Community>루트 탐색</Community>
                 <Community onClick={handleGoReview}>커뮤니티</Community>
                 <Community>챗봇</Community>
-                <MyPage>마이페이지</MyPage>
+                <MyPage onClick={handleGoMyPage}>마이페이지</MyPage>
             </MenuContainer>
         </TopBar>
     );

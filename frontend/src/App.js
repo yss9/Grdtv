@@ -11,6 +11,7 @@ import Recomendation from "./pages/recomendation/recomendation"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
 import Chatbot from "./pages/chatbot/chatBot";
+import MyPage from "./pages/My/mypage"
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/recomendation" element={<Recomendation />}/>
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
+                <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbot/>}/>
             </Routes>
         </BrowserRouter>
