@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import proj.travien.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.service.UserService;
 
 @RestController
@@ -26,11 +25,16 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
-        try {
-            userService.createUser(userDTO);
+        if (userService.isEmailInUse(userDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+        }
+
+        boolean userCreated = userService.createUser(userDTO);
+
+        if (userCreated) {
             return ResponseEntity.ok().build();
-        } catch (EmailAlreadyUsedException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User could not be created");
         }
     }
 
@@ -42,7 +46,7 @@ public class UserController {
 
             User user = userService.login(email, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getEmail(),user.getName());
+                String token = jwtUtil.generateToken(user.getEmail(), user.getName());
                 return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
@@ -53,6 +57,12 @@ public class UserController {
             // 클라이언트에게 오류 응답
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login.");
         }
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        boolean exists = userService.checkEmailExistence(email);
+        return ResponseEntity.ok(exists);
     }
 
     static class AuthResponse {
@@ -70,5 +80,4 @@ public class UserController {
             this.token = token;
         }
     }
-
 }

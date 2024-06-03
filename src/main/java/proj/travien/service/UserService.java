@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.repository.UserRepository;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -19,15 +18,24 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
-            throw new EmailAlreadyUsedException("Email already in use");
+    public boolean createUser(UserDTO userDTO) {
+        if (isEmailInUse(userDTO.getEmail())) {
+            return false;
         }
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(hashPassword(userDTO.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean isEmailInUse(String email) {
+        return userRepository.findByEmail(email) != null;
+    }
+
+    public boolean checkEmailExistence(String email) {
+        return userRepository.findByEmail(email) != null;
     }
 
     private String hashPassword(String password) {

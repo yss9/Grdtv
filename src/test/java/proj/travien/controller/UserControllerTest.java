@@ -1,87 +1,91 @@
 package proj.travien.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import static org.mockito.BDDMockito.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import proj.travien.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
-import proj.travien.exception.EmailAlreadyUsedException;
 import proj.travien.service.UserService;
 
-@WebMvcTest(UserController.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private UserService userService;
 
-    @MockBean
+    @Mock
     private JwtUtil jwtUtil;
 
-    private String email;
-    private String password;
-    private User user;
-    private String fakeToken;
+    @InjectMocks
+    private UserController userController;
 
     @BeforeEach
     void setUp() {
-        email = "user@example.com";
-        password = "password123";
-        fakeToken = "fake.jwt.token";
-        user = User.builder()
-                .email(email)
-                .password(password)
-                .name("example")
-                .build();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void SignUp_ThrowsConflict() throws Exception {
-        given(userService.createUser(any(UserDTO.class))).willThrow(new EmailAlreadyUsedException("Email already in use"));
-        mockMvc.perform(post("/api/users/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"))
-                .andExpect(status().isConflict());
+    void testSignUp_EmailAlreadyInUse() {
+        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+
+        when(userService.isEmailInUse(userDTO.getEmail())).thenReturn(true);
+
+        ResponseEntity<?> response = userController.signUp(userDTO);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
     @Test
-    void SignUp_Success() throws Exception {
-        mockMvc.perform(post("/api/users/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"))
-                .andExpect(status().isOk());
+    void testSignUp_Success() {
+        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+
+        when(userService.isEmailInUse(userDTO.getEmail())).thenReturn(false);
+        when(userService.createUser(userDTO)).thenReturn(true);
+
+        ResponseEntity<?> response = userController.signUp(userDTO);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    void Login_Success() throws Exception {
-        given(userService.login(email, password)).willReturn(user);
-        given(jwtUtil.generateToken(email, "example")).willReturn(fakeToken);
+    void testLogin_Success() {
+        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
 
-        mockMvc.perform(post("/api/users/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(fakeToken));
+        User user = new User();
+        user.setEmail(userDTO.getEmail());
+        user.setName("Test User");
+
+        when(userService.login(userDTO.getEmail(), userDTO.getPassword())).thenReturn(user);
+        when(jwtUtil.generateToken(user.getEmail(), user.getName())).thenReturn("token");
+
+        ResponseEntity<?> response = userController.login(userDTO);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
-    void Login_Unauthorized() throws Exception {
-        given(userService.login(anyString(), anyString())).willReturn(null);
-        mockMvc.perform(post("/api/users/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}"))
-                .andExpect(status().isUnauthorized());
+    void testLogin_Failure() {
+        UserDTO userDTO = new UserDTO("Test User", "test@example.com", "password");
+
+        when(userService.login(userDTO.getEmail(), userDTO.getPassword())).thenReturn(null);
+
+        ResponseEntity<?> response = userController.login(userDTO);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void testCheckEmail() {
+        String email = "test@example.com";
+
+        when(userService.checkEmailExistence(email)).thenReturn(true);
+
+        ResponseEntity<?> response = userController.checkEmail(email);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue((Boolean) response.getBody());
     }
 }
