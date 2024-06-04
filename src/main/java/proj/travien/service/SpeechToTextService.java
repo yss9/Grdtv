@@ -99,6 +99,7 @@ public class SpeechToTextService {
         }
     }
 }
+//curl -X POST -F "file=@C:\Users\허찬호\Downloads\KakaoTalk_Audio_20240604_1353_06_285.wav" -F "languageCode=ko-KR" http://localhost:8080/api/convert --output transcript.txt --verbose
 //Test 명령어 터미널에 입력(음성파일 경로 넣기): (curl -X POST -F "file=@C:\Users\허찬호\Downloads\샘플_1.wav" -F "languageCode=ko-KR" http://localhost:8080/api/convert --output transcript.txt --verbose)
 //spring.servlet.multipart.max-file-size=50MB
 //spring.servlet.multipart.max-request-size=50MB
