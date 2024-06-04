@@ -1,53 +1,60 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Agent from "../Agent/Agent";
-import {Agents} from "../../pages/reservation/reservationstyle";
 import {Reset} from "styled-reset";
 
 const SelectTitle = styled.div`
-  width: 82rem;
-  height: 2.5em;
-  background-color: white;
-  display: flex;
+    width: 82rem;
+    height: 2.5em;
+    background-color: white;
+    display: flex;
 `;
 
 const Tab = styled.div`
-  width: 50%;
-  background-color: ${props => (props.active ? '#d9d9d9' : 'white')};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+    width: 50%;
+    background-color: ${props => (props.active ? '#d9d9d9' : 'white')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 `;
 
 const ReviewWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
- // background-color: #61dafb;
-  //padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // background-color: #61dafb;
+    //padding: 1em;
 `;
 
 const Review = styled.div`
-  margin-top: 1em;
-  width:80rem;
-  //background-color: orange;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    margin-top: 1em;
+    width:80rem;
+    //background-color: orange;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const AgentWrapper=styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    //background-color: palevioletred;
+`
+const Agents=styled.div`
   width: 100%;
+  height: 32rem;
+  //background-color: gray;
   display: flex;
-  justify-content: center;
-  //background-color: palevioletred;
+  align-items: center;
+  justify-content: space-between;
 `
 
-const AgentData=[
-    { title: 'Review 1', content: 'This is the first blog', author: 'Author 1' },
-    { title: 'Review 2', content: 'This is the second blog', author: 'Author 2' },
-    { title: 'Review 3', content: 'This is the third blog', author: 'Author 3' },
+const AgentData=[ //백엔드 데이터 요청 부분
+    { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec:['This is the first user spec','This is the first user spec2']},
+    { author: 'Author 2', introduce: '한마디 2',  hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec:['This is the second user spec','This is the second user spec2']},
+    { author: 'Author 3',  introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'],spec:['This is the third user spec','This is the third user spec2'] },
 ];
 
 export default function MyReservation() {
@@ -58,7 +65,7 @@ export default function MyReservation() {
     };
 
     const [activeIndex] = useState(0);
-    const reviewsPerPage = 2;
+    const reviewsPerPage = 3;
     const startIndex = activeIndex * reviewsPerPage;
     const visibleAgents = AgentData.slice(startIndex, startIndex + reviewsPerPage);
 
@@ -83,7 +90,7 @@ export default function MyReservation() {
                         <AgentWrapper>
                             <Agents>
                                 {visibleAgents.map((review, index) => (
-                                    <Agent review={review} />
+                                    <Agent key={index} review={review} pageType={1}/>// 페이지 타입 1이면 하트 채워져있음
                                 ))}
                             </Agents>
                         </AgentWrapper>
