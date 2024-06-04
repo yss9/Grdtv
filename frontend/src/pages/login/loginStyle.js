@@ -62,11 +62,13 @@ export const LogInInput = styled.input`
     font-weight: bold;
     border: none;
 `
-export const LogInButton = styled.button`
-    width: 70%;
+export const LogInButton = styled.div`
+    
+    width: 72%;
     max-width: 400px;
     height: 50px;
     margin-top: 20px;
+    margin-right: 10px;
     background-color: lightgray;
     display: flex;
     justify-content: center;
@@ -74,12 +76,15 @@ export const LogInButton = styled.button`
     font-size: 13px;
     font-weight: bold;
     border: none;
-
+    &:hover {
+        cursor: pointer;
+    }
 `
 export const LogInUnderWrapper = styled.div`
-    width: 70%;
+    width: 73%;
     max-width: 400px;
     margin-top: 15px;
+    margin-right: 10px;
     font-size: 11px;
     font-weight: bold;
 `

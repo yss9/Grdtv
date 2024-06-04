@@ -12,8 +12,9 @@ const TopBar = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-  width: 47%;
+  width: 34%;
   text-align: left;
+  //background-color: #61dafb;
 `;
 
 const Logo = styled.span`
@@ -23,7 +24,7 @@ const Logo = styled.span`
 `;
 
 const MenuContainer = styled.div`
-  width: 43%;
+  width: 56%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -108,8 +109,8 @@ export default function TopBarComponent() {
         navigate('/review');
     };
 
-    const handleGoRecomendation = () => {
-        navigate('/recomendation');
+    const handleGoRoute = () => {
+        navigate('/route');
     };
 
     const handleGoMbti = () => {
@@ -118,6 +119,9 @@ export default function TopBarComponent() {
 
     const handleGoPersonal = () => {
         navigate('/recomendation/personal');
+    };
+    const handleGoMyPage = () => {
+        navigate('/my');
     };
 
     return (
@@ -133,17 +137,18 @@ export default function TopBarComponent() {
                         <RecomendationItem >채팅 목록</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
-                <Recomendation onClick={handleGoRecomendation}>
+                <Recomendation>
                     여행지 추천
                     <RecomendationDropdown>
                         <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
-                        <RecomendationItem>키워드 추천</RecomendationItem>
-                        <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>여행 루트 추천</RecomendationItem>
+                        <RecomendationItem onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>키워드 추천</RecomendationItem>
+                        <RecomendationItem>여행 루트 추천</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
+                <Community onClick={handleGoRoute}>루트 탐색</Community>
                 <Community onClick={handleGoReview}>커뮤니티</Community>
                 <Community>챗봇</Community>
-                <MyPage>마이페이지</MyPage>
+                <MyPage onClick={handleGoMyPage}>마이페이지</MyPage>
             </MenuContainer>
         </TopBar>
     );
