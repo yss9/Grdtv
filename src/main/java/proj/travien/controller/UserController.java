@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
-        if (userService.isUsernameInUse(userDTO.getUsername()) || userService.isNicknameInUse(userDTO.getNickname())) {
+        if (userService.isUsernameInUse(userDTO.getUserId()) || userService.isNicknameInUse(userDTO.getNickname())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or nickname already in use");
         }
 
@@ -41,12 +41,12 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
-            String username = request.getUsername();
+            String username = request.getUserId();
             String password = request.getPassword();
 
             User user = userService.login(username, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getUsername(), user.getName());
+                String token = jwtUtil.generateToken(user.getNickname());
                 return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
