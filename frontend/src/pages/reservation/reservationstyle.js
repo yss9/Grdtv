@@ -3,7 +3,7 @@ import styled  from "@emotion/styled";
 export const SubTitleWrapper=styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 1vh;
+    margin-top: 2rem;
 `
 export const SubTitle=styled.div`
     width: 50%;
@@ -66,16 +66,16 @@ export const Magnifier=styled.div`
     align-items: center;
 `
 export const SubTitle2=styled.div`
-    width: 95%;
+    width: 85%;
     font-size: 22px;
-    margin-top: 8vh;
+    margin-top: 1rem;
     color: #515151;
 `
 export const AgentContainer=styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 4vh;
+    margin-top: 2vh;
     flex-direction: column;
     // background-color: green;
 `
@@ -83,6 +83,13 @@ export const AgentContainer=styled.div`
 export const Agents=styled.div`
     width: 57%;
     height: 32rem;
+    //background-color: gray;
+    display: flex;
+    justify-content: space-between;
+`
+export const Agents2=styled.div`
+    width: 65%;
+    height: 20.5rem;
     //background-color: gray;
     display: flex;
     justify-content: space-between;
@@ -95,23 +102,63 @@ export const GaugeBarWrapper=styled.div`
     margin-bottom: 3rem;
 `
 export const GaugeBar = styled.div`
-    width: 100%;
-    height: 8px;
-    background-color: #d9d9d9;
-    border-radius: 100px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+  width: 100%;
+  height: 8px;
+  background-color: #d9d9d9;
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 
-    &:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: ${props => props.completion}%;
-        background-color: #5f5f5f;
-        border-radius: 100px;
-        transition: width 0.5s ease;
-    }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: ${props => props.completion}%;
+    background-color: #5f5f5f;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
 `;
+
+export const SelectWrapper=styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+`
+export const SelectContainer=styled.div`
+ //margin-left: 60vh;
+ display: flex;
+ align-items: center;
+  width: 85%;
+  //background-color: #61dafb;
+  justify-content: space-between;
+ 
+`
+export const Select=styled.select`
+ width: 20rem;
+ height: 80%;
+background-color: #d9d9d9;
+ border: none;
+ padding: 15px;
+`
+export const SeeAllBtn=styled.button`
+    display: flex;
+  font-size: 15px;
+  background-color: transparent;
+  justify-content: center;
+  align-items: flex-end;
+  height: 4rem;
+  cursor: pointer;
+  //background-color: palevioletred;
+  border: none;
+  margin-right: 10rem;
+  svg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+  }
+`

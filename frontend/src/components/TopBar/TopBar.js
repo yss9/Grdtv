@@ -3,75 +3,75 @@ import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 
 const TopBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 5.5em;
-  margin-top: 2.5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 5.5em;
+    margin-top: 2.5vh;
 `;
 
 const LogoWrapper = styled.div`
-  width: 34%;
-  text-align: left;
-  //background-color: #61dafb;
+    width: 34%;
+    text-align: left;
+    //background-color: #61dafb;
 `;
 
 const Logo = styled.span`
-  font-size: 35px;
-  font-weight: bolder;
-  cursor: pointer;
+    font-size: 35px;
+    font-weight: bolder;
+    cursor: pointer;
 `;
 
 const MenuContainer = styled.div`
-  width: 56%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  //background-color: pink;
+    width: 56%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    //background-color: pink;
 `;
 
 const Recomendation = styled.div`
-  position: relative;
-  font-weight: bolder;
-  font-size: 14px;
-  cursor: pointer;
-  //background-color: pink;
-  height: 2.5em;
-  display: flex;
-  align-items: center;
+    position: relative;
+    font-weight: bolder;
+    font-size: 14px;
+    cursor: pointer;
+    //background-color: pink;
+    height: 2.5em;
+    display: flex;
+    align-items: center;
 `;
 
 const RecomendationList = styled.ul`
-  background-color: #d9d9d9;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
-  cursor: pointer;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  opacity: 0;
-  transition: opacity 0.8s;
-  pointer-events: none;
-  :hover{
-    background-color: white;
-  }
-  ${Recomendation}:hover & {
-    opacity: 1;
-    pointer-events: auto;
-  }
+    background-color: #d9d9d9;
+    border: none;
+    font-weight: bolder;
+    font-size: 14px;
+    cursor: pointer;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    opacity: 0;
+    transition: opacity 0.8s;
+    pointer-events: none;
+    :hover{
+        background-color: white;
+    }
+    ${Recomendation}:hover & {
+        opacity: 1;
+        pointer-events: auto;
+    }
 `;
 
 const RecomendationItem = styled.li`
-  text-align: center;
-  width: 100%;
-  height: 3em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const RecomendationDropdown = ({ children }) => {
@@ -79,19 +79,19 @@ const RecomendationDropdown = ({ children }) => {
 };
 
 const Community = styled.button`
-  background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
-  cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-weight: bolder;
+    font-size: 14px;
+    cursor: pointer;
 `;
 
 const MyPage = styled.button`
-  background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
-  cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-weight: bolder;
+    font-size: 14px;
+    cursor: pointer;
 `;
 
 export default function TopBarComponent() {
@@ -130,10 +130,10 @@ export default function TopBarComponent() {
                 <Logo onClick={handleGoHome}>LOGO</Logo>
             </LogoWrapper>
             <MenuContainer>
-                <Recomendation onClick={handleGoReservation}>
+                <Recomendation>
                     여행지 예약
                     <RecomendationDropdown>
-                        <RecomendationItem >글로플러 찾기</RecomendationItem>
+                        <RecomendationItem onClick={handleGoReservation}>글로플러 찾기</RecomendationItem>
                         <RecomendationItem >채팅 목록</RecomendationItem>
                     </RecomendationDropdown>
                 </Recomendation>
