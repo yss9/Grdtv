@@ -31,6 +31,9 @@ public class Post {
     private Set<Like> likes = new HashSet<>();
 
 
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
+    private Set<Favorite> favorites = new HashSet<>();
+
     private Integer likesCount;
     private Boolean verified;
 
