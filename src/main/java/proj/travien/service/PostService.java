@@ -123,4 +123,14 @@ public class PostService {
         return post;
     }
 
+    public List<String> findAllImages() {
+        List<Post> allPosts = postRepository.findAll();
+        List<String> allImages = allPosts.stream()
+                .flatMap(post -> post.getImages().stream())
+                .map(image -> image.getImageUrl())
+                .collect(Collectors.toList());
+        return allImages;
+    }
+
+
 }

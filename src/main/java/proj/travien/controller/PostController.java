@@ -51,6 +51,14 @@ public class PostController {
         return ResponseEntity.ok().body(new PostResponse(post));
     }
 
+    @GetMapping("/api/posts/images")
+    public ResponseEntity<List<String>> findAllImages() {
+        List<String> allImages = postService.findAllImages();
+        return ResponseEntity.ok().body(allImages);
+    }
+
+
+
     @DeleteMapping("/api/posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable long id) {
         postService.delete(id);
