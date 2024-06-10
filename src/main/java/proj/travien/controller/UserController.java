@@ -11,6 +11,8 @@ import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.service.UserService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -85,5 +87,11 @@ public class UserController {
         public void setToken(String token) {
             this.token = token;
         }
+    }
+
+    @GetMapping("/nicknames")
+    public ResponseEntity<List<String>> getAllNicknames() {
+        List<String> nicknames = userService.getAllNicknames();
+        return new ResponseEntity<>(nicknames, HttpStatus.OK);
     }
 }
