@@ -41,12 +41,12 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
-            String username = request.getUserId();
+            String userId = request.getUserId();
             String password = request.getPassword();
 
-            User user = userService.login(username, password);
+            User user = userService.login(userId, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getNickname());
+                String token = jwtUtil.generateToken(user.getId(), user.getNickname());
                 return ResponseEntity.ok(new AuthResponse(token)); // JSON 객체로 토큰 반환
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
