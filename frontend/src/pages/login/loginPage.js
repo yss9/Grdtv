@@ -40,7 +40,7 @@ export default function LoginPage(){
         }
         if (id && pw) {
             axios.post('http://localhost:8080/api/users/login', {
-                username: id,
+                userId: id,
                 password: pw
             })
                 .then(response => {
