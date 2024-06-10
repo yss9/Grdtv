@@ -112,7 +112,7 @@ const ChatPage = () => {
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
-    const chatUser = 'test2';
+    const chatUser = 'test';
 
     useEffect(() => {
         if (joined) {
@@ -148,6 +148,7 @@ const ChatPage = () => {
 
     const handleAddUser = async () => {
         const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+        console.log('token:', token)
         if (token) {
             try {
                 const parts = token.split('.');
@@ -158,12 +159,16 @@ const ChatPage = () => {
                 const extractedUsername = userPayload.nickname; //토큰의 name 값 가져오기
                 setUsername(extractedUsername);
 
-                const response = await axios.post('/chat/createRoom', [extractedUsername, chatUser], {
+                console.log("되냐?")
+
+                const response = await axios.post('http://localhost:8080/chat/createRoom', [extractedUsername, chatUser], {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log("되냐고")
                 const newRoomId = response.data;
+                console.log('newRoomId:', newRoomId)
                 setRoomId(newRoomId);
                 setJoined(true);
             } catch (error) {

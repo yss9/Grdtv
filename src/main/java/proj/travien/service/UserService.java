@@ -37,12 +37,12 @@ public class UserService {
         return true;
     }
 
-    public boolean isUsernameInUse(String username) {
-        return userRepository.findByUserId(username) != null;
+    public boolean isUsernameInUse(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
     }
 
     public boolean isNicknameInUse(String nickname) {
-        return userRepository.findByNickname(nickname) != null;
+        return userRepository.findByNickname(nickname).isPresent();
     }
 
     private String hashPassword(String password) {
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public User login(String userId, String password) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             return user;
         }
