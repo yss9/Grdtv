@@ -47,8 +47,9 @@ export default function LoginPage(){
                     const token = response.data.token; // 서버로부터 받은 JWT 토큰
                     if (token) {
                         Cookies.set("jwt", token, { expires: 1 }); // 쿠키에 JWT 토큰 저장, expires 옵션으로 유효기간 설정
+                        console.log(token)
                         alert("로그인 성공!");
-                        navigate('/chat');
+                        navigate('/chat2');
                     } else {
                         alert("로그인 실패! 토큰이 없습니다.");
                     }
