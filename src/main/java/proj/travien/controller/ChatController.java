@@ -55,7 +55,7 @@ public class ChatController {
         chatMessageRepository.save(chatMessage);
 
         // 사용자 채팅방 관계 저장
-        Long userId = jwtUtil.extractUserId(token);
+        Long userId = jwtUtil.extractId(token);
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomId(roomId);
         if (chatRoom.isPresent()) {
             userChatRoomRepository.save(new UserChatRoom(userId, chatRoom.get().getId()));
@@ -101,7 +101,7 @@ public class ChatController {
     @GetMapping(value = "/userRooms", produces = "application/json")
     public ResponseEntity<List<String>> getUserChatRooms(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
-        Long userId = jwtUtil.extractUserId(token);
+        Long userId = jwtUtil.extractId(token);
         List<UserChatRoom> userChatRooms = userChatRoomRepository.findByUserId(userId);
         List<String> roomIds = userChatRooms.stream()
                 .map(userChatRoom -> chatRoomRepository.findById(userChatRoom.getChatRoomId()).get().getRoomId())

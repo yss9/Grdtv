@@ -112,6 +112,7 @@ const ChatPage = () => {
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
+    const chatUser = 'test2';
 
     useEffect(() => {
         if (joined) {
@@ -145,7 +146,7 @@ const ChatPage = () => {
         setInput('');
     };
 
-    const handleAddUser = () => {
+    const handleAddUser = async () => {
         const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
         if (token) {
             try {
@@ -154,14 +155,16 @@ const ChatPage = () => {
                     throw new Error('Invalid JWT token format');
                 }
                 const userPayload = JSON.parse(base64UrlDecode(parts[1]));
-                const extractedUsername = userPayload.name; //토큰의 name 값 가져오기
+                const extractedUsername = userPayload.nickname; //토큰의 name 값 가져오기
                 setUsername(extractedUsername);
 
-                const user = {
-                    sender: extractedUsername,
-                    type: 'JOIN'
-                };
-                WebSocketService.addUser(user);
+                const response = await axios.post('/chat/createRoom', [extractedUsername, chatUser], {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const newRoomId = response.data;
+                setRoomId(newRoomId);
                 setJoined(true);
             } catch (error) {
                 console.error('Invalid token:', error);
@@ -204,7 +207,7 @@ const ChatPage = () => {
                             ) : (
                                 <div>방 번호: {roomId}</div>
                             )}
-                            <div style={styles.chatItem}>채팅방 2</div>
+                            {/*<div style={styles.chatItem} value={chatUser} onClick={onClickChatUser}>{chatUser}</div>*/}
                             <div style={styles.chatItem}>채팅방 3</div>
                         </div>
                     </div>
