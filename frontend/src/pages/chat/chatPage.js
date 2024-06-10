@@ -70,6 +70,7 @@ const styles = {
         borderRadius: '4px',
         border: '1px solid #ddd',
         cursor: 'pointer',
+        width: '100%',
     },
     chatMain: {
         flex: 1,
@@ -112,7 +113,35 @@ const ChatPage = () => {
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
-    const chatUser = 'test';
+    const [nicknames, setNicknames] = useState([]);
+    const [chatUsername, setChatUsername] = useState('');
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setNicknames(response.data);
+
+
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid JWT token format');
+                }
+                const userPayload = JSON.parse(base64UrlDecode(parts[1]));
+                const extractedUsername = userPayload.nickname; // 토큰의 nickname 값 가져오기
+                setUsername(extractedUsername);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+
+        fetchNicknames();
+    }, [token]);
 
     useEffect(() => {
         if (joined) {
@@ -146,33 +175,21 @@ const ChatPage = () => {
         setInput('');
     };
 
-    const handleAddUser = async () => {
+    const handleAddUser = async (targetUserNickname) => {
         const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
-        console.log('token:', token)
         if (token) {
             try {
-                const parts = token.split('.');
-                if (parts.length !== 3) {
-                    throw new Error('Invalid JWT token format');
-                }
-                const userPayload = JSON.parse(base64UrlDecode(parts[1]));
-                const extractedUsername = userPayload.nickname; //토큰의 name 값 가져오기
-                setUsername(extractedUsername);
-
-                console.log("되냐?")
-
-                const response = await axios.post('http://localhost:8080/chat/createRoom', [extractedUsername, chatUser], {
+                const response = await axios.post('http://localhost:8080/chat/createRoom', [username, targetUserNickname], {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log("되냐고")
                 const newRoomId = response.data;
-                console.log('newRoomId:', newRoomId)
                 setRoomId(newRoomId);
+                setChatUsername(targetUserNickname);
                 setJoined(true);
             } catch (error) {
-                console.error('Invalid token:', error);
+                console.error('Invalid token or failed to create chat room:', error);
             }
         } else {
             console.error('No JWT token found in cookies');
@@ -199,59 +216,49 @@ const ChatPage = () => {
                     <div>
                         <input type="text" placeholder="채팅방 내용, 참여자 검색" style={styles.sidebarContentInput}/>
                         <div style={styles.chatList}>
-                            {!joined ? (
-                                <div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter room number"
-                                        value={roomId}
-                                        onChange={(e) => setRoomId(e.target.value)}
-                                    />
-                                    <button onClick={handleAddUser}>Join</button>
-                                </div>
-                            ) : (
-                                <div>방 번호: {roomId}</div>
-                            )}
-                            {/*<div style={styles.chatItem} value={chatUser} onClick={onClickChatUser}>{chatUser}</div>*/}
-                            <div style={styles.chatItem}>채팅방 3</div>
+                            <div>
+                                <div>사용자 목록</div>
+                                {nicknames.map(nickname => (
+                                    nickname !== username && (
+                                        <button key={nickname} style={styles.chatItem}
+                                                onClick={() => handleAddUser(nickname)}>
+                                            {nickname}
+                                        </button>
+                                    )
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </aside>
                 <main style={styles.chatMain}>
-                    <div style={styles.chatHeader}>
-                        <div style={styles.userIcon}></div>
-                        <div style={styles.userName}>예약자 닉네임</div>
-                    </div>
-
                     {joined ? (
                         <div>
-                            <div style={{marginBottom:'20px', height:'58vh', overflowY:'auto'}}>
+                            <div style={styles.chatHeader}>
+                                <div style={styles.userIcon}></div>
+                                <div style={styles.userName}>{chatUsername}</div>
+                            </div>
+                            <div style={{marginBottom: '20px', height: '58vh', overflowY: 'auto'}}>
                                 {messages.map((message, index) => (
                                     <div key={index}>
                                         <strong>{message.sender}: </strong>{message.content}
                                     </div>
                                 ))}
                             </div>
-                            {/*<div style={styles.chatContent} style={{height: "70%"}}>*/}
-                            {/*    /!*<div style={styles.chatContentMessage}>메시지 1</div>*!/*/}
-                            {/*    /!*<div style={styles.chatContentMessage}>메시지 2</div>*!/*/}
-                            {/*    /!*<div style={styles.chatContentMessage}>메시지 3</div>*!/*/}
-                            {/*    */}
-                            {/*</div>*/}
-                            {/*<input style={{width: "1000px", height: "50px"}}/>*/}
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
+                                style={{width: "80%", height: "30px"}}
                             />
-                            <button onClick={handleSendMessage}>Send</button>
+                            <button
+                                onClick={handleSendMessage}
+                                style={{height: "40px", width: "70px"}}
+                            >Send</button>
                         </div>
 
                     ) : (
                         <div>채팅방 입장 필요</div>
                     )}
-
-
                 </main>
             </div>
         </div>
