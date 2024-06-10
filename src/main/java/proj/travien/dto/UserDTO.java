@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 @Setter
 @AllArgsConstructor
 public class UserDTO {
-    private String username; // 아이디
+    private String userId; // 아이디
     private String password; // 비밀번호
     private String name; // 이름
     private String dateOfBirth; // 생년월일

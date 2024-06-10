@@ -19,11 +19,11 @@ public class UserService {
     }
 
     public boolean createUser(UserDTO userDTO) {
-        if (isUsernameInUse(userDTO.getUsername()) || isNicknameInUse(userDTO.getNickname())) {
+        if (isUsernameInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {
             return false;
         }
         User user = new User();
-        user.setUsername(userDTO.getUsername());
+        user.setUserId(userDTO.getUserId());
         user.setPassword(hashPassword(userDTO.getPassword()));
         user.setName(userDTO.getName());
         user.setDateOfBirth(userDTO.getDateOfBirth());
@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public boolean isUsernameInUse(String username) {
-        return userRepository.findByUsername(username) != null;
+        return userRepository.findByUserId(username) != null;
     }
 
     public boolean isNicknameInUse(String nickname) {
@@ -49,8 +49,8 @@ public class UserService {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public User login(String username, String password) {
-        User user = userRepository.findByUsername(username);
+    public User login(String userId, String password) {
+        User user = userRepository.findByUserId(userId);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             return user;
         }
