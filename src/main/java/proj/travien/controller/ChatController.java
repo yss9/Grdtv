@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import proj.travien.JwtUtil;
 import proj.travien.domain.ChatMessage;
 import proj.travien.domain.ChatRoom;
+import proj.travien.domain.User;
 import proj.travien.domain.UserChatRoom;
 import proj.travien.repository.ChatMessageRepository;
 import proj.travien.repository.ChatRoomRepository;
 import proj.travien.repository.UserChatRoomRepository;
+import proj.travien.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,9 @@ public class ChatController {
 
     @Autowired
     private UserChatRoomRepository userChatRoomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -55,10 +60,10 @@ public class ChatController {
         chatMessageRepository.save(chatMessage);
 
         // 사용자 채팅방 관계 저장
-        Long userId = jwtUtil.extractId(token);
+        Long id = jwtUtil.extractId(token);
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomId(roomId);
         if (chatRoom.isPresent()) {
-            userChatRoomRepository.save(new UserChatRoom(userId, chatRoom.get().getId()));
+            userChatRoomRepository.save(new UserChatRoom(id, chatRoom.get().getId()));
         }
 
         return chatMessage;
@@ -74,13 +79,13 @@ public class ChatController {
     }
 
     @PostMapping(value = "/createRoom", produces = "application/json")
-    public ResponseEntity<String> createChatRoom(@RequestBody List<Long> userIds) {
-        if (userIds.size() != 2) {
+    public ResponseEntity<String> createChatRoom(@RequestBody List<String> nicknames) {
+        if (nicknames.size() != 2) {
             return new ResponseEntity<>("Invalid number of users", HttpStatus.BAD_REQUEST);
         }
 
-        userIds.sort(Long::compareTo);
-        String roomId = userIds.get(0) + "_" + userIds.get(1);
+        nicknames.sort(String::compareTo); // 두 사용자 닉네임을 정렬
+        String roomId = nicknames.get(0) + "_" + nicknames.get(1); // 고유한 채팅방 번호 생성
 
         Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByRoomId(roomId);
         if (existingChatRoom.isPresent()) {
@@ -91,9 +96,12 @@ public class ChatController {
         chatRoom.setRoomId(roomId);
         chatRoomRepository.save(chatRoom);
 
-        for (Long userId : userIds) {
-            userChatRoomRepository.save(new UserChatRoom(userId, chatRoom.getId()));
-        }
+        // 닉네임을 ID로 변환하여 저장
+        User user1 = userRepository.findByNickname(nicknames.get(0)).orElseThrow(() -> new RuntimeException("User not found"));
+        User user2 = userRepository.findByNickname(nicknames.get(1)).orElseThrow(() -> new RuntimeException("User not found"));
+
+        userChatRoomRepository.save(new UserChatRoom(user1.getId(), chatRoom.getId()));
+        userChatRoomRepository.save(new UserChatRoom(user2.getId(), chatRoom.getId()));
 
         return new ResponseEntity<>(roomId, HttpStatus.CREATED);
     }
@@ -101,8 +109,8 @@ public class ChatController {
     @GetMapping(value = "/userRooms", produces = "application/json")
     public ResponseEntity<List<String>> getUserChatRooms(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
-        Long userId = jwtUtil.extractId(token);
-        List<UserChatRoom> userChatRooms = userChatRoomRepository.findByUserId(userId);
+        Long id = jwtUtil.extractId(token);
+        List<UserChatRoom> userChatRooms = userChatRoomRepository.findByUserId(id);
         List<String> roomIds = userChatRooms.stream()
                 .map(userChatRoom -> chatRoomRepository.findById(userChatRoom.getChatRoomId()).get().getRoomId())
                 .collect(Collectors.toList());
