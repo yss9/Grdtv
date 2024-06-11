@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import TopBarComponent from "../../components/TopBar/TopBar";
 
-const AgentData = [
+const AgentData = [ //백엔드 데이터 가져오기
     { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
     { author: 'Author 2', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
     { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
@@ -24,7 +24,7 @@ const AgentData = [
     { author: 'Author 10', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec'] },
 ];
 
-const Agent2Data = [
+const Agent2Data = [//백엔드 데이터 가져오기
     { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
     { author: 'Author 2', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
     { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
