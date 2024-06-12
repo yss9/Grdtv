@@ -6,7 +6,7 @@ import DaumPostcodeEmbed from "react-daum-postcode";
 import {Link, useNavigate} from "react-router-dom";
 
 
-export default function MarketBoardWrite(props) {
+export default function BoardWrite(props) {
 
     const navigate = useNavigate(); // useNavigate 훅 사용
 
