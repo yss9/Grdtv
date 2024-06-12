@@ -41,7 +41,7 @@ export default function BoardList() {
     };
 
     const onClickMoveToBoardNew = () => {
-        navigate("/board/new");
+      
     };
 
     const onClickMoveToBoardDetail = (id) => {
@@ -63,12 +63,11 @@ export default function BoardList() {
                 />
             </Searchbar>
 
-            <h2>커뮤니티</h2>
+            <h2>Review</h2>
 
             <S.TableTop />
             <S.Row>
                 <S.ColumnHeaderTitle>제목</S.ColumnHeaderTitle>
-                <S.ColumnHeaderBasic>날짜</S.ColumnHeaderBasic>
             </S.Row>
 
             {reqData.filter(el => el.title.includes(keyword)).map(el => (
@@ -83,7 +82,6 @@ export default function BoardList() {
                                 </S.TextToken>
                             ))}
                     </S.ColumnTitle>
-                    <S.ColumnBasic>{getDate(el.datetime)}</S.ColumnBasic>
                 </S.Row>
             ))}
 
