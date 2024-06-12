@@ -93,7 +93,7 @@ export default function BoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
-            formData.append('address', combinedString);
+
 
             try {
                 const response = await axios.post("http://localhost:8080/api/posts/", formData);
@@ -122,7 +122,7 @@ export default function BoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
-            formData.append('address', combinedString);
+
 
             try {
                 const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);

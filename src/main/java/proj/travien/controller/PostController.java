@@ -55,9 +55,9 @@ public class PostController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") String address) {
+    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body) {
         try {
-            Post createdPost = postService.createPost(image, title, body, address);
+            Post createdPost = postService.createPost(image, title, body);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
         } catch (IOException e) {
             e.printStackTrace();

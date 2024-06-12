@@ -12,11 +12,9 @@ export default function BoardDetail() {
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
-    const [datetime, setDatetime] = useState(null);
     const [image, setImage] = useState(null);
     const [address, setAddress] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
-    const [imageUrl, setImageUrl] = useState("");
+
 
 
     const fetchData = async () => {
@@ -26,9 +24,8 @@ export default function BoardDetail() {
 
             setTitle(postData.title);
             setBody(postData.body);
-            setDatetime(postData.datetime);
             setAddress(postData.address);
-            setImageUrl(postData.imageUrl); // Add this line to set the image URL
+
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -65,19 +62,15 @@ export default function BoardDetail() {
             <S.CardWrapper>
                 <S.Header>
                     <S.Info>
-                        <S.CreatedAt>{getDate(datetime)}</S.CreatedAt>
+                        <S.Title>{title}</S.Title>
+                        <S.Writer>진나은</S.Writer>
                     </S.Info>
                     <S.IconWrapper>
-                        <Popover content={address ? address : "사용자가 위치설정을 하지 않았어요"} title="위치">
-                            <Button type="primary" style={{ marginRight: "30px" }}>여기서 만나요!</Button>
-                        </Popover>
                         <Button danger onClick={onClickReport}>신고하기</Button>
                     </S.IconWrapper>
                 </S.Header>
                 <S.Body>
-                    <S.Title>{title}</S.Title>
                     <S.Contents>{body}</S.Contents>
-                    <S.ImageWrapper>{image}</S.ImageWrapper>
                 </S.Body>
             </S.CardWrapper>
             <S.BottomWrapper>
