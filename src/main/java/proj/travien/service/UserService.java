@@ -1,12 +1,14 @@
 package proj.travien.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.repository.UserRepository;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,12 +39,12 @@ public class UserService {
         return true;
     }
 
-    public boolean isUsernameInUse(String username) {
-        return userRepository.findByUserId(username) != null;
+    public boolean isUsernameInUse(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
     }
 
     public boolean isNicknameInUse(String nickname) {
-        return userRepository.findByNickname(nickname) != null;
+        return userRepository.findByNickname(nickname).isPresent();
     }
 
     private String hashPassword(String password) {
@@ -50,10 +52,16 @@ public class UserService {
     }
 
     public User login(String userId, String password) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             return user;
         }
         return null;
+    }
+
+    public List<String> getAllNicknames() {
+        return userRepository.findAll().stream()
+                .map(User::getNickname)
+                .collect(Collectors.toList());
     }
 }

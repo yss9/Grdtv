@@ -23,6 +23,8 @@ public class Post {
     private String title;
     private String body;
 
+    private String image;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images = new HashSet<>();
 
@@ -37,6 +39,7 @@ public class Post {
     private Integer likesCount;
     private Boolean verified;
 
+
     @Builder    // 빌더 패턴으로 객체 생성
     public Post(String title, String body){
         this.title = title;
@@ -47,4 +50,22 @@ public class Post {
         this.title = title;
         this.body = body;
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Post toEntity(){
+        return Post.builder()
+                .title(title)
+                .body(body)
+                .build();
+    }
+
+
+
 }

@@ -14,10 +14,11 @@ public class JwtUtil {
 
     private String secretKey = "chan_ho_woo_dang"; // 실제 환경에서는 환경 변수나 외부 설정 파일에서 가져오는 것이 좋습니다.
 
-    public String generateToken(String nickname) {
+    public String generateToken(Long id, String nickname) {
         long now = System.currentTimeMillis();
 
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", id);
         claims.put("nickname", nickname);
 
         return Jwts.builder()
@@ -38,6 +39,10 @@ public class JwtUtil {
 
     public String extractNickname(String token) {
         return extractClaims(token).get("nickname", String.class);
+    }
+
+    public Long extractId(String token) {
+        return extractClaims(token).get("id", Long.class);
     }
 
     public boolean isTokenExpired(String token) {

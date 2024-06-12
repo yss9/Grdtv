@@ -92,9 +92,6 @@ export default function SignupPage() {
     const goToFourthPage = () => {
         setStep(4);
     };
-    const goToFifthPage = () => {
-        setStep(5);
-    }
 
     const handlePercentageChange = (key, value) => {
         setMbti((prev) => ({
@@ -132,8 +129,7 @@ export default function SignupPage() {
             })
                 .then(response => {
                     console.log(response.data);
-                    alert("회원가입 완료!");
-                    navigate('/login');
+                    setStep(5);
                 })
                 .catch(error => {
                     console.error(error);
@@ -231,8 +227,8 @@ export default function SignupPage() {
                                     variants={pageVariants}
                                     style={{width:"100%"}}
                                 >
-                                    <BoldText>이름과 나이,<br/>
-                                        성별을 알려주세요.</BoldText>
+                                    <BoldText>회원가입</BoldText>
+                                    <BoldSubText>글로플의 회원이 되어 색다른 여행을 경험해 보세요.</BoldSubText>
                                     <FormGroup>
                                         <InputText>아이디</InputText>
                                         <Input type="text" maxlength={20} size="50" placeholder="아이디 입력 (6~20자)" onChange={onChangeId}/>
@@ -270,7 +266,7 @@ export default function SignupPage() {
                                     animate="enter"
                                     exit="exit"
                                     variants={pageVariants}
-                                    style={{width:"100%"}}
+                                    style={{width: "100%"}}
                                 >
                                     <BoldText>MBTI를 알려주세요.</BoldText>
 
@@ -312,6 +308,7 @@ export default function SignupPage() {
 
                                     <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
                                     <p>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
+                                    <br/><br/><br/><br/>
 
                                     <ButtonContainer>
                                         <BackButton onClick={goToFirstPage}>이전</BackButton>
@@ -332,14 +329,17 @@ export default function SignupPage() {
                                 >
                                     <BoldText>프로필을 설정해 주세요.</BoldText>
                                     <label>
-                                        <UserImg src={imgFile ? imgFile :"images/firstImg.jpg"} />
-                                        <OverlayImageInput type="file" accept="image/*" onChange={saveImgFile} ref={imgRef}/>
+                                        <UserImg src={imgFile ? imgFile : "images/firstImg.jpg"}/>
+                                        <OverlayImageInput type="file" accept="image/*" onChange={saveImgFile}
+                                                           ref={imgRef}/>
                                     </label>
+                                    <br/>
                                     <FormGroup>
                                         <InputText>닉네임</InputText>
-                                        <Input type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)" onChange={onChangeNickName}/>
+                                        <Input type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)"
+                                               onChange={onChangeNickName}/>
                                     </FormGroup>
-
+                                    <br/><br/>
                                     <ButtonContainer>
                                         <BackButton onClick={goToSecondPage}>이전</BackButton>
                                         <NextButton onClick={goToFourthPage}>다음</NextButton>

@@ -2,9 +2,10 @@ import styled from "@emotion/styled";
 import {motion} from "framer-motion";
 
 export const Wrapper = styled.div`
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
-    width: 97vw;
+    width: 100%;
     height: 97vh;
     display: flex;
     flex-direction: column;
@@ -75,7 +76,7 @@ export const Input = styled.input`
     border: 1px solid #ccc;
     background-color: #ccc;
     border-radius: 5px;
-    height: 25px;
+    height: 35px;
 `
 export const GenderButtonWrapper = styled.div`
     display: flex;
@@ -156,7 +157,7 @@ export const SetCenter = styled.div`
 
 export const BoldSubText = styled.div`
     font-size: 13px;
-    margin-bottom: 10px;
+    margin-bottom: 40px;
 `
 export const RadioButtonWrapper = styled.div`
     height: 30px;

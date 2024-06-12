@@ -4,9 +4,10 @@ import LoginPage from './pages/login/loginPage';
 import ReservationPage from './pages/reservation/reservation'
 import AdminPage from './pages/admin/admin'
 import SignupPage from './pages/signup/signupPage';
-import ChatPage from './pages/chat/Chat';
+import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Write from "./pages/review/write/write";
+import WriteTest from "./pages/review/write/writeTest";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/review" element={<ReviewPage />} />
                 <Route path="/review/write" element={<Write />}/>
+                <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
                 <Route path="/signup" element={<SignupPage />} />
