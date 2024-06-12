@@ -1,4 +1,4 @@
-import BoardWrite from "../../../pages/review/write/write";
+import BoardWrite from "../../../review/write/write";
 
 
 

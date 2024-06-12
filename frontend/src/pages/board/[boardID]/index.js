@@ -1,7 +1,4 @@
-import BoardDetail from "../../pages/review/detail/detail";
-
-
-
+import BoardDetail from "../../review/detail/detail";
 
 
 export default function DetailPage(){
