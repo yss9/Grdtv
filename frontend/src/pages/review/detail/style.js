@@ -56,6 +56,9 @@ export const Body = styled.div`
 
 export const Title = styled.h1`
   padding-top: 80px;
+  padding-left: 430px;
+  color:#515151;
+  
 `;
 
 export const Contents = styled.div`
