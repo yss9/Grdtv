@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import * as S from "./style";
 import { Switch, Modal, Button, Popover } from 'antd';
@@ -16,6 +16,7 @@ import {
     PhotoWrapper,
     PlusIcon
 } from "./style";
+import TopBarComponent from "../../../components/TopBar/TopBar";
 
 
 export default function BoardWrite(props) {
@@ -155,6 +156,7 @@ export default function BoardWrite(props) {
 
     return (
         <>
+            <TopBarComponent/>
             <S.Wrapper>
                 {/* 제목 입력란 */}
                 <S.Title>{props.isEdit ? "Review 수정" : "리뷰 작성하기"}</S.Title>
