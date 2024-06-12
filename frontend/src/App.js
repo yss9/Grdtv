@@ -14,6 +14,8 @@ import RecPersonalPage from "./pages/recomendation/Personal/personal";
 import Chatbot from "./pages/chatbot/chatBot";
 import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
+import BoardDetail from "./pages/review/detail/detail";
+import BoardList from "./pages/review/list/list";
 
 function App() {
     return (
@@ -22,8 +24,10 @@ function App() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/review" element={<ReviewPage />} />
+                <Route path="/board" element={<BoardList/>}/>
                 <Route path="/review/write" element={<Write />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
+                <Route path="/board/:boardID" element={<BoardDetail />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
                 <Route path="/signup" element={<SignupPage />} />

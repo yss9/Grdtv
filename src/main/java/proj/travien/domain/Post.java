@@ -2,6 +2,7 @@ package proj.travien.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,12 +19,17 @@ import lombok.Setter;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long boardID;
 
     private String title;
     private String body;
-
     private String image;
+
+    private String imageUrl; // 이미지 URL 필드 추가
+
+    private String address;
+
+    private LocalDateTime datetime; // datetime 필드 추가
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images = new HashSet<>();
@@ -40,32 +46,20 @@ public class Post {
     private Boolean verified;
 
 
-    @Builder    // 빌더 패턴으로 객체 생성
-    public Post(String title, String body){
+    @Builder
+    public Post(String title, String body, String image, String address) {
         this.title = title;
         this.body = body;
-    }
-
-    public void update(String title, String body){
-        this.title = title;
-        this.body = body;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
         this.image = image;
+        this.address = address;
     }
 
-    public Post toEntity(){
-        return Post.builder()
-                .title(title)
-                .body(body)
-                .build();
+    public void update(String title, String body, String image, String address) {
+        this.title = title;
+        this.body = body;
+        this.image = image;
+        this.address = address;
     }
-
 
 
 }

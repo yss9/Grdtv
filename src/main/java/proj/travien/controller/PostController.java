@@ -1,167 +1,123 @@
 package proj.travien.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.Post;
-import proj.travien.dto.AddPostRequest;
-import proj.travien.dto.PostResponse;
-import proj.travien.dto.PostWithImagesRequest;
-import proj.travien.dto.UpdatePostRequest;
 import proj.travien.service.PostService;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static jakarta.servlet.http.MappingMatch.PATH;
-
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/posts")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PostController {
 
-    private final PostService postService;
+    @Autowired
+    private PostService postService;
 
-    @PostMapping("/api/posts")
-    public ResponseEntity<?> addPost(@ModelAttribute PostWithImagesRequest request) {
+    private static final String UPLOAD_DIR = "src/main/resources/static/image/";
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            Post savedPost = postService.savePostWithImages(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost.getId());
-        } catch (IOException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
+            // 파일 저장
+            String fileName = file.getOriginalFilename();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, bytes);
+            return ResponseEntity.ok().body("File uploaded successfully: " + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
         }
     }
 
 
 
-    @GetMapping("/api/posts")
-    public ResponseEntity<List<PostResponse>> findAllPosts() {
-        List<PostResponse> posts = postService.findAll()
-                .stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(posts);
+    @GetMapping("/")
+    public List<Post> getAllPosts() {
+        return postService.getAllPosts();
     }
 
-    @GetMapping("/api/posts/{id}")
-    public ResponseEntity<PostResponse> findPost(@PathVariable long id) {
-        Post post = postService.findById(id);
-        return ResponseEntity.ok().body(new PostResponse(post));
+    @GetMapping("/{id}/")
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        Optional<Post> post = postService.getPostById(id);
+        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @GetMapping("/api/posts/images")
-    public ResponseEntity<List<String>> findAllImages() {
-        List<String> allImages = postService.findAllImages();
-        return ResponseEntity.ok().body(allImages);
-    }
-
-    @DeleteMapping("/api/posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable long id) {
-        postService.delete(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/api/posts/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable long id, @ModelAttribute PostWithImagesRequest request) {
+    @PostMapping("/")
+    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") String address) {
         try {
-            Post updatedPost = postService.updatePostWithImages(id, request);
-            return ResponseEntity.ok().body(new PostResponse(updatedPost));
-        } catch (IOException ex) {
+            Post createdPost = postService.createPost(image, title, body, address);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+        } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    private final String IMAGE_UPLOAD_PATH = "/Users/jinna-eun/Desktop/images/";
 
-    private final String imagePath = "/Users/jinna-eun/Desktop/images/"; // 이미지가 저장된 경로
-
-    @PostMapping("/post")
-    public ResponseEntity<Long> fileUpload(@RequestParam MultipartFile file,
-                                           @RequestParam("post") String stringPost) {
+    @PutMapping("/{id}/")
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
         try {
-            //stringPost의 값 {title: "...", contents: "..."}을 Post 객체로 매핑합니다.
-            Post post = new ObjectMapper().readValue(stringPost, Post.class);
-
-            // 게시물을 저장하고 게시물의 ID를 얻어옵니다.
-            Post savedPost = postService.save(post);
-            Long postId = savedPost.getId();
-
-            // 이미지 파일을 저장합니다.
-            String imageFileName = postId + "_" + file.getOriginalFilename();
-            Path imageFilePath = Paths.get(IMAGE_UPLOAD_PATH + imageFileName);
-            Files.write(imageFilePath, file.getBytes());
-
-            // 이미지 파일 이름을 게시물에 설정합니다.
-            savedPost.setImage(imageFileName);
-            // 게시물을 다시 저장합니다. 이미지 파일 이름을 갱신하기 위해 저장이 필요합니다.
-            postService.save(savedPost);
-
-            return new ResponseEntity<>(postId, HttpStatus.CREATED);
-        } catch (Exception e) {
-            // 예외 발생 시 오류 응답을 반환합니다.
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            Post post = postService.updatePost(id, updatedPost);
+            return ResponseEntity.ok(post);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-
-
-    // 파일 확장자를 반환하는 메서드
-    private String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
+    @DeleteMapping("/{id}/")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/image/{postId}")
-    public ResponseEntity<byte[]> getImageByPostId(@PathVariable Long postId) {
-        try {
-            // postId와 연관된 이미지 파일을 찾습니다.
-            String imageFileName = postId + "_"; // 이미지 파일 이름은 postId로 시작하는 것으로 가정합니다.
-            Path imagePath = findImageByFileName(imageFileName);
+    @PostMapping("/{id}/report/")
+    public ResponseEntity<Void> reportPost(@PathVariable Long id) {
+        // Implement your report logic here
+        return ResponseEntity.ok().build();
+    }
 
-            if (imagePath != null) {
-                // 이미지 파일이 존재하면 해당 이미지 파일을 읽어와서 바이트 배열로 변환하여 반환합니다.
-                byte[] imageBytes = Files.readAllBytes(imagePath);
-                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
-            } else {
-                // 이미지 파일이 존재하지 않으면 Not Found 응답을 반환합니다.
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
+        // 게시물 ID를 기반으로 해당 게시물의 이미지 URL을 가져옴
+        Optional<Post> postOptional = postService.getPostById(id);
+
+        // 게시물이 존재하는지 확인
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+
+            try {
+                // 이미지 파일의 경로를 가져옴
+                Path imagePath = Paths.get(post.getImageUrl());
+
+                // 이미지 파일을 바이트 배열로 읽어들임
+                byte[] imageData = Files.readAllBytes(imagePath);
+
+                // 이미지 데이터를 응답에 실어 반환
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageData);
+            } catch (IOException e) {
+                // 이미지 파일을 읽어오는 도중 오류가 발생한 경우
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
-        } catch (IOException e) {
-            // 파일을 읽을 수 없는 경우 Internal Server Error 응답을 반환합니다.
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            // 해당 ID에 해당하는 게시물이 없는 경우
+            return ResponseEntity.notFound().build();
         }
     }
 
 
 
 
-    // 이미지 파일을 찾는 메서드
-    private Path findImageByFileName(String fileName) throws IOException {
-        return Files.walk(Paths.get(IMAGE_UPLOAD_PATH))
-                .filter(path -> path.getFileName().toString().startsWith(fileName))
-                .findFirst()
-                .orElse(null);
-    }
 }
-
-
-
-
-
-
-

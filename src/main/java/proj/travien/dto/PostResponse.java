@@ -14,7 +14,7 @@ public class PostResponse {
     private List<String> imageUrls;
 
     public PostResponse(Post post) {
-        this.id = post.getId();
+        this.id = post.getBoardID();
         this.title = post.getTitle();
         this.body = post.getBody();
         this.imageUrls = post.getImages().stream()
