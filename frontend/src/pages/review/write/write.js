@@ -1,131 +1,57 @@
-import React, { useMemo, useState } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import ImageResize from 'quill-image-resize-module-react';
-import styled from 'styled-components';
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-Quill.register('modules/imageResize', ImageResize);
+const Write = () => {
+    const [post, setPost] = useState({}); // 포스트 데이터 상태
+    const [file, setFile] = useState(null); // 파일 상태
 
-const formats = [
-    'font',
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'align',
-    'color',
-    'background',
-    'size',
-    'h1',
-    'image',
-];
+    // 포스트 데이터 변경 핸들러
+    const changeValue = (e) => {
+        setPost({
+            ...post,
+            [e.target.name]: e.target.value,
+        });
+    };
 
-const WriteTitleContainer = styled.div`
-    display: flex;
-`;
-const Title = styled.div``;
-const WriteTitle = styled.input``;
-const RegisterBtn = styled.button``;
-const ContentContainer = styled.div``;
+    // 파일 선택 핸들러
+    const selectFile = (e) => {
+        setFile(e.target.files[0]);
+    };
 
-const QuillEditor = () => {
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    // 폼 제출 핸들러
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const modules = useMemo(() => {
-        return {
-            toolbar: {
-                container: [
-                    [{ size: ['small', false, 'large', 'huge'] }],
-                    [{ align: [] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link', 'image'],
-                    [
-                        {
-                            color: [],
-                        },
-                        { background: [] },
-                    ],
-                ],
-                handlers: {
-                    image: () => {
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-                        input.setAttribute('accept', 'image/*');
-                        input.click();
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('post', JSON.stringify(post));
 
-                        input.onchange = async () => {
-                            const file = input.files[0];
-                            const formData = new FormData();
-                            formData.append('file', file);
-
-                            try {
-                                const response = await axios.post('/api/posts', formData, {
-                                    headers: {
-                                        'Content-Type': 'multipart/form-data',
-                                    },
-                                });
-
-                                const range = this.quill.getSelection();
-                                const link = response.data.url;
-                                this.quill.insertEmbed(range.index, 'image', link);
-                            } catch (error) {
-                                console.error('Error uploading image:', error);
-                            }
-                        };
-                    },
-                },
-            },
-            imageResize: {
-                parchment: Quill.import('parchment'),
-                modules: ['Resize', 'DisplaySize', 'Toolbar'],
-            },
-        };
-    }, []);
-
-    const handleRegister = async () => {
         try {
-            const response = await axios.post('/api/savePost', {
-                title,
-                content,
+            // Axios를 사용하여 파일과 포스트 데이터를 서버로 전송
+            await axios.post('http://localhost:8080/post', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-            console.log('Post saved:', response.data);
-            // Handle success, maybe clear the form or redirect the user
+            // 요청이 성공하면 홈페이지로 이동
+            window.location.href = '/';
         } catch (error) {
-            console.error('Error saving post:', error);
-            // Handle error, maybe show a notification to the user
+            console.error('Error uploading post:', error);
         }
     };
 
     return (
-        <>
-            <WriteTitleContainer>
-                <Title>제목:</Title>
-                <WriteTitle
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            </WriteTitleContainer>
-            <ContentContainer>
-                <ReactQuill
-                    theme="snow"
-                    modules={modules}
-                    formats={formats}
-                    value={content}
-                    onChange={setContent}
-                />
-            </ContentContainer>
-            <RegisterBtn onClick={handleRegister}>등록</RegisterBtn>
-        </>
+        <form onSubmit={handleSubmit}>
+            <input type="text" name="title" onChange={changeValue} />
+            {/* title 입력 필드 */}
+            <input type="text" name="body" onChange={changeValue} />
+            {/* body 입력 필드 */}
+            <input type="file" onChange={selectFile} />
+            {/* 파일 선택 필드 */}
+            <button type="submit">등록</button>
+            {/* 제출 버튼 */}
+        </form>
     );
 };
 
-export default QuillEditor;
+export default Write;

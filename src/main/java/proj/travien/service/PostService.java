@@ -1,8 +1,15 @@
 package proj.travien.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.Image;
 import proj.travien.domain.Post;
@@ -27,7 +34,7 @@ public class PostService {
     private final ImageRepository imageRepository;
 
     @Transactional
-    public Post save(AddPostRequest request) {
+    public Post save(Post request) {
         return postRepository.save(request.toEntity());
     }
 
@@ -58,15 +65,51 @@ public class PostService {
         Post post = request.toEntity();
         postRepository.save(post);
 
-        List<String> imageUrls = saveImages(request.getImages());
-        for (String imageUrl : imageUrls) {
+        List<String> imageDatas = request.getImages().stream()
+                .map(this::convertMultipartFileToBase64)
+                .collect(Collectors.toList());
+        for (String imageData : imageDatas) {
             Image image = new Image();
-            image.setImageUrl(imageUrl);
+            image.setImageData(imageData.getBytes());
             image.setPost(post);
             imageRepository.save(image);
         }
 
         return post;
+    }
+
+
+    @Transactional
+    public Post updatePostWithImages(long id, PostWithImagesRequest request) throws IOException {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
+
+        post.update(request.getTitle(), request.getBody());
+
+        // Clear existing images
+        post.getImages().clear();
+
+        // Save new images
+        List<String> imageDatas = request.getImages().stream()
+                .map(this::convertMultipartFileToBase64)
+                .collect(Collectors.toList());
+        for (String imageData : imageDatas) {
+            Image image = new Image();
+            image.setImageData(imageData.getBytes());
+            image.setPost(post);
+            imageRepository.save(image);
+        }
+
+        return post;
+    }
+
+
+    private String convertMultipartFileToBase64(MultipartFile file) {
+        try {
+            return new String(file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to convert multipart file to Base64: " + e.getMessage());
+        }
     }
 
     private List<String> saveImages(List<MultipartFile> images) throws IOException {
@@ -82,7 +125,9 @@ public class PostService {
 
             // 저장할 파일의 경로 설정
             String fileName = image.getOriginalFilename();
-            Path directoryPath = Paths.get("path/to/save/images");
+            // 저장할 파일의 경로 설정
+            Path directoryPath = Paths.get("src/main/resources/static/images");
+
             Path filePath = directoryPath.resolve(fileName);
 
             // 디렉터리가 존재하지 않으면 생성
@@ -101,26 +146,11 @@ public class PostService {
             throw new RuntimeException("Failed to save image", e);
         }
     }
+
     private Image createImageEntity(String imageUrl) {
         Image image = new Image();
         image.setImageUrl(imageUrl);
         return imageRepository.save(image);
-    }
-
-    @Transactional
-    public Post updatePostWithImages(long id, PostWithImagesRequest request) throws IOException {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
-
-        // 요청 본문에서 제목과 본문을 가져와서 게시물을 업데이트합니다.
-        post.update(request.getTitle(), request.getBody());
-
-        // 이미지를 저장하고 업데이트합니다.
-        List<String> imageUrls = saveImages(request.getImages());
-        post.getImages().clear();
-        post.getImages().addAll(imageUrls.stream().map(this::createImageEntity).collect(Collectors.toSet()));
-
-        return post;
     }
 
     public List<String> findAllImages() {
@@ -130,6 +160,15 @@ public class PostService {
                 .map(image -> image.getImageUrl())
                 .collect(Collectors.toList());
         return allImages;
+    }
+
+
+    @CrossOrigin
+    @GetMapping("/image")
+    public ResponseEntity<?> returnImage(@RequestParam String imageName) {
+        String path = "/Users/jinna-eun/Desktop/images/"; // Mac의 데스크탑에 있는 폴더 경로
+        Resource resource = new FileSystemResource(path + imageName);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
 

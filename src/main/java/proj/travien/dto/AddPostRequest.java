@@ -10,13 +10,34 @@ import proj.travien.domain.Post;
 @Getter
 public class AddPostRequest {
 
+    private Long postId; // postId 추가
+
     private String title;
     private String body;
+
+    private String image;
+
 
     public Post toEntity(){
         return Post.builder()
                 .title(title)
                 .body(body)
                 .build();
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 }
