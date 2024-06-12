@@ -16,6 +16,7 @@ import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
+import ListByMKS from "./pages/review/listbymks/listbymks"
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/review" element={<ReviewPage />} />
                 <Route path="/board" element={<BoardList/>}/>
                 <Route path="/review/write" element={<Write />}/>
+                <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
                 <Route path="/admin" element={<AdminPage />} />
