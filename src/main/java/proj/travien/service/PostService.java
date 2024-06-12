@@ -42,7 +42,8 @@ public class PostService {
     }
 
 
-    public Post createPost(MultipartFile image, String title, String body) throws IOException {
+
+    public Post createPost(MultipartFile image, String title, String body, String address) throws IOException {
         // 이미지 저장
         String fileName = image.getOriginalFilename();
         byte[] bytes = image.getBytes();
@@ -50,7 +51,7 @@ public class PostService {
         Files.write(path, bytes);
 
         // Post 객체 생성 및 저장
-        Post post = new Post(title, body, path.toString()); // 이미지 파일의 경로를 저장
+        Post post = new Post(title, body, path.toString(), address); // 이미지 파일의 경로를 저장
         post.setImageUrl("http://localhost:8000/api/posts/" + post.getBoardID() + "/image"); // 이미지 URL 설정
         return postRepository.save(post);
     }
@@ -61,7 +62,7 @@ public class PostService {
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
-                    post.update(updatedPost.getTitle(), updatedPost.getBody(), updatedPost.getImage());
+                    post.update(updatedPost.getTitle(), updatedPost.getBody(), updatedPost.getImage(), updatedPost.getAddress());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));

@@ -47,17 +47,19 @@ public class Post {
 
 
     @Builder
-    public Post(String title, String body, String image) {
+    public Post(String title, String body, String image, String address) {
         this.title = title;
         this.body = body;
         this.image = image;
+        this.address = address;
 
     }
 
-    public void update(String title, String body, String image) {
+    public void update(String title, String body, String image, String address) {
         this.title = title;
         this.body = body;
         this.image = image;
+        this.address = address;
     }
 
 

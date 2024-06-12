@@ -1,9 +1,15 @@
 import styled from "@emotion/styled";
+import mapImage from '../../../images/Map.png';
+import cameraImage from '../../../images/Frame 26.png';
+import iconImage from '../../../images/Polygon 6.png';
+import plusImage from '../../../images/Frame 53.png';
+
+
 
 
 
 export const Wrapper = styled.div`
-  width: 1200px;
+  width: 1000px;
   /* height: 1847px; */
   border: 1px solid black;
   margin: 100px;
@@ -15,7 +21,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: none;
-  box-shadow: 0px 0px 10px gray;
+ 
 `;
 
 export const Title = styled.div`
@@ -35,12 +41,92 @@ export const InputWrapper = styled.div`
   padding-top: 40px;
 `;
 
-export const PhotoWrapper = styled.div`
-  padding-top: 40px;
+export const HiContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
   background-color: #F4F6F8;
-  width: 548px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
-  height: 248px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
-  border-radius: 8px; /* 모서리를 둥글게 설정합니다. */
+  border-radius: 8px;
+  width: 800px; 
+  margin: auto;
+`;
+
+export const HiTitle = styled.h2`
+  align-self: flex-start;
+  margin-bottom: 16px;
+  color: #BDBDBD;
+`;
+
+export const PhotoWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const PhotoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  background-color: #E0E0E0;
+  border-radius: 8px;
+  margin: 0 10px;
+`;
+
+export const HiIcon = styled.div`
+  width: 50px;
+  height: 50px;
+   background-image: url(${cameraImage});
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-bottom: 8px;
+`;
+
+export const HelloIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url(${iconImage});
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top:40px
+`;
+
+export const PlusIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url(${plusImage});
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top:40px
+`;
+
+
+export const HiLabel = styled.p`
+  color: #BDBDBD;
+`;
+
+export const Map = styled.div`
+  width: 300px;
+  height: 300px;
+  background-image: url(${mapImage}); /* 동적으로 가져온 이미지 사용 */
+  background-size: cover;
+  border-radius: 8px;
+  margin-left: 20px;
+`;
+
+export const HiButton = styled.button`
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  width: 80px;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 20px 0;
 `;
 
 export const Subject = styled.input`
@@ -69,6 +155,8 @@ export const Contents = styled.textarea`
 export const ZipcodeWrapper = styled.div`
   display: flex;
   flex-direction: row;
+
+  
 `;
 
 export const Zipcode = styled.input`
@@ -88,12 +176,24 @@ export const SearchButton = styled.button`
 `;
 
 export const Address = styled.input`
-  width: 996px;
+  width: 700px;
   height: 52px;
   margin-top: 16px;
-  padding-left: 16px;
   border: 1px solid #bdbdbd;
+  
+  
 `;
+
+export const AddressContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 세로 중앙 정렬을 위한 높이 설정 */
+  padding-right:280px;
+  padding-top:0px;
+`;
+
 
 export const Youtube = styled.input`
   width: 996px;
@@ -142,7 +242,7 @@ export const ButtonWrapper = styled.div`
   flex-direction: row;
   justify-content: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
   padding-top: 80px;
-  padding-left: 800px;
+  padding-left: 750px;
 `;
 
 export const CancelButton = styled.button`
@@ -178,54 +278,16 @@ export const SaveButton = styled.button`
   margin-left: 12px;
   margin-right: 12px;
   cursor: pointer;
-  background-color: white; 
-  border-radius: 30px; 
-  border: 1px solid black
- 
+  background-color: black;
+  color: white; /* 글자 색을 하얀색으로 설정 */
+  border-radius: 30px;
+  border: 1px solid black;
 `;
+
 
 export const Error = styled.div`
   padding-top: 10px;
   font-size: 14px;
   color: red;
-`;
-
-export const ToggleContainer = styled.div`
-  position: relative;
-  margin-top: 8rem;
-  left: 47%;
-  cursor: pointer;
-
-  > .toggle-container {
-    width: 50px;
-    height: 24px;
-    border-radius: 30px;
-    background-color: rgb(233,233,234);}
-    //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
-  > .toggle--checked {
-    background-color: rgb(0,200,102);
-    transition : 0.5s
-  }
-
-  > .toggle-circle {
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background-color: rgb(255,254,255);
-    transition : 0.5s
-    //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
-  } >.toggle--checked {
-    left: 27px;
-    transition : 0.5s
-  }
-`;
-
-export const Desc = styled.div`
-  //설명 부분의 CSS를 구현
-  text-align: center;
-  margin: 20px;
 `;
 

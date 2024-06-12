@@ -4,6 +4,18 @@ import * as S from "./style";
 import { Switch, Modal, Button, Popover } from 'antd';
 import DaumPostcodeEmbed from "react-daum-postcode";
 import {Link, useNavigate} from "react-router-dom";
+import {
+    HelloIcon,
+    HiButton,
+    HiContainer,
+    HiIcon,
+    HiLabel,
+    HiTitle,
+    Map,
+    PhotoBox,
+    PhotoWrapper,
+    PlusIcon
+} from "./style";
 
 
 export default function BoardWrite(props) {
@@ -183,13 +195,31 @@ export default function BoardWrite(props) {
                         placeholder="내용을 입력해주세요."
                         onChange={onChangeBody}
                     />
-                    <S.Error>{bodyError}</S.Error>
                 </S.InputWrapper>
 
-
-                <S.PhotoWrapper>
-
-                </S.PhotoWrapper>
+                    <S.Error>{bodyError}</S.Error>
+                    <HiContainer>
+                        <HiTitle>제목</HiTitle>
+                        <HiButton>불러오기</HiButton>
+                        <PhotoWrapper>
+                            <PhotoBox>
+                                <HiIcon/>
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <HelloIcon/>
+                            <PhotoBox>
+                                <HiIcon />
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <HelloIcon/>
+                            <PhotoBox>
+                                <HiIcon/>
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <PlusIcon/>
+                            <Map/>
+                        </PhotoWrapper>
+                    </HiContainer>
 
                 {/* 사진 업로드 입력란 */}
                 <S.ImageWrapper>
@@ -197,7 +227,38 @@ export default function BoardWrite(props) {
                     <input type="file" onChange={handleImageChange} />
                 </S.ImageWrapper>
 
-
+                <S.InputWrapper>
+                    <S.Label>위치정보</S.Label>
+                    <S.ZipcodeWrapper>
+                        <S.Zipcode
+                            placeholder="07250"
+                            readOnly
+                            value={zipcode}
+                        />
+                        <S.SearchButton onClick={onClickAddressSearch}>
+                            우편번호 검색
+                        </S.SearchButton>
+                        {isOpen && (
+                            <Modal
+                                title="위치를 추가해주세요!"
+                                open={true}
+                                onOk={onClickAddressSearch}
+                                onCancel={onClickAddressSearch}
+                            >
+                                <DaumPostcodeEmbed onComplete={onCompleteAddressSearch} />
+                            </Modal>
+                        )}
+                    </S.ZipcodeWrapper>
+                    <S.AddressContainer>
+                    <S.Address
+                        readOnly
+                        value={address}
+                    />
+                    <S.Address
+                        onChange={onChangeAddressDetail}
+                    />
+                    </S.AddressContainer>
+                </S.InputWrapper>
 
             </S.Wrapper>
         </>
