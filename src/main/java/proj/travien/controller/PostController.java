@@ -55,16 +55,15 @@ public class PostController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body) {
+    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") String address) {
         try {
-            Post createdPost = postService.createPost(image, title, body);
+            Post createdPost = postService.createPost(image, title, body, address);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
     @PutMapping("/{id}/")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
