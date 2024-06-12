@@ -8,9 +8,9 @@ export const Wrapper = styled.div`
   border: 1px solid black;
   margin: 100px;
   padding-top: 80px;
-  padding-bottom: 100px;
-  padding-left: 102px;
-  padding-right: 102px;
+  padding-bottom: 80px;
+  padding-left: 80px;
+  padding-right: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,6 +22,7 @@ export const Title = styled.div`
   font-family: Arial, Helvetica, sans-serif;
   font-size: 36px;
   font-weight: bold;
+  color: #4E53EE;
 `;
 
 export const Label = styled.div`
@@ -34,20 +35,36 @@ export const InputWrapper = styled.div`
   padding-top: 40px;
 `;
 
-export const Subject = styled.input`
-  width: 996px;
-  height: 52px;
-  padding-left: 16px;
-  border: 1px solid #bdbdbd;
+export const PhotoWrapper = styled.div`
+  padding-top: 40px;
+  background-color: #F4F6F8;
+  width: 548px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
+  height: 248px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
+  border-radius: 8px; /* 모서리를 둥글게 설정합니다. */
 `;
 
-export const Contents = styled.textarea`
-  width: 996px;
-  height: 480px;
+export const Subject = styled.input`
+  width: 994px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
+  height: 50px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
   padding-left: 16px;
-  padding: 14px;
-  border: 1px solid #bdbdbd;
+  border: none; /* 테두리 제거 */
+  outline: none; /* 포커스 효과 제거 */
+  border-bottom: 1px solid #bdbdbd; /* 하단 테두리만 유지합니다. */
+  font-size:25px;
 `;
+
+
+export const Contents = styled.textarea`
+  width: 994px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
+  height: 300px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
+  padding-left: 16px;
+  padding-top: 14px; /* 상단 padding 추가 */
+  border: none; /* 테두리 제거 */
+  outline: none; /* 포커스 효과 제거 */
+  border-bottom: 1px solid #bdbdbd; /* 하단 테두리만 유지합니다. */
+  font-size:18px;
+`;
+
 
 export const ZipcodeWrapper = styled.div`
   display: flex;
@@ -123,35 +140,48 @@ export const RadioLabel = styled.label`
 export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
   padding-top: 80px;
+  padding-left: 800px;
 `;
 
 export const CancelButton = styled.button`
-  width: 179px;
-  height: 52px;
-  background-color: #bdbdbd;
-  border: none;
-  font-size: 16px;
-  font-weight: 500;
-  margin-left: 12px;
-  margin-right: 12px;
+ export const ButtonWrapper = styled.div\`
+  display: flex;
+  justify-content: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
+  width: 100%; /* 부모 요소의 너비 설정 */
+
   cursor: pointer;
 `;
 
 export const SubmitButton = styled.button`
-  width: 179px;
-  height: 52px;
+  width: 80px;
+  height: 50px;
   border: none;
   font-size: 16px;
   font-weight: 500;
   margin-left: 12px;
   margin-right: 12px;
   cursor: pointer;
+  background-color: white; 
+  border-radius: 30px; 
+  border: 1px solid black
+ 
+`;
 
-/*  background-color: ${(props) =>
-    props.isActive ? "yellow" : "none"};*/
-  background-color: yellow;
+export const SaveButton = styled.button`
+  width: 80px;
+  height: 50px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 12px;
+  margin-right: 12px;
+  cursor: pointer;
+  background-color: white; 
+  border-radius: 30px; 
+  border: 1px solid black
+ 
 `;
 
 export const Error = styled.div`
