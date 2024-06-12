@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 const BlogContainer=styled.div`
   width: 19rem;
   //width: 30%;
   height: 19rem;
-  background-color: #d9d9d9;
+  background-color: white;
   border-radius: 15px;
   display: flex;
   justify-content: space-between;
@@ -58,7 +58,9 @@ const Pname=styled.div`
   font-size: 20px;
   margin-top: 0.4rem;
   margin-left: 3px;
-  color: #515151;
+  color: black;
+  font-family: "Regular";
+
 `;
 
 const Read=styled.div`
@@ -88,12 +90,13 @@ const GoChatBtn=styled.button`
   align-items: center;
   font-size: 17px;
   color: #e8e8e8;
-    background-color: #5f5f5f;
+    background-color: black;
   border: none;
   display: flex;
   cursor: pointer;
   p{
     margin-right: 0.5rem;
+    font-family: "Regular";
   }
 `
 const NameWrapper=styled.div`
@@ -110,6 +113,8 @@ const Specs=styled.ul`
     //background-color: red;
   margin: 0 0 0 1rem;
   font-size: 15px;
+  font-family: "Regular";
+
 `
 const Spec=styled.li`
     list-style: inside;
@@ -122,15 +127,24 @@ const DetailPageBtn=styled.button`
   border-radius: 15px;
   align-items: center;
   font-size: 17px;
-  color: #5f5f5f;
+  color: black;
   cursor: pointer;
   background-color: transparent;
-  border: 2px solid #5f5f5f;
+  border: 2px solid black;
   display: flex;
+  font-family: "Regular";
+
 `
 
 
 const Agent = ({ review, pageType }) => {
+
+    const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
+
+    const toggleHeart = () => {
+        setIsHeartFilled(!isHeartFilled);
+    };
+
     return (
         <>
             <BlogContainer>
@@ -139,9 +153,9 @@ const Agent = ({ review, pageType }) => {
                         <Profile>
                             <PContainer>
                                 <NameWrapper>
-                                    <Heart>
-                                        {pageType === 1 ? (
-                                            <svg width="30" height="27" viewBox="0 0 30 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <Heart onClick={toggleHeart}>
+                                        {isHeartFilled ? (
+                                            <svg width="35" height="27" viewBox="0 0 30 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#5F6368"/>
                                             </svg>
                                         ) : (

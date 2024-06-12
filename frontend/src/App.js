@@ -31,7 +31,7 @@ function App() {
                 <Route path="/route" element={<Recomendation />}/>
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
-                <Route path="/recomendation/information" element={<InformationPage />}/>
+                <Route path="/recomendation/information/:placename" element={<InformationPage />} />
                 <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbot/>}/>
             </Routes>

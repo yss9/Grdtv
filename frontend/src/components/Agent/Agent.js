@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 const BlogContainer=styled.div`
   width: 25rem;
   //width: 30%;
   height: 30rem;
-  background-color: #d9d9d9;
+  background-color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
   border-radius: 15px;
   display: flex;
   justify-content: space-between;
@@ -64,8 +65,12 @@ const Read=styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 5%;
-  font-size: 25px;
+  font-size: 16px;
   text-align: left;
+  font-family: "Regular";
+  p{
+    font-weight: bold;
+  }
 `;
 const ReadTitle=styled.div`
     width: 100%;
@@ -73,14 +78,24 @@ const ReadTitle=styled.div`
   font-size: 20px;
   color: #515151;
   margin: 0.8rem 0 0.4rem 0.8rem;
-  //background-color: orange;
+  font-weight: bold;
+
+  font-style: normal;
+  line-height: 25px;
+
+  background: linear-gradient(270deg, rgba(78, 83, 238, 0.2) -15.09%, rgba(78, 83, 238, 0.4) 11.32%, rgba(78, 83, 238, 0.379114) 21.37%, rgba(78, 83, 238, 0.6) 35.56%, rgba(78, 83, 238, 0.8) 59.12%, #4E53EE 90.24%), #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
 `
 const HashTags=styled.div`
     height: 15%;
   text-align: left;
 `
 const HashTag=styled.text`
-    margin: 3px;
+    margin: 7px;
+  color: #9d9d9d;
 `
 const GoChatBtnWrapper=styled.div`
     width: 100%;
@@ -97,8 +112,8 @@ const GoChatBtn=styled.button`
   border-radius: 30px;
   align-items: center;
   font-size: 17px;
-  color: #e8e8e8;
-    background-color: #5f5f5f;
+  color: white;
+    background-color: #4e53ed;
   border: none;
   display: flex;
   p{
@@ -114,6 +129,16 @@ const NameWrapper=styled.div`
   justify-content: space-between;
 `
 const Heart=styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  svg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `
 const Specs=styled.ul`
     //background-color: red;
@@ -137,6 +162,7 @@ const StarAvg=styled.div`
   align-items: center;
   p{
     margin-left: 3px;
+    font-family: "Regular";
   }
     
 `
@@ -155,7 +181,8 @@ const SeeAllBtn=styled.button`
   }
 `
 const UserReview=styled.div`
-    background-color: #e8e8e8;
+    background-color: white;
+  border: 1px solid #4e53ed;
   width: 100%;
   height: 80%;
   border-radius: 15px;
@@ -171,7 +198,7 @@ const ReviewDetail=styled.div`
   text-align: left;
 `
 const UserStar=styled.div`
-    margin: 1rem 0 0 1rem;
+    margin: 0.8rem 0 0 0.8rem;
   display: flex;
   flex-direction: column;
 `
@@ -182,7 +209,8 @@ const SubWrapper=styled.div`
 const ReviewContent=styled.div`
     margin: 0.5rem 1rem 0 1rem;
   //background-color: palevioletred;
-  
+  font-family: "Regular";
+
 
 `
 const ReviewPhoto=styled.image`
@@ -192,6 +220,14 @@ const ReviewPhoto=styled.image`
 `
 
 const Agent = ({ review, pageType }) => {
+
+    const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
+
+    const toggleHeart = () => {
+        setIsHeartFilled(!isHeartFilled);
+    };
+
+
     return (
         <>
             <BlogContainer>
@@ -202,9 +238,9 @@ const Agent = ({ review, pageType }) => {
                             <PContainer>
                                 <NameWrapper>
                                     <Pname>{review.author}</Pname>
-                                    <Heart>
-                                        {pageType === 1 ? (
-                                            <svg width="30" height="27" viewBox="0 0 30 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <Heart onClick={toggleHeart}>
+                                        {isHeartFilled ? (
+                                            <svg width="35" height="27" viewBox="0 0 30 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#5F6368"/>
                                             </svg>
                                         ) : (
@@ -223,14 +259,21 @@ const Agent = ({ review, pageType }) => {
                                     <GoChatBtn>
                                         <p>채팅하기</p>
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="#E8E8E8"/>
+                                            <g clipPath="url(#clip0_746_1335)">
+                                                <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="white"/>
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_746_1335">
+                                                    <rect width="18" height="18" fill="white"/>
+                                                </clipPath>
+                                            </defs>
                                         </svg>
                                     </GoChatBtn>
                                 </GoChatBtnWrapper>
                             </PContainer>
                         </Profile>
                         <Read>
-                            소개
+                           <p>소개</p>
                             <ReadTitle>"{review.introduce}"</ReadTitle>
                             <Specs>
                                 {review.spec.map((tag, index) => (
@@ -242,14 +285,14 @@ const Agent = ({ review, pageType }) => {
                             <SubWrapper>
                                 <StarAvg>
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#5F6368"/>
+                                        <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#FF9D2A"/>
                                     </svg>
                                     <p>평점(갯수)</p>
                                 </StarAvg>
                                 <SeeAllBtn>
                                     <p>전체보기</p>
                                     <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" stroke-width="2"/>
+                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
                                     </svg>
                                 </SeeAllBtn>
                             </SubWrapper>
@@ -257,11 +300,11 @@ const Agent = ({ review, pageType }) => {
                                 <ReviewDetail>
                                     <UserStar>
                                         <svg width="87" height="18" viewBox="0 0 87 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#5F6368"/>
-                                            <path d="M26 0L28.4863 5.57786L34.5595 6.21885L30.023 10.3071L31.2901 16.2812L26 13.23L20.7099 16.2812L21.977 10.3071L17.4405 6.21885L23.5137 5.57786L26 0Z" fill="#5F6368"/>
-                                            <path d="M43.5 0L45.8482 5.57786L51.584 6.21885L47.2995 10.3071L48.4962 16.2812L43.5 13.23L38.5038 16.2812L39.7005 10.3071L35.416 6.21885L41.1518 5.57786L43.5 0Z" fill="#5F6368"/>
-                                            <path d="M61 0L63.4863 5.57786L69.5595 6.21885L65.023 10.3071L66.2901 16.2812L61 13.23L55.7099 16.2812L56.977 10.3071L52.4405 6.21885L58.5137 5.57786L61 0Z" fill="#5F6368"/>
-                                            <path d="M78.5 0L80.8482 5.57786L86.584 6.21885L82.2995 10.3071L83.4962 16.2812L78.5 13.23L73.5038 16.2812L74.7005 10.3071L70.416 6.21885L76.1518 5.57786L78.5 0Z" fill="#5F6368"/>
+                                            <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#FF9D2A"/>
+                                            <path d="M26 0L28.4863 5.57786L34.5595 6.21885L30.023 10.3071L31.2901 16.2812L26 13.23L20.7099 16.2812L21.977 10.3071L17.4405 6.21885L23.5137 5.57786L26 0Z" fill="#FF9D2A"/>
+                                            <path d="M43.5 0L45.8482 5.57786L51.584 6.21885L47.2995 10.3071L48.4962 16.2812L43.5 13.23L38.5038 16.2812L39.7005 10.3071L35.416 6.21885L41.1518 5.57786L43.5 0Z" fill="#FF9D2A"/>
+                                            <path d="M61 0L63.4863 5.57786L69.5595 6.21885L65.023 10.3071L66.2901 16.2812L61 13.23L55.7099 16.2812L56.977 10.3071L52.4405 6.21885L58.5137 5.57786L61 0Z" fill="#FF9D2A"/>
+                                            <path d="M78.5 0L80.8482 5.57786L86.584 6.21885L82.2995 10.3071L83.4962 16.2812L78.5 13.23L73.5038 16.2812L74.7005 10.3071L70.416 6.21885L76.1518 5.57786L78.5 0Z" fill="#FF9D2A"/>
                                         </svg>
                                     </UserStar>
                                     <ReviewContent>리뷰 ~~</ReviewContent>

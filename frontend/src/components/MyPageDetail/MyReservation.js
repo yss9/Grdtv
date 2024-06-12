@@ -4,43 +4,49 @@ import Agent from "../Agent/Agent";
 import {Reset} from "styled-reset";
 
 const SelectTitle = styled.div`
-    width: 82rem;
-    height: 2.5em;
-    background-color: white;
-    display: flex;
+  width: 82rem;
+  height: 2.5em;
+  background-color: white;
+  display: flex;
 `;
 
 const Tab = styled.div`
-    width: 50%;
-    background-color: ${props => (props.active ? '#d9d9d9' : 'white')};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  width: 50%;
+  background-color: ${props => (props.active ? '#000000' : 'white')};
+  color: ${props => (props.active ? 'white' : 'black')};  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  
 `;
 
 const ReviewWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // background-color: #61dafb;
-    //padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ // background-color: #61dafb;
+  //padding: 1em;
 `;
 
 const Review = styled.div`
+  margin-top: 1em;
+  width:80rem;
+  //background-color: orange;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  p{
     margin-top: 1em;
-    width:80rem;
-    //background-color: orange;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  }
 `;
 
 const AgentWrapper=styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    //background-color: palevioletred;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  //background-color: palevioletred;
 `
 const Agents=styled.div`
   width: 100%;

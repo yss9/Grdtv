@@ -10,7 +10,8 @@ const SelectTitle = styled.div`
 
 const Tab = styled.div`
   width: 50%;
-  background-color: ${props => (props.active ? '#d9d9d9' : 'white')};
+  background-color: ${props => (props.active ? '#000000' : 'white')};
+  color: ${props => (props.active ? 'white' : 'black')};
   display: flex;
   align-items: center;
   justify-content: center;
