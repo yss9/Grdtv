@@ -11,9 +11,9 @@ import WriteTest from "./pages/review/write/writeTest";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
-import Chatbot from "./pages/chatbot/chatBot";
 import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
+import Chatbotset from "./pages/chatbot/chatbotset";
 
 function App() {
     return (
@@ -33,7 +33,7 @@ function App() {
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
                 <Route path="/recomendation/information" element={<InformationPage />}/>
                 <Route path="/my" element={<MyPage/>}/>
-                <Route path="/chatbot" element={<Chatbot/>}/>
+                <Route path="/chatbot" element={<Chatbotset/>}/>
             </Routes>
         </BrowserRouter>
     );
