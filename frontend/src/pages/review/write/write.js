@@ -106,6 +106,7 @@ export default function BoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
+            formData.append('address', address);
 
 
             try {
@@ -135,6 +136,7 @@ export default function BoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
+            formData.append('address', address);
 
 
             try {

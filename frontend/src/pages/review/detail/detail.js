@@ -44,7 +44,7 @@ export default function BoardDetail() {
         try {
             await axios.delete(`http://localhost:8080/api/posts/${boardID}/`);
             alert("게시물 삭제가 정상적으로 완료되었습니다!");
-            navigate("/board"); // navigate 함수로 페이지 이동
+            navigate("/review"); // navigate 함수로 페이지 이동
         } catch (error) {
             console.log(error);
         }
@@ -70,7 +70,7 @@ export default function BoardDetail() {
                     <S.Header>
                         <S.Info>
                             <S.TitleWrapper>
-                            <S.Title>하이하이</S.Title>
+                            <S.Title>}{title}</S.Title>
                             </S.TitleWrapper>
                             <AvatarWrapper>
                             <Avatar/>
@@ -85,16 +85,16 @@ export default function BoardDetail() {
                     <S.Body>
                         <S.AddressWrapper>
                             <S.AddressImage/>
-                            <S.Address>fdfdfd</S.Address>
+                            <S.Address>{address}</S.Address>
                         </S.AddressWrapper>
-                        <S.Contents>하이루</S.Contents>
+                        <S.Contents>{body}</S.Contents>
                         <S.ImageWrapper>
                             <S.Image/>
                         </S.ImageWrapper>
                     </S.Body>
                 </S.CardWrapper>
                 <S.BottomWrapper>
-                    <Button onClick={() => navigate("/board")}>목록으로</Button> {/* navigate 함수로 페이지 이동 */}
+                    <Button onClick={() => navigate("/review")}>목록으로</Button> {/* navigate 함수로 페이지 이동 */}
                     <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button> {/* navigate 함수로 페이지 이동 */}
                     <Button onClick={onClickBoardDelete}>삭제하기</Button>
                 </S.BottomWrapper>
