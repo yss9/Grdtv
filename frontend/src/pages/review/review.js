@@ -9,17 +9,23 @@ import {
     SubTitle1, SubTitleContainer, BestReviews, SubTitle2,
     MyWrites, GoWrite, BlogContainer, SearchBarWrapper, Pin, Magnifier, BestReviewContainer,
     IndicatorContainer, Indicator, SelectContainer, Select, GoTravelTitle, BlogWrapper,
-    Profile, PContainer, Pname, PIntro, PImg, VirticalLine, BookMarkTitle
+    Profile, PContainer, Pname, PIntro, PImg, VirticalLine, BookMarkTitle, Search
 } from './reviewstyle';
 import TopBarComponent from "../../components/TopBar/TopBar";
+import Ramen from "../../public/Img/ramen.png";
+import Sushi from "../../public/Img/sushi.png";
+import Canada from "../../public/Img/canada.png"
+import Paris from "../../public/Img/paris.png"
+import Sydney from "../../public/Img/sydney.png"
+import Osaka from "../../public/Img/osaka.png"
 
 const BestreviewsData = [
-    { title: 'Review 1', author: 'Author 1' },
-    { title: 'Review 2', author: 'Author 2' },
-    { title: 'Review 3', author: 'Author 3' },
-    { title: 'Review 4', author: 'Author 4' },
-    { title: 'Review 5', author: 'Author 5' },
-    { title: 'Review 6', author: 'Author 6' },
+    { title: 'Review 1', author: 'Author 1',  image: Ramen },
+    { title: 'Review 2', author: 'Author 2', image: Sushi },
+    { title: 'Review 3', author: 'Author 3', image: Canada },
+    { title: 'Review 4', author: 'Author 4', image: Paris },
+    { title: 'Review 5', author: 'Author 5', image: Sydney },
+    { title: 'Review 6', author: 'Author 6', image: Osaka },
     { title: 'Review 7', author: 'Author 7' },
     { title: 'Review 8', author: 'Author 8' },
     { title: 'Review 9', author: 'Author 9' },
@@ -34,6 +40,7 @@ const BestreviewsData = [
 const BlogData=[
     { title: 'Review 1', content: 'This is the first blog', author: 'Author 1' },
     { title: 'Review 2', content: 'This is the second blog', author: 'Author 2' },
+    { title: 'Review 3', content: 'This is the third blog', author: 'Author 3' },
 ];
 
 export default function ReviewPage() {
@@ -50,8 +57,8 @@ export default function ReviewPage() {
         setSelectedCountry(event.target.value);
     };
 
-    const handleGoWrite = (e)=>{
-        navigate('/review/write')
+    const handleGoWrite = ( )=>{
+        navigate('/board/new')
     }
 
 
@@ -63,13 +70,14 @@ export default function ReviewPage() {
                 <SearchBarWrapper>
                     <SearchBarContainer>
                         <Pin>
-                            <svg width="24" height="31" viewBox="0 0 24 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M11.8348 14.725C10.7138 14.725 9.63874 14.3167 8.84608 13.59C8.05341 12.8633 7.6081 11.8777 7.6081 10.85C7.6081 9.82229 8.05341 8.83666 8.84608 8.10996C9.63874 7.38326 10.7138 6.975 11.8348 6.975C12.9558 6.975 14.0309 7.38326 14.8236 8.10996C15.6162 8.83666 16.0615 9.82229 16.0615 10.85C16.0615 11.3589 15.9522 11.8628 15.7398 12.3329C15.5274 12.803 15.2161 13.2302 14.8236 13.59C14.4311 13.9499 13.9651 14.2353 13.4523 14.43C12.9395 14.6248 12.3899 14.725 11.8348 14.725ZM11.8348 0C8.69603 0 5.6858 1.14312 3.46634 3.17789C1.24688 5.21266 0 7.9724 0 10.85C0 18.9875 11.8348 31 11.8348 31C11.8348 31 23.6696 18.9875 23.6696 10.85C23.6696 7.9724 22.4228 5.21266 20.2033 3.17789C17.9838 1.14312 14.9736 0 11.8348 0Z" fill="#D9D9D9"/>
+                            <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.8348 15.725C15.7138 15.725 14.6387 15.3167 13.8461 14.59C13.0534 13.8633 12.6081 12.8777 12.6081 11.85C12.6081 10.8223 13.0534 9.83666 13.8461 9.10996C14.6387 8.38326 15.7138 7.975 16.8348 7.975C17.9558 7.975 19.0309 8.38326 19.8236 9.10996C20.6162 9.83666 21.0615 10.8223 21.0615 11.85C21.0615 12.3589 20.9522 12.8628 20.7398 13.3329C20.5274 13.803 20.2161 14.2302 19.8236 14.59C19.4311 14.9499 18.9651 15.2353 18.4523 15.43C17.9395 15.6248 17.3899 15.725 16.8348 15.725ZM16.8348 1C13.696 1 10.6858 2.14312 8.46634 4.17789C6.24688 6.21266 5 8.9724 5 11.85C5 19.9875 16.8348 32 16.8348 32C16.8348 32 28.6696 19.9875 28.6696 11.85C28.6696 8.9724 27.4228 6.21266 25.2033 4.17789C22.9838 2.14312 19.9736 1 16.8348 1Z" fill="#4E53EE"/>
                             </svg>
                         </Pin>
+                        <Search></Search>
                         <Magnifier>
-                            <svg width="37" height="35" viewBox="-3 -5 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M33.7352 35L20.9321 22.75C19.916 23.5278 18.7474 24.1435 17.4265 24.5972C16.1055 25.0509 14.6999 25.2778 13.2096 25.2778C9.51767 25.2778 6.39343 24.0541 3.83687 21.6067C1.28031 19.1593 0.0013559 16.17 1.07526e-06 12.6389C-0.00135375 9.10778 1.2776 6.11852 3.83687 3.67111C6.39614 1.2237 9.52038 0 13.2096 0C16.8988 0 20.0237 1.2237 22.5843 3.67111C25.1449 6.11852 26.4232 9.10778 26.4191 12.6389C26.4191 14.0648 26.1821 15.4097 25.7079 16.6736C25.2337 17.9375 24.5901 19.0556 23.7772 20.0278L36.5804 32.2778L33.7352 35ZM13.2096 21.3889C15.7499 21.3889 17.9095 20.5385 19.6884 18.8378C21.4673 17.137 22.356 15.0707 22.3547 12.6389C22.3533 10.207 21.4645 8.14139 19.6884 6.44194C17.9122 4.7425 15.7526 3.89148 13.2096 3.88889C10.6666 3.8863 8.50764 4.73732 6.73282 6.44194C4.95799 8.14657 4.06855 10.2122 4.06449 12.6389C4.06042 15.0656 4.94987 17.1319 6.73282 18.8378C8.51577 20.5437 10.6747 21.3941 13.2096 21.3889Z" fill="#D9D9D9"/>
+                            <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24.9 27L15.45 17.55C14.7 18.15 13.8375 18.625 12.8625 18.975C11.8875 19.325 10.85 19.5 9.75 19.5C7.025 19.5 4.719 18.556 2.832 16.668C0.945001 14.78 0.00100079 12.474 7.93651e-07 9.75C-0.000999206 7.026 0.943001 4.72 2.832 2.832C4.721 0.944 7.027 0 9.75 0C12.473 0 14.7795 0.944 16.6695 2.832C18.5595 4.72 19.503 7.026 19.5 9.75C19.5 10.85 19.325 11.8875 18.975 12.8625C18.625 13.8375 18.15 14.7 17.55 15.45L27 24.9L24.9 27ZM9.75 16.5C11.625 16.5 13.219 15.844 14.532 14.532C15.845 13.22 16.501 11.626 16.5 9.75C16.499 7.874 15.843 6.2805 14.532 4.9695C13.221 3.6585 11.627 3.002 9.75 3C7.873 2.998 6.2795 3.6545 4.9695 4.9695C3.6595 6.2845 3.003 7.878 3 9.75C2.997 11.622 3.6535 13.216 4.9695 14.532C6.2855 15.848 7.879 16.504 9.75 16.5Z" fill="#4E53EE"/>
                             </svg>
                         </Magnifier>
                     </SearchBarContainer>
@@ -142,6 +150,7 @@ export default function ReviewPage() {
                                 </ButtonContainer>
                                 <BookMarkContainer>
                                     <BookMarkTitle>즐겨찾기</BookMarkTitle>
+                                    <BookMarked1></BookMarked1>
                                     <BookMarked1></BookMarked1>
                                     <BookMarked1></BookMarked1>
                                 </BookMarkContainer>

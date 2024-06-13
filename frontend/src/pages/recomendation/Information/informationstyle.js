@@ -11,6 +11,9 @@ export const PlaceName=styled.div`
   width: 70rem;
   text-align: left;
   font-size: 28px;
+  font-family: "Regular";
+  color: #4e53ed;
+  font-weight: bold;
 `
 export const Container=styled.div`
     width: 70rem;
@@ -21,12 +24,15 @@ export const ConsentContainer=styled.div`
     display: flex;
   align-items: center;
   justify-content: space-between;
+  overflow: hidden;
 `
-export const PlaceImg=styled.image`
+export const PlaceImg=styled.img`
     width: 25rem;
   height: 22rem;
   background-color: #d9d9d9;
   border-radius: 15px;
+  object-fit: cover; /* 이미지를 가득 채우도록 설정 */
+
 `
 export const RightWrapper=styled.div`
   width: 43rem;
@@ -35,7 +41,7 @@ export const RightWrapper=styled.div`
 export const DetailInfoWrapper=styled.div`
   margin-right: 2.5rem;
   //background-color: gray;
-  height: 54%;
+  height: 50%;
   display: flex;
   flex-direction: column;
 `
@@ -43,10 +49,13 @@ export const DetailInfoTitle=styled.text`
     font-size: 18px;
  // background-color: paleturquoise;
   padding: 10px;
+  font-weight: bold;
+  font-family: "Regular";
 `
 export const DetailInfo=styled.div`
-    //background-color: palegoldenrod;
   padding: 10px;
+  font-family: "Regular";
+
 `
 export const ReviewContainer=styled.div`
  // background-color: pink;
@@ -67,6 +76,7 @@ export const BtnTitle=styled.div`
     font-size: 18px;
   font-weight: bold;
   margin-bottom: 1rem;
+  font-family: "Regular";
 `
 export const FindRouteBtn=styled.button`
     width: 23rem;
@@ -76,7 +86,9 @@ export const FindRouteBtn=styled.button`
   margin-bottom: 1rem;
   font-weight: bold;
   background-color: white;
-  
+  border: 2px solid #4E53EE;
+  font-family: "Regular";
+
 `
 export const RecomendationBtn=styled.button`
   width: 23rem;
@@ -84,8 +96,10 @@ export const RecomendationBtn=styled.button`
   font-size: 22px;
   padding: 3%;
   font-weight: bold;
-  background-color: #d9d9d9;
+  background-color: #4E53EE;
   border: none;
+  font-family: "Regular";
+
 `
 
 export const PlaceReivewContainer=styled.div`
@@ -124,7 +138,7 @@ export const GaugeBar = styled.div`
     left: 0;
     height: 100%;
     width: ${props => props.completion}%;
-    background-color: #5f5f5f;
+    background-color: #4E53EE;
     border-radius: 100px;
     transition: width 0.5s ease;
   }

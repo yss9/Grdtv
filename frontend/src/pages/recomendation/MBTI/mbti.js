@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Reset } from 'styled-reset';
 import React from 'react';
@@ -15,18 +16,52 @@ import TopBarComponent from "../../../components/TopBar/TopBar";
 import {
     Place,
     PlaceContainer,
-    PlaceName,
+    PlaceName1,
     PlaceWrapper,
     RefreshBtn,
     SubTitle,
     SubTitleWrapper, Wrapper
 } from "../Personal/personalstyle";
+import Osaka from '../../../public/Img/osaka.png'
+import Paris from '../../../public/Img/paris.png'
+import Sydney from '../../../public/Img/sydney.png'
+import Kyoto from "../../../public/Img/kyoto.png";
+import ApelTower from "../../../public/Img/apeltower.png";
+import ThaiMarket from "../../../public/Img/thaimarket.png";
+import Morein from "../../../public/Img/morein.png";
+import Bbatong from "../../../public/Img/bbatong.png";
+import Louis from "../../../public/Img/louis.png";
+import Apls from "../../../public/Img/alps.png";
+
+const PlaceData = [
+    {placename:'오사카', image: Osaka},
+    {placename:'파리', image: Paris },
+    {placename:'호주', image: Sydney },
+    { placename: '도초지', image: Kyoto},
+    { placename: '에펠탑', image: ApelTower},
+    { placename: '수상시장', image: ThaiMarket},
+    { placename: '모레인 호수', image: Morein },
+    { placename: '빠통 비치', image: Bbatong },
+    { placename: '루이스 호수', image: Louis },
+    { placename: '알프스 산맥', image: Apls },
+];
 
 export default function RecMbtiPage() {
 
     const navigate = useNavigate();
-    const handleGoInformation = () => {
-        navigate('/recomendation/information');
+    const [displayedPlaces, setDisplayedPlaces] = useState([]);
+
+    useEffect(() => {
+        refreshPlaces();
+    }, []);
+
+    const refreshPlaces = () => {
+        const shuffled = [...PlaceData].sort(() => 0.5 - Math.random());
+        setDisplayedPlaces(shuffled.slice(0, 3));
+    };
+
+    const handleGoInformation = (placename) => {
+        navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
     };
 
     return(
@@ -44,7 +79,7 @@ export default function RecMbtiPage() {
                         <WriteMbtiBtn>
                             <p>MBTI를 다시 작성해야 할까요?</p>
                             <svg width="12" height="18" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L10 9L1 17" stroke="black" strokeWidth="2"/>
+                                <path d="M1 1L10 9L1 17" stroke="white" strokeWidth="2"/>
                             </svg>
                         </WriteMbtiBtn>
                     </WriteMbtiBtnWrapper>
@@ -55,7 +90,7 @@ export default function RecMbtiPage() {
                     </MbtiContainer>
                     <SubTitleWrapper>
                         <SubTitle></SubTitle>
-                        <RefreshBtn>
+                        <RefreshBtn onClick={refreshPlaces}>
                             <p>추천 새로고침</p>
                             <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clipPath="url(#clip0_484_188)">
@@ -70,21 +105,15 @@ export default function RecMbtiPage() {
                         </RefreshBtn>
                     </SubTitleWrapper>
                     <PlaceContainer>
-                        <PlaceWrapper>
-                            <Place onClick={handleGoInformation}></Place>
-                            <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                        </PlaceWrapper>
-                        <PlaceWrapper>
-                            <Place onClick={handleGoInformation}></Place>
-                            <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                        </PlaceWrapper>
-                        <PlaceWrapper>
-                            <Place onClick={handleGoInformation}></Place>
-                            <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                        </PlaceWrapper>
+                        {displayedPlaces.map(place => (
+                            <PlaceWrapper key={place.placename} onClick={() => handleGoInformation(place.placename)}>
+                                <Place src={place.image}/>
+                                <PlaceName1>{place.placename}</PlaceName1>
+                            </PlaceWrapper>
+                        ))}
                     </PlaceContainer>
                 </MbtiTitleContainer>
             </Wrapper>
         </>
-    )
+    );
 }

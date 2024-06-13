@@ -1,62 +1,6 @@
 import styled  from "@emotion/styled";
 
 export const Wrapper=styled.div`
- `
-export const TopBar=styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
- // background-color: yellow;
-  width: 100%;
-  height: 12vh;
-  margin-top: 2.5vh;
-`
-export const LogoWrapper=styled.div`
-  width: 58%;
- // background-color: pink;
-  text-align: left;
-`
-export const Logo=styled.text`
-  font-size: 35px;
-  font-weight: bolder;
- cursor: pointer;
-`
-export const MenuContainer= styled.div`
-  width: 32%;
-  display: flex;
-  //background-color: red;
-  align-items: center;
-  justify-content: space-between;
-`
-export const Reservation=styled.button`
-    background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
- cursor: pointer;
-`
-
-export const Recomendation=styled.button`
-  background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
- cursor: pointer;
-
-`
-export const Community=styled.button`
-  background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
- cursor: pointer;
-`
-export const MyPage=styled.button`
-  background-color: transparent;
-  border: none;
-  font-weight: bolder;
-  font-size: 14px;
- cursor: pointer;
 `
 export const SearchBarWrapper=styled.div`
  height: 8vh;
@@ -67,17 +11,18 @@ export const SearchBarWrapper=styled.div`
  justify-content: center;
 `
 export const SearchBarContainer=styled.div`
-  width: 40%;
+ width: 40%;
  height: 100%;
  border-radius: 15px;
- background-color: #d9d9d9;
+ background-color: white;
+ border: 2px solid #4e53ed;
  display: flex;
  align-items: center;
  justify-content: space-between;
  //justify-content: center;
 `
 export const Pin=styled.div`
- background-color: #515151;
+ background-color: transparent;
  width: 7%;
  height: 70%;
  margin-left: 15px;
@@ -85,8 +30,18 @@ export const Pin=styled.div`
  justify-content: center;
  align-items: center;
 `
+export const Search= styled.input`
+ background-color: transparent;
+ width: 75%;
+ height: 100%;
+ border: none;
+ font-size:17px;
+ :focus {
+  outline: none;
+ }
+
+`
 export const Magnifier=styled.div`
- background-color: #8e8e8e;
  width: 12%;
  height: 100%;
  border-radius: 0 15px 15px 0;
@@ -106,12 +61,15 @@ export const SubTitle1=styled.div`
  font-size: 25px;
 `
 export const BestReviewTitle=styled.text`
-  color: #dd3f3f;
+ color: #dd3f3f;
  font-weight: bolder;
+ font-family: "Regular";
 `
 export const BestReiviewer=styled.text`
  color: #8e8e8e;
  font-weight: bolder;
+ font-family: "Regular";
+
 `
 export const BestReviewContainer = styled.div`
  display: flex;
@@ -129,22 +87,22 @@ export const BestReviews = styled.div`
 `;
 
 export const IndicatorContainer = styled.div`
-  display: flex;
-  justify-content: right;
-  //margin-top: 10px;
+ display: flex;
+ justify-content: right;
+ //margin-top: 10px;
 `;
 
 export const Indicator = styled.span`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #d9d9d9;
-  margin: 0 2px;
-  cursor: pointer;
+ width: 12px;
+ height: 12px;
+ border-radius: 50%;
+ background-color: #d9d9d9;
+ margin: 0 2px;
+ cursor: pointer;
 
-  &.active {
-    background-color: #8e8e8e;
-  }
+ //&.active {
+  //background-color: #4e53ed;
+ //}
 `;
 export const SubTitle2=styled.div`
  width: 80%;
@@ -156,20 +114,23 @@ export const SubTitle2=styled.div`
 `
 export const GoTravelTitle=styled.text`
  font-weight: bolder;
- color: #515151;
+ color: black;
+ font-family: "Regular";
+
 `
 export const SelectContainer=styled.div`
  margin-left: 60vh;
  display: flex;
  align-items: center;
- 
+
 `
 export const Select=styled.select`
  width: 170px;
  height: 100%;
-background-color: #d9d9d9;
+ background-color: #d9d9d9;
  border: none;
  padding: 15px;
+ font-family: "Regular";
 `
 export const BlogWrapper=styled.div`
  display: flex;
@@ -178,7 +139,6 @@ export const BlogWrapper=styled.div`
 export const BlogContainer=styled.div`
  justify-content: space-between;
  width: 80%;
- height: 100vh;
  //background-color: palegoldenrod;
  margin-top: 50px;
  display: flex;
@@ -191,10 +151,10 @@ export const Blogs=styled.div`
 
 export const MyMenuWrapper=styled.div`
  width: 27%;
- height: 90vh;
- background-color: #d9d9d9;
+ height: 55rem;
+ background-color: #f5f6f8;
  border-radius: 15px;
- 
+
 `
 export const MyMenuContainer=styled.div`
  display: flex;
@@ -232,6 +192,8 @@ export const Pname=styled.div`
  font-size: 22px;
  color: #515151;
  margin: 7px 0 -5px 0;
+ font-family: "Regular";
+
 `;
 export const PIntro=styled.div`
  width: 100%;
@@ -240,19 +202,21 @@ export const PIntro=styled.div`
  align-items: flex-start;
  font-size: 17px;
  color: #515151;
+ font-family: "Regular";
+
 `;
 export const ButtonContainer=styled.div`
  width: 100%;
  height: 9vh;
- background-color: gray;
+ background-color: #4e53ed;
  display: flex;
  align-items: center;
  justify-content: center;
 `
 export const VirticalLine = styled.div`
-    height: 80%;
-    width: 1px;
-    margin: 0 1rem;
+ height: 80%;
+ width: 1px;
+ margin: 0 1rem;
  background-color: white;
 `;
 export const MyWrites=styled.div`
@@ -263,6 +227,8 @@ export const MyWrites=styled.div`
  cursor: pointer;
  font-size: 22px;
  color: white;
+ font-family: "Regular";
+
 `
 export const GoWrite=styled.div`
  width: 40%;
@@ -272,10 +238,12 @@ export const GoWrite=styled.div`
  cursor: pointer;
  font-size: 22px;
  color: white;
+ font-family: "Regular";
+
 `
 export const BookMarkContainer=styled.div`
  width: 100%;
- height: 70vh;
+ height: 45rem;
  //background-color: green;
  display: flex;
  flex-direction: column;
@@ -284,12 +252,13 @@ export const BookMarkContainer=styled.div`
 export const BookMarkTitle=styled.div`
  width: 80%;
  height: 5vh;
- //background-color: yellow;
  display: flex;
  align-items: center;
  font-size: 20px;
  margin: 10px 0 10px 0;
  color: #8e8e8e;
+ font-family: "Regular";
+
 `
 export const BookMarked1=styled.div`
  width: 80%;

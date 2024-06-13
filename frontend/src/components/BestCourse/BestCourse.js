@@ -1,59 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from "react-router-dom";
 
-const BlogContainer=styled.div`
-  width: 23.5%;
-  height: 40vh;
+const BlogContainer=styled.img`
+  width: 15rem;
+  height: 18rem;
   background-color: #d9d9d9;
-  margin-bottom: 40px;
   border-radius: 15px;
   display: flex;
   justify-content: space-between;
+  object-fit: cover;
 `
-const ContentWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  //background-color: #61dafb;
-  border-radius: 15px 0 0 15px;
-  // 스타일 정의
-  align-items: center;
-  justify-content: center;
-  display: flex;
-`;
-const Content=styled.div`
-    width: 92%;
-  height: 90%;
-  //background-color: palevioletred;
+const PlaceName=styled.div`
+    text-align: center;
+  margin-top: 0.8rem;
+  font-family: "Regular";
+  font-size: 18px;
 `
-const Read=styled.div`
-    width: 100%;
-  height: 40%;
-  background-color: #d9d9d9;
+const Container=styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
-`;
-const ReadTitle=styled.div`
-    width: 100%;
-  height: 20%;
-  font-size: 18px;
-  color: #515151;
+  overflow: hidden;
+  cursor: pointer;
+
 `
 
-const Blog1 = ({ review }) => {
+const BestCourse = ({ review }) => {
+
+    const navigate = useNavigate();
+    const handleGoInformation = (placename) => {
+        navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
+    };
+
     return (
         <>
-            <BlogContainer>
-                <ContentWrapper>
-                    <Content>
-                        <Read>
-                            <ReadTitle>{review.title}</ReadTitle>
-                        </Read>
-                    </Content>
-                </ContentWrapper>
-            </BlogContainer>
+            <Container key={review.placename} onClick={() => handleGoInformation(review.placename)}>
+                <BlogContainer src={review.image}></BlogContainer>
+                <PlaceName>{review.placename}</PlaceName>
+            </Container>
         </>
     );
 };
 
-export default Blog1;
+export default BestCourse;

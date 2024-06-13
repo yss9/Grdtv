@@ -15,6 +15,6 @@ public class FavoriteResponse {
 
     public FavoriteResponse(Favorite favorite) {
         this.id = favorite.getId();
-        this.postId = favorite.getPost().getId();
+        this.postId = favorite.getPost().getBoardID();
     }
 }

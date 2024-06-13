@@ -242,7 +242,6 @@ export default function MainPage() {
                             </div>
                             <button style={{width: '70%', padding: '10px', backgroundColor: 'royalblue', border: 'none', color: 'white', borderRadius: '5px', marginTop: '10px', marginLeft: '15%' }}>예약 바로가기</button>
                         </Popup>
-
                     )}
                 </Map>
             </Wrapper>

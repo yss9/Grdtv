@@ -1,8 +1,8 @@
 import styled  from "@emotion/styled";
 
 export const MyProfileContainer=styled.div`
-    height: 25em;
-  //background-color: palegoldenrod;
+    height: 24em;
+ // background-color: palegoldenrod;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,29 +17,29 @@ export const ProfileImg=styled.image`
   margin-top: 20px;
 `
 export const NameWrapper=styled.div`
-  width: 17em;
-  height: 3.7em;
-  background-color: #d9d9d9;
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #515151;
+  font-family: "Regular";
+  font-size: 1.7rem;
+  font-weight: bold;
 `
 export const IntroduceWrapper=styled.div`
     display: flex;
   width: 17em;
-  margin-top: 10px;
+  margin-top: 20px;
 `
 export const Mbti=styled.div`
     width: 5em;
   height: 2em;
-  background-color: #d9d9d9;
+  background-color: black;
   display: flex;
+  color: white;
   align-items: center;
   justify-content: center;
-  color: #515151;
-
+font-family: "Regular";
 `
 export const Introduce=styled.div`
   display: flex;
@@ -67,12 +67,16 @@ export const ProfileSettingBtn=styled.button`
   align-items: center;
   justify-content: space-between;
   border: none;
-  background-color: #d9d9d9;
+  cursor: pointer;
+  background-color: white;
   svg{
     margin-left: 5px;
   }
   p{
     margin-right: 15px;
+    font-family: "Regular";
+    font-weight: bold;
+    font-size: 1rem;
   }
 `
 export const GloplerSettingBtn=styled.button`
@@ -82,12 +86,16 @@ export const GloplerSettingBtn=styled.button`
   align-items: center;
   justify-content: space-between;
   border: none;
-  background-color: #d9d9d9;
+  cursor: pointer;
+  background-color: white;
   svg{
     margin-left: 5px;
   }
   p{
     margin-right: 15px;
+    font-family: "Regular";
+    font-weight: bold;
+    font-size: 1rem;
   }
 `
 export const PointSettingBtn=styled.button`
@@ -96,13 +104,17 @@ export const PointSettingBtn=styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #d9d9d9;
+  background-color: white;
+  cursor: pointer;
   border: none;
   svg{
     margin-left: 5px;
   }
   p{
     margin-right: 15px;
+    font-family: "Regular";
+    font-weight: bold;
+    font-size: 1rem;
   }
 `
 export const MyPageDetailContainer=styled.div`
@@ -153,7 +165,7 @@ export const SelectorItem = styled.div`
 `;
 
 export const Highlight = styled.div`
-  background-color: gray;
+  background-color: #4e53ed;
   border-radius: 8px;
   position: absolute;
   left: ${({ left }) => left}px;
