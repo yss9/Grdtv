@@ -10,7 +10,7 @@ import {
     HiContainer,
     HiIcon,
     HiLabel,
-    HiTitle,
+    HiTitle, HiTitleWrapper,
     Map,
     PhotoBox,
     PhotoWrapper,
@@ -157,6 +157,7 @@ export default function BoardWrite(props) {
     return (
         <>
             <TopBarComponent/>
+            <S.Container>
             <S.Wrapper>
                 {/* 제목 입력란 */}
                 <S.Title>{props.isEdit ? "Review 수정" : "리뷰 작성하기"}</S.Title>
@@ -200,9 +201,12 @@ export default function BoardWrite(props) {
                 </S.InputWrapper>
 
                     <S.Error>{bodyError}</S.Error>
-                    <HiContainer>
+
+                <HiContainer>
+                    <HiTitleWrapper>
                         <HiTitle>제목</HiTitle>
                         <HiButton>불러오기</HiButton>
+                    </HiTitleWrapper>
                         <PhotoWrapper>
                             <PhotoBox>
                                 <HiIcon/>
@@ -263,6 +267,7 @@ export default function BoardWrite(props) {
                 </S.InputWrapper>
 
             </S.Wrapper>
+            </S.Container>
         </>
 
     )
