@@ -9,7 +9,7 @@ export const MyProfileContainer=styled.div`
   align-items: center;
 
 `
-export const ProfileImg=styled.image`
+export const ProfileImg=styled.img`
   width: 14em;
   height: 14em;
   border-radius: 50%;
@@ -28,7 +28,7 @@ export const NameWrapper=styled.div`
 `
 export const IntroduceWrapper=styled.div`
     display: flex;
-  width: 17em;
+  width: auto;
   margin-top: 20px;
 `
 export const Mbti=styled.div`
@@ -47,7 +47,6 @@ export const Introduce=styled.div`
   justify-content: center;
   margin-left: 5px;
   color: #515151;
-
 `
 export const SettingWrapper=styled.div`
     display: flex;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from "react";
-import AgentProfile from "../../public/Img/AgentProfile.png"
+import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
 
 const ProgressData = [
     { stage: 'matching', completion: 25 },
