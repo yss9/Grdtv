@@ -1,12 +1,25 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import * as S from "./style";
 import { Switch, Modal, Button, Popover } from 'antd';
 import DaumPostcodeEmbed from "react-daum-postcode";
 import {Link, useNavigate} from "react-router-dom";
+import {
+    HelloIcon,
+    HiButton,
+    HiContainer,
+    HiIcon,
+    HiLabel,
+    HiTitle,
+    Map,
+    PhotoBox,
+    PhotoWrapper,
+    PlusIcon
+} from "./style";
+import TopBarComponent from "../../../components/TopBar/TopBar";
 
 
-export default function MarketBoardWrite(props) {
+export default function BoardWrite(props) {
 
     const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -93,7 +106,7 @@ export default function MarketBoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
-            formData.append('address', combinedString);
+
 
             try {
                 const response = await axios.post("http://localhost:8080/api/posts/", formData);
@@ -122,7 +135,7 @@ export default function MarketBoardWrite(props) {
             formData.append('image', image);
             formData.append('title', title);
             formData.append('body', body);
-            formData.append('address', combinedString);
+
 
             try {
                 const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);
@@ -143,14 +156,36 @@ export default function MarketBoardWrite(props) {
 
     return (
         <>
+            <TopBarComponent/>
             <S.Wrapper>
                 {/* 제목 입력란 */}
-                <S.Title>{props.isEdit ? "Review 수정" : "Review"}</S.Title>
+                <S.Title>{props.isEdit ? "Review 수정" : "리뷰 작성하기"}</S.Title>
+
+                {/* 등록 또는 수정 버튼 */}
+                <S.ButtonWrapper>
+                    <Link to={props.isEdit ? "#" : "/board"}> {/* 수정 모드일 경우, 링크를 비활성화할 수 있습니다. */}
+                        <S.SubmitButton
+                            onClick={props.isEdit ? onClickUpdate : onClickSubmit}
+                            isActive={props.isEdit ? true : props.isActive}
+                        >
+                            {props.isEdit ? "수정" : "저장"}
+                        </S.SubmitButton>
+
+                        <S.SaveButton
+                            onClick={props.isEdit ? onClickUpdate : onClickSubmit}
+                            isActive={props.isEdit ? true : props.isActive}
+                        >
+                            {props.isEdit ? "수정" : "발행"}
+                        </S.SaveButton>
+                    </Link>
+                </S.ButtonWrapper>
+
+
+
                 <S.InputWrapper>
-                    <S.Label>제목</S.Label>
                     <S.Subject
                         type="text"
-                        placeholder="제목을 작성해주세요."
+                        placeholder="제목"
                         onChange={onChangeTitle}
                     />
                     <S.Error>{titleError}</S.Error>
@@ -158,23 +193,44 @@ export default function MarketBoardWrite(props) {
 
                 {/* 내용 입력란 */}
                 <S.InputWrapper>
-                    <S.Label>설명</S.Label>
                     <S.Contents
-                        placeholder="설명을 작성해주세요."
+                        placeholder="내용을 입력해주세요."
                         onChange={onChangeBody}
                     />
-                    <S.Error>{bodyError}</S.Error>
                 </S.InputWrapper>
+
+                    <S.Error>{bodyError}</S.Error>
+                    <HiContainer>
+                        <HiTitle>제목</HiTitle>
+                        <HiButton>불러오기</HiButton>
+                        <PhotoWrapper>
+                            <PhotoBox>
+                                <HiIcon/>
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <HelloIcon/>
+                            <PhotoBox>
+                                <HiIcon />
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <HelloIcon/>
+                            <PhotoBox>
+                                <HiIcon/>
+                                <HiLabel>여행지 입력</HiLabel>
+                            </PhotoBox>
+                            <PlusIcon/>
+                            <Map/>
+                        </PhotoWrapper>
+                    </HiContainer>
 
                 {/* 사진 업로드 입력란 */}
                 <S.ImageWrapper>
-                    <S.Label>사진을 추가해주세요!</S.Label>
+                    <S.Label>사진 추가</S.Label>
                     <input type="file" onChange={handleImageChange} />
                 </S.ImageWrapper>
 
-                {/* 주소 입력란 */}
                 <S.InputWrapper>
-                    <S.Label>어디에 다녀오셨나요?</S.Label>
+                    <S.Label>위치정보</S.Label>
                     <S.ZipcodeWrapper>
                         <S.Zipcode
                             placeholder="07250"
@@ -195,6 +251,7 @@ export default function MarketBoardWrite(props) {
                             </Modal>
                         )}
                     </S.ZipcodeWrapper>
+                    <S.AddressContainer>
                     <S.Address
                         readOnly
                         value={address}
@@ -202,19 +259,9 @@ export default function MarketBoardWrite(props) {
                     <S.Address
                         onChange={onChangeAddressDetail}
                     />
+                    </S.AddressContainer>
                 </S.InputWrapper>
 
-                {/* 등록 또는 수정 버튼 */}
-                <S.ButtonWrapper>
-                    <Link to={props.isEdit ? "#" : "/board"}> {/* 수정 모드일 경우, 링크를 비활성화할 수 있습니다. */}
-                        <S.SubmitButton
-                            onClick={props.isEdit ? onClickUpdate : onClickSubmit}
-                            isActive={props.isEdit ? true : props.isActive}
-                        >
-                            {props.isEdit ? "수정하기" : "등록하기"}
-                        </S.SubmitButton>
-                    </Link>
-                </S.ButtonWrapper>
             </S.Wrapper>
         </>
 

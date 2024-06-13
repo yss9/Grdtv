@@ -42,6 +42,7 @@ public class PostService {
     }
 
 
+
     public Post createPost(MultipartFile image, String title, String body, String address) throws IOException {
         // 이미지 저장
         String fileName = image.getOriginalFilename();

@@ -52,6 +52,7 @@ public class Post {
         this.body = body;
         this.image = image;
         this.address = address;
+
     }
 
     public void update(String title, String body, String image, String address) {

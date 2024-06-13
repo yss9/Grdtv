@@ -65,7 +65,6 @@ public class PostController {
         }
     }
 
-
     @PutMapping("/{id}/")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
         try {
