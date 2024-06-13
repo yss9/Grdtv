@@ -11,13 +11,14 @@ import WriteTest from "./pages/review/write/writeTest";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
-import Chatbot from "./pages/chatbot/chatBot";
 import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
 import ListByMKS from "./pages/review/listbymks/listbymks"
 import BoardWrite from "./pages/review/write/write";
+import Chatbotset from "./pages/chatbot/chatbotset";
+
 
 function App() {
     return (
@@ -41,7 +42,7 @@ function App() {
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
                 <Route path="/recomendation/information/:placename" element={<InformationPage />} />
                 <Route path="/my" element={<MyPage/>}/>
-                <Route path="/chatbot" element={<Chatbot/>}/>
+                <Route path="/chatbot" element={<Chatbotset/>}/>
             </Routes>
         </BrowserRouter>
     );
