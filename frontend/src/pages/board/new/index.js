@@ -1,4 +1,4 @@
-import BoardWrite from "../../review/write/write";
+import BoardWrite from "../../review/write/write"
 
 
 export default function NewPage() {

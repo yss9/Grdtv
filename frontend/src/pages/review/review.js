@@ -51,7 +51,7 @@ export default function ReviewPage() {
     };
 
     const handleGoWrite = (e)=>{
-        navigate('/review/write')
+        navigate('/board/new')
     }
 
 
