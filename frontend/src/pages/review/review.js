@@ -56,8 +56,7 @@ export default function ReviewPage() {
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
     };
-
-
+    
     const handleGoWrite = (e)=> {
         navigate('/board/new')
     }
