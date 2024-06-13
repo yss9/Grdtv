@@ -1,16 +1,87 @@
 import { Reset } from 'styled-reset';
-import { useNavigate } from "react-router-dom";
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import TopBarComponent from "../../../components/TopBar/TopBar";
+import ApelTower from "../../../public/Img/apeltower.png"
+import Kyoto from "../../../public/Img/kyoto.png"
+import ThaiMarket from "../../../public/Img/thaimarket.png"
+import Apls from "../../../public/Img/alps.png"
+import Louis from "../../../public/Img/louis.png"
+import Bbatong from "../../../public/Img/bbatong.png"
+import Morein from "../../../public/Img/morein.png"
 import {
-    KeywordBtn, Place, PlaceContainer, PlaceName, PlaceWrapper, RefreshBtn,
-    SubTitle, SubTitleWrapper, Title, TitleWrapper, Wrapper
+    HashTag,
+    HashTagContaienr,
+    KeywordBtn, KeywordContainer, Place, PlaceContainer, PlaceName1, PlaceWrapper, RefreshBtn,
+    SubTitle, SubTitleWrapper, Title, TitleWrapper, Wrapper,
+    BestCourseContainer,
+    BestCourses,
+    BestWrapper, Notice, GaugeBar, GaugeBarWrapper
 } from "./personalstyle";
-export default function MainPage() {
 
+import BestCourse from "../../../components/BestCourse/BestCourse";
+import {useNavigate} from "react-router-dom";
+import Osaka from "../../../public/Img/osaka.png";
+import Paris from "../../../public/Img/paris.png";
+import Sydney from "../../../public/Img/sydney.png";
+
+const PersonalRecData=[
+    { placename: '도초지', image: Kyoto},
+    { placename: '에펠탑', image: ApelTower},
+    { placename: '수상시장', image: ThaiMarket},
+    {placename:'오사카', image: Osaka},
+    {placename:'파리', image: Paris },
+    {placename:'호주', image: Sydney }
+];
+
+const CourseData=[
+    { placename: '모레인 호수', image: Morein },
+    { placename: '빠통 비치', image: Bbatong },
+    { placename: '루이스 호수', image: Louis },
+    { placename: '알프스 산맥', image: Apls },
+    { placename: 'Course 5', image: '' },
+    { placename: 'Course 6',  image: '' },
+    { placename: 'Course 7', image: '' },
+    { placename: 'Course 8', image: '' },
+    { placename: 'Course 9', image: ''},
+    { placename: 'Course 10', image: '' },
+    { placename: 'Course 11', image: '' },
+    { placename: 'Course 12', image: '' },
+];
+const KeywordData=[
+    {keyword:'#휴식'},{keyword:'#호수'},{keyword:'#전통음식'}
+]
+export default function MainPage() {
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const reviewsPerPage = 4;
+
+    const startIndex = activeIndex * reviewsPerPage;
+
+    const visibleAgents = CourseData.slice(startIndex, startIndex + reviewsPerPage);
+
+    const totalIndicators = Math.ceil(CourseData.length / reviewsPerPage);
     const navigate = useNavigate();
-    const handleGoInformation = () => {
-        navigate('/recomendation/information');
+
+    const [displayedPlaces, setDisplayedPlaces] = useState([]);
+
+    const handleGaugeClick = (event) => {
+        const boundingRect = event.currentTarget.getBoundingClientRect();
+        const clickX = event.clientX - boundingRect.left;
+        const completionPercentage = (clickX / boundingRect.width) * 100;
+        const newIndex = Math.floor((completionPercentage / 100) * totalIndicators);
+        setActiveIndex(newIndex);
+    };
+
+    const handleGoInformation = (placename) => {
+        navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
+    };
+
+    useEffect(() => {
+        refreshPlaces();
+    }, []);
+    const refreshPlaces = () => {
+        const shuffled = [...PersonalRecData].sort(() => 0.5 - Math.random());
+        setDisplayedPlaces(shuffled.slice(0, 3));
     };
 
     return(
@@ -23,7 +94,7 @@ export default function MainPage() {
                 </TitleWrapper>
                 <SubTitleWrapper>
                     <SubTitle>키워드 성향에 따른 맞춤형 여행지를 추천해 드려요.</SubTitle>
-                    <RefreshBtn>
+                    <RefreshBtn onClick={refreshPlaces}>
                         <p>추천 새로고침</p>
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_484_188)">
@@ -38,20 +109,37 @@ export default function MainPage() {
                     </RefreshBtn>
                 </SubTitleWrapper>
                 <PlaceContainer>
-                    <PlaceWrapper>
-                        <Place onClick={handleGoInformation}></Place>
-                        <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                    </PlaceWrapper>
-                    <PlaceWrapper>
-                        <Place onClick={handleGoInformation}></Place>
-                        <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                    </PlaceWrapper>
-                    <PlaceWrapper>
-                        <Place onClick={handleGoInformation}></Place>
-                        <PlaceName onClick={handleGoInformation}>여행지</PlaceName>
-                    </PlaceWrapper>
+                    {displayedPlaces.map(place => (
+                        <PlaceWrapper key={place.placename} onClick={() => handleGoInformation(place.placename)}>
+                            <Place src={place.image}/>
+                            <PlaceName1>{place.placename}</PlaceName1>
+                        </PlaceWrapper>
+                    ))}
                 </PlaceContainer>
                 <KeywordBtn>키워드 다시 선정하기</KeywordBtn>
+                <BestWrapper>
+                    <KeywordContainer>
+                        <HashTagContaienr>
+                            {KeywordData.map(place => (
+                                <HashTag>{place.keyword}</HashTag>
+                            ))}
+                            <Notice>
+                                <p>관심사와 어울리는</p>
+                                <p>여행지를 가져왔어요.</p>
+                            </Notice>
+                        </HashTagContaienr>
+                        <BestCourseContainer>
+                            <BestCourses>
+                                {visibleAgents.map((course, index) => (
+                                    <BestCourse key={index} review={course} />
+                                ))}
+                            </BestCourses>
+                        </BestCourseContainer>
+                    </KeywordContainer>
+                    <GaugeBarWrapper>
+                        <GaugeBar completion={(activeIndex + 1) / totalIndicators * 100} onClick={handleGaugeClick} />
+                    </GaugeBarWrapper>
+                </BestWrapper>
             </Wrapper>
         </>
     )

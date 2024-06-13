@@ -17,6 +17,8 @@ import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
 import BoardWrite from "./pages/review/write/write";
+import ListByMKS from "./pages/review/listbymks/listbymks";
+
 
 function App() {
     return (
@@ -28,6 +30,7 @@ function App() {
                 <Route path="/board" element={<BoardList/>}/>
                 <Route path="/board/new" element={<BoardWrite/>}/>
                 <Route path="/review/write" element={<Write />}/>
+                <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
                 <Route path="/admin" element={<AdminPage />} />
@@ -37,7 +40,7 @@ function App() {
                 <Route path="/route" element={<Recomendation />}/>
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
-                <Route path="/recomendation/information" element={<InformationPage />}/>
+                <Route path="/recomendation/information/:placename" element={<InformationPage />} />
                 <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbot/>}/>
             </Routes>
