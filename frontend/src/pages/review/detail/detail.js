@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getDate } from "../../common/libraries/utils";
 import { Button, Popover, Modal } from 'antd';
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { Link, useParams, useNavigate } from "react-router-dom"; // useHistory 대신 useNavigate 사용
 import * as S from "./style";
+import TopBarComponent from "../../../components/TopBar/TopBar";
+import {Avatar, AvatarWrapper} from "./style";
+
 
 export default function BoardDetail() {
+
     const { boardID } = useParams();
     const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
 
@@ -58,26 +62,44 @@ export default function BoardDetail() {
     };
 
     return (
-        <S.Wrapper>
-            <S.CardWrapper>
-                <S.Header>
-                    <S.Info>
-                        <S.Title>{title}</S.Title>
-                        <S.Writer>진나은</S.Writer>
-                    </S.Info>
-                    <S.IconWrapper>
-                        <Button danger onClick={onClickReport}>신고하기</Button>
-                    </S.IconWrapper>
-                </S.Header>
-                <S.Body>
-                    <S.Contents>{body}</S.Contents>
-                </S.Body>
-            </S.CardWrapper>
-            <S.BottomWrapper>
-                <Button onClick={() => navigate("/board")}>목록으로</Button> {/* navigate 함수로 페이지 이동 */}
-                <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button> {/* navigate 함수로 페이지 이동 */}
-                <Button onClick={onClickBoardDelete}>삭제하기</Button>
-            </S.BottomWrapper>
-        </S.Wrapper>
+        <>
+            <TopBarComponent/>
+            <S.Container>
+            <S.Wrapper>
+                <S.CardWrapper>
+                    <S.Header>
+                        <S.Info>
+                            <S.TitleWrapper>
+                            <S.Title>하이하이</S.Title>
+                            </S.TitleWrapper>
+                            <AvatarWrapper>
+                            <Avatar/>
+                            <S.Writer>진나은</S.Writer>
+                            </AvatarWrapper>
+                        </S.Info>
+                        <S.SubWrapper>
+                            <S.Url>Url 복사</S.Url>
+                            <S.Favorite>favorite</S.Favorite>
+                        </S.SubWrapper>
+                    </S.Header>
+                    <S.Body>
+                        <S.AddressWrapper>
+                            <S.AddressImage/>
+                            <S.Address>fdfdfd</S.Address>
+                        </S.AddressWrapper>
+                        <S.Contents>하이루</S.Contents>
+                        <S.ImageWrapper>
+                            <S.Image/>
+                        </S.ImageWrapper>
+                    </S.Body>
+                </S.CardWrapper>
+                <S.BottomWrapper>
+                    <Button onClick={() => navigate("/board")}>목록으로</Button> {/* navigate 함수로 페이지 이동 */}
+                    <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button> {/* navigate 함수로 페이지 이동 */}
+                    <Button onClick={onClickBoardDelete}>삭제하기</Button>
+                </S.BottomWrapper>
+            </S.Wrapper>
+            </S.Container>
+        </>
     );
 }
