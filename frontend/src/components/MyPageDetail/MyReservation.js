@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Agent from "../Agent/Agent";
 import {Reset} from "styled-reset";
+import Progress from "../Agent/progress";
 
 const SelectTitle = styled.div`
   width: 82rem;
@@ -29,7 +30,7 @@ const ReviewWrapper = styled.div`
 `;
 
 const Review = styled.div`
-  margin-top: 1em;
+  margin-top: 4em;
   width:80rem;
   //background-color: orange;
   display: flex;
@@ -45,7 +46,6 @@ const AgentWrapper=styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
   //background-color: palevioletred;
 `
 const Agents=styled.div`
@@ -89,7 +89,7 @@ export default function MyReservation() {
             <ReviewWrapper>
                 {activeTab === 'myWrite' ? (
                     <Review>
-                        <p>진행도</p>
+                        <Progress/>
                     </Review>
                 ) : (
                     <Review>

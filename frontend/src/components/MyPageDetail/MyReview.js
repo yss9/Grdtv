@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import Myreviewcomponent from "./myreviewcomponent/myreviewcomponent";
+import Mytagcomponent from "./myreviewcomponent/mytagcomponent";
 
 const SelectTitle = styled.div`
   width: 82rem;
@@ -20,10 +22,17 @@ const Tab = styled.div`
 
 const ReviewWrapper = styled.div`
   padding: 1em;
+  display: flex;
+  justify-content: center;
 `;
 
 const Review = styled.div`
   margin-top: 1em;
+  width: 80%;
+`;
+const Review2 = styled.div`
+  margin-top: 1em;
+  width: 96%;
 `;
 
 export default function MyReview() {
@@ -46,12 +55,12 @@ export default function MyReview() {
             <ReviewWrapper>
                 {activeTab === 'myWrite' ? (
                     <Review>
-                        <p>작성한 리뷰 내용</p>
+                        <Myreviewcomponent/>
                     </Review>
                 ) : (
-                    <Review>
-                        <p>좋아요 한 게시물 내용</p>
-                    </Review>
+                    <Review2>
+                        <Mytagcomponent/>
+                    </Review2>
                 )}
             </ReviewWrapper>
         </>
