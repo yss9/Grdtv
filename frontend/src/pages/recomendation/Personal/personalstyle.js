@@ -48,7 +48,7 @@ export const RefreshBtn=styled.button`
 `
 export const PlaceContainer=styled.div`
     width: 75%;
-  height: 40rem;
+  height: 28rem;
   margin-top: 1em;
   //background-color: palegoldenrod;
   display: flex;
@@ -88,7 +88,7 @@ export const PlaceName1 = styled.div`
 
 
 export const KeywordBtn=styled.button`
-  margin-top: 2em;
+ // margin-top: 2em;
     height: 3.5em;
   background-color: black;
   color: white;
@@ -123,9 +123,9 @@ export const HashTag=styled.div`
 `
 export const KeywordContainer=styled.div`
   display: flex;
-  width: 82%;
+  width: 78rem;
   margin-top: 5rem;
- // background-color: palegreen;
+ //background-color: palegreen;
   height: auto;
 `
 
