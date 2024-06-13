@@ -34,12 +34,5 @@ public class ChatBotController {
         return chatMessage;
     }
 
-
-//    @MessageMapping("/chat")
-//    @SendTo("/topic/messages")
-//    public ChatMessage sendMessage(@Payload ChatMessage chatMessage){
-//        chatMessage.setTimestamp(new Date());
-//        return chatMessage;
-//    }
 }
 

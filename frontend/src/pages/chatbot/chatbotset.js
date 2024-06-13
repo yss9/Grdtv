@@ -4,11 +4,13 @@ import Cookies from 'js-cookie';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import TopBarComponent from "../../components/TopBar/TopBar";
+import '../../App.css';
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 98.5vh;
+    height: 98vh;
+    font-family: Regular;
 `;
 
 const MainContentArea = styled.div`
@@ -102,6 +104,7 @@ const QuestionButton = styled.button`
     border: 1px solid #4E53ED;
     border-radius: 13px;
     cursor: pointer;
+    font-family: Regular;
 `;
 
 const Chatbot = () => {

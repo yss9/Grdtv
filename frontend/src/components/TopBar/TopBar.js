@@ -124,6 +124,10 @@ export default function TopBarComponent() {
         navigate('/my');
     };
 
+    const handleGoChatBot = () =>{
+      navigate('/chatbot');
+    };
+
     return (
         <TopBar>
             <LogoWrapper>
@@ -146,7 +150,7 @@ export default function TopBarComponent() {
                 </Recomendation>
                 <Community onClick={handleGoRoute}>루트 탐색</Community>
                 <Community onClick={handleGoReview}>커뮤니티</Community>
-                <Community>챗봇</Community>
+                <Community onClick={handleGoChatBot}>챗봇</Community>
                 <MyPage onClick={handleGoMyPage}>마이페이지</MyPage>
             </MenuContainer>
         </TopBar>

@@ -11,13 +11,14 @@ import WriteTest from "./pages/review/write/writeTest";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
-import Chatbot from "./pages/chatbot/chatBot";
+import Chatbot from "./pages/chatbot/chatbotset";
 import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
 import ListByMKS from "./pages/review/listbymks/listbymks"
 import RouteRecomendation from "./pages/recomendation/Information/RouteRecomendation/routeRecomendation";
+import KeywordSelection from "./pages/recomendation/Personal/keyword";
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/routeRec" element={<RouteRecomendation />} />
                 <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbot/>}/>
+                <Route path="/keyword" element={<KeywordSelection/>}/>
             </Routes>
         </BrowserRouter>
     );
