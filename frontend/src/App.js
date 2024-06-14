@@ -10,13 +10,15 @@ import Write from "./pages/review/write/write";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
-import Chatbot from "./pages/chatbot/chatBot";
+import Chatbot from "./pages/chatbot/chatbotset";
 import MyPage from "./pages/My/mypage"
 import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
 import ListByMKS from "./pages/review/listbymks/listbymks"
-import BoardWrite from "./pages/review/write/write";
+import RouteRecomendation from "./pages/recomendation/Information/RouteRecomendation/routeRecomendation";
+import KeywordSelection from "./pages/recomendation/Personal/keyword";
+
 
 function App() {
     return (
@@ -26,7 +28,6 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/review" element={<ReviewPage />} />
                 <Route path="/board" element={<BoardList/>}/>
-                <Route path="/board/new" element={<BoardWrite/>}/>
                 <Route path="/review/write" element={<Write />}/>
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
@@ -38,8 +39,10 @@ function App() {
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
                 <Route path="/recomendation/information/:placename" element={<InformationPage />} />
+                <Route path="/routeRec" element={<RouteRecomendation />} />
                 <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbot/>}/>
+                <Route path="/keyword" element={<KeywordSelection/>}/>
             </Routes>
         </BrowserRouter>
     );

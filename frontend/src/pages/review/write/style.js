@@ -6,19 +6,14 @@ import plusImage from '../../../images/Frame 53.png';
 
 
 
-export const Container = styled.div`
- 
-    display: flex;
-    align-items: center;
-    justify-content: center;
- 
-`;
+
 
 export const Wrapper = styled.div`
   width: 1000px;
+  /* height: 1847px; */
   border: 1px solid black;
   margin: 100px;
-  padding-top: 50px;
+  padding-top: 80px;
   padding-bottom: 80px;
   padding-left: 80px;
   padding-right: 80px;
@@ -58,62 +53,37 @@ export const HiContainer = styled.div`
   
 `;
 
-export const HiTitleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  border-bottom: 1px solid #BDBDBD; /* 제목과 불러오기 버튼 사이에 선 추가 */
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-`;
-
 export const HiTitle = styled.h2`
+  align-self: flex-start;
+  margin-bottom: 16px;
   color: #BDBDBD;
-  margin: 0;
-`;
-
-export const HiButton = styled.button`
-  background-color: black;
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  width: 80px;
-  height: 40px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
 `;
 
 export const PhotoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  align-items: center;
-  
 `;
 
 export const PhotoBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* 추가: 내부 요소들을 가운데 정렬 */
   width: 120px;
   height: 120px;
   background-color: #E0E0E0;
   border-radius: 8px;
   margin: 0 10px;
-  
 `;
 
 export const HiIcon = styled.div`
   width: 50px;
   height: 50px;
-  background-image: url(${cameraImage});
+   background-image: url(${cameraImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 15px;
- 
+  margin-top: 8px;
+
 `;
 
 export const HelloIcon = styled.div`
@@ -132,11 +102,12 @@ export const PlusIcon = styled.div`
   background-size: contain;
   background-repeat: no-repeat;
   margin-top: 15px;
+
 `;
+
 
 export const HiLabel = styled.p`
   color: #BDBDBD;
-  margin-top:10px
 `;
 
 export const Map = styled.div`
@@ -146,6 +117,19 @@ export const Map = styled.div`
   background-size: cover;
   border-radius: 8px;
   margin-left: 20px;
+`;
+
+export const HiButton = styled.button`
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  width: 80px;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 20px 0;
 `;
 
 export const Subject = styled.input`
@@ -210,7 +194,7 @@ export const AddressContainer = styled.div`
   align-items: center;
   height: 100vh; /* 세로 중앙 정렬을 위한 높이 설정 */
   padding-right:280px;
- 
+  padding-top:0px;
 `;
 
 

@@ -10,7 +10,7 @@ import {
     PlaceReivewContainer, GaugeBar, GaugeBarWrapper
 } from "./informationstyle";
 import PlaceReivew from "../../../components/PlaceReview/placeReview";
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import Osaka from '../../../public/Img/osaka.png';
 import Paris from '../../../public/Img/paris.png';
 import Sydney from '../../../public/Img/sydney.png';
@@ -80,6 +80,8 @@ export default function Information() {
     const [currentPlace, setCurrentPlace] = useState({});
     const [filteredReviews, setFilteredReviews] = useState([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const place = PlaceData.find(place => place.placename === placename);
         if (place) {
@@ -100,6 +102,10 @@ export default function Information() {
         const completionPercentage = (clickX / boundingRect.width) * 100;
         const newIndex = Math.floor((completionPercentage / 100) * totalIndicators);
         setActiveIndex(newIndex);
+    };
+
+    const handleGoRouteRec = () => {
+        navigate('/routeRec');
     };
 
     return (
@@ -138,7 +144,7 @@ export default function Information() {
                 <BtnContainer>
                     <BtnTitle>해당 여행지를 포함한 여행이 궁금하다면?</BtnTitle>
                     <FindRouteBtn>루트 검색</FindRouteBtn>
-                    <RecomendationBtn>루트 추천</RecomendationBtn>
+                    <RecomendationBtn onClick={handleGoRouteRec}>루트 추천</RecomendationBtn>
                 </BtnContainer>
             </Wrapper>
         </>

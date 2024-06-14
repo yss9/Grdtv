@@ -6,7 +6,7 @@ const BlogContainer=styled.div`
   //width: 30%;
   height: 30rem;
   background-color: white;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
   border-radius: 15px;
   display: flex;
   justify-content: space-between;
@@ -142,12 +142,13 @@ const Heart=styled.div`
 `
 const Specs=styled.ul`
     //background-color: red;
-  margin: 0 0 0 1rem;
-  font-size: 15px;
+  margin: 0.5rem 0 0 1rem;
+  font-size: 14px;
 `
 const Spec=styled.li`
     list-style: inside;
-  margin: 0 0 0.4rem 0 ;
+  margin: 0 0 0.6rem 0 ;
+  color: #5f5f5f;
   
 `
 const ReviewWrapper=styled.div`
@@ -210,14 +211,15 @@ const ReviewContent=styled.div`
     margin: 0.5rem 1rem 0 1rem;
   //background-color: palevioletred;
   font-family: "Regular";
-
-
+  font-size: 14px;
+  color: #515151;
+  line-height: 1.5;
 `
-const ReviewPhoto=styled.image`
-    width: 5rem;
-  height: 5rem;
-  background-color: #5F5F5F;
-`
+//const ReviewPhoto=styled.image`
+//    width: 5rem;
+ // height: 5rem;
+ // background-color: #5F5F5F;
+//`
 
 const Agent = ({ review, pageType }) => {
 
@@ -234,7 +236,7 @@ const Agent = ({ review, pageType }) => {
                 <ContentWrapper>
                     <Content>
                         <Profile>
-                            <PImg></PImg>
+                            <PImg src={review.image}></PImg>
                             <PContainer>
                                 <NameWrapper>
                                     <Pname>{review.author}</Pname>
@@ -259,7 +261,7 @@ const Agent = ({ review, pageType }) => {
                                     <GoChatBtn>
                                         <p>채팅하기</p>
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clipPath="url(#clip0_746_1335)">
+                                            <g clip-path="url(#clip0_746_1335)">
                                                 <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="white"/>
                                             </g>
                                             <defs>
@@ -287,12 +289,12 @@ const Agent = ({ review, pageType }) => {
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#FF9D2A"/>
                                     </svg>
-                                    <p>평점(갯수)</p>
+                                    <p>{review.score}({review.number})</p>
                                 </StarAvg>
                                 <SeeAllBtn>
                                     <p>전체보기</p>
                                     <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
+                                        <path d="M1 1L9 8L1 15" stroke="black" stroke-width="2"/>
                                     </svg>
                                 </SeeAllBtn>
                             </SubWrapper>
@@ -307,9 +309,9 @@ const Agent = ({ review, pageType }) => {
                                             <path d="M78.5 0L80.8482 5.57786L86.584 6.21885L82.2995 10.3071L83.4962 16.2812L78.5 13.23L73.5038 16.2812L74.7005 10.3071L70.416 6.21885L76.1518 5.57786L78.5 0Z" fill="#FF9D2A"/>
                                         </svg>
                                     </UserStar>
-                                    <ReviewContent>리뷰 ~~</ReviewContent>
+                                    <ReviewContent>{review.agentreview}</ReviewContent>
                                 </ReviewDetail>
-                                <ReviewPhoto></ReviewPhoto>
+                                {/*<ReviewPhoto></ReviewPhoto>*/}
                             </UserReview>
                         </ReviewWrapper>
                     </Content>

@@ -166,7 +166,7 @@ const Agent = ({ review, pageType }) => {
                                     </Heart>
                                 </NameWrapper>
                             </PContainer>
-                            <PImg></PImg>
+                            <PImg src={review.image}></PImg>
                             <Pname>{review.author}</Pname>
                         </Profile>
                         <Read>
