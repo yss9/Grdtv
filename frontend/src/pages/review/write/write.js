@@ -239,12 +239,12 @@ export default function BoardWrite(props) {
                     <S.Label>위치정보</S.Label>
                     <S.ZipcodeWrapper>
                         <S.Zipcode
-                            placeholder="07250"
+                            placeholder="우편번호"
                             readOnly
                             value={zipcode}
                         />
                         <S.SearchButton onClick={onClickAddressSearch}>
-                            우편번호 검색
+                            위치검색
                         </S.SearchButton>
                         {isOpen && (
                             <Modal
@@ -257,7 +257,6 @@ export default function BoardWrite(props) {
                             </Modal>
                         )}
                     </S.ZipcodeWrapper>
-                    <S.AddressContainer>
                     <S.Address
                         readOnly
                         value={address}
@@ -265,7 +264,6 @@ export default function BoardWrite(props) {
                     <S.Address
                         onChange={onChangeAddressDetail}
                     />
-                    </S.AddressContainer>
                 </S.InputWrapper>
 
             </S.Wrapper>
