@@ -50,11 +50,11 @@ export const HiContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
   background-color: #F4F6F8;
-  border-radius: 8px;
+  border-radius: 10px;
   width: 800px; 
-  margin: auto;
+  margin-top:30px
 `;
 
 export const HiTitleWrapper = styled.div`
@@ -121,7 +121,7 @@ export const HelloIcon = styled.div`
   background-image: url(${iconImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 40px;
+  margin-top: 15px;
 `;
 
 export const PlusIcon = styled.div`
@@ -130,7 +130,7 @@ export const PlusIcon = styled.div`
   background-image: url(${plusImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 40px;
+  margin-top: 15px;
 `;
 
 export const HiLabel = styled.p`

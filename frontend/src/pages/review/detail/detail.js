@@ -70,7 +70,7 @@ export default function BoardDetail() {
                     <S.Header>
                         <S.Info>
                             <S.TitleWrapper>
-                            <S.Title>}{title}</S.Title>
+                            <S.Title>{title}</S.Title>
                             </S.TitleWrapper>
                             <AvatarWrapper>
                             <Avatar/>

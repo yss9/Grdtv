@@ -28,7 +28,6 @@ function App() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/review" element={<ReviewPage />} />
-                <Route path="/board" element={<BoardList/>}/>
                 <Route path="/board/new" element={<BoardWrite/>}/>
                 <Route path="/review/write" element={<Write />}/>
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
