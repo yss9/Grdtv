@@ -48,7 +48,7 @@ export const RefreshBtn=styled.button`
 `
 export const PlaceContainer=styled.div`
     width: 75%;
-  height: 23.5em;
+  height: 40rem;
   margin-top: 1em;
   //background-color: palegoldenrod;
   display: flex;
@@ -56,7 +56,7 @@ export const PlaceContainer=styled.div`
 
 `
 export const PlaceWrapper = styled.div`
-  width: 33.3%; /* 현재 3분의 1로 설정되어 있어서 변경할 필요가 없을 수 있습니다 */
+  width: 23rem; /* 현재 3분의 1로 설정되어 있어서 변경할 필요가 없을 수 있습니다 */
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -67,22 +67,22 @@ export const PlaceWrapper = styled.div`
 `;
 
 export const Place = styled.img`
-  width: 92%;
-  height: 19rem;
+  width: 100%;
+  height: 22rem;
   object-fit: cover; /* 이미지를 가득 채우도록 설정 */
   background-color: #d9d9d9;
   border-radius: 15px;
 `;
 
 export const PlaceName1 = styled.div`
-  height: 2em; /* 필요한 경우 높이 고정 */
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
   font-size: 1.4em; /* 원하는 폰트 크기 */
   font-family: "Regular";
-  margin-top: 1rem;
+  margin-top: 0.8rem;
+  margin-bottom: 2rem;
   font-weight: bold;
 `;
 

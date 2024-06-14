@@ -2,6 +2,13 @@ import { Reset } from "styled-reset";
 import Agent from "../../components/Agent/Agent"
 import Agent2 from "../../components/Agent/Agent2"
 import { Wrapper } from "../review/reviewstyle";
+import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
+import AgentProfile2 from "../../public/Img/forprofile/AgentProfile2.png"
+import AgentProfile3 from "../../public/Img/forprofile/AgentProfile3.png"
+import AgentProfile4 from "../../public/Img/forprofile/AgentProfile4.png"
+import AgentProfile5 from "../../public/Img/forprofile/AgentProfile5.png"
+import AgentProfile6 from "../../public/Img/forprofile/AgentProfile6.png"
+import AgentNoProfile from "../../public/Img/forprofile/img_1.png"
 import {
     SubTitle, SubTitleWrapper, SearchBarWrapper,
     SearchBarContainer, Magnifier, Search, Icon,
@@ -12,28 +19,28 @@ import React, { useState } from "react";
 import TopBarComponent from "../../components/TopBar/TopBar";
 
 const AgentData = [
-    { author: 'Author 1', introduce: '한마디가 존나게 길다면 어케되남', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
-    { author: 'Author 2', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
-    { author: 'Author 4', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec'] },
-    { author: 'Author 5', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 6', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
-    { author: 'Author 7', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
-    { author: 'Author 8', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 9', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
-    { author: 'Author 10', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec'] },
+    { author: 'Author 1', introduce: ' 친절하게 진행합니다 ^^* ', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['상하이 6년 거주', '중국어 자격증'], image:AgentProfile, score:'4.8', number:'580', agentreview:'원하는 식당의 예약이 불가하면 다른 식당을 추천해 주셔서 좋았어요 ' },
+    { author: 'Author 2', introduce: ' 일본 맛집 리스트 보유 중 ', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['일본 10년 거주', 'JLPT N1', '일본 유학 경험 보유'], image: AgentProfile2, score:'4.9', number:'270', agentreview:'다양한 식당, 놀거리를 추천해 주셔서 일본 처음 가는 분들에게 추천해요.' },
+    { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'], image: AgentNoProfile },
+    { author: 'Author 4', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec'], image: AgentNoProfile },
+    { author: 'Author 5', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'], image: AgentNoProfile },
+    { author: 'Author 6', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'], image: AgentNoProfile },
+    { author: 'Author 7', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'], image: AgentNoProfile },
+    { author: 'Author 8', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'],image: AgentNoProfile },
+    { author: 'Author 9', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'], image: AgentNoProfile },
+    { author: 'Author 10', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec'], image: AgentNoProfile },
 ];
 
 const Agent2Data = [
-    { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
-    { author: 'Author 2', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
-    { author: 'Author 4', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec'] },
-    { author: 'Author 5', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 6', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
-    { author: 'Author 7', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'] },
-    { author: 'Author 8', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'] },
-    { author: 'Author 9', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'] },
+    { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'], image:AgentProfile3 },
+    { author: 'Author 2', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'],image:AgentProfile4 },
+    { author: 'Author 3', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'],image:AgentNoProfile },
+    { author: 'Author 4', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec'],image:AgentNoProfile },
+    { author: 'Author 5', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'],image:AgentProfile5 },
+    { author: 'Author 6', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'],image:AgentProfile6 },
+    { author: 'Author 7', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec: ['This is the first user spec', 'This is the first user spec2'],image:AgentNoProfile },
+    { author: 'Author 8', introduce: '한마디 2', hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec: ['This is the second user spec', 'This is the second user spec2'],image:AgentNoProfile },
+    { author: 'Author 9', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec', 'This is the third user spec2'],image:AgentNoProfile },
     { author: 'Author 10', introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'], spec: ['This is the third user spec'] },
 ];
 
