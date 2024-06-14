@@ -50,11 +50,12 @@ export const HiContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
   background-color: #F4F6F8;
   border-radius: 8px;
   width: 800px; 
-  margin: auto;
+  margin-top:50px
+  
 `;
 
 export const HiTitleWrapper = styled.div`
@@ -111,7 +112,7 @@ export const HiIcon = styled.div`
   background-image: url(${cameraImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 25px;
+  margin-top: 15px;
  
 `;
 
@@ -121,7 +122,7 @@ export const HelloIcon = styled.div`
   background-image: url(${iconImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 40px;
+  margin-top: 15px;
 `;
 
 export const PlusIcon = styled.div`
@@ -130,7 +131,7 @@ export const PlusIcon = styled.div`
   background-image: url(${plusImage});
   background-size: contain;
   background-repeat: no-repeat;
-  margin-top: 40px;
+  margin-top: 15px;
 `;
 
 export const HiLabel = styled.p`
@@ -222,7 +223,7 @@ export const Youtube = styled.input`
 
 export const ImageWrapper = styled.div`
   width: 996px;
-  padding-top: 40px;
+  padding-top: 100px;
 `;
 
 export const ImageBox = styled.div`

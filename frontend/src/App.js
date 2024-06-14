@@ -7,7 +7,6 @@ import SignupPage from './pages/signup/signupPage';
 import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Write from "./pages/review/write/write";
-import WriteTest from "./pages/review/write/writeTest";
 import Recomendation from "./pages/route/route"
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
@@ -30,7 +29,6 @@ function App() {
                 <Route path="/board/new" element={<BoardWrite/>}/>
                 <Route path="/review/write" element={<Write />}/>
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
-                <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
