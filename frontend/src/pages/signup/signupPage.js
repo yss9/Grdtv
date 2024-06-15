@@ -29,8 +29,7 @@ import {
     UserImg,
     FinishText,
     GoToLoginPage,
-    OverlayImage,
-    OverlayImageInput
+    OverlayImageInput, GenderImage
 } from "./signupStyle";
 import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
@@ -248,8 +247,18 @@ export default function SignupPage() {
                                     <FormGroup>
                                         <InputText>성별</InputText>
                                         <GenderButtonWrapper>
-                                            <GenderButton onClick={onClickMan}>남성</GenderButton>
-                                            <GenderButton onClick={onClickWoman}>여성</GenderButton>
+                                            <GenderButton onClick={onClickWoman}>
+                                                <GenderImage
+                                                    src={gender === 'W' ? '/Img/signInImg/womanOn.png' : '/Img/signInImg/womanOff.png'}
+                                                    alt="Gender Icon"
+                                                />
+                                            </GenderButton>
+                                            <GenderButton onClick={onClickMan}>
+                                                <GenderImage
+                                                    src={gender === 'M' ? '/Img/signInImg/manOn.png' : '/Img/signInImg/manOff.png'}
+                                                    alt="Gender Icon"
+                                                />
+                                            </GenderButton>
                                         </GenderButtonWrapper>
                                     </FormGroup>
                                     <NextButtonWrapper>
@@ -329,7 +338,7 @@ export default function SignupPage() {
                                 >
                                     <BoldText>프로필을 설정해 주세요.</BoldText>
                                     <label>
-                                        <UserImg src={imgFile ? imgFile : "images/firstImg.jpg"}/>
+                                        <UserImg src={imgFile ? imgFile : '/Img/signInImg/firstProfileImg.png'}/>
                                         <OverlayImageInput type="file" accept="image/*" onChange={saveImgFile}
                                                            ref={imgRef}/>
                                     </label>

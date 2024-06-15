@@ -3,6 +3,7 @@ import TopBarComponent from "../../components/TopBar/TopBar";
 import axios from "axios";
 import Cookies from "js-cookie";
 import WebSocketService from "./WebSocketService";
+import {BottomBar, ChatButton, ChatInput, ChatRoom, Main} from "./chatPageStyle";
 
 const styles = {
     body: {
@@ -36,52 +37,52 @@ const styles = {
         height: 'calc(100vh - 50px)', // Adjust based on header height
     },
     sidebar: {
-        width: '200px',
-        backgroundColor: '#f1f1f1',
-        padding: '10px',
+        width: '13%',
+        backgroundColor: '#4E53ED',
         borderRight: '1px solid #ddd',
         overflowY: 'auto',
+        color: 'white',
+        fontSize: '14px',
     },
     chatListContainer: {
-        width: '300px',
-        backgroundColor: '#f1f1f1',
+        width: '20%',
         padding: '10px',
-        borderRight: '1px solid #ddd',
         overflowY: 'auto',
     },
     sidebarHeader: {
-        fontSize: '18px',
+        // fontSize: '18px',
         marginBottom: '10px',
+        width: '100%',
+        height: '100%',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
     },
     sidebarContentInput: {
         width: '100%',
-        padding: '5px',
+        padding: '0 10px',
         marginBottom: '10px',
         boxSizing: 'border-box',
+        borderRadius: '20px',
+        border: 'none',
+        backgroundColor: '#E8E8E8',
+        height: '30px',
     },
     chatList: {
         listStyle: 'none',
         padding: 0,
     },
     chatItem: {
-        padding: '10px',
-        backgroundColor: '#fff',
+        // backgroundColor: '#818181',
         marginBottom: '5px',
-        borderRadius: '4px',
-        border: '1px solid #ddd',
-        cursor: 'pointer',
         width: '100%',
-    },
-    chatMain: {
-        flex: 1,
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
     },
     chatHeader: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px',
+        padding: '15px',
+        backgroundColor:'white',
+        width: 'calc(100% - 30px)',
     },
     userIcon: {
         width: '50px',
@@ -92,17 +93,31 @@ const styles = {
     },
     userName: {
         fontSize: '18px',
+        marginLeft: '20px'
     },
     chatContent: {
         flex: 1,
         overflowY: 'auto',
     },
-    chatContentMessage: {
-        backgroundColor: '#f1f1f1',
+    chatBubble: {
+        maxWidth: '40%',
         padding: '10px',
         marginBottom: '10px',
-        borderRadius: '4px',
-        border: '1px solid #ddd',
+        position: 'relative',
+    },
+    myMessage: {
+        backgroundColor: '#D9D9D9',
+        marginLeft: 'auto',
+        borderRadius: '10px 10px 0 10px',
+        width: 'auto',
+        border: '1px solid #4E53EE'
+    },
+    otherMessage: {
+        backgroundColor: 'white',
+        marginRight: 'auto',
+        borderRadius: '10px 10px 10px 0',
+        width: 'auto',
+        border: '1px solid #4E53EE'
     },
 };
 
@@ -202,14 +217,20 @@ const ChatPage = () => {
             <TopBarComponent />
             <div style={styles.chatContainer}>
                 <aside style={styles.sidebar}>
-                    <div style={styles.sidebarHeader} style={{display: "flex", justifyContent: "center"}}><br/><br/>최근
-                        채팅<br/><br/><br/>완료된
-                        채팅
+                    <div style={{width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black'}}>
+                        <div style={styles.sidebarHeader}>
+                            최근 채팅
+                        </div>
+                    </div>
+                    <div>
+                        <div style={styles.sidebarHeader} style={{display: "flex", justifyContent: "center", margin: '0 0 10px 0'}}>
+                            완료된 채팅
+                        </div>
                     </div>
                     <br/>
-                    <hr/>
+                    <hr style={{margin: '0 7px'}}/>
                     <br/>
-                    <div style={{display: "flex", justifyContent: "center"}}>도쿄 예약 대행<br/><br/><br/>○○ 예약 대행</div>
+                    <div style={{display: "flex", justifyContent: "center", margin: '10px 0 0 0'}}>도쿄 예약 대행<br/><br/><br/>○○ 예약 대행</div>
 
                 </aside>
                 <aside style={styles.chatListContainer}>
@@ -217,49 +238,137 @@ const ChatPage = () => {
                         <input type="text" placeholder="채팅방 내용, 참여자 검색" style={styles.sidebarContentInput}/>
                         <div style={styles.chatList}>
                             <div>
-                                <div>사용자 목록</div>
                                 {nicknames.map(nickname => (
                                     nickname !== username && (
-                                        <button key={nickname} style={styles.chatItem}
-                                                onClick={() => handleAddUser(nickname)}>
-                                            {nickname}
-                                        </button>
+                                        <div
+                                            style={{
+                                                width: '100%',
+                                                borderBottom: '1px solid lightgray',
+                                                cursor: 'pointer',
+                                                padding: '10px',
+                                                overflow: 'hidden',
+                                            }}
+                                            onClick={() => handleAddUser(nickname)}
+                                        >
+                                            <img style={{
+                                                width: '50px',
+                                                float: 'left',
+                                            }}
+                                                 src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
+                                            <div style={{
+                                                float: 'right',
+                                                width: 'calc(100% - 70px)',
+                                                padding: '0 10px',
+                                            }}>
+                                                <div>
+                                                    {nicknames.map(nickname => (
+                                                        nickname !== username && (
+                                                            <div key={nickname} style={styles.chatItem}>
+                                                                {nickname}
+                                                            </div>
+                                                        )
+                                                    ))}
+                                                </div>
+                                                <div style={{fontSize: '12px', color: 'gray'}}>
+                                                    메세지를 보내서 글로플러와...
+                                                </div>
+                                            </div>
+                                        </div>
                                     )
                                 ))}
                             </div>
+
+
                         </div>
                     </div>
                 </aside>
-                <main style={styles.chatMain}>
+                <Main>
                     {joined ? (
-                        <div>
+                        <div style={{overflow: 'hidden'}}>
                             <div style={styles.chatHeader}>
-                                <div style={styles.userIcon}></div>
+                                <img style={{
+                                    width: '50px',
+                                    float: 'left',
+                                }}
+                                     src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
                                 <div style={styles.userName}>{chatUsername}</div>
+
+                                <div style={{float: 'left',
+                                    border: '1px solid #4E53ED',
+                                    borderRadius: '20px',
+                                    width: '85px',
+                                    height: '30px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    fontSize: '14px',
+                                    marginLeft: '35px',
+                                }}>
+                                    리뷰 &nbsp;&gt;
+                                </div>
+                                <div style={{
+                                    width: '120px',
+                                    height: '35px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    fontSize: '14px',
+                                    color: 'white',
+                                    backgroundColor: '#4E53ED',
+                                    border: '1px solid #4E53ED',
+                                    borderRadius: '20px',
+                                    marginLeft: 'auto',
+                                }}>
+                                    글로플러 목록
+                                </div>
+
                             </div>
-                            <div style={{marginBottom: '20px', height: '58vh', overflowY: 'auto'}}>
+                            <ChatRoom style={{marginBottom: '20px', height: '58vh', overflowY: 'auto'}}>
                                 {messages.map((message, index) => (
-                                    <div key={index}>
-                                        <strong>{message.sender}: </strong>{message.content}
+                                    <div key={index} style={{
+                                        ...styles.chatBubble,
+                                        ...(message.sender === username ? styles.myMessage : styles.otherMessage),
+                                        width: "auto",
+                                    }}>
+                                        {message.content}
                                     </div>
                                 ))}
-                            </div>
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                style={{width: "80%", height: "30px"}}
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                style={{height: "40px", width: "70px"}}
-                            >Send</button>
+                            </ChatRoom>
+                            <BottomBar>
+                                <div style={{float: 'left', width: '7%', height: '100%'}}>
+                                    <div style={{
+                                        float: 'none',
+                                        width: '100%',
+                                        height: '100%',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        color: 'gray'
+                                    }}>
+                                        +
+                                    </div>
+                                </div>
+                                <ChatButton
+                                    onClick={handleSendMessage}
+                                ><img style={{height: "60%"}} src='/Img/채팅%20메세지%20버튼.png' alt='채팅 메세지 버튼'/>
+                                </ChatButton>
+                                <ChatInput
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="메세지를 보내서 글로플러와 예약을 진행해 보세요."
+                                >
+                                </ChatInput>
+                            </BottomBar>
+
                         </div>
 
                     ) : (
-                        <div>채팅방 입장 필요</div>
+                        <div>
+                            {/*채팅방 입장 필요*/}
+                        </div>
                     )}
-                </main>
+                </Main>
             </div>
         </div>
     );

@@ -53,43 +53,48 @@ export const LogInInput = styled.input`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 70%;
+    width: 65%;
     max-width: 400px;
-    height: 50px;
+    height: 45px;
     margin-bottom: 15px;
-    background-color: lightgray;
     font-size: 13px;
     font-weight: bold;
-    border: none;
+    border: 1.5px solid lightgray;
+    border-radius: 10px;
+    padding: 0 10px;
 `
 export const LogInButton = styled.div`
     
-    width: 72%;
+    width: 65%;
     max-width: 400px;
-    height: 50px;
+    height: 45px;
     margin-top: 20px;
-    margin-right: 10px;
-    background-color: lightgray;
+    background-color: #4E53ED;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white;
     font-size: 13px;
     font-weight: bold;
-    border: none;
+    border: 1.5px solid #4E53ED;
+    border-radius: 10px;
+    padding: 0 10px;
     &:hover {
         cursor: pointer;
     }
 `
 export const LogInUnderWrapper = styled.div`
-    width: 73%;
+    width: 69%;
     max-width: 400px;
     margin-top: 15px;
-    margin-right: 10px;
     font-size: 11px;
     font-weight: bold;
 `
-export const SignInButton = styled.button`
+export const SignInButton = styled.div`
     float: left;
+    &:hover {
+        cursor: pointer;
+    }
 `
 export const FindButton = styled.div`
     float: right;

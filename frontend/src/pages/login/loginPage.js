@@ -49,7 +49,7 @@ export default function LoginPage(){
                         Cookies.set("jwt", token, { expires: 1 }); // 쿠키에 JWT 토큰 저장, expires 옵션으로 유효기간 설정
                         console.log(token)
                         alert("로그인 성공!");
-                        navigate('/chat2');
+                        navigate('/');
                     } else {
                         alert("로그인 실패! 토큰이 없습니다.");
                     }
@@ -62,7 +62,7 @@ export default function LoginPage(){
     }
 
 
-    const onClickSignIn = () => {
+    const onClickSignUp = () => {
         navigate('/signup');
     }
 
@@ -99,12 +99,12 @@ export default function LoginPage(){
                         <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />
                         <LogInButton type="button" onClick={onClickLogin}>로그인</LogInButton>
                         <LogInUnderWrapper>
-                            <SignInButton onClick={onClickSignIn}>회원가입</SignInButton>
+                            <SignInButton onClick={onClickSignUp}>회원가입</SignInButton>
                             <FindButton>아이디·비밀번호 찾기</FindButton>
                         </LogInUnderWrapper>
                     </LogInWrapper>
                     <RightImgWrapper>
-                        <ImgWrapper><RightImg src="https://via.placeholder.com/500x300"></RightImg></ImgWrapper>
+                        <ImgWrapper><RightImg src="/Img/로그인 이미지.png"></RightImg></ImgWrapper>
 
                     </RightImgWrapper>
                 </Wrapper>

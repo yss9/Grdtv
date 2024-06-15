@@ -8,7 +8,8 @@ import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Write from "./pages/review/write/write";
 import WriteTest from "./pages/review/write/writeTest";
-import Recomendation from "./pages/route/route"
+import Recomendation from "./pages/route/route";
+import RouteNavigation from "./pages/routeNavigation/routeNavigationPage";
 import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
 import RouteRecomendation from "./pages/recomendation/Information/RouteRecomendation/routeRecomendation";
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/chat" element={<ChatPage />} />
                 <Route path="/route" element={<Recomendation />}/>
+                <Route path="/routeNavigation" element={<RouteNavigation />} />
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
                 <Route path="/recomendation/information/:placename" element={<InformationPage />} />

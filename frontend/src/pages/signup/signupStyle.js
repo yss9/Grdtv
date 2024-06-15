@@ -39,7 +39,7 @@ export const Progress = styled.div`
     height: 100%;
     width: 20%;
     border-radius: 5px;
-    background-color: #606060;
+    background-color: #7377EA;
     transition: margin-left 0.5s ease;
 `
 export const FormContainer = styled(motion.div)`
@@ -67,26 +67,28 @@ export const InputText = styled.div`
     width: 98%;
     text-align: left;
     margin-bottom: 5px;
+    color: #4E53EE;
 `
 export const Input = styled.input`
     width: 95%;
     padding: 10px;
     font-size: 16px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #ccc;
+    border: 1.5px solid #ccc;
+    background-color: white;
     border-radius: 5px;
-    height: 35px;
+    height: 30px;
 `
 export const GenderButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-start;
     width: 98%;
 `
-export const GenderButton = styled.button`
-    padding: 10px 20px;
+export const GenderButton = styled.div`
+    
     font-size: 16px;
-    background-color: #ccc;
+    //background-color: #ccc;
+    background-color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -94,6 +96,11 @@ export const GenderButton = styled.button`
     &:hover {
         cursor: pointer;
     }
+`;
+
+export const GenderImage = styled.img`
+    width: 80px;
+    height: auto;
 `
 export const NextButtonWrapper = styled.div`
     width: 100%;
@@ -184,9 +191,9 @@ export const RadioButtonSubComment = styled.div`
 `
 
 export const UserImg = styled.img`
-    margin: 50px 0 10px 0;
-    width: 120px;
-    height: 120px;
+    margin: 30px 0 10px 0;
+    width: 110px;
+    height: auto;
     border-radius: 100%;
     border: 2px solid lightgray;
     display: flex;
@@ -204,7 +211,7 @@ export const FinishText = styled.div`
 export const GoToLoginPage = styled.button`
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #ccc;
+    background-color: #4E53ED;
     border: none;
     border-radius: 5px;
     cursor: pointer;
