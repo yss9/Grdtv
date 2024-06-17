@@ -4,6 +4,7 @@ import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
+import {useNavigate} from "react-router-dom";
 const osakaLocations = [
     { name: '오사카성', img: '/Img/osaka/img.png' },
     { name: '우메다 스카이빌딩 공중정원', img: '/Img/osaka/img_3.png' },
@@ -25,7 +26,7 @@ const MapPage = () => {
         도착지: '',
     });
     const [markers, setMarkers] = useState([]);
-
+    const navigate = useNavigate();
     const openModal = (field, index = null) => {
         setSelectedField(field);
         setEditIndex(index);
@@ -97,16 +98,24 @@ const MapPage = () => {
         updateMarkers(newLocations);
     };
 
+    const handleGoMain=() =>{
+        navigate('/');
+    }
+
+    const handleGoReservation=() =>{
+        navigate('/reservation');
+    }
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="map-page">
                 <div className="sidebar">
-                    <img style={{width: '100px'}} src='/Img/로고.png'></img>
-                    <h1>OO님을 위한 경로 추천</h1>
+                    <img style={{width: '150px'}} src='/Img/Logo1.png'></img>
+                    <h1 style={{marginTop: "20%", marginBottom: "20%"}}>OO님을 위한 경로 추천</h1>
                     <div><br/></div>
                     <Droppable droppableId="travelLocations">
                         {(provided) => (
-                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                            <div style={{fontSize: "20px"}} {...provided.droppableProps} ref={provided.innerRef}>
                                 <Draggable key="출발지" draggableId="출발지" index={0}>
                                     {(provided) => (
                                         <div
@@ -116,9 +125,9 @@ const MapPage = () => {
                                             className="dropdown"
                                         >
                                             <label className="location-label">1</label>
-                                            <div
-                                                className="location-input"
-                                                onClick={() => openModal('출발지')}
+                                            <div style={{fontSize: "15px"}}
+                                                 className="location-input"
+                                                 onClick={() => openModal('출발지')}
                                             >{locations.출발지 || '출발지'}</div>
                                         </div>
                                     )}
@@ -128,16 +137,16 @@ const MapPage = () => {
                                     <React.Fragment key={`fragment-${index}`}>
                                         <Draggable key={`경유지-${index}`} draggableId={`경유지-${index}`} index={index + 1}>
                                             {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    className="dropdown"
+                                                <div style={{fontSize: "15px"}}
+                                                     ref={provided.innerRef}
+                                                     {...provided.draggableProps}
+                                                     {...provided.dragHandleProps}
+                                                     className="dropdown"
                                                 >
                                                     <label className="location-label">{index + 2}</label>
-                                                    <div
-                                                        className="location-input"
-                                                        onClick={() => openModal('경유지', index)}
+                                                    <div style={{fontSize: "15px"}}
+                                                         className="location-input"
+                                                         onClick={() => openModal('경유지', index)}
                                                     >{waypoint || `경유지 ${index + 1}`}</div>
                                                 </div>
                                             )}
@@ -148,50 +157,71 @@ const MapPage = () => {
                                 {provided.placeholder}
                                 <Draggable key="도착지" draggableId="도착지" index={locations.경유지.length + 1}>
                                     {(provided) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            className="dropdown"
+                                        <div style={{fontSize: "15px"}}
+                                             ref={provided.innerRef}
+                                             {...provided.draggableProps}
+                                             {...provided.dragHandleProps}
+                                             className="dropdown"
                                         >
                                             <label className="location-label">{locations.경유지.length + 2}</label>
-                                            <div
-                                                className="location-input"
-                                                onClick={() => openModal('도착지')}
+                                            <div style={{fontSize: "15px"}}
+                                                 className="location-input"
+                                                 onClick={() => openModal('도착지')}
                                             >{locations.도착지 || '도착지'}</div>
                                         </div>
                                     )}
                                 </Draggable>
                                 <button
                                     className="black-button"
-                                    style={{ marginTop: '20px' }}
+                                    style={{marginTop: '20px', marginLeft: '70px', fontFamily: "Regular"}}
                                     onClick={() => openModal('경유지')}
-                                >경유지 추가</button>
+                                >경유지 추가
+                                </button>
                             </div>
                         )}
                     </Droppable>
+                        <button onClick={handleGoMain} style={{
+                            border: "none",
+                            borderRadius: "10px",
+                            fontFamily: "Regular",
+                            padding: "3%",
+                            position:"relative",
+                            top:"66%",
+                        }}> 나가기
+                        </button>
+                        <button onClick={handleGoReservation} style={{
+                            border: "none",
+                            borderRadius: "10px",
+                            fontFamily: "Regular",
+                            padding: "3%",
+                            position:"relative",
+                            top:"66%",
+                            left:"26%"
+                        }}
+                        > 예약 대행 신청하러 가기
+                        </button>
+
                 </div>
                 <div className="map-container">
 
 
-
                     {/* ~!~!~!~!~!~~!~!~!~!~!~ 구글 api 키 넣는 곳 ~!~!~!~!~!~~!~!~!~!~!~ */}
 
-                    <LoadScript googleMapsApiKey="여따가 키 넣기" libraries={['places']}>
+                    <LoadScript googleMapsApiKey="AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4" libraries={['places']}>
                         <GoogleMap
-                            mapContainerStyle={{ width: '100%', height: '100%' }}
-                            center={{ lat: 34.6937, lng: 135.5023 }}
+                            mapContainerStyle={{width: '100%', height: '100%'}}
+                            center={{lat: 34.6937, lng: 135.5023}}
                             zoom={13}
                             onLoad={() => console.log('Map Loaded')}
                             onError={(e) => console.error('Error loading map', e)}
                         >
                             {markers.map((marker, index) => (
-                                <Marker key={index} position={marker} label={`${index + 1}`} />
+                                <Marker key={index} position={marker} label={`${index + 1}`}/>
                             ))}
                             {markers.length > 1 && (
                                 <Polyline
                                     path={markers}
-                                    options={{ strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 2 }}
+                                    options={{strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 2}}
                                 />
                             )}
                         </GoogleMap>
@@ -223,6 +253,7 @@ const MapPage = () => {
                     </div>
                 </Modal>
             </div>
+
         </DragDropContext>
     );
 }
@@ -241,5 +272,7 @@ const customStyles = {
         textAlign: 'center',
     },
 };
+
+
 
 export default MapPage;

@@ -210,7 +210,7 @@ export default function SignupPage() {
     return (
         <>
             <Wrapper>
-                <Logo>LOGO</Logo>
+                <Logo></Logo>
                 <ContentsWrapper>
                     <ProgressBar>
                         <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "20%" : step === 3 ? "40%" : step === 4 ? "60%" : "80%" }}></Progress>

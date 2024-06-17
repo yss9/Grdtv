@@ -68,7 +68,10 @@ export const Avatar = styled.div`
 `;
 
 export const Writer = styled.div`
-    padding-left:40px;
+    padding-left:10px;
+    margin-right: 15px;
+    font-family: Regular;
+    color: #515151;
 `;
 
 export const Url = styled.button`
@@ -140,14 +143,16 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Title = styled.h1`
-  padding-top: 80px;
   color: #515151;
+    margin-top:-100%;
+    font-size: 250%;
+    font-family: SubTitle;
   text-align: center; 
   
 `;
 
 export const Contents = styled.div`
-  padding-top: 40px;
+  padding-top: 10px;
   padding-bottom: 120px;
   display: flex;
   flex-direction: column; /* 자식 요소를 수직으로 배치 */

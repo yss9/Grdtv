@@ -12,17 +12,18 @@ export const MbtiTitleContainer=styled.div`
 export const MbtiTitle=styled.text`
   font-size: 30px;
   font-weight: bold;
-  height: 15%;
+  height: 8%;
   display: flex;
   flex-direction: column;
   color: #4E53ED;
  // background-color: pink;
   justify-content: flex-end;
-  font-family: "SubTitle";
-
+  font-family: "Title";
+    
 `
 
 export const MbtiSubTitle=styled.text`
+    margin-top: -60px;
   font-size: 17px;
   color: #515151;
   display: flex;
@@ -34,11 +35,12 @@ export const MbtiSubTitle=styled.text`
   
   p {
     padding: 5px 0;
-    font-family: "Regular";
+    font-family: "SubTitle";
     color: black;
   }
 `
 export const WriteMbtiBtnWrapper=styled.div`
+    margin-top: -100px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -47,7 +49,7 @@ export const WriteMbtiBtnWrapper=styled.div`
 `
 export const WriteMbtiBtn=styled.button`
   width: 18%;
-  height: 62%;
+  height: 25%;
   border-radius: 25px;
   display: flex;
   justify-content: space-between;
@@ -81,7 +83,7 @@ export const MbtiContainer=styled.div`
 
 export const Mbti=styled.text`
   font-size: 30px;
-  color: #515151;
+  color: #4E53ED;
   font-family: "Title";
 
 `

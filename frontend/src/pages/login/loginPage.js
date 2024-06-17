@@ -93,7 +93,7 @@ export default function LoginPage(){
                 exit={{opacity: 0}}
             >
                 <Wrapper>
-                    <Logo>LOGO</Logo>
+                    <Logo></Logo>
                     <LogInWrapper>
                         <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />
                         <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />

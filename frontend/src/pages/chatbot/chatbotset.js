@@ -8,7 +8,7 @@ import TopBarComponent from "../../components/TopBar/TopBar";
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 98.5vh;
+    height: 98.2vh;
 `;
 
 const MainContentArea = styled.div`
@@ -24,6 +24,7 @@ const Sidebar = styled.div`
     display: flex;
     flex-direction: column;
     padding: 20px;
+    font-family: Regular;
 `;
 
 const SidebarItem = styled.div`
@@ -38,12 +39,13 @@ const MainContent = styled.div`
     display: flex;
     flex-direction: column;
     background-color: white;
-    overflow: hidden; // Main content에 스크롤 숨기기
+    overflow: hidden;
+    font-family: Regular;
 `;
 
 const Header = styled.div`
     padding-top: 50px;
-    padding-left: 70px;
+    padding-left: 100px;
     
     margin-bottom: 30px;
 `;
@@ -84,18 +86,19 @@ const ChatInput = styled.input`
 `;
 
 const SendButton = styled.button`
-    padding: 10px;
-    background-color: #4a5fc1;
+    padding: 10px 30px;
+    background-color: #4E53ED;
     color: white;
     border: none;
     cursor: pointer;
 `;
 
 const QuestionListContainer = styled.div`
-    margin-top: 10px;
+    margin-top: 13px;
 `;
 
 const QuestionButton = styled.button`
+    font-family: SubTitle;
     margin-right: 20px;
     padding: 12px 40px 12px 40px;
     background-color: transparent;
@@ -103,6 +106,18 @@ const QuestionButton = styled.button`
     border-radius: 13px;
     cursor: pointer;
 `;
+
+const GlloImg = styled.div`
+    width: 73px;
+    height: 65px;
+    display: inline-block;
+    position: absolute;
+    left: 310px;
+    top: 140px;
+    background-image: url("/gllo.png");
+    
+`
+
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
@@ -195,6 +210,7 @@ const Chatbot = () => {
                     ) : (
                         <>
                             <Header>
+                                <GlloImg></GlloImg>
                                 챗봇 글로에게 궁금한 점을 물어보세요.<br/>
                                 무엇을 도와드릴까요?<br/><br/><br/>
                                 빠르고 쉽게 물어보세요.
@@ -222,7 +238,7 @@ const Chatbot = () => {
                                     onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                     placeholder="궁금한 사항을 입력해 주세요."
                                 />
-                                <SendButton onClick={sendMessage}>전송</SendButton>
+                                <SendButton onClick={sendMessage}> > </SendButton>
                             </ChatInputContainer>
                         </>
                     )}

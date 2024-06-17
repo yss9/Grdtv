@@ -58,9 +58,9 @@ const Agents=styled.div`
 `
 
 const AgentData=[ //백엔드 데이터 요청 부분
-    { author: 'Author 1', introduce: '한마디', hashtags: ['#tag1', '#tag2', '#tag3'], spec:['This is the first user spec','This is the first user spec2']},
-    { author: 'Author 2', introduce: '한마디 2',  hashtags: ['#2tag1', '#2tag2', '#2tag3'], spec:['This is the second user spec','This is the second user spec2']},
-    { author: 'Author 3',  introduce: '한마디 3', hashtags: ['#3tag1', '#3tag2', '#3tag3'],spec:['This is the third user spec','This is the third user spec2'] },
+    { author: '김여행', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'] },
+    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'] },
+    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'] }
 ];
 
 export default function MyReservation() {

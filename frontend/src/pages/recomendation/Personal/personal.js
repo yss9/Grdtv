@@ -19,7 +19,7 @@ import {
 } from "./personalstyle";
 
 import BestCourse from "../../../components/BestCourse/BestCourse";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Osaka from "../../../public/Img/osaka.png";
 import Paris from "../../../public/Img/paris.png";
 import Sydney from "../../../public/Img/sydney.png";
@@ -72,9 +72,24 @@ export default function MainPage() {
         setActiveIndex(newIndex);
     };
 
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.triggerButtonClick) {
+            const button = document.getElementById('target-button-id');
+            if (button) {
+                button.click();
+            }
+        }
+    }, [location.state]);
+
     const handleGoInformation = (placename) => {
         navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
     };
+
+    const handleGoKeywordSelection = () =>{
+        navigate('/keyword');
+    }
 
     useEffect(() => {
         refreshPlaces();
@@ -94,7 +109,7 @@ export default function MainPage() {
                 </TitleWrapper>
                 <SubTitleWrapper>
                     <SubTitle>키워드 성향에 따른 맞춤형 여행지를 추천해 드려요.</SubTitle>
-                    <RefreshBtn onClick={refreshPlaces}>
+                    <RefreshBtn id="target-buttion-id" onClick={refreshPlaces}>
                         <p>추천 새로고침</p>
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_484_188)">
@@ -116,7 +131,7 @@ export default function MainPage() {
                         </PlaceWrapper>
                     ))}
                 </PlaceContainer>
-                <KeywordBtn>키워드 다시 선정하기</KeywordBtn>
+                <KeywordBtn onClick={handleGoKeywordSelection}>키워드 다시 선정하기</KeywordBtn>
                 <BestWrapper>
                     <KeywordContainer>
                         <HashTagContaienr>

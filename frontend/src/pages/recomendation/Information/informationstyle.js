@@ -11,7 +11,7 @@ export const PlaceName=styled.div`
   width: 70rem;
   text-align: left;
   font-size: 28px;
-  font-family: "Regular";
+  font-family: "Title";
   color: #4e53ed;
   font-weight: bold;
 `
@@ -41,6 +41,7 @@ export const RightWrapper=styled.div`
 export const DetailInfoWrapper=styled.div`
   margin-right: 2.5rem;
   //background-color: gray;
+    color: rgba(81, 81, 81, 1);
   height: 50%;
   display: flex;
   flex-direction: column;
@@ -51,16 +52,21 @@ export const DetailInfoTitle=styled.text`
   padding: 10px;
   font-weight: bold;
   font-family: "Regular";
+    
 `
 export const DetailInfo=styled.div`
-  padding: 10px;
+  padding-left: 15px;
+    padding-top: 5px;
   font-family: "Regular";
+    color: rgba(132, 132, 132, 1);
 
 `
 export const ReviewContainer=styled.div`
  // background-color: pink;
 `
 export const ReviewTitle=styled.div`
+    font-family: SubTitle;
+    color:rgba(81, 81, 81, 1);
   padding: 10px;
   font-size: 18px;
 `
@@ -70,7 +76,7 @@ export const BtnContainer=styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: 5rem;
 `
 export const BtnTitle=styled.div`
     font-size: 18px;
@@ -79,26 +85,26 @@ export const BtnTitle=styled.div`
   font-family: "Regular";
 `
 export const FindRouteBtn=styled.button`
-    width: 23rem;
+    width: 18rem;
   border-radius: 15px;
   font-size: 22px;
-  padding: 3%;
+  padding: 3.5%;
   margin-bottom: 1rem;
   font-weight: bold;
   background-color: white;
-  border: 2px solid #4E53EE;
-  font-family: "Regular";
+  border: 1px solid #4E53EE;
+  font-family: "Title";
 
 `
 export const RecomendationBtn=styled.button`
-  width: 23rem;
+    width: 18rem;
   border-radius: 15px;
   font-size: 22px;
-  padding: 3%;
-  font-weight: bold;
+    padding: 3.5%;
   background-color: #4E53EE;
   border: none;
-  font-family: "Regular";
+  font-family: "SubTitle";
+    color:white;
 
 `
 
@@ -112,6 +118,7 @@ export const PlaceReivewContainer=styled.div`
 
 export const PlaceReviews=styled.div`
   //background-color: gray;
+    color: rgba(132, 132, 132, 1);
   display: flex;
   justify-content: center;
 `

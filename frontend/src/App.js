@@ -20,7 +20,8 @@ import BoardList from "./pages/review/list/list";
 import ListByMKS from "./pages/review/listbymks/listbymks"
 import BoardWrite from "./pages/review/write/write";
 import Chatbotset from "./pages/chatbot/chatbotset";
-
+import KeywordSelection from "./pages/recomendation/Personal/keyword";
+import BoardEx from "./pages/board/boardDetail";
 
 function App() {
     return (
@@ -46,6 +47,8 @@ function App() {
                 <Route path="/routeRec" element={<RouteRecomendation />} />
                 <Route path="/my" element={<MyPage/>}/>
                 <Route path="/chatbot" element={<Chatbotset/>}/>
+                <Route path="/keyword" element={<KeywordSelection/>}/>
+                <Route path="/exboard" element={<BoardEx/>}/>
             </Routes>
         </BrowserRouter>
     );

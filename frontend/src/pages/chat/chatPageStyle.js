@@ -10,10 +10,10 @@ export const ChatInput = styled.input`
 export const BottomBar = styled.div`
     overflow: hidden;
     position: fixed;
-    bottom: 0;
+    bottom: 21px;
     right: 3%;
     width: 60%;
-    height: 8vh;
+    height: 5vh;
     border-radius: 10px 10px 0 0;
     box-shadow: -3px -3px 5px rgba(0, 0, 0, 0.1);
     background-color: white;

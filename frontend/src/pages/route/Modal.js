@@ -16,7 +16,8 @@ const Modal = ({ isOpen, onClose }) => {
     return (
         <ModalWrapper>
             <ModalContent>
-                <div style={{width: '60%', height:'auto', float: 'left'}}>
+                <p style={{position:"absolute", top:"31%", left:"71%", fontSize:"30px",color:"#C7C7C7"}}>x</p>
+                <div style={{width: '60%', height: 'auto', float: 'left', marginTop: "3%"}}>
                     <CloseButton onClick={onClose}>&times;</CloseButton>
                     <ModalSubtitle>OSAKA</ModalSubtitle>
                     <ModalTitle>일본 오사카</ModalTitle>

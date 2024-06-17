@@ -70,16 +70,17 @@ export default function BoardDetail() {
                     <S.Header>
                         <S.Info>
                             <S.TitleWrapper>
-                            <S.Title>{title}</S.Title>
+                            <S.Title>{title}라멘의 모든 것</S.Title>
                             </S.TitleWrapper>
                             <AvatarWrapper>
                             <Avatar/>
-                            <S.Writer>진나은</S.Writer>
+                            <S.Writer>김라멘</S.Writer>
+                                <p style={{fontFamily:"Regular", color:"#9D9D9D"}}>2024.4.27</p>
                             </AvatarWrapper>
                         </S.Info>
                         <S.SubWrapper>
-                            <S.Url>Url 복사</S.Url>
-                            <S.Favorite>favorite</S.Favorite>
+                            <S.Url>URL 복사</S.Url>
+                            <S.Favorite>즐겨찾기</S.Favorite>
                         </S.SubWrapper>
                     </S.Header>
                     <S.Body>

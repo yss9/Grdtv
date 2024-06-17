@@ -17,13 +17,13 @@ export const ModalContent = styled.div`
     border-radius: 10px;
     padding: 50px;
     width: 40%;
-    height: 40%;
+    height: 30%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const ModalImage = styled.img`
   width: 38%;
-    
+    margin-top: 5%;
   border-radius: 10px;
   margin-bottom: 20px;
     float: right;
@@ -31,18 +31,21 @@ export const ModalImage = styled.img`
 
 export const ModalTitle = styled.h2`
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 30px;
     font-weight: bold;
+    font-family: Title;
 `;
 
 export const ModalSubtitle = styled.h3`
   margin-bottom: 10px;
-  font-size: 18px;
-  color: grey;
+  font-size: 20px;
+  color: #C7C7C7;
+    font-family: Regular;
 `;
 
 export const ModalText = styled.p`
-  font-size: 10px;
+    font-family: Regular;
+  font-size: 12px;
   line-height: 1.5;
   text-align: left;
     float: left;
@@ -69,7 +72,7 @@ export const MakeRouteButton = styled.button`
     height: 35px;
     color: white;
     font-size: 12px;
-
+    font-family: Regular;
     &:hover {
         cursor: pointer;
     }

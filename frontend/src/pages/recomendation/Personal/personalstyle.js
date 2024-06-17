@@ -48,7 +48,6 @@ export const RefreshBtn=styled.button`
 `
 export const PlaceContainer=styled.div`
     width: 75%;
-  height: 40rem;
   margin-top: 1em;
   //background-color: palegoldenrod;
   display: flex;
@@ -97,6 +96,7 @@ export const KeywordBtn=styled.button`
   cursor: pointer;
   border-radius: 30px;
   width: 11.7rem;
+
   
 `
 export const HashTagContaienr=styled.div`
@@ -140,7 +140,7 @@ export const BestContainer=styled.div`
 `
 export const BestWrapper=styled.div`
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 7rem;
   background-color: #f4f6f8;
   display: flex;
   justify-content: center;
@@ -167,6 +167,7 @@ export const BestCourseContainer=styled.div`
   align-items: center;
   margin-top: 2vh;
   flex-direction: column;
+    
   //background-color: gray;
 `
 export const BestCourses=styled.div`
@@ -174,6 +175,7 @@ export const BestCourses=styled.div`
   height: auto;
   //background-color: gray;
   display: flex;
+    
   justify-content: space-between;
 `
 export const GaugeBarWrapper=styled.div`

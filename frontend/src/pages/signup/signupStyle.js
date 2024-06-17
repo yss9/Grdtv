@@ -16,13 +16,14 @@ export const ContentsWrapper = styled.div`
     height: 100%;
 `
 export const Logo = styled.div`
-    text-align: left;
-    font-weight: bold;
-    font-size: 30px;
-    margin-top: 25px;
-    margin-left: 8vw;
-    width: 100%;
-    height: auto;
+    margin-top: 30px;
+    margin-left: 2vw;
+    width: 13%;
+    height:5%;
+    background-image: url("/Img/Logo1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+
 `
 export const ProgressBar = styled.div`
     width: 100%;

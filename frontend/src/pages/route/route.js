@@ -3,11 +3,12 @@ import { Reset } from 'styled-reset';
 import React, { useState } from "react";
 import {
     RecBtn, RecBtnWrapper, RecContainer, RecSubTitle,
-    RecTitle, RecWrapper, RecInput, RecList, RecListItem, RecListCountry
+    RecTitle, RecWrapper, RecInput, RecList, RecListItem, RecListCountry,
 } from "./routestyle";
 import TopBarComponent from "../../components/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
-import Modal from "./Modal"; // 모달 컴포넌트 import
+import Modal from "./Modal";
+import placeholder from "lodash/fp/placeholder"; // 모달 컴포넌트 import
 
 export default function RoutePage() {
     const [showInput, setShowInput] = useState(false);
@@ -48,8 +49,9 @@ export default function RoutePage() {
                                 </RecBtn>
                             )}
                             {showInput && (
-                                <div>
+                                <div style={{marginTop:"-10%"}}>
                                     <RecInput placeholder="어디로 여행을 떠나시나요?" />
+                                    <p style={{fontFamily:"SubTitle", fontSize:"12px", paddingBottom:"10px"}}>목록에서 찾아보기</p>
                                     <RecList>
                                         <RecListItem>하와이
                                             <RecListCountry>미국</RecListCountry>

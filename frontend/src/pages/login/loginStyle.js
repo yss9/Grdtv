@@ -1,6 +1,7 @@
 import styled  from "@emotion/styled";
 
 export const Wrapper=styled.div`
+    
     //display: flex;
     //justify-content: center; /* 수평 정렬 설정 */
     //align-items: center; /* 수직 정렬 설정 */
@@ -10,16 +11,17 @@ export const Wrapper=styled.div`
     flex-direction: column;
 `
 export const Logo = styled.div`
-
-    font-weight: bolder;
-    font-size: 30px;
     margin-top: 30px;
-    margin-left: 8vw;
-    width: auto;
-    height: auto;
-    //background-color: #bbcbaa;
+    margin-left: 2vw;
+    width: 13%;
+    height:5%;
+    background-image: url("/Img/Logo1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    
 `
 export const LogInWrapper = styled.div`
+    font-family: Regular;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -50,6 +52,7 @@ export const RightImgWrapper = styled.div`
     //padding: 20px;
 `
 export const LogInInput = styled.input`
+    font-family: Regular;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -62,19 +65,20 @@ export const LogInInput = styled.input`
     border: 1.5px solid lightgray;
     border-radius: 10px;
     padding: 0 10px;
+    color:rgba(151, 151, 151, 1);
 `
 export const LogInButton = styled.div`
-    
     width: 65%;
     max-width: 400px;
     height: 45px;
     margin-top: 20px;
+    font-family: Regular;
     background-color: #4E53ED;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: bold;
     border: 1.5px solid #4E53ED;
     border-radius: 10px;
