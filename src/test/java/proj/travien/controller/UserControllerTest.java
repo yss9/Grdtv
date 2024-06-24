@@ -38,7 +38,7 @@ class UserControllerTest {
     void testSignUp_UsernameAlreadyInUse() {
         UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userService.isUsernameInUse(userDTO.getUsername())).thenReturn(true);
+        when(userService.isUserIdInUse(userDTO.getUsername())).thenReturn(true);
 
         ResponseEntity<?> response = userController.signUp(userDTO);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -58,7 +58,7 @@ class UserControllerTest {
     void testSignUp_Success() {
         UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
 
-        when(userService.isUsernameInUse(userDTO.getUsername())).thenReturn(false);
+        when(userService.isUserIdInUse(userDTO.getUsername())).thenReturn(false);
         when(userService.isNicknameInUse(userDTO.getNickname())).thenReturn(false);
         when(userService.createUser(userDTO)).thenReturn(true);
 
@@ -96,7 +96,7 @@ class UserControllerTest {
     void testCheckUsername() {
         String username = "username";
 
-        when(userService.isUsernameInUse(username)).thenReturn(true);
+        when(userService.isUserIdInUse(username)).thenReturn(true);
 
         ResponseEntity<?> response = userController.checkUsername(username);
         assertEquals(HttpStatus.OK, response.getStatusCode());
