@@ -94,7 +94,7 @@ class UserServiceTest {
 
         when(userRepository.findByUsername(username)).thenReturn(new User());
 
-        boolean result = userService.isUsernameInUse(username);
+        boolean result = userService.isUserIdInUse(username);
         assertTrue(result);
     }
 
