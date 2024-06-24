@@ -1,3 +1,4 @@
+// BoardDetail.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from 'antd';
@@ -80,8 +81,10 @@ export default function BoardDetail() {
                             <S.AddressWrapper>
                                 <S.AddressImage />
                                 <S.Address>{address}</S.Address>
-                                <MapComponent address={address} /> {/* MapComponent 사용 */}
                             </S.AddressWrapper>
+                            <S.MapWrapper>
+                                <MapComponent address={address} /> {/* MapComponent 사용 */}
+                            </S.MapWrapper>
                             <S.Contents>{body}</S.Contents>
                             <S.ImageWrapper>
                                 {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100%' }} />}
