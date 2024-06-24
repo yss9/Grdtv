@@ -22,6 +22,7 @@ import BoardWrite from "./pages/review/write/write";
 import Chatbotset from "./pages/chatbot/chatbotset";
 import KeywordSelection from "./pages/recomendation/Personal/keyword";
 import BoardEx from "./pages/board/boardDetail";
+import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 
 function App() {
     return (
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/chatbot" element={<Chatbotset/>}/>
                 <Route path="/keyword" element={<KeywordSelection/>}/>
                 <Route path="/exboard" element={<BoardEx/>}/>
+                <Route path="/agentperspective" element={<AgentPerspective/>}/>
             </Routes>
         </BrowserRouter>
     );

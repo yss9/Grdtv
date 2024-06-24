@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { useLoadScript } from '@react-google-maps/api';
 
 const libraries = ['places'];
 
@@ -14,10 +14,10 @@ const MapComponent = ({ address }) => {
         height: '300px',
     };
 
-    const center = {
-        lat: 37.7749,
-        lng: -122.4194,
-    };
+    //const center = {
+      //  lat: 37.7749,
+       // lng: -122.4194,
+    //};
 
     useEffect(() => {
         if (isLoaded) {

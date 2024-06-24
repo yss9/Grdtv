@@ -14,7 +14,7 @@ export default function MainPage() {
     const [country, setCountry] = useState('');
     const navigate = useNavigate();
     const handleClick = (event, country) => {
-        const svgRect = event.currentTarget.getBoundingClientRect();
+        //const svgRect = event.currentTarget.getBoundingClientRect();
         const rect = event.target.getBoundingClientRect();
         const x = rect.x;
         const y = rect.y + rect.height;

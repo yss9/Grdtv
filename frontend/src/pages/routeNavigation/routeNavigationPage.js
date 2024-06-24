@@ -207,7 +207,7 @@ const MapPage = () => {
 
                     {/* ~!~!~!~!~!~~!~!~!~!~!~ 구글 api 키 넣는 곳 ~!~!~!~!~!~~!~!~!~!~!~ */}
 
-                    <LoadScript googleMapsApiKey="AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4" libraries={['places']}>
+                    <LoadScript googleMapsApiKey="api 키" libraries={['places']}>
                         <GoogleMap
                             mapContainerStyle={{width: '100%', height: '100%'}}
                             center={{lat: 34.6937, lng: 135.5023}}
