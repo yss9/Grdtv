@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { getDate } from "../../common/libraries/utils";
-import { Button, Popover, Modal } from 'antd';
-import DaumPostcodeEmbed from "react-daum-postcode";
-import { Link, useParams, useNavigate } from "react-router-dom"; // useHistory 대신 useNavigate 사용
+import { Button } from 'antd';
+import { useParams, useNavigate } from "react-router-dom";
 import * as S from "./style";
 import TopBarComponent from "../../../components/TopBar/TopBar";
-import {Avatar, AvatarWrapper} from "./style";
-
+import { Avatar, AvatarWrapper } from "./style";
 
 export default function BoardDetail() {
-
     const { boardID } = useParams();
-    const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
+    const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [image, setImage] = useState(null);
     const [address, setAddress] = useState("");
-
-
 
     const fetchData = async () => {
         try {
@@ -28,9 +22,8 @@ export default function BoardDetail() {
 
             setTitle(postData.title);
             setBody(postData.body);
+            setImage(postData.image); // 이미지 파일 경로 설정
             setAddress(postData.address);
-
-
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -44,7 +37,7 @@ export default function BoardDetail() {
         try {
             await axios.delete(`http://localhost:8080/api/posts/${boardID}/`);
             alert("게시물 삭제가 정상적으로 완료되었습니다!");
-            navigate("/review"); // navigate 함수로 페이지 이동
+            navigate("/review");
         } catch (error) {
             console.log(error);
         }
@@ -63,43 +56,42 @@ export default function BoardDetail() {
 
     return (
         <>
-            <TopBarComponent/>
+            <TopBarComponent />
             <S.Container>
-            <S.Wrapper>
-                <S.CardWrapper>
-                    <S.Header>
-                        <S.Info>
-                            <S.TitleWrapper>
-                            <S.Title>{title}라멘의 모든 것</S.Title>
-                            </S.TitleWrapper>
-                            <AvatarWrapper>
-                            <Avatar/>
-                            <S.Writer>김라멘</S.Writer>
-                                <p style={{fontFamily:"Regular", color:"#9D9D9D"}}>2024.4.27</p>
-                            </AvatarWrapper>
-                        </S.Info>
-                        <S.SubWrapper>
-                            <S.Url>URL 복사</S.Url>
-                            <S.Favorite>즐겨찾기</S.Favorite>
-                        </S.SubWrapper>
-                    </S.Header>
-                    <S.Body>
-                        <S.AddressWrapper>
-                            <S.AddressImage/>
-                            <S.Address>{address}</S.Address>
-                        </S.AddressWrapper>
-                        <S.Contents>{body}</S.Contents>
-                        <S.ImageWrapper>
-                            <S.Image/>
-                        </S.ImageWrapper>
-                    </S.Body>
-                </S.CardWrapper>
-                <S.BottomWrapper>
-                    <Button onClick={() => navigate("/review")}>목록으로</Button> {/* navigate 함수로 페이지 이동 */}
-                    <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button> {/* navigate 함수로 페이지 이동 */}
-                    <Button onClick={onClickBoardDelete}>삭제하기</Button>
-                </S.BottomWrapper>
-            </S.Wrapper>
+                <S.Wrapper>
+                    <S.CardWrapper>
+                        <S.Header>
+                            <S.Info>
+                                <S.TitleWrapper>
+                                    <S.Title>{title}</S.Title>
+                                </S.TitleWrapper>
+                                <AvatarWrapper>
+                                    <Avatar />
+                                    <S.Writer>진나은</S.Writer>
+                                </AvatarWrapper>
+                            </S.Info>
+                            <S.SubWrapper>
+                                <S.Url>Url 복사</S.Url>
+                                <S.Favorite>favorite</S.Favorite>
+                            </S.SubWrapper>
+                        </S.Header>
+                        <S.Body>
+                            <S.AddressWrapper>
+                                <S.AddressImage />
+                                <S.Address>{address}</S.Address>
+                            </S.AddressWrapper>
+                            <S.Contents>{body}</S.Contents>
+                            <S.ImageWrapper>
+                                {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100%' }} />}
+                            </S.ImageWrapper>
+                        </S.Body>
+                    </S.CardWrapper>
+                    <S.BottomWrapper>
+                        <Button onClick={() => navigate("/review")}>목록으로</Button>
+                        <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button>
+                        <Button onClick={onClickBoardDelete}>삭제하기</Button>
+                    </S.BottomWrapper>
+                </S.Wrapper>
             </S.Container>
         </>
     );
