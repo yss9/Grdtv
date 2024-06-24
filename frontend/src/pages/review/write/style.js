@@ -7,7 +7,7 @@ import plusImage from '../../../images/Frame 53.png';
 
 
 export const Container = styled.div`
- 
+    margin-top: -110px;
     display: flex;
     align-items: center;
     justify-content: center;

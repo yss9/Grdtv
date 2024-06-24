@@ -7,6 +7,7 @@ export const MyProfileContainer=styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: Regular;
 
 `
 export const ProfileImg=styled.img`
@@ -40,6 +41,7 @@ export const Mbti=styled.div`
   align-items: center;
   justify-content: center;
 font-family: "Regular";
+  margin-right: 5px;
 `
 export const Introduce=styled.div`
   display: flex;
@@ -122,10 +124,10 @@ export const MyPageDetailContainer=styled.div`
   align-items: center;
   //background-color: #61dafb;
   margin-top: 2em;
+  
 `
 export const Container = styled.div`
-  font-family: sans-serif;
-  font-size: 14px;
+  font-size: 20px;
   color: #555555;
   height: 100%;
   width: 100%;
@@ -134,6 +136,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  font-family: Regular;
 `;
 
 export const SelectorContainer = styled.div`
@@ -208,6 +211,6 @@ export const SelectorWrapper2 = styled.div`
 export const Content = styled.div`
   margin-top: 2rem;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #333;
 `;

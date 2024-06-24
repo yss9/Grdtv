@@ -7,12 +7,12 @@ export const SubTitleWrapper=styled.div`
 `
 export const SubTitle=styled.div`
   width: 50%;
-  height: 4vh;
+  height: 1vh;
   text-align: center;
   //background-color: gray;
   font-size: 22px;
   color: #515151;
-  font-family: "Regular";
+  font-family: "SubTitle";
 `
 export const SearchBarWrapper=styled.div`
  height: 8vh;
@@ -23,7 +23,7 @@ export const SearchBarWrapper=styled.div`
 `
 export const Icon=styled.div`
   width: 4%;
-  height: 100%;
+  height: 70%;
   background-color: transparent;
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@ export const Icon=styled.div`
 `
 export const SearchBarContainer=styled.div`
   width: 40%;
- height: 100%;
+ height: 70%;
  border-radius: 0 15px 15px 0;
   border-width: 2px 2px 2px 0;
   border-style: solid;

@@ -53,7 +53,8 @@ const Pname=styled.div`
   //background-color: orchid;
   display: flex;
   align-items: center;
-  font-size: 30px;
+  font-size: 20px;
+    font-family: Title;
   margin-left: 3px;
   color: #515151;
 `;
@@ -95,6 +96,8 @@ const HashTags=styled.div`
 `
 const HashTag=styled.text`
     margin: 7px;
+    font-family: Regular;
+    font-size: 15px;
   color: #9d9d9d;
 `
 const GoChatBtnWrapper=styled.div`
@@ -107,11 +110,11 @@ const GoChatBtnWrapper=styled.div`
 `
 const GoChatBtn=styled.button`
   width: 100%;
-  height: 80%;
+  height: 65%;
   justify-content: center;
   border-radius: 30px;
   align-items: center;
-  font-size: 17px;
+  font-size: 15px;
   color: white;
     background-color: #4e53ed;
   border: none;
@@ -158,7 +161,7 @@ const ReviewWrapper=styled.div`
 const StarAvg=styled.div`
     display: flex;
   font-size: 17px;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   justify-content: center;
   align-items: center;
   p{
@@ -285,14 +288,14 @@ const Agent = ({ review, pageType }) => {
                         </Read>
                         <ReviewWrapper>
                             <SubWrapper>
-                                <StarAvg>
+                                <StarAvg style={{marginBottom:"10px", }}>
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#FF9D2A"/>
                                     </svg>
                                     <p>{review.score}({review.number})</p>
                                 </StarAvg>
                                 <SeeAllBtn>
-                                    <p>전체보기</p>
+                                    <p style={{fontFamily: "SubTitle", marginBottom:"10px"}}>전체보기</p>
                                     <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 1L9 8L1 15" stroke="black" stroke-width="2"/>
                                     </svg>

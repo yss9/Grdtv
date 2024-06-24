@@ -1,17 +1,35 @@
-import {Wrapper} from "../review/reviewstyle";
+import { Wrapper } from "../review/reviewstyle";
 import { Reset } from 'styled-reset';
-import React from "react";
+import React, { useState } from "react";
 import {
     RecBtn, RecBtnWrapper, RecContainer, RecSubTitle,
-    RecTitle, RecWrapper
+    RecTitle, RecWrapper, RecInput, RecList, RecListItem, RecListCountry,
 } from "./routestyle";
 import TopBarComponent from "../../components/TopBar/TopBar";
+import { useNavigate } from "react-router-dom";
+import Modal from "./Modal";
+import placeholder from "lodash/fp/placeholder"; // 모달 컴포넌트 import
 
-export default function RecomendationPage() {
+export default function RoutePage() {
+    const [showInput, setShowInput] = useState(false);
+    const [showModal, setShowModal] = useState(false); // 모달 상태 추가
+    const navigate = useNavigate();
 
-    return(
+    const onClickRecBtn = () => {
+        setShowInput(true);
+    }
+
+    const openModal = () => {
+        setShowModal(true);
+    }
+
+    const closeModal = () => {
+        setShowModal(false);
+    }
+
+    return (
         <>
-            <Reset/>
+            <Reset />
             <Wrapper>
                 <TopBarComponent />
                 <RecWrapper>
@@ -22,15 +40,41 @@ export default function RecomendationPage() {
                             <p>원하는 키워드를 선정해 맞춤형 여행 루트를 받아보세요.</p>
                         </RecSubTitle>
                         <RecBtnWrapper>
-                            <RecBtn>
-                                <p>루트 탐색</p>
-                                <svg width="12" height="18" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 1L10 9L1 17" stroke="black" strokeWidth="2"/>
-                                </svg>
-                            </RecBtn>
+                            {!showInput && (
+                                <RecBtn onClick={onClickRecBtn}>
+                                    <p>루트 탐색</p>
+                                    <svg width="12" height="18" viewBox="0 0 12 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L10 9L1 17" stroke="white" strokeWidth="2" />
+                                    </svg>
+                                </RecBtn>
+                            )}
+                            {showInput && (
+                                <div style={{marginTop:"-10%"}}>
+                                    <RecInput placeholder="어디로 여행을 떠나시나요?" />
+                                    <p style={{fontFamily:"SubTitle", fontSize:"12px", paddingBottom:"10px"}}>목록에서 찾아보기</p>
+                                    <RecList>
+                                        <RecListItem>하와이
+                                            <RecListCountry>미국</RecListCountry>
+                                        </RecListItem>
+                                        <RecListItem>괌
+                                            <RecListCountry>미국</RecListCountry>
+                                        </RecListItem>
+                                        <RecListItem onClick={openModal}>오사카
+                                            <RecListCountry>일본</RecListCountry>
+                                        </RecListItem>
+                                        <RecListItem>도쿄
+                                            <RecListCountry>일본</RecListCountry>
+                                        </RecListItem>
+                                        <RecListItem>뉴욕
+                                            <RecListCountry>미국</RecListCountry>
+                                        </RecListItem>
+                                    </RecList>
+                                </div>
+                            )}
                         </RecBtnWrapper>
                     </RecContainer>
                 </RecWrapper>
+                <Modal isOpen={showModal} onClose={closeModal} />
             </Wrapper>
         </>
     )

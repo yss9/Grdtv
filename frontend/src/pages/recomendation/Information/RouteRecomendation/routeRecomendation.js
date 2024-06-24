@@ -21,6 +21,7 @@ import Canada from "../../../../public/Img/canada.png";
 import ApelTower from "../../../../public/Img/apeltower.png";
 import Map from "../../../../public/Img/formap/map.png";
 import Map2 from "../../../../public/Img/formap/map2.png";
+import scroll from "../../../../public/Img/formap/scroll.png";
 
 
 const PlaceRouteData = [
@@ -61,9 +62,8 @@ export default function RouteRecomendation() {
                 <PlacesContainer>
                     <LeftWrapper>
                         <PlacesTitleWrapper>
-                            <PlacesTitle>제목</PlacesTitle>
-                            <p>by</p>
-                            <PlacesWriter>저자</PlacesWriter>
+                            <PlacesTitle>시간이 남아돌 때 가세요 루트</PlacesTitle>
+                            <PlacesWriter>by 돈벌어서어따쓰냐</PlacesWriter>
                             <SaveBtn>저장하기</SaveBtn>
                         </PlacesTitleWrapper>
                         <PlacesWrapper>
@@ -91,9 +91,8 @@ export default function RouteRecomendation() {
                 <PlacesContainer>
                     <LeftWrapper>
                         <PlacesTitleWrapper>
-                            <PlacesTitle>제목</PlacesTitle>
-                            <p>by</p>
-                            <PlacesWriter>저자</PlacesWriter>
+                            <PlacesTitle>벼락부자의 여행 루트</PlacesTitle>
+                            <PlacesWriter>by 도지</PlacesWriter>
                             <SaveBtn>저장하기</SaveBtn>
                         </PlacesTitleWrapper>
                         <PlacesWrapper>

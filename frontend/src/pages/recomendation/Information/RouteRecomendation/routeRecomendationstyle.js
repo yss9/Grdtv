@@ -16,7 +16,7 @@ export const Title=styled.div`
 `
 export const PlacesContainer=styled.div`
     width: 65rem;
-  height: 18rem;
+  height: 20rem;
   display: flex;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
   border-radius: 15px;
@@ -36,6 +36,7 @@ export const PlacesTitleWrapper=styled.div`
   justify-content: left;
   width: 100%;
   margin-top: 1rem;
+    margin-bottom: 15px;
   p{
     font-size: 20px;
     font-family: "Regular";
@@ -43,6 +44,7 @@ export const PlacesTitleWrapper=styled.div`
   }
 `
 export const PlacesTitle=styled.div`
+    margin-top: 10px;
     font-weight: bold;
   font-size: 30px;
   font-family: "Regular";
@@ -50,11 +52,14 @@ export const PlacesTitle=styled.div`
 `
 export const PlacesWriter=styled.div`
   font-family: "Regular";
-  font-size: 20px;
+    color:rgba(95, 95, 95, 1);
+  font-size: 17px;
   margin-left: 1rem;
 
 `
 export const SaveBtn=styled.button`
+    position: absolute;
+    left: 50%;
   font-family: "Regular";
   margin-left: 5rem;
   font-size: 16px;
@@ -88,6 +93,7 @@ export const Places=styled.img`
   object-fit: cover; /* 이미지를 가득 채우도록 설정 */
 `
 export const PlaceName=styled.div`
+    font-family: Title;
   text-align: center;
 `
 export const RightWrapper=styled.div`

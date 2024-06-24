@@ -9,7 +9,7 @@ import {
     SubTitle1, SubTitleContainer, BestReviews, SubTitle2,
     MyWrites, GoWrite, BlogContainer, SearchBarWrapper, Pin, Magnifier, BestReviewContainer,
     IndicatorContainer, Indicator, SelectContainer, Select, GoTravelTitle, BlogWrapper,
-    Profile, PContainer, Pname, PIntro, PImg, VirticalLine, BookMarkTitle, Search
+    Profile, PContainer, Pname, PIntro, PImg, VirticalLine, BookMarkTitle, Search,BookMarked2
 } from './reviewstyle';
 import TopBarComponent from "../../components/TopBar/TopBar";
 import Ramen from "../../public/Img/ramen.png";
@@ -20,27 +20,27 @@ import Sydney from "../../public/Img/sydney.png"
 import Osaka from "../../public/Img/osaka.png"
 
 const BestreviewsData = [
-    { title: 'Review 1', author: 'Author 1',  image: Ramen },
-    { title: 'Review 2', author: 'Author 2', image: Sushi },
-    { title: 'Review 3', author: 'Author 3', image: Canada },
-    { title: 'Review 4', author: 'Author 4', image: Paris },
-    { title: 'Review 5', author: 'Author 5', image: Sydney },
-    { title: 'Review 6', author: 'Author 6', image: Osaka },
-    { title: 'Review 7', author: 'Author 7' },
-    { title: 'Review 8', author: 'Author 8' },
-    { title: 'Review 9', author: 'Author 9' },
-    { title: 'Review 10',author: 'Author 10' },
-    { title: 'Review 11',author: 'Author 11' },
-    { title: 'Review 12',author: 'Author 12' },
-    { title: 'Review 13',author: 'Author 13' },
-    { title: 'Review 14',author: 'Author 14' },
-    { title: 'Review 15',author: 'Author 15' },
+    { title: '라멘의 모든 것', author: '김라멘', image: Ramen },
+    { title: '스시의 진수', author: '이초밥', image: Sushi },
+    { title: '캐나다 여행기', author: '박캐나다', image: Canada },
+    { title: '파리의 낭만', author: '최파리', image: Paris },
+    { title: '시드니의 매력', author: '장시드니', image: Sydney },
+    { title: '오사카 탐방기', author: '윤오사카', image: Osaka },
+    { title: '뉴욕의 하루', author: '김뉴욕' },
+    { title: '로마의 유적지', author: '이로마' },
+    { title: '런던의 역사', author: '박런던' },
+    { title: '베를린의 문화', author: '최베를린' },
+    { title: '도쿄의 밤', author: '장도쿄' },
+    { title: '방콕의 하루', author: '윤방콕' },
+    { title: '하노이의 음식', author: '김하노이' },
+    { title: '싱가포르의 랜드마크', author: '이싱가포르' },
+    { title: '두바이의 럭셔리', author: '박두바이' }
 ];
 
 const BlogData=[
-    { title: 'Review 1', content: 'This is the first blog', author: 'Author 1' },
-    { title: 'Review 2', content: 'This is the second blog', author: 'Author 2' },
-    { title: 'Review 3', content: 'This is the third blog', author: 'Author 3' },
+    { title: '맛있는 라멘 이야기', content: '일본 라멘의 깊은 맛과 다양한 종류에 대해 알아봅니다.', author: '김라멘' },
+    { title: '초밥의 예술', content: '신선한 재료와 정성으로 빚어낸 초밥의 세계를 탐험해보세요.', author: '이초밥' },
+    { title: '캐나다 자연 탐방기', content: '캐나다의 아름다운 자연 경관과 여행 팁을 소개합니다.', author: '박캐나다' },
 ];
 
 export default function ReviewPage() {
@@ -61,6 +61,9 @@ export default function ReviewPage() {
         navigate('/board/new')
     }
 
+    const handleGoBoard = () =>{
+        navigate('/exboard');
+    }
 
     return (
         <>
@@ -85,7 +88,7 @@ export default function ReviewPage() {
                 <SubTitleContainer>
                     <SubTitle1>
                         <BestReviewTitle>오늘의 BEST 리뷰어 </BestReviewTitle>
-                        <BestReiviewer>> 누구누구</BestReiviewer>
+                        <BestReiviewer>> 김라멘 님</BestReiviewer>
                         <IndicatorContainer>
                             {Array.from({ length: Math.ceil(BestreviewsData.length / reviewsPerPage) }).map((_, index) => (
                                 <Indicator
@@ -98,7 +101,7 @@ export default function ReviewPage() {
                     </SubTitle1>
                 </SubTitleContainer>
                 <BestReviewContainer>
-                    <BestReviews>
+                    <BestReviews onClick={handleGoBoard}>
                         {visibleReviews.map((review, index) => (
                             <BestReview1 key={index} review={review} />
                         ))}
@@ -139,8 +142,8 @@ export default function ReviewPage() {
                                 <Profile>
                                     <PImg></PImg>
                                     <PContainer>
-                                        <Pname>사용자 이름</Pname>
-                                        <PIntro>사용자 자기소개</PIntro>
+                                        <Pname>문경서</Pname>
+                                        <PIntro>나는 여행을 즐기는 20대</PIntro>
                                     </PContainer>
                                 </Profile>
                                 <ButtonContainer>
@@ -151,8 +154,7 @@ export default function ReviewPage() {
                                 <BookMarkContainer>
                                     <BookMarkTitle>즐겨찾기</BookMarkTitle>
                                     <BookMarked1></BookMarked1>
-                                    <BookMarked1></BookMarked1>
-                                    <BookMarked1></BookMarked1>
+                                    <BookMarked2></BookMarked2>
                                 </BookMarkContainer>
                             </MyMenuContainer>
                         </MyMenuWrapper>
