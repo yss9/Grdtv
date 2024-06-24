@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import * as S from "./style";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import { Avatar, AvatarWrapper } from "./style";
+import MapComponent from "./MapComponent"; // MapComponent import
 
 export default function BoardDetail() {
     const { boardID } = useParams();
@@ -79,6 +80,7 @@ export default function BoardDetail() {
                             <S.AddressWrapper>
                                 <S.AddressImage />
                                 <S.Address>{address}</S.Address>
+                                <MapComponent address={address} /> {/* MapComponent 사용 */}
                             </S.AddressWrapper>
                             <S.Contents>{body}</S.Contents>
                             <S.ImageWrapper>
