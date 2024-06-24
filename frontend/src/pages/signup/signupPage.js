@@ -29,7 +29,7 @@ import {
     UserImg,
     FinishText,
     GoToLoginPage,
-    OverlayImageInput, GenderImage
+    OverlayImageInput, GenderImage, LogoWrapper
 } from "./signupStyle";
 import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
@@ -210,7 +210,10 @@ export default function SignupPage() {
     return (
         <>
             <Wrapper>
-                <Logo></Logo>
+
+                <LogoWrapper>
+                    <Logo src='/Img/Logo1.png'></Logo>
+                </LogoWrapper>
                 <ContentsWrapper>
                     <ProgressBar>
                         <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "20%" : step === 3 ? "40%" : step === 4 ? "60%" : "80%" }}></Progress>

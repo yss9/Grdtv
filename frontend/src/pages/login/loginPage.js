@@ -1,7 +1,8 @@
 import {
     Wrapper, Logo, LogInWrapper, RightImg, LogInInput,
     LogInButton, SignInButton, FindButton,
-    LogInUnderWrapper, RightImgWrapper, ImgWrapper} from './loginStyle'
+    LogInUnderWrapper, RightImgWrapper, ImgWrapper, LogoWrapper
+} from './loginStyle'
 import {useState} from "react";
 import axios from "axios";
 import React from "react";
@@ -93,7 +94,9 @@ export default function LoginPage(){
                 exit={{opacity: 0}}
             >
                 <Wrapper>
-                    <Logo></Logo>
+                    <LogoWrapper>
+                        <Logo src='/Img/Logo1.png'></Logo>
+                    </LogoWrapper>
                     <LogInWrapper>
                         <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />
                         <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />
@@ -105,7 +108,6 @@ export default function LoginPage(){
                     </LogInWrapper>
                     <RightImgWrapper>
                         <ImgWrapper><RightImg src="/Img/로그인 이미지.png"></RightImg></ImgWrapper>
-
                     </RightImgWrapper>
                 </Wrapper>
             </motion.div>

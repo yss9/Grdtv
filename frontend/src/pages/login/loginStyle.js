@@ -3,22 +3,25 @@ import styled  from "@emotion/styled";
 export const Wrapper=styled.div`
     
     //display: flex;
-    //justify-content: center; /* 수평 정렬 설정 */
-    //align-items: center; /* 수직 정렬 설정 */
-    height: 97vh; /* 뷰포트 높이만큼 컨테이너의 높이 설정 */
-    overflow: hidden;
+    //justify-content: center;
+    //align-items: center;
+    height: 96vh;
     //background-color: beige;
     flex-direction: column;
+    overflow: hidden;
+    //padding-bottom: 500px;
 `
-export const Logo = styled.div`
-    margin-top: 30px;
-    margin-left: 2vw;
-    width: 13%;
-    height:5%;
-    background-image: url("/Img/Logo1.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    
+export const LogoWrapper = styled.div`
+    width: auto;
+    height: 50px;
+    padding-left: 10%;
+    padding-top: 3%;
+    //background-color: #61dafb;
+`
+export const Logo = styled.img`
+    width: auto;
+    height: 90%;
+    float: left;
 `
 export const LogInWrapper = styled.div`
     font-family: Regular;
@@ -28,7 +31,7 @@ export const LogInWrapper = styled.div`
     align-items: end;
     float: left;
     width: 40vw;
-    height: 75vh;
+    height: 75%;
     //background-color: #9bbebe;
     //padding: 270px 30px;
     @media (max-width: 1000px) {
@@ -47,7 +50,7 @@ export const RightImgWrapper = styled.div`
     align-items: baseline;
     float: right;
     width: 50vw;
-    height: 75vh;
+    height: 75%;
     //background-color: #b5ded1;
     //padding: 20px;
 `
@@ -58,7 +61,7 @@ export const LogInInput = styled.input`
     justify-content: center;
     width: 65%;
     max-width: 400px;
-    height: 45px;
+    height: 47px;
     margin-bottom: 15px;
     font-size: 13px;
     font-weight: bold;
@@ -106,10 +109,13 @@ export const FindButton = styled.div`
 export const ImgWrapper = styled.div`
     width: 500px;
     height: 300px;
-    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 합니다. */
+    overflow: hidden;
+    @media (max-width: 1000px) {
+        display: none;
+    }
 `
 export const RightImg = styled.img`
-    width: 100%; /* 이미지를 부모 요소에 맞춰 너비를 100%로 설정합니다. */
-    height: auto; /* 이미지의 높이를 자동으로 조정하여 비율을 유지합니다. */
+    width: 100%;
+    height: auto;
     display: block;
 `
