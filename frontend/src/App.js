@@ -33,6 +33,7 @@ function App() {
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
+                <Route path="/board/:boardID/edit" element={<BoardWrite isEdit = {true}/>} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
                 <Route path="/signup" element={<SignupPage />} />

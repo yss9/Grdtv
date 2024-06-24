@@ -215,7 +215,6 @@ export const Image = styled.div`
   width: 996px;
   height: 480px;
   margin-bottom: 30px;
-  background-image: url(${travel});
   background-size: cover;
   background-repeat: no-repeat;
 `;
