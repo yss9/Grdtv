@@ -102,7 +102,8 @@ export default function MainPage() {
     return(
         <>
             <Reset/>
-            <TopBarComponent />
+            <div style={{height: '55px'}}></div>
+            <TopBarComponent/>
             <Wrapper>
                 <TitleWrapper>
                     <Title>나만의 맞춤 여행지</Title>

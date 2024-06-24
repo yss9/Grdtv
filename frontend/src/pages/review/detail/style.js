@@ -1,16 +1,14 @@
+// style.js
 import styled from "@emotion/styled";
-/*import { LikeOutlined, DislikeOutlined } from "@ant-design/icons";*/
 import avantar from '../../../images/img_1.png';
 import travel from '../../../images/남산타워.jpeg'
 import Vector from '../../../images/Vector.png'
 
 
 export const Container = styled.div`
- 
     display: flex;
     align-items: center;
     justify-content: center;
- 
 `;
 
 export const Wrapper = styled.div`
@@ -28,7 +26,6 @@ export const CardWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: none;
- 
 `;
 
 export const Header = styled.div`
@@ -39,7 +36,6 @@ export const Header = styled.div`
   align-items: center;
   border-bottom: 1px solid #bdbdbd;
   padding-bottom: 20px;
-
 `;
 
 export const AvatarWrapper = styled.div`
@@ -54,7 +50,6 @@ export const Info = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center; /* 중앙 정렬 */
-
 `;
 
 export const Avatar = styled.div`
@@ -65,13 +60,14 @@ export const Avatar = styled.div`
   background-image: url(${avantar});
   background-size: contain;
   background-repeat: no-repeat;
+
 `;
 
 export const Writer = styled.div`
-    padding-left:10px;
-    margin-right: 15px;
-    font-family: Regular;
-    color: #515151;
+  padding-left: 10px;
+  margin-right: 300px;
+  font-family: Regular;
+  color: #515151;
 `;
 
 export const Url = styled.button`
@@ -100,7 +96,6 @@ export const Favorite = styled.button`
   &:hover {
     text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
   }
-
 `;
 
 export const CreatedAt = styled.div``;
@@ -108,15 +103,12 @@ export const CreatedAt = styled.div``;
 export const Body = styled.div`
   width: 100%;
   min-height: 800px;
- 
 `;
 
 export const AddressWrapper = styled.div`
-  display:flex;
-  padding-top:20px
-
-  
- 
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
 `;
 
 export const AddressImage = styled.div`
@@ -125,34 +117,36 @@ export const AddressImage = styled.div`
   background-repeat: no-repeat;
   width: 22px;
   height: 29px;
-  
- 
 `;
 
 export const Address = styled.div`
-padding-left:20px
- 
-  
+  padding-left: 20px;
+`;
+
+export const MapWrapper = styled.div`
+  width: 100%;
+  height: 300px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
 `;
 
 export const Title = styled.h1`
   color: #515151;
-    margin-top:-100%;
-    font-size: 250%;
-    font-family: SubTitle;
+  margin-top: 50px;
+  font-size: 250%;
+  font-family: SubTitle;
   text-align: center; 
-  
 `;
 
 export const Contents = styled.div`
-  padding-top: 10px;
   padding-bottom: 120px;
   display: flex;
   flex-direction: column; /* 자식 요소를 수직으로 배치 */
@@ -160,8 +154,8 @@ export const Contents = styled.div`
   align-items: center; /* 수평 가운데 정렬 */
   text-align: center; /* 텍스트 가운데 정렬 */
   color: #515151;
-  font-family: regular
- 
+  font-family: regular;
+  margin-top:60px;
 `;
 
 export const BottomWrapper = styled.div`
@@ -187,10 +181,8 @@ export const Button = styled.button`
 
 export const SubWrapper = styled.div`
   text-align: center;
-  margin-top:150px;
- 
+  margin-top: 150px;
 `;
-
 
 export const LikeWrapper = styled.div`
   padding-top: 160px;
@@ -220,7 +212,6 @@ export const Image = styled.div`
   width: 996px;
   height: 480px;
   margin-bottom: 30px;
-  background-image: url(${travel});
   background-size: cover;
   background-repeat: no-repeat;
 `;

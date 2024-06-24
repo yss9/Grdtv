@@ -130,7 +130,9 @@ const ChatPage = () => {
                     <br/>
                     <hr style={{margin: '0 7px'}}/>
                     <br/>
-                    <div style={{display: "flex", justifyContent: "center", margin: '10px 0 0 0'}}>도쿄 예약 대행<br/><br/><br/>○○ 예약 대행</div>
+                    <div style={{display: "flex", justifyContent: "center", margin: '10px 0 0 0'}}>도쿄 예약
+                        대행<br/><br/><br/>○○ 예약 대행
+                    </div>
 
                 </Sidebar>
                 <ChatListWrapper>
@@ -192,7 +194,8 @@ const ChatPage = () => {
                                      src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
                                 <Username>{chatUsername}</Username>
 
-                                <div style={{float: 'left',
+                                <div style={{
+                                    float: 'left',
                                     border: '1px solid #4E53ED',
                                     borderRadius: '20px',
                                     width: '85px',

@@ -41,7 +41,8 @@ export default function RouteRecomendation() {
     return(
         <>
             <Reset />
-            <TopBarComponent />
+            <div style={{ height: '55px' }}></div>
+            <TopBarComponent/>
             <BodyContainer>
                 <Title>BEST 리뷰의 추천 루트를 제공할게요.</Title>
                 <RefreshBtnWrapper>

@@ -31,9 +31,10 @@ export default function RoutePage() {
         <>
             <Reset />
             <Wrapper>
-                <TopBarComponent />
+                <div style={{height: '55px'}}></div>
+                <TopBarComponent/>
                 <RecWrapper>
-                    <RecContainer>
+                <RecContainer>
                         <RecTitle>여행지 탐색</RecTitle>
                         <RecSubTitle>
                             <p>처음 접하는 해외 여행에 어려움을 겪고 있을까요?</p>
