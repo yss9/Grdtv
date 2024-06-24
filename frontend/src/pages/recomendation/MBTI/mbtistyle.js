@@ -1,29 +1,36 @@
 import styled  from "@emotion/styled";
 
-export const MbtiTitleContainer=styled.div`
-  width: 100%;
-    height: 105vh;
+export const Container=styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //background-color: red;
 `
-export const MbtiTitle=styled.text`
+export const MbtiTitleContainer=styled.div`
+  display: flex;
+  width: 1500px;
+  height: 1000px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+export const MbtiTitleWrapper=styled.div`
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 255px;
+  //background-color: pink;
+
+`
+export const MbtiTitle=styled.div`
   font-size: 30px;
   font-weight: bold;
-  height: 8%;
-  display: flex;
-  flex-direction: column;
   color: #4E53ED;
- // background-color: pink;
-  justify-content: flex-end;
   font-family: "Title";
-    
+  margin-top: 2rem;
 `
 
-export const MbtiSubTitle=styled.text`
-    margin-top: -60px;
+export const MbtiSubTitle=styled.div`
   font-size: 17px;
   color: #515151;
   display: flex;
@@ -31,7 +38,7 @@ export const MbtiSubTitle=styled.text`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 17%; 
+  margin-top: 1rem;
   
   p {
     padding: 5px 0;
@@ -40,16 +47,14 @@ export const MbtiSubTitle=styled.text`
   }
 `
 export const WriteMbtiBtnWrapper=styled.div`
-    margin-top: -100px;
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 15%;
   justify-content: center;
+  margin-top: 3rem;
 `
 export const WriteMbtiBtn=styled.button`
-  width: 18%;
-  height: 25%;
+  width: 250px;
+  height: 40px;
   border-radius: 25px;
   display: flex;
   justify-content: space-between;
@@ -83,9 +88,8 @@ export const MbtiContainer=styled.div`
 
 export const Mbti=styled.text`
   font-size: 30px;
-  color: #4E53ED;
+  color: #ff9900;
   font-family: "Title";
-
 `
 export const Explain=styled.text`
   font-size: 25px;

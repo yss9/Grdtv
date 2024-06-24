@@ -117,7 +117,8 @@ export default function Information() {
     return (
         <>
             <Reset />
-            <TopBarComponent />
+            <div style={{ height: '55px' }}></div>
+            <TopBarComponent/>
             <Wrapper>
                 <PlaceName>{currentPlace.placename}</PlaceName>
                 <Container>
