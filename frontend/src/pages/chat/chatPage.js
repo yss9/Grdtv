@@ -1,110 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import TopBarComponent from "../../components/TopBar/TopBar";
 import axios from "axios";
 import Cookies from "js-cookie";
 import WebSocketService from "./WebSocketService";
-import {BottomBar, ChatButton, ChatInput, ChatRoom, Main} from "./chatPageStyle";
+import {
+    BottomBar, ChatBubble, ChatButton, ChatHeader, ChatInput, ChatItem, ChatList, ChatListWrapper,
+    ChatRoom, ChatWrapper, Main, Sidebar, SidebarContentInput, SidebarHeader, Username, Wrapper
+} from "./chatPageStyle";
+import {jwtDecode} from "jwt-decode";
 
 const styles = {
-    body: {
-        margin: 0,
-        fontFamily: 'Arial, sans-serif',
-        height: '97vh',
-        overflowY: 'hidden'
-    },
-    header: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 20px',
-        backgroundColor: '#f8f8f8',
-        borderBottom: '1px solid #ddd',
-    },
-    logo: {
-        fontSize: '24px',
-        fontWeight: 'bold',
-    },
-    nav: {
-        display: 'flex',
-    },
-    navLink: {
-        margin: '0 10px',
-        textDecoration: 'none',
-        color: '#333',
-    },
-    chatContainer: {
-        display: 'flex',
-        height: 'calc(100vh - 50px)', // Adjust based on header height
-    },
-    sidebar: {
-        width: '13%',
-        backgroundColor: '#4E53ED',
-        borderRight: '1px solid #ddd',
-        overflowY: 'auto',
-        color: 'white',
-        fontSize: '14px',
-    },
-    chatListContainer: {
-        width: '20%',
-        padding: '10px',
-        overflowY: 'auto',
-    },
-    sidebarHeader: {
-        // fontSize: '18px',
-        marginBottom: '10px',
-        width: '100%',
-        height: '100%',
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    sidebarContentInput: {
-        width: '100%',
-        padding: '0 10px',
-        marginBottom: '10px',
-        boxSizing: 'border-box',
-        borderRadius: '20px',
-        border: 'none',
-        backgroundColor: '#E8E8E8',
-        height: '30px',
-    },
-    chatList: {
-        listStyle: 'none',
-        padding: 0,
-    },
-    chatItem: {
-        // backgroundColor: '#818181',
-        marginBottom: '5px',
-        width: '100%',
-    },
-    chatHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '15px',
-        backgroundColor:'white',
-        width: 'calc(100% - 30px)',
-    },
-    userIcon: {
-        width: '50px',
-        height: '50px',
-        backgroundColor: '#ccc',
-        borderRadius: '50%',
-        marginRight: '10px',
-    },
-    userName: {
-        fontSize: '18px',
-        marginLeft: '20px'
-    },
-    chatContent: {
-        flex: 1,
-        overflowY: 'auto',
-    },
-    chatBubble: {
-        maxWidth: '40%',
-        padding: '10px',
-        marginBottom: '10px',
-        position: 'relative',
-    },
     myMessage: {
         backgroundColor: '#D9D9D9',
         marginLeft: 'auto',
@@ -118,10 +23,12 @@ const styles = {
         borderRadius: '10px 10px 10px 0',
         width: 'auto',
         border: '1px solid #4E53EE'
-    },
+    }
 };
 
 const ChatPage = () => {
+
+    const buttonRef = useRef(null);
 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -141,15 +48,14 @@ const ChatPage = () => {
                     }
                 });
                 setNicknames(response.data);
+                console.log('nicknames:',response.data);
 
-
-                const parts = token.split('.');
-                if (parts.length !== 3) {
-                    throw new Error('Invalid JWT token format');
-                }
-                const userPayload = JSON.parse(base64UrlDecode(parts[1]));
-                const extractedUsername = userPayload.nickname; // 토큰의 nickname 값 가져오기
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                console.log("userPayload:", userPayload);
+                const extractedUsername = userPayload.nickname;
                 setUsername(extractedUsername);
+                console.log("extractedUsername", extractedUsername);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
@@ -162,22 +68,11 @@ const ChatPage = () => {
         if (joined) {
             WebSocketService.connect(roomId, onMessageReceived);
         }
-    }, [joined]);
+    }, [joined, roomId]);
 
     const onMessageReceived = (payload) => {
         const message = JSON.parse(payload.body);
         setMessages((prevMessages) => [...prevMessages, message]);
-    };
-
-    const base64UrlDecode = (str) => {
-        if (!str) {
-            throw new Error('Invalid base64 string');
-        }
-        let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) {
-            base64 += '=';
-        }
-        return atob(base64);
     };
 
     const handleSendMessage = () => {
@@ -210,30 +105,27 @@ const ChatPage = () => {
             console.error('No JWT token found in cookies');
         }
     };
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            buttonRef.current.click();
+        }
+    }
 
 
     return (
-        <div style={styles.body}>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
-            <div style={styles.chatContainer}>
-                <aside style={styles.sidebar}>
-                    <div style={{
-                        width: '100%',
-                        height: '45px',
-                        backgroundColor: "rgba(255, 255, 255, 0.6)",
-                        margin: '20px 0 20px 0',
-                        color: 'black'
-                    }}>
-                        <div style={styles.sidebarHeader}>
+        <Wrapper>
+            <TopBarComponent />
+            <ChatWrapper>
+                <Sidebar>
+                    <div style={{width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black'}}>
+                        <SidebarHeader>
                             최근 채팅
-                        </div>
+                        </SidebarHeader>
                     </div>
                     <div>
-                        <div style={styles.sidebarHeader}
-                             style={{display: "flex", justifyContent: "center", margin: '0 0 10px 0'}}>
+                        <SidebarHeader style={{display: "flex", justifyContent: "center", margin: '0 0 10px 0'}}>
                             완료된 채팅
-                        </div>
+                        </SidebarHeader>
                     </div>
                     <br/>
                     <hr style={{margin: '0 7px'}}/>
@@ -242,11 +134,11 @@ const ChatPage = () => {
                         대행<br/><br/><br/>○○ 예약 대행
                     </div>
 
-                </aside>
-                <aside style={styles.chatListContainer}>
+                </Sidebar>
+                <ChatListWrapper>
                     <div>
-                        <input type="text" placeholder="채팅방 내용, 참여자 검색" style={styles.sidebarContentInput}/>
-                        <div style={styles.chatList}>
+                        <SidebarContentInput type="text" placeholder="채팅방 내용, 참여자 검색"/>
+                        <ChatList>
                             <div>
                                 {nicknames.map(nickname => (
                                     nickname !== username && (
@@ -271,13 +163,12 @@ const ChatPage = () => {
                                                 padding: '0 10px',
                                             }}>
                                                 <div>
-                                                    {nicknames.map(nickname => (
-                                                        nickname !== username && (
-                                                            <div key={nickname} style={styles.chatItem}>
+                                                    {nickname !== username && (
+                                                            <ChatItem key={nickname}>
                                                                 {nickname}
-                                                            </div>
+                                                            </ChatItem>
                                                         )
-                                                    ))}
+                                                    }
                                                 </div>
                                                 <div style={{fontSize: '12px', color: 'gray'}}>
                                                     메세지를 보내서 글로플러와...
@@ -289,19 +180,19 @@ const ChatPage = () => {
                             </div>
 
 
-                        </div>
+                        </ChatList>
                     </div>
-                </aside>
+                </ChatListWrapper>
                 <Main>
                     {joined ? (
                         <div style={{overflow: 'hidden'}}>
-                            <div style={styles.chatHeader}>
+                            <ChatHeader>
                                 <img style={{
                                     width: '50px',
                                     float: 'left',
                                 }}
                                      src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
-                                <div style={styles.userName}>{chatUsername}</div>
+                                <Username>{chatUsername}</Username>
 
                                 <div style={{
                                     float: 'left',
@@ -333,16 +224,15 @@ const ChatPage = () => {
                                     글로플러 목록
                                 </div>
 
-                            </div>
+                            </ChatHeader>
                             <ChatRoom style={{marginBottom: '20px', height: '58vh', overflowY: 'auto'}}>
                                 {messages.map((message, index) => (
-                                    <div key={index} style={{
-                                        ...styles.chatBubble,
+                                    <ChatBubble key={index} style={{
                                         ...(message.sender === username ? styles.myMessage : styles.otherMessage),
                                         width: "auto",
                                     }}>
                                         {message.content}
-                                    </div>
+                                    </ChatBubble>
                                 ))}
                             </ChatRoom>
                             <BottomBar>
@@ -360,6 +250,7 @@ const ChatPage = () => {
                                     </div>
                                 </div>
                                 <ChatButton
+                                    ref={buttonRef}
                                     onClick={handleSendMessage}
                                 ><img style={{height: "60%"}} src='/Img/채팅%20메세지%20버튼.png' alt='채팅 메세지 버튼'/>
                                 </ChatButton>
@@ -367,6 +258,7 @@ const ChatPage = () => {
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={handleKeyDown}
                                     placeholder="메세지를 보내서 글로플러와 예약을 진행해 보세요."
                                 >
                                 </ChatInput>
@@ -380,8 +272,8 @@ const ChatPage = () => {
                         </div>
                     )}
                 </Main>
-            </div>
-        </div>
+            </ChatWrapper>
+        </Wrapper>
     );
 };
 

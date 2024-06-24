@@ -4,8 +4,6 @@ import {motion} from "framer-motion";
 export const Wrapper = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
-    position: relative;
-    width: 100%;
     height: 97vh;
     display: flex;
     flex-direction: column;
@@ -15,15 +13,17 @@ export const ContentsWrapper = styled.div`
     width: 60%;
     height: 100%;
 `
-export const Logo = styled.div`
-    margin-top: 30px;
-    margin-left: 2vw;
-    width: 13%;
-    height:5%;
-    background-image: url("/Img/Logo1.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-
+export const LogoWrapper = styled.div`
+    width: 100%;
+    height: 45px;
+    padding-left: 10%;
+    padding-top: 3%;
+    //background-color: #61dafb;
+`
+export const Logo = styled.img`
+    width: auto;
+    height: 90%;
+    float: left;
 `
 export const ProgressBar = styled.div`
     width: 100%;
@@ -45,10 +45,11 @@ export const Progress = styled.div`
 `
 export const FormContainer = styled(motion.div)`
     width: 100%;
-    height: calc(100% - 80px);
-    top: 80px;
+    //top: 80px;
     display: flex;
     justify-content: center;
+    //overflow-y: auto;
+    padding-bottom: 30px;
 `
 export const BoldText = styled.div`
     margin: 10px 0 10px 0;
