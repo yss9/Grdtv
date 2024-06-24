@@ -309,3 +309,13 @@ export const Error = styled.div`
   color: red;
 `;
 
+export const MapWrapper = styled.div`
+  width: 100%;
+  height: 300px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+
