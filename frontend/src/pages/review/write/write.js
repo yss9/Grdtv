@@ -129,15 +129,15 @@ export default function BoardWrite(props) {
                         <S.Error>{bodyError}</S.Error>
                     </S.InputWrapper>
 
-                    <S.MapWrapper>
-                        <S.Label>지도</S.Label>
-                        <MapComponent address={address} setAddress={setAddress} />
-                    </S.MapWrapper>
 
                     <S.ImageWrapper>
                         <S.Label>사진 추가</S.Label>
                         <input type="file" onChange={handleImageChange} />
                     </S.ImageWrapper>
+
+                    <S.MapWrapper>
+                        <MapComponent address={address} setAddress={setAddress} />
+                    </S.MapWrapper>
 
                     <S.InputWrapper>
                         <S.Label>위치정보</S.Label>
