@@ -23,6 +23,7 @@ import Chatbotset from "./pages/chatbot/chatbotset";
 import KeywordSelection from "./pages/recomendation/Personal/keyword";
 import BoardEx from "./pages/board/boardDetail";
 import AgentPerspective from "./pages/AgentPerspective/agentperspective"
+import GloplerDetail from "./pages/gloplerDetail/gloplerDetailPage"
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/keyword" element={<KeywordSelection/>}/>
                 <Route path="/exboard" element={<BoardEx/>}/>
                 <Route path="/agentperspective" element={<AgentPerspective/>}/>
+                <Route path="/gloplerDetail" element={<GloplerDetail/>}/>
             </Routes>
         </BrowserRouter>
     );

@@ -39,6 +39,8 @@ const ChatPage = () => {
     const [chatUsername, setChatUsername] = useState('');
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
 
+    const [selectedFile, setSelectedFile] = useState(null);
+
     useEffect(() => {
         const fetchNicknames = async () => {
             try {
@@ -110,10 +112,27 @@ const ChatPage = () => {
             buttonRef.current.click();
         }
     }
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+    const onClickSendFile = () => {
+
+    }
+
+    const [isVisible, setIsVisible] = useState(false);
+
+    const handleOpenModal = () => {
+        setIsVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsVisible(false);
+    };
 
 
     return (
         <Wrapper>
+            <div style={{width:'100%', height: '2vh'}}></div>
             <TopBarComponent />
             <ChatWrapper>
                 <Sidebar>
@@ -237,17 +256,61 @@ const ChatPage = () => {
                             </ChatRoom>
                             <BottomBar>
                                 <div style={{float: 'left', width: '7%', height: '100%'}}>
-                                    <div style={{
+                                    <button style={{
                                         float: 'none',
                                         width: '100%',
                                         height: '100%',
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        color: 'gray'
-                                    }}>
+                                        color: 'gray',
+                                        border: 'none',
+                                        fontSize: '20px',
+                                        cursor: 'pointer',
+                                    }}
+                                        onClick={handleOpenModal}
+                                    >
                                         +
-                                    </div>
+                                    </button>
+                                    {isVisible && (
+                                        <div style={{
+                                            display: 'block',
+                                            position: 'fixed',
+                                            left: 0,
+                                            top: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            overflow: 'auto',
+                                            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                                            zIndex: 1
+                                        }} onClick={handleCloseModal}>
+                                            <div onClick={(e) => e.stopPropagation()} style={{
+                                                backgroundColor: '#fefefe',
+                                                margin: '15% auto',
+                                                padding: '20px',
+                                                border: '1px solid #888',
+                                                width: '30%',
+                                            }}>
+                                                <span onClick={handleCloseModal} style={{
+                                                    color: '#aaa',
+                                                    float: 'right',
+                                                    fontSize: '28px',
+                                                    fontWeight: 'bold',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                    ×
+                                                </span>
+                                                <input style={{width: '100%', height: '50px'}}
+                                                       type="file"
+                                                       onChange={handleFileChange}
+                                                       src=''
+                                                />
+                                                <button style={{marginLeft: '40%', padding: '5px 10px', textAlign: 'center'}}
+                                                        onClick={handleCloseModal}
+                                                >전송하기</button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <ChatButton
                                     ref={buttonRef}

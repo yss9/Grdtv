@@ -400,7 +400,7 @@ export default function SignupPage() {
 
 
                                     <ButtonContainer>
-                                        <BackButton onClick={goToThirdPage}>이전</BackButton>
+                                    <BackButton onClick={goToThirdPage}>이전</BackButton>
                                         <NextButton onClick={onClickSubmit}>완료</NextButton>
                                     </ButtonContainer>
                                 </motion.div>

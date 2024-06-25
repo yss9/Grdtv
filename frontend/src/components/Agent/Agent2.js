@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {useNavigate} from "react-router-dom";
 
 const BlogContainer=styled.div`
   width: 19rem;
@@ -139,11 +140,16 @@ const DetailPageBtn=styled.button`
 
 const Agent = ({ review, pageType }) => {
 
+    const navigate = useNavigate();
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
 
     const toggleHeart = () => {
         setIsHeartFilled(!isHeartFilled);
     };
+
+    const onClickDetailPageBtn = () => {
+        navigate('/gloplerDetail');
+    }
 
     return (
         <>
@@ -177,7 +183,7 @@ const Agent = ({ review, pageType }) => {
                             </Specs>
                         </Read>
                         <GoChatBtnWrapper>
-                            <DetailPageBtn>상세 페이지</DetailPageBtn>
+                            <DetailPageBtn onClick={onClickDetailPageBtn}>상세 페이지</DetailPageBtn>
                             <GoChatBtn>
                                 <p>채팅하기</p>
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
