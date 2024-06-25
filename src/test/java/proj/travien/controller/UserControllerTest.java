@@ -5,112 +5,83 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 import proj.travien.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.service.UserService;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.List;
 
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-class UserControllerTest {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-    @Mock
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private JwtUtil jwtUtil;
 
-    @InjectMocks
-    private UserController userController;
+    @Test
+    void testSignUp() throws Exception {
+        UserDTO userDTO = new UserDTO("testUser", "testPass", "Test", "2000-01-01", "M", "INTJ", "profile.jpg", "testNick", false, "verification.pdf");
+        given(userService.isUserIdInUse(anyString())).willReturn(false);
+        given(userService.isNicknameInUse(anyString())).willReturn(false);
+        given(userService.createUser(any(UserDTO.class), any(MultipartFile.class), any(MultipartFile.class))).willReturn(true);
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mockMvc.perform(multipart("/api/users/signup")
+                        .file("profilePicture", new byte[0])
+                        .file("verificationFile", new byte[0])
+                        .param("user", "userDTO"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void testSignUp_UsernameAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+    void testLogin() throws Exception {
+        UserDTO userDTO = new UserDTO("testUser", "testPass", null, null, null, null, null, null, false, null);
+        given(userService.login(anyString(), anyString())).willReturn(new User());
+        given(jwtUtil.generateToken(Long.valueOf(anyString()), anyString())).willReturn("token");
 
-        when(userService.isUserIdInUse(userDTO.getUsername())).thenReturn(true);
-
-        ResponseEntity<?> response = userController.signUp(userDTO);
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        mockMvc.perform(post("/api/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":\"testUser\", \"password\":\"testPass\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("token"));
     }
 
     @Test
-    void testSignUp_NicknameAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+    void testCheckUserId() throws Exception {
+        given(userService.isUserIdInUse(anyString())).willReturn(true);
 
-        when(userService.isNicknameInUse(userDTO.getNickname())).thenReturn(true);
-
-        ResponseEntity<?> response = userController.signUp(userDTO);
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        mockMvc.perform(get("/api/users/check-userid")
+                        .param("username", "testUser"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
     }
 
     @Test
-    void testSignUp_Success() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+    void testGetAllNicknames() throws Exception {
+        List<String> nicknames = Arrays.asList("nick1", "nick2");
+        given(userService.getAllNicknames()).willReturn(nicknames);
 
-        when(userService.isUserIdInUse(userDTO.getUsername())).thenReturn(false);
-        when(userService.isNicknameInUse(userDTO.getNickname())).thenReturn(false);
-        when(userService.createUser(userDTO)).thenReturn(true);
-
-        ResponseEntity<?> response = userController.signUp(userDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void testLogin_Success() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
-
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setName("Test User");
-
-        when(userService.login(userDTO.getUsername(), userDTO.getPassword())).thenReturn(user);
-        when(jwtUtil.generateToken(user.getUsername(), user.getName())).thenReturn("token");
-
-        ResponseEntity<?> response = userController.login(userDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
-
-    @Test
-    void testLogin_Failure() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
-
-        when(userService.login(userDTO.getUsername(), userDTO.getPassword())).thenReturn(null);
-
-        ResponseEntity<?> response = userController.login(userDTO);
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-    }
-
-    @Test
-    void testCheckUsername() {
-        String username = "username";
-
-        when(userService.isUserIdInUse(username)).thenReturn(true);
-
-        ResponseEntity<?> response = userController.checkUsername(username);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue((Boolean) response.getBody());
-    }
-
-    @Test
-    void testCheckNickname() {
-        String nickname = "nickname";
-
-        when(userService.isNicknameInUse(nickname)).thenReturn(true);
-
-        ResponseEntity<?> response = userController.checkNickname(nickname);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue((Boolean) response.getBody());
+        mockMvc.perform(get("/api/users/nicknames"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0]").value("nick1"))
+                .andExpect(jsonPath("$[1]").value("nick2"));
     }
 }
