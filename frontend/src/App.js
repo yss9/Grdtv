@@ -25,6 +25,7 @@ import BoardEx from "./pages/board/boardDetail";
 import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 import GloplerDetail from "./pages/gloplerDetail/gloplerDetailPage"
 import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
+import Test from "./pages/test/test"
 
 function App() {
     return (
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/agentperspective" element={<AgentPerspective/>}/>
                 <Route path="/gloplerDetail" element={<GloplerDetail/>}/>
                 <Route path="/cosine" element={<RecommendationCosine/>}/>
+                <Route path="/test" element={<Test/>}/>
             </Routes>
         </BrowserRouter>
     );

@@ -21,16 +21,7 @@ export const Map = styled.div`
     }
 `;
 
-export const Popup = styled.div`
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.82);
-    border: 3px solid #33395b;
-    border-radius: 30px 0 30px 30px;
-    padding: 30px;
-    z-index: 1000;
-    width: 200px;
-    height: 200px;
-`;
+
 
 export const Background = styled.div`
     background-image: url("/backColors.jpg");

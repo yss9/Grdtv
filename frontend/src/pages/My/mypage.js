@@ -2,7 +2,6 @@ import TopBarComponent from "../../components/TopBar/TopBar";
 import MyReview from "../../components/MyPageDetail/MyReview";
 import MyReservation from "../../components/MyPageDetail/MyReservation";
 import {Reset} from "styled-reset";
-import MyProfile from '../../public/Img/forprofile/myprofile.png'
 import MyProfile2 from '../../public/Img/forprofile/img.png'
 import {
     GloplerSettingBtn, Introduce, IntroduceWrapper,
