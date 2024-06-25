@@ -3,9 +3,11 @@ import { useLoadScript } from '@react-google-maps/api';
 
 const libraries = ['places'];
 
+/*---------------------api 키 넣는곳----------------------*/
+
 const MapComponent = ({ address }) => {
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyCJ0rxsT0b6Pxc0xhFLqty7DN0n_gXqkrw',
+        googleMapsApiKey: 'api 키',
         libraries,
     });
 
