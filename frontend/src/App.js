@@ -24,6 +24,7 @@ import KeywordSelection from "./pages/recomendation/Personal/keyword";
 import BoardEx from "./pages/board/boardDetail";
 import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 import GloplerDetail from "./pages/gloplerDetail/gloplerDetailPage"
+import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
 
 function App() {
     return (
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/exboard" element={<BoardEx/>}/>
                 <Route path="/agentperspective" element={<AgentPerspective/>}/>
                 <Route path="/gloplerDetail" element={<GloplerDetail/>}/>
+                <Route path="/cosine" element={<RecommendationCosine/>}/>
             </Routes>
         </BrowserRouter>
     );

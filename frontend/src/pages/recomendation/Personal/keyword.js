@@ -5,6 +5,7 @@ import TopBarComponent from "../../../components/TopBar/TopBar";
 import '../../../App.css';
 import {useNavigate} from "react-router-dom";
 import { Reset } from 'styled-reset';
+import axios from 'axios';
 
 
 const Background = styled.div`
@@ -111,18 +112,16 @@ const keywordsList = [
     '해안', '놀이공원', '레포츠', '해변', '활동',
     '야경', '쇼핑', '게이트', '산책로', '번화가',
     '네온사인', '축제', '정원', '평화', '성벽',
-    '요새', '역사', '야경', '산책', '조각상',
-    '현대', '도시', '판다', '파노라마', '해변',
-    '고딕', '가치', '전망', '바다', '와인',
-    '문화', '극장', '로마', '공학', '운하',
-    '성당', '양식', '고대', '고고학', '조명',
-    '극장', '엔터테인먼트', '영화', '사인', '건축물',
-    '상징', '카지노', '리조트', '공원', '조각품',
-    '녹지', '산책로', '자연', '전망', '전망대',
-    '거리', '세계유산', '지구', '자연', '폭포',
-    '공연', '예술', '해안', '도시', '바위',
-    '랜드마크', '산호초', '다이빙', '와이너리', '동상',
-    '탐험', '현대', '호수', '휴식', '레크'
+    '요새', '산책', '조각상', '현대', '도시',
+    '판다', '파노라마', '고딕', '가치', '전망',
+    '바다', '와인', '극장', '로마', '공학',
+    '운하', '성당', '양식', '고대', '고고학',
+    '조명', '엔터테인먼트', '영화', '사인', '건축물',
+    '상징', '카지노', '리조트', '조각품', '녹지',
+    '전망대', '거리', '세계유산', '지구', '폭포',
+    '공연', '예술', '바위', '랜드마크', '산호초',
+    '다이빙', '와이너리', '동상', '탐험', '호수',
+    '휴식', '레크'
 ];
 
 
@@ -130,6 +129,7 @@ const KeywordSelection = () => {
     const navigate = useNavigate();
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [page, setPage] = useState(0);
+    const [results, setResults] = useState([]);
 
     const toggleKeyword = (keyword) => {
         setSelectedKeywords(prev =>
@@ -147,10 +147,21 @@ const KeywordSelection = () => {
         setPage(page - 1);
     };
 
-    const completeSelection = () => {
-        alert('선택이 완료되었습니다.');
-        navigate('/recomendation/personal',{ state: { triggerButtonClick: true } });
+
+    const completeSelection = async () => {
+        try {
+            const response = await axios.post('/api/search', {
+                keywords: selectedKeywords
+            });
+            setResults(response.data);
+            alert('선택이 완료되었습니다.');
+            navigate('/recomendation/personal', { state: { triggerButtonClick: true, results: response.data } });
+        } catch (error) {
+            console.error("Error during search:", error);
+            alert('검색 중 오류가 발생했습니다.');
+        }
     };
+
 
     const displayedKeywords = keywordsList.slice(page * 20, (page + 1) * 20);
 

@@ -63,6 +63,7 @@ export default function MainPage() {
 
     const [displayedPlaces, setDisplayedPlaces] = useState([]);
 
+
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
         const clickX = event.clientX - boundingRect.left;
@@ -72,7 +73,8 @@ export default function MainPage() {
     };
 
     const location = useLocation();
-
+    const {results} = location.state||{};
+    console.log(results);
     useEffect(() => {
         if (location.state?.triggerButtonClick) {
             const button = document.getElementById('target-button-id');
