@@ -7,9 +7,11 @@ const libraries = ['places'];
 
 const defaultCenter = { lat: 37.7749, lng: -122.4194 }; // 샌프란시스코의 기본 위치
 
+/*----------------------------api 키 넣는곳------------------------------*/
+
 const MapComponent = ({ address, setAddress }) => {
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyCJ0rxsT0b6Pxc0xhFLqty7DN0n_gXqkrw',
+        googleMapsApiKey: 'api 키',
         libraries,
     });
 
