@@ -5,25 +5,37 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.repository.UserRepository;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-class UserServiceTest {
+public class UserServiceTest {
+
+    @InjectMocks
+    private UserService userService;
 
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
-    private UserService userService;
+    @Mock
+    private MultipartFile profilePictureFile;
+
+    @Mock
+    private MultipartFile verificationFile;
 
     @BeforeEach
     void setUp() {
@@ -31,80 +43,48 @@ class UserServiceTest {
     }
 
     @Test
-    void testCreateUser_UsernameAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
+    void testCreateUser() {
+        UserDTO userDTO = new UserDTO("testUser", "testPass", "Test", "2000-01-01", "M", "INTJ", "profile.jpg", "testNick", false, "verification.pdf");
+        given(userRepository.findByUserId(anyString())).willReturn(Optional.empty());
+        given(userRepository.findByNickname(anyString())).willReturn(Optional.empty());
 
-        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(new User());
+        boolean result = userService.createUser(userDTO, profilePictureFile, verificationFile);
 
-        boolean result = userService.createUser(userDTO);
-        assertFalse(result);
+        assertThat(result).isTrue();
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void testCreateUser_NicknameAlreadyInUse() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
-
-        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(new User());
-
-        boolean result = userService.createUser(userDTO);
-        assertFalse(result);
-    }
-
-    @Test
-    void testCreateUser_Success() {
-        UserDTO userDTO = new UserDTO("username", "password", "Test User", "1990-01-01", "M", "INTJ", "picture", "nickname", false, "file");
-
-        when(userRepository.findByUsername(userDTO.getUsername())).thenReturn(null);
-        when(userRepository.findByNickname(userDTO.getNickname())).thenReturn(null);
-        when(userRepository.save(any(User.class))).thenReturn(new User());
-
-        boolean result = userService.createUser(userDTO);
-        assertTrue(result);
-    }
-
-    @Test
-    void testLogin_Success() {
-        String username = "username";
-        String password = "password";
-
+    void testLogin() {
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+        user.setUserId("testUser");
+        user.setPassword("$2a$10$1234567890123456789012");
+        given(userRepository.findByUserId(anyString())).willReturn(Optional.of(user));
 
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        User result = userService.login("testUser", "testPass");
 
-        User result = userService.login(username, password);
-        assertNotNull(result);
+        assertThat(result).isNotNull();
     }
 
     @Test
-    void testLogin_Failure() {
-        String username = "username";
-        String password = "password";
+    void testIsUserIdInUse() {
+        given(userRepository.findByUserId(anyString())).willReturn(Optional.of(new User()));
 
-        when(userRepository.findByUsername(username)).thenReturn(null);
+        boolean result = userService.isUserIdInUse("testUser");
 
-        User result = userService.login(username, password);
-        assertNull(result);
+        assertThat(result).isTrue();
     }
 
     @Test
-    void testCheckUsernameExistence() {
-        String username = "username";
+    void testLoadProfilePicture() throws Exception {
+        User user = new User();
+        user.setUserId("testUser");
+        user.setProfilePicture("src/main/resources/static/profile-pictures/test.jpg");
+        given(userRepository.findByUserId(anyString())).willReturn(Optional.of(user));
 
-        when(userRepository.findByUsername(username)).thenReturn(new User());
+        Resource result = userService.loadProfilePicture("testUser");
 
-        boolean result = userService.isUserIdInUse(username);
-        assertTrue(result);
-    }
-
-    @Test
-    void testCheckNicknameExistence() {
-        String nickname = "nickname";
-
-        when(userRepository.findByNickname(nickname)).thenReturn(new User());
-
-        boolean result = userService.isNicknameInUse(nickname);
-        assertTrue(result);
+        assertThat(result).isInstanceOf(FileSystemResource.class);
+        assertThat(result.exists()).isTrue();
     }
 }

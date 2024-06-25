@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 public class UserService {
 
@@ -80,11 +81,11 @@ public class UserService {
     }
 
     private String saveProfilePicture(MultipartFile profilePictureFile) {
-        return saveFile(profilePictureFile, Paths.get("src/main/resources/static/profile-pictures"));
+        return saveFile(profilePictureFile, Paths.get("static/profile-pictures"));
     }
 
     private String saveVerificationFile(MultipartFile verificationFile) {
-        return saveFile(verificationFile, Paths.get("src/main/resources/static/verification-files"));
+        return saveFile(verificationFile, Paths.get("static/verification-files"));
     }
 
     public Resource loadProfilePicture(String userId) throws IOException {
@@ -92,7 +93,7 @@ public class UserService {
         if (user == null || user.getProfilePicture() == null) {
             throw new FileNotFoundException("Profile picture not found for user: " + userId);
         }
-        return new FileSystemResource(user.getProfilePicture());
+        return new FileSystemResource(Paths.get("src/main/resources").resolve(user.getProfilePicture()).toAbsolutePath().toString());
     }
 
     public Resource loadVerificationFile(String userId) throws IOException {
@@ -100,12 +101,12 @@ public class UserService {
         if (user == null || user.getVerificationFile() == null) {
             throw new FileNotFoundException("Verification file not found for user: " + userId);
         }
-        return new FileSystemResource(user.getVerificationFile());
+        return new FileSystemResource(Paths.get("src/main/resources").resolve(user.getVerificationFile()).toAbsolutePath().toString());
     }
 
     private String saveFile(MultipartFile file, Path directory) {
         try {
-            Path absoluteDirectory = directory.toAbsolutePath();
+            Path absoluteDirectory = Paths.get("src/main/resources").resolve(directory).toAbsolutePath();
             File dir = absoluteDirectory.toFile();
             if (!dir.exists() && !dir.mkdirs()) {
                 throw new RuntimeException("Failed to create directory " + absoluteDirectory);
@@ -114,7 +115,7 @@ public class UserService {
             String filename = file.getOriginalFilename();
             Path filePath = absoluteDirectory.resolve(filename);
             file.transferTo(filePath.toFile());
-            return filePath.toString();
+            return directory.resolve(filename).toString(); // 상대 경로 저장
         } catch (IOException e) {
             throw new RuntimeException("Failed to save file", e);
         }
