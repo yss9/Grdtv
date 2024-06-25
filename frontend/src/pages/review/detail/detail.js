@@ -77,6 +77,7 @@ export default function BoardDetail() {
                                     <Avatar />
                                     <S.Writer>사용자1</S.Writer>
                                 </AvatarWrapper>
+                                <S.Date>2024.6.25</S.Date>
                             </S.Info>
                             <S.SubWrapper>
                                 <S.Url>Url 복사</S.Url>

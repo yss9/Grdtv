@@ -42,6 +42,7 @@ export const AvatarWrapper = styled.div`
   flex-direction: row;
   justify-content: center; /* 수평 가운데 정렬 */
   align-items: center; /* 수직 가운데 정렬 */
+  margin-right: 250px;
 `;
 
 export const Info = styled.div`
@@ -65,6 +66,13 @@ export const Avatar = styled.div`
 export const Writer = styled.div`
   padding-left: 10px;
   margin-right: 300px;
+  font-family: Regular;
+  color: #515151;
+`;
+
+export const Date = styled.div`
+  padding-left: 10px;
+  margin-right: 600px;
   font-family: Regular;
   color: #515151;
 `;
@@ -143,7 +151,7 @@ export const Title = styled.h1`
   font-size: 250%;
   font-family: SubTitle;
   text-align: center; 
-  margin-right: 250px
+  margin-left: 300px
 `;
 
 export const Contents = styled.div`

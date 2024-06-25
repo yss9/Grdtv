@@ -54,7 +54,7 @@ const BoardEx = () => {
             <AuthorImg src={ramenReview.image1}/>
             <Author>{ramenReview.author}
                 <Date>{ramenReview.date}</Date>
-                <p> URL 복사 </p> <p style={{left:"69%"}}>즐겨찾기</p>
+                <p style={{marginTop:"50px"}}> URL 복사 </p> <p style={{left:"70%", marginTop:"50px"}}>즐겨찾기</p>
             </Author>
             <HorizontalLine></HorizontalLine>
             <ReviewCard>
@@ -142,6 +142,7 @@ const AuthorImg = styled.img`
     top: 23.5vh;
     border-radius: 50%;
     object-fit: cover;
+    margin-left:50px
 `
 
 const Author = styled.div`
@@ -150,7 +151,7 @@ const Author = styled.div`
     font-size: 14px;
     color: #888;
     margin-top: 30px;
-    margin-right:620px;
+    margin-right:520px;
     p{
         position: absolute;
         left: 65%;
@@ -177,6 +178,7 @@ const Image = styled.img`
     height: auto;
     margin-bottom: 15px;
     margin-top: 50px;
+    
     
 `;
 
