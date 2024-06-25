@@ -1,7 +1,6 @@
 // style.js
 import styled from "@emotion/styled";
-import avantar from '../../../images/img_1.png';
-import travel from '../../../images/남산타워.jpeg'
+import avantar from '../../../images/도라에몽.jpeg';
 import Vector from '../../../images/Vector.png'
 
 
@@ -144,6 +143,7 @@ export const Title = styled.h1`
   font-size: 250%;
   font-family: SubTitle;
   text-align: center; 
+  margin-right: 250px
 `;
 
 export const Contents = styled.div`

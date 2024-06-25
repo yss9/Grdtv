@@ -75,7 +75,7 @@ export default function BoardDetail() {
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
                                     <Avatar />
-                                    <S.Writer>진나은</S.Writer>
+                                    <S.Writer>사용자1</S.Writer>
                                 </AvatarWrapper>
                             </S.Info>
                             <S.SubWrapper>
