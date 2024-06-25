@@ -38,17 +38,8 @@ public class SpeechController {
     }
 }
 
-//Test 명령어 터미널에 입력(음성파일 경로 넣기):
-/*
-curl -X POST \
-  http://localhost:8080/api/convert \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@\"C:\Users\허찬호\Downloads\통화 녹음 050714610295_240506_095042.wav\"" \
-  -F "languageCode=ko-KR"
-"C:\Users\허찬호\Downloads\통화 녹음 050714610295_240506_095042.wav"
- */
-//C:\Users\허찬호\Downloads\KakaoTalk_Audio_20240604_1353_06_285.wav
-//C:\Users\허찬호\Downloads\샘플_1.wav
+//구글 stt는 .wav형식만 지원하기 때문에 wav 파일만 넣을 것
+//추후 whisper 사용시 대부분 파일 형식 사용 가능
 //spring.servlet.multipart.max-file-size=50MB
 //spring.servlet.multipart.max-request-size=50MB
 //application.properties에 위 두줄 추가

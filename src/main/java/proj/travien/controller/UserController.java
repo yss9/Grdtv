@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/check-userid")
-    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+    public ResponseEntity<?> checkUserId(@RequestParam String username) {
         boolean exists = userService.isUserIdInUse(username);
         return ResponseEntity.ok(exists);
     }

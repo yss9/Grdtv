@@ -35,6 +35,12 @@ export default function BoardDetail() {
         fetchData();
     }, [boardID]);
 
+    useEffect(() => {
+        if (image) {
+            console.log('Image path:', image);
+        }
+    }, [image]);
+
     const onClickBoardDelete = async () => {
         try {
             await axios.delete(`http://localhost:8080/api/posts/${boardID}/`);
