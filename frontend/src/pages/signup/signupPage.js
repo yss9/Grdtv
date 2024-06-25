@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Wrapper,
@@ -29,13 +29,12 @@ import {
     UserImg,
     FinishText,
     GoToLoginPage,
-    OverlayImageInput, GenderImage
+    OverlayImageInput, GenderImage, LogoWrapper
 } from "./signupStyle";
-import {Switch as AntSwitch} from "antd";
+import { Switch as AntSwitch } from "antd";
 import styled from "styled-components";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 
 export default function SignupPage() {
 
@@ -48,6 +47,8 @@ export default function SignupPage() {
     const [glopler, setGlopler] = useState(false);
     const imgRef = useRef();
     const [imgFile, setImgFile] = useState("");
+    const [profilePicture, setProfilePicture] = useState(null);
+    const [verificationFile, setVerificationFile] = useState(null);
 
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
@@ -108,15 +109,13 @@ export default function SignupPage() {
         exit: { x: "-100%", transition: { duration: 0.5 } },
     };
 
-
-
-
     const onClickSubmit = () => {
 
         const MBTI = IE + mbti.IE.percentage + "/" + SN + mbti.SN.percentage + "/" + FT + mbti.FT.percentage + "/" + PJ + mbti.PJ.percentage;
 
-        if ( id && pw && name && birthday && gender && MBTI && nickName ) {
-            axios.post('http://localhost:8080/api/users/signup', {
+        if (id && pw && name && birthday && gender && MBTI && nickName) {
+            const formData = new FormData();
+            formData.append('user', new Blob([JSON.stringify({
                 userId: id,
                 password: pw,
                 name: name,
@@ -125,6 +124,20 @@ export default function SignupPage() {
                 mbti: MBTI,
                 nickname: nickName,
                 isAdmin: glopler,
+            })], { type: 'application/json' }));
+
+            if (profilePicture) {
+                formData.append('profilePicture', profilePicture);
+            }
+
+            if (verificationFile) {
+                formData.append('verificationFile', verificationFile);
+            }
+
+            axios.post('http://localhost:8080/api/users/signup', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
                 .then(response => {
                     console.log(response.data);
@@ -138,7 +151,6 @@ export default function SignupPage() {
             alert("모든 정보를 올바르게 기입해 주세요.");
         }
     };
-
 
     const MBTISwitch = ({ label1, label2, isActive, onToggle, percentage, onPercentageChange }) => {
         return (
@@ -159,58 +171,62 @@ export default function SignupPage() {
             </MBTISwitchWrapper>
         );
     };
-    const [selectedFile, setSelectedFile] = useState(null);
 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
+    const handleProfilePictureChange = (event) => {
+        setProfilePicture(event.target.files[0]);
+        saveImgFile(event);
     };
 
-    const onClickLogin = () => {
-        navigate('/login');
-    }
+    const handleVerificationFileChange = (event) => {
+        setVerificationFile(event.target.files[0]);
+    };
 
-    const onChangeId = (event)=>{
-        setId(event.target.value)
-    }
-    const onChangePw = (event) =>{
-        setPw(event.target.value)
-    }
-    const onChangeName = (event)=>{
-        setName(event.target.value)
-    }
-    const onChangeBirthday = (event)=>{
-        setBirthday(event.target.value)
-    }
-    const onClickMan = ()=>{
-        setGender("M");
-    }
-    const onClickWoman = ()=>{
-        setGender("W");
-    }
-    const onChangeNickName = (event) => {
-        setNickName(event.target.value)
-    }
-    const onClickGlopler = (isGlopler) =>{
-        setGlopler(isGlopler);
-    }
-
-    const saveImgFile = () => {
-        const file = imgRef.current.files[0];
+    const saveImgFile = (event) => {
+        const file = event.target.files[0];
         const reader = new FileReader();
 
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             setImgFile(reader.result);
         };
-
-        const formData = new FormData();
-        formData.append('image', file);
-
     };
+
+    const onClickLogin = () => {
+        navigate('/login');
+    }
+
+    const onChangeId = (event) => {
+        setId(event.target.value)
+    }
+    const onChangePw = (event) => {
+        setPw(event.target.value)
+    }
+    const onChangeName = (event) => {
+        setName(event.target.value)
+    }
+    const onChangeBirthday = (event) => {
+        setBirthday(event.target.value)
+    }
+    const onClickMan = () => {
+        setGender("M");
+    }
+    const onClickWoman = () => {
+        setGender("W");
+    }
+    const onChangeNickName = (event) => {
+        setNickName(event.target.value)
+    }
+    const onClickGlopler = (isGlopler) => {
+        setGlopler(isGlopler);
+    }
+
     return (
         <>
             <Wrapper>
-                <Logo></Logo>
+
+                <LogoWrapper>
+                    <Logo src='/Img/Logo1.png'></Logo>
+                </LogoWrapper>
                 <ContentsWrapper>
                     <ProgressBar>
                         <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "20%" : step === 3 ? "40%" : step === 4 ? "60%" : "80%" }}></Progress>
@@ -339,8 +355,7 @@ export default function SignupPage() {
                                     <BoldText>프로필을 설정해 주세요.</BoldText>
                                     <label>
                                         <UserImg src={imgFile ? imgFile : '/Img/signInImg/firstProfileImg.png'}/>
-                                        <OverlayImageInput type="file" accept="image/*" onChange={saveImgFile}
-                                                           ref={imgRef}/>
+                                        <OverlayImageInput type="file" accept="image/*" onChange={handleProfilePictureChange} ref={imgRef}/>
                                     </label>
                                     <br/>
                                     <FormGroup>
@@ -359,7 +374,7 @@ export default function SignupPage() {
                         {step === 4 && (
                             <FormContainer>
                                 <motion.div
-                                    key="step3"
+                                    key="step4"
                                     initial="initial"
                                     animate="enter"
                                     exit="exit"
@@ -387,14 +402,12 @@ export default function SignupPage() {
 
                                     <BoldText>글로플러 검증을 위한 파일을 첨부하여 제출해 주세요.</BoldText>
 
-
                                     <BoldSubText>
                                         주민등록증, 자격증, 여권 등을 첨부해 주시면, 글로플에서 서류를 검토하여 글로플러 리스트에 등록해 줘요.
                                     </BoldSubText>
                                     <div style={{margin: '30px 0'}}>
-                                        <input type="file" onChange={handleFileChange}/>
+                                        <input type="file" onChange={handleVerificationFileChange}/>
                                     </div>
-
 
                                     <ButtonContainer>
                                         <BackButton onClick={goToThirdPage}>이전</BackButton>
@@ -407,7 +420,7 @@ export default function SignupPage() {
                         {step === 5 && (
                             <FormContainer>
                                 <motion.div
-                                    key="step4"
+                                    key="step5"
                                     initial="initial"
                                     animate="enter"
                                     exit="exit"
@@ -428,6 +441,5 @@ export default function SignupPage() {
 
             </Wrapper>
         </>
-
     );
 }

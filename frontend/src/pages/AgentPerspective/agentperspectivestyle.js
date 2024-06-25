@@ -7,7 +7,7 @@ export const Container=styled.div`
 `
 export const Wrapper = styled.div`
     width: 1500px;
-    height: 2500px;
+    height: 1900px;
     //background-color: lightcyan;
 `
 export const SubTitleWrapper=styled.div`
@@ -91,9 +91,10 @@ export const SubTitle2=styled.div`
     font-weight: bold;
     margin-top: 3rem;
     display: flex;
+    justify-content: center;
 
     p{
-        color: #ff9900;
+        color: #4e53ed;
     }
 
 `
@@ -101,7 +102,7 @@ export const AgentContainer=styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 2vh;
+    margin-top: 30px;
     flex-direction: column;
     // background-color: green;
 `
@@ -111,7 +112,7 @@ export const Agents=styled.div`
     height: 32rem;
     //background-color: gray;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 `
 export const Agents2=styled.div`
     width: 65%;
@@ -120,33 +121,6 @@ export const Agents2=styled.div`
     display: flex;
     justify-content: space-between;
 `
-export const GaugeBarWrapper=styled.div`
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    margin-top: 0.5rem;
-`
-export const GaugeBar = styled.div`
-    width: 100%;
-    height: 8px;
-    background-color: #d9d9d9;
-    border-radius: 100px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-
-    &:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: ${props => props.completion}%;
-        background-color: #ff9900;
-        border-radius: 100px;
-        transition: width 0.5s ease;
-    }
-`;
 
 export const SelectWrapper=styled.div`
     display: flex;
@@ -193,53 +167,7 @@ export const SeeAllBtn=styled.button`
 
   }
 `
-export const SeeAllBtnWrapper=styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-`
-export const SeeAllBtn2=styled.button`
-    display: flex;
-  font-size: 15px;
-  background-color: transparent;
-  justify-content: center;
-  align-items: flex-end;
-  cursor: pointer;
-  border: none;
-    height: 20px;
-  margin-right: 110px;
-  svg{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 10px;
-  }
-  p{
-    font-family: "Regular";
-
-  }
-`
 export const DownWrapper=styled.div`
     background-color: #F4F6F8;
     margin-top: 80px;
-`
-export const ProgressContainer=styled.div`
-    display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 15px;
-`
-
-export const RecentViewAgentContainer=styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-content: center;
-    margin-top: 10px;
-`
-export const RecentViewAgentWrapper=styled.div`
-    //background-color: beige;
-    width: 85%;
-    display: flex;
-    justify-content: space-between;
 `

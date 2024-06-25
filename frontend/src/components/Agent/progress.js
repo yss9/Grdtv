@@ -65,7 +65,7 @@ const ProgressBar = styled.div`
     left: 0;
     height: 100%;
     width: ${props => props.completion}%;
-    background-color: #4e53ed;
+      background-color: #ff9900;
     border-radius: 0 100px 100px 0;
     transition: width 0.5s ease;
   }

@@ -2,29 +2,38 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 
+const Container=styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const TopBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 5.5em;
-  margin-top: 2.5vh;
-    
+  width: 1500px;
+  height: 60px;
+  //margin-top: 3vh;
+  //background-color: gray;
 `;
 
 const LogoWrapper = styled.div`
-  width: 34%;
+  width: 37%;
   text-align: left;
   //background-color: #61dafb;
 `;
 
 const Logo = styled.div`
-    background-image: url("/Logo1.png");
+    background-image: url("/GlopleLogo.png");
     background-size: cover;
     background-position: center;
-    width: 200px;
-    height: 50px;
+    width: 300px;
+    height: 80px;
     display: flex;
+  margin-bottom: 1.5em;
+  cursor: pointer;
+ // background-color: pink;
     
 `;
 
@@ -45,6 +54,7 @@ const Recomendation = styled.div`
   height: 2.5em;
   display: flex;
   align-items: center;
+  
 `;
 
 const RecomendationList = styled.ul`
@@ -100,6 +110,7 @@ const MyPage = styled.button`
   cursor: pointer;
 `;
 
+
 export default function TopBarComponent({ fontColor }) {
     const navigate = useNavigate();
 
@@ -131,38 +142,40 @@ export default function TopBarComponent({ fontColor }) {
     };
 
     const handleGoChatBot = () =>{
-      navigate('/chatbot');
+        navigate('/chatbot');
     };
 
     const handleGoChat = () =>{
-      navigate('/chat');
+        navigate('/chat');
     };
 
     return (
-        <TopBar>
-            <LogoWrapper>
-                <Logo onClick={handleGoHome}></Logo>
-            </LogoWrapper>
-            <MenuContainer style={{color:fontColor}}>
-                <Recomendation>
-                    여행지 예약
-                    <RecomendationDropdown>
-                        <RecomendationItem style={{color:"black"}} onClick={handleGoReservation}>글로플러 찾기</RecomendationItem>
-                        <RecomendationItem style={{color:"black"}} onClick={handleGoChat}>채팅 목록</RecomendationItem>
-                    </RecomendationDropdown>
-                </Recomendation>
-                <Recomendation>
-                    여행지 추천
-                    <RecomendationDropdown>
-                        <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
-                        <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>키워드 추천</RecomendationItem>
-                    </RecomendationDropdown>
-                </Recomendation>
-                <Community style={{color:fontColor}} onClick={handleGoRoute}>루트 탐색</Community>
-                <Community style={{color:fontColor}} onClick={handleGoReview}>커뮤니티</Community>
-                <Community style={{color:fontColor}} onClick={handleGoChatBot}>챗봇</Community>
-                <MyPage style={{color:fontColor}} onClick={handleGoMyPage}>마이페이지</MyPage>
-            </MenuContainer>
-        </TopBar>
+        <Container>
+            <TopBar>
+                <LogoWrapper>
+                    <Logo onClick={handleGoHome}></Logo>
+                </LogoWrapper>
+                <MenuContainer style={{color:fontColor}}>
+                    <Recomendation>
+                        여행지 예약
+                        <RecomendationDropdown>
+                            <RecomendationItem style={{color:"black"}} onClick={handleGoReservation}>글로플러 찾기</RecomendationItem>
+                            <RecomendationItem style={{color:"black"}} onClick={handleGoChat}>채팅 목록</RecomendationItem>
+                        </RecomendationDropdown>
+                    </Recomendation>
+                    <Recomendation>
+                        여행지 추천
+                        <RecomendationDropdown>
+                            <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
+                            <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>키워드 추천</RecomendationItem>
+                        </RecomendationDropdown>
+                    </Recomendation>
+                    <Community style={{color:fontColor}} onClick={handleGoRoute}>루트 탐색</Community>
+                    <Community style={{color:fontColor}} onClick={handleGoReview}>커뮤니티</Community>
+                    <Community style={{color:fontColor}} onClick={handleGoChatBot}>챗봇</Community>
+                    <MyPage style={{color:fontColor}} onClick={handleGoMyPage}>마이페이지</MyPage>
+                </MenuContainer>
+            </TopBar>
+        </Container>
     );
 }

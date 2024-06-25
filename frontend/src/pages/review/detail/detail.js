@@ -51,7 +51,7 @@ export default function BoardDetail() {
         }
     };
 
-    const onClickReport = async () => {
+    /*const onClickReport = async () => {
         try {
             await axios.post(`http://localhost:8080/api/posts/${boardID}/report/`, {
                 boardID: boardID,
@@ -60,7 +60,7 @@ export default function BoardDetail() {
         } catch (error) {
             console.log(error);
         }
-    };
+    };*/
 
     return (
         <>

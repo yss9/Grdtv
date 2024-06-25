@@ -17,7 +17,7 @@ export default function BoardWrite(props) {
 
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
-    const [zipcode, setZipcode] = useState("");
+    const [zipcode] = useState("");
 
     const [isOpen, setIsOpen] = useState(false);
     const [image, setImage] = useState(null);

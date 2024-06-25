@@ -198,9 +198,10 @@ const Chatbot = () => {
 
     return (
         <Container>
+            <div style={{height: '55px'}}></div>
             <TopBarComponent/>
             <MainContentArea>
-                <Sidebar>
+            <Sidebar>
                     <SidebarItem>새로운 채팅</SidebarItem>
                     <SidebarItem>이전 채팅</SidebarItem>
                 </Sidebar>

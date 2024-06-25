@@ -1,7 +1,10 @@
 // MainPage.js
 import React, { useState } from 'react';
 import { Reset } from 'styled-reset';
-import { Wrapper, Map, Popup, Background } from "./mainstyle";
+import { Wrapper, Map, Popup, Background,
+    BtnWrapper, LoginBtn, RegisterBtn,
+    VirticalLine, VirticalLineWrapper
+} from "./mainstyle";
 import TopBarComponent from '../../components/TopBar/TopBar';
 import {useNavigate} from "react-router-dom";
 
@@ -11,7 +14,7 @@ export default function MainPage() {
     const [country, setCountry] = useState('');
     const navigate = useNavigate();
     const handleClick = (event, country) => {
-        const svgRect = event.currentTarget.getBoundingClientRect();
+        //const svgRect = event.currentTarget.getBoundingClientRect();
         const rect = event.target.getBoundingClientRect();
         const x = rect.x;
         const y = rect.y + rect.height;
@@ -37,12 +40,13 @@ export default function MainPage() {
             <Reset />
             <Background>
                 <Wrapper>
-                    <div style={{float:"right",marginRight:"-42%", paddingTop:"1%", paddingRight:"4%", width:"50%"}}>
-                        <button onClick={handleGoLogin} style={{marginLeft:"1%", border:"none",
-                            borderRadius:"15px", backgroundColor:"rgba(78, 83, 238, 1)", padding:"3px 20px", fontFamily:"SubTitle", color:"white", fontSize:"19px"}}> 로그인</button>
-                        <button onClick={handleGoSignUp} style={{marginLeft:"1%", border:"none",
-                            borderRadius:"15px", backgroundColor:"rgba(78, 83, 238, 1)",padding:"3px 20px", fontFamily:"SubTitle", color:"white", fontSize:"19px"}}> 회원가입</button>
-                    </div>
+                    <BtnWrapper>
+                        <LoginBtn onClick={handleGoLogin}>로그인</LoginBtn>
+                        <VirticalLineWrapper>
+                            <VirticalLine/>
+                        </VirticalLineWrapper>
+                        <RegisterBtn onClick={handleGoSignUp}>회원가입</RegisterBtn>
+                    </BtnWrapper>
                     <TopBarComponent fontColor="white"/>
                     <Map>
                         <svg width="1306" height="662" viewBox="0 0 1306 662" fill="none"
