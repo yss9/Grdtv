@@ -16,6 +16,8 @@ export const ProfileImg=styled.img`
   border-radius: 50%;
   background-color: #d9d9d9;
   margin-top: 20px;
+  object-fit: cover; /* 이미지를 가득 채우도록 설정 */
+
 `
 export const NameWrapper=styled.div`
   margin-top: 30px;

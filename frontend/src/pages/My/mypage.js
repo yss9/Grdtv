@@ -3,6 +3,7 @@ import MyReview from "../../components/MyPageDetail/MyReview";
 import MyReservation from "../../components/MyPageDetail/MyReservation";
 import {Reset} from "styled-reset";
 import MyProfile from '../../public/Img/forprofile/myprofile.png'
+import MyProfile2 from '../../public/Img/forprofile/img.png'
 import {
     GloplerSettingBtn, Introduce, IntroduceWrapper,
     Mbti, MyPageDetailContainer, MyProfileContainer, NameWrapper, PointSettingBtn,
@@ -45,7 +46,7 @@ export default function Mypage() {
     };
 
     const MyData=[
-        {name:'문경서',mbti:'ENTP', introduce:'나는 여행을 즐기는 20대 😍🌸💗', image:MyProfile }
+        {name:'문경서',mbti:'ENTP', introduce:'나는 여행을 즐기는 20대 😍🌸💗', image:MyProfile2 }
     ];
 
     return (

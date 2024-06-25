@@ -22,7 +22,7 @@ import Agent from "../../public/Img/forprofile/AgentProfile.png"
 import Agent2 from "../../public/Img/forprofile/AgentProfile2.png"
 import Agent3 from "../../public/Img/forprofile/AgentProfile3.png"
 import MyProfile from "../../public/Img/forprofile/AgentProfile4.png"
-
+import MyProfile2 from '../../public/Img/forprofile/img.png'
 
 const BestreviewsData = [
     { title: '라멘의 모든 것', author: '김라멘', image: Ramen },
@@ -146,7 +146,7 @@ export default function ReviewPage() {
                         <MyMenuWrapper>
                             <MyMenuContainer>
                                 <Profile>
-                                    <PImg src={MyProfile}></PImg>
+                                    <PImg src={MyProfile2}></PImg>
                                     <PContainer>
                                         <Pname>문경서</Pname>
                                         <PIntro>나는 여행을 즐기는 20대</PIntro>
