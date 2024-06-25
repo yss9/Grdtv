@@ -40,7 +40,6 @@ export default function BoardDetail() {
             console.log('Image path:', image);
         }
     }, [image]);
-    
 
     const onClickBoardDelete = async () => {
         try {
