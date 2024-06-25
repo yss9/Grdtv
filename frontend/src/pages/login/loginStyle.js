@@ -13,7 +13,7 @@ export const Wrapper=styled.div`
 `
 export const LogoWrapper = styled.div`
     width: auto;
-    height: 50px;
+    height: 80px;
     padding-left: 10%;
     padding-top: 3%;
     //background-color: #61dafb;

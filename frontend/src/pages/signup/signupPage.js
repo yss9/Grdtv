@@ -225,7 +225,7 @@ export default function SignupPage() {
             <Wrapper>
 
                 <LogoWrapper>
-                    <Logo src='/Img/Logo1.png'></Logo>
+                    <Logo src='/Img/Logo2.png'></Logo>
                 </LogoWrapper>
                 <ContentsWrapper>
                     <ProgressBar>

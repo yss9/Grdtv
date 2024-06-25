@@ -95,7 +95,7 @@ export default function LoginPage(){
             >
                 <Wrapper>
                     <LogoWrapper>
-                        <Logo src='/Img/Logo1.png'></Logo>
+                        <Logo src='/Img/Logo2.png'></Logo>
                     </LogoWrapper>
                     <LogInWrapper>
                         <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />

@@ -15,7 +15,7 @@ export const ContentsWrapper = styled.div`
 `
 export const LogoWrapper = styled.div`
     width: 100%;
-    height: 45px;
+    height: 80px;
     padding-left: 10%;
     padding-top: 3%;
     //background-color: #61dafb;
