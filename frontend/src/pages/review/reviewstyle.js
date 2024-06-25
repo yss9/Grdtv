@@ -180,6 +180,8 @@ export const PImg = styled.img`
     border-radius: 50%;
     background-color: #7d7d7d;
     margin: 20px 0 20px 20px;
+    object-fit: cover; /* 이미지를 가득 채우도록 설정 */
+
 `;
 export const PContainer = styled.div`
     display: flex;

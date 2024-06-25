@@ -18,6 +18,11 @@ import Canada from "../../public/Img/canada.png"
 import Paris from "../../public/Img/paris.png"
 import Sydney from "../../public/Img/sydney.png"
 import Osaka from "../../public/Img/osaka.png"
+import Agent from "../../public/Img/forprofile/AgentProfile.png"
+import Agent2 from "../../public/Img/forprofile/AgentProfile2.png"
+import Agent3 from "../../public/Img/forprofile/AgentProfile3.png"
+import MyProfile from "../../public/Img/forprofile/AgentProfile4.png"
+
 
 const BestreviewsData = [
     { title: '라멘의 모든 것', author: '김라멘', image: Ramen },
@@ -38,9 +43,9 @@ const BestreviewsData = [
 ];
 
 const BlogData=[
-    { title: '맛있는 라멘 이야기', content: '일본 라멘의 깊은 맛과 다양한 종류에 대해 알아봅니다.', author: '김라멘' },
-    { title: '초밥의 예술', content: '신선한 재료와 정성으로 빚어낸 초밥의 세계를 탐험해보세요.', author: '이초밥' },
-    { title: '캐나다 자연 탐방기', content: '캐나다의 아름다운 자연 경관과 여행 팁을 소개합니다.', author: '박캐나다' },
+    { title: '맛있는 라멘 이야기', content: '일본 라멘의 깊은 맛과 다양한 종류에 대해 알아봅니다.', author: '김라멘', blogImg:Ramen, authorImg:Agent},
+    { title: '초밥의 예술', content: '신선한 재료와 정성으로 빚어낸 초밥의 세계를 탐험해보세요.', author: '이초밥', blogImg:Sushi, authorImg:Agent2 },
+    { title: '캐나다 자연 탐방기', content: '캐나다의 아름다운 자연 경관과 여행 팁을 소개합니다.', author: '박캐나다', blogImg:Canada, authorImg:Agent3},
 ];
 
 export default function ReviewPage() {
@@ -141,7 +146,7 @@ export default function ReviewPage() {
                         <MyMenuWrapper>
                             <MyMenuContainer>
                                 <Profile>
-                                    <PImg></PImg>
+                                    <PImg src={MyProfile}></PImg>
                                     <PContainer>
                                         <Pname>문경서</Pname>
                                         <PIntro>나는 여행을 즐기는 20대</PIntro>

@@ -37,6 +37,8 @@ const PImg=styled.img`
   height: 4rem;
   border-radius: 50%;
   background-color: #7d7d7d;
+    object-fit: cover; /* 이미지를 가득 채우도록 설정 */
+
 `;
 const PContainer=styled.div`
     display: flex;
@@ -132,6 +134,7 @@ const BPic=styled.img`
   background-color: #8e8e8e;
   border: none;
   border-radius: 5px;
+    object-fit: cover; /* 이미지를 가득 채우도록 설정 */
 `;
 
 
@@ -142,7 +145,7 @@ const Blog1 = ({ review }) => {
                 <ContentWrapper>
                     <Content>
                         <Profile>
-                            <PImg></PImg>
+                            <PImg src={review.authorImg}></PImg>
                             <PContainer>
                                 <Pname>{review.author}</Pname>
                                 <Pdate>2024</Pdate>
@@ -171,7 +174,7 @@ const Blog1 = ({ review }) => {
                     </Content>
                 </ContentWrapper>
                 <BPicWrapper>
-                    <BPic></BPic>
+                    <BPic src={review.blogImg}></BPic>
                 </BPicWrapper>
             </BlogContainer>
         </>

@@ -1,5 +1,16 @@
 import styled  from "@emotion/styled";
+
+export const Container=styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
 export const Wrapper=styled.div`
+    width: 1500px;
+    height: 1300px;    
+    //background-color: #61dafb;
   display: flex;
   flex-direction: column;
   justify-content: center;
