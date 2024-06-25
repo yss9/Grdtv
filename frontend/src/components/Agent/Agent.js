@@ -218,11 +218,11 @@ const ReviewContent=styled.div`
   color: #515151;
   line-height: 1.5;
 `
-//const ReviewPhoto=styled.image`
-//    width: 5rem;
- // height: 5rem;
- // background-color: #5F5F5F;
-//`
+const ReviewPhoto=styled.img`
+    width: 5rem;
+  height: 5rem;
+  background-color: #5F5F5F;
+`
 
 const Agent = ({ review, pageType }) => {
 
@@ -314,7 +314,7 @@ const Agent = ({ review, pageType }) => {
                                     </UserStar>
                                     <ReviewContent>{review.agentreview}</ReviewContent>
                                 </ReviewDetail>
-                                {/*<ReviewPhoto></ReviewPhoto>*/}
+                                <ReviewPhoto src={review.reviewImg}></ReviewPhoto>
                             </UserReview>
                         </ReviewWrapper>
                     </Content>

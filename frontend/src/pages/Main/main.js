@@ -1,9 +1,11 @@
 // MainPage.js
 import React, { useState } from 'react';
 import { Reset } from 'styled-reset';
-import { Wrapper, Map, Popup, Background,
+import {
+    Wrapper, Map, Popup, Background,
     BtnWrapper, LoginBtn, RegisterBtn,
-    VirticalLine, VirticalLineWrapper
+    VirticalLine, VirticalLineWrapper, GoReservationBtn,
+    GaugeBar, GaugeBarWrapper
 } from "./mainstyle";
 import TopBarComponent from '../../components/TopBar/TopBar';
 import {useNavigate} from "react-router-dom";
@@ -594,7 +596,7 @@ export default function MainPage() {
                                 backgroundColor: '#333',
                                 borderRadius: '10px',
                                 width: '300px',
-                                height: 'auto'
+                                height: 'auto',
                             }}>
                                 <button style={{
                                     float: 'right',
@@ -628,7 +630,7 @@ export default function MainPage() {
                                 </div>
                                 <div style={{
                                     width: '100%',
-                                    overflowX: 'scroll',
+                                    overflowX: 'hidden',
                                     display: 'flex',
                                     marginTop: '10px',
                                     gap: '10px',
@@ -636,7 +638,8 @@ export default function MainPage() {
                                 }}>
                                     <div style={{
                                         position: 'relative',
-                                        minWidth: '150px',
+                                        minWidth: '80px',
+                                       //minWidth: '150px',
                                         borderRadius: '10px',
                                         overflow: 'hidden',
                                         border: '1.3px solid white'
@@ -661,7 +664,8 @@ export default function MainPage() {
                                     </div>
                                     <div style={{
                                         position: 'relative',
-                                        minWidth: '150px',
+                                        //minWidth: '150px',
+                                        minWidth: '80px',
                                         borderRadius: '10px',
                                         overflow: 'hidden',
                                         border: '1.3px solid white'
@@ -684,17 +688,10 @@ export default function MainPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <button style={{
-                                    width: '70%',
-                                    padding: '10px',
-                                    backgroundColor: 'royalblue',
-                                    border: 'none',
-                                    color: 'white',
-                                    borderRadius: '5px',
-                                    marginTop: '10px',
-                                    marginLeft: '15%'
-                                }}>예약 바로가기
-                                </button>
+                                <GaugeBarWrapper>
+                                    <GaugeBar completion={43} />
+                                </GaugeBarWrapper>
+                                <GoReservationBtn>예약 바로가기</GoReservationBtn>
                             </Popup>
                         )}
                     </Map>

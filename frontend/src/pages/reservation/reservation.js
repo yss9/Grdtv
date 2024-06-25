@@ -10,6 +10,7 @@ import AgentProfile4 from "../../public/Img/forprofile/AgentProfile4.png"
 import AgentProfile5 from "../../public/Img/forprofile/AgentProfile5.png"
 import AgentProfile6 from "../../public/Img/forprofile/AgentProfile6.png"
 import AgentNoProfile from "../../public/Img/forprofile/img_1.png"
+import Sushi from "../../public/Img/sushi2.png"
 import {
     SubTitle,
     SubTitleWrapper,
@@ -39,11 +40,12 @@ import {
 } from './reservationstyle'
 import React, { useState } from "react";
 import TopBarComponent from "../../components/TopBar/TopBar";
+import Maratang2 from "../../public/Img/maratang.png";
 
 const AgentData = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
-    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!' },
-    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentNoProfile, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.' },
+    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.', reviewImg:Maratang2},
+    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!', reviewImg:Sushi },
+    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentNoProfile, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.', reviewImg:Maratang2 },
     { author: '미국 길라잡이', introduce: '미국 전역 여행 안내합니다.', hashtags: ['#미국여행', '#로드트립', '#대자연'], spec: ['미국 10년 거주', '영어 능통'], image: AgentProfile3, score: '4.6', number: '250', agentreview: '미국 서부 여행이 정말 인상 깊었어요.' },
     { author: '독일 전문가', introduce: '독일의 모든 것을 안내합니다.', hashtags: ['#독일여행', '#맥주투어', '#역사탐방'], spec: ['독일 6년 거주', '독일어 자격증'], image: AgentNoProfile, score: '4.8', number: '310', agentreview: '맥주 투어가 정말 재미있었어요!' },
     { author: '스페인 가이드', introduce: '스페인의 아름다움을 경험하세요.', hashtags: ['#스페인여행', '#예술투어', '#현지체험'], spec: ['스페인 5년 거주', '스페인어 능통'], image: AgentProfile4, score: '4.7', number: '280', agentreview: '가우디 투어가 인상 깊었어요.' },
@@ -68,7 +70,7 @@ const Agent2Data = [
 ];
 const Agent3Data = [
     { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
-    { author: '행복', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile6, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!' },
+    { author: '행복', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile6, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!'},
     { author: '여정', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentProfile5, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.' },
 ];
 

@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
     overflow: hidden; /* 가로 스크롤바 감춤 */
     display:flex;
     flex-direction:column;
-
+    align-items:center;
     ::-webkit-scrollbar {
         display: none; /* Safari 및 Chrome 등의 WebKit 기반 브라우저용 */
     }
@@ -40,7 +40,7 @@ export const Background = styled.div`
 `;
 
 export const BtnWrapper=styled.div`
-  width: 1530px;
+  width: 1500px;
   margin-top: 25px;
   //background-color: pink;
   display: flex;
@@ -87,4 +87,43 @@ export const VirticalLine = styled.div`
     width: 2px;
     //margin: 0 1rem;
     background-color: white;
+`;
+
+export const GoReservationBtn=styled.button`
+    width: 70%;
+    padding: 10px;
+    background-color: royalblue;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-left: 15%;
+`
+export const GaugeBarWrapper=styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+`
+export const GaugeBar = styled.div`
+  width: 98%;
+  height: 8px;
+  background-color: #d9d9d9;
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: ${props => props.completion}%;
+    background-color: #ff9900;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
 `;

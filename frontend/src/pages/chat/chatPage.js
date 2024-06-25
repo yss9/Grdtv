@@ -132,8 +132,8 @@ const ChatPage = () => {
 
     return (
         <Wrapper>
-            <div style={{width:'100%', height: '2vh'}}></div>
-            <TopBarComponent />
+            <div style={{height: '55px'}}></div>
+            <TopBarComponent/>
             <ChatWrapper>
                 <Sidebar>
                     <div style={{width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black'}}>

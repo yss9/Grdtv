@@ -167,7 +167,7 @@ export const SelectorItem = styled.div`
 `;
 
 export const Highlight = styled.div`
-  background-color: #4e53ed;
+  background-color: #ff9900;
   border-radius: 8px;
   position: absolute;
   left: ${({ left }) => left}px;

@@ -25,6 +25,7 @@ export const SubTitle=styled.div`
     display: flex;
     p{
         color:#ff9900;
+        margin: 0 0 0 7px;
     }
 `
 export const SearchBarWrapper=styled.div`

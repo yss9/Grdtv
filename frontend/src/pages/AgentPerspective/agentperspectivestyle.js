@@ -25,7 +25,39 @@ export const SubTitle=styled.div`
     display: flex;
     p{
         color:#ff9900;
+        margin: 0 0 0 7px;
     }
+`
+export const SubTitle2=styled.div`
+    width: 85%;
+    font-size: 22px;
+    color: #515151;
+    font-family: "Regular";
+    font-weight: bold;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+
+    p{
+        color: #4e53ed;
+        margin: 0 6px 0 6px;
+    }
+
+`
+export const SubTitle3=styled.div`
+    width: 85%;
+    font-size: 22px;
+    color: #515151;
+    font-family: "Regular";
+    font-weight: bold;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: flex-start;
+
+    p{
+        color: #4e53ed;
+    }
+
 `
 export const SearchBarWrapper=styled.div`
     height: 5rem;
@@ -82,21 +114,6 @@ export const Magnifier=styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-`
-export const SubTitle2=styled.div`
-    width: 85%;
-    font-size: 22px;
-    color: #515151;
-    font-family: "Regular";
-    font-weight: bold;
-    margin-top: 3rem;
-    display: flex;
-    justify-content: center;
-
-    p{
-        color: #4e53ed;
-    }
-
 `
 export const AgentContainer=styled.div`
     display: flex;

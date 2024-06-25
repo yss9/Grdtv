@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import '../../../App.css';
 import {useNavigate} from "react-router-dom";
+import { Reset } from 'styled-reset';
+
 
 const Background = styled.div`
+    margin-top: 13px;
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
@@ -23,6 +24,8 @@ const Background = styled.div`
 `;
 
 const Container = styled.div`
+    width: 1500px;
+    height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -75,17 +78,17 @@ const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-top: 20px;  /* Adjust this to position buttons correctly */
-    position: absolute;
-    bottom: 300px;  /* Fixes the button position to the bottom */
+    margin-top: 70px;  /* Adjust this to position buttons correctly */
+    //background-color: #61dafb;
 `;
 
 const NavButton = styled.button`
-    padding: 10px 40px;
+    width: 250px;
+    height: 60px;
     border: none;
     background-color: black;
-    margin-left: 350px;
-    margin-right: 350px;
+    margin-left: 320px;
+    margin-right: 320px;
     color: white;
     cursor: pointer;
 
@@ -93,6 +96,12 @@ const NavButton = styled.button`
         background-color: #0056b3;
     }
 `;
+const Wrapper=styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`
 
 
 const keywordsList = [
@@ -146,32 +155,39 @@ const KeywordSelection = () => {
     const displayedKeywords = keywordsList.slice(page * 20, (page + 1) * 20);
 
     return (
-        <Container>
-            <Background />
-            <TopBarComponent />
-            <Header>여행 키워드를 선정해 주세요.</Header>
-            <Ptag>자신의 취향에 맞는 키워드를 고른 후, 맞춤형 추천을 제공해 줄게요.</Ptag>
-            <KeywordsContainer>
-                {displayedKeywords.map((keyword, index) => (
-                    <KeywordButton
-                        key={index}
-                        selected={selectedKeywords.includes(keyword)}
-                        onClick={() => toggleKeyword(keyword)}
-                    >
-                        {keyword}
-                    </KeywordButton>
-                ))}
-            </KeywordsContainer>
-            <ButtonContainer>
-                {page > 0 && <NavButton onClick={prevPage}>이전</NavButton>}
-                {page < Math.floor(keywordsList.length / 20) && (
-                    <NavButton onClick={nextPage}>다음</NavButton>
-                )}
-                {page === Math.floor(keywordsList.length / 20) && (
-                    <NavButton onClick={completeSelection}>완료</NavButton>
-                )}
-            </ButtonContainer>
-        </Container>
+        <>
+            <Reset/>
+            <Wrapper>
+                <Background/>
+                <Container>
+                    <div style={{height: '55px'}}></div>
+                    <TopBarComponent/>
+                    <Header>여행 키워드를 선정해 주세요.</Header>
+                    <Ptag>자신의 취향에 맞는 키워드를 고른 후, 맞춤형 추천을 제공해 줄게요.</Ptag>
+                    <KeywordsContainer>
+                        {displayedKeywords.map((keyword, index) => (
+                            <KeywordButton
+                                key={index}
+                                selected={selectedKeywords.includes(keyword)}
+                                onClick={() => toggleKeyword(keyword)}
+                            >
+                                {keyword}
+                            </KeywordButton>
+                        ))}
+                    </KeywordsContainer>
+                    <ButtonContainer>
+                        {page > 0 && <NavButton onClick={prevPage}>이전</NavButton>}
+                        {page < Math.floor(keywordsList.length / 20) && (
+                            <NavButton onClick={nextPage}>다음</NavButton>
+                        )}
+                        {page === Math.floor(keywordsList.length / 20) && (
+                            <NavButton onClick={completeSelection}>완료</NavButton>
+                        )}
+                    </ButtonContainer>
+                </Container>
+            </Wrapper>
+
+        </>
     );
 };
 export default KeywordSelection;

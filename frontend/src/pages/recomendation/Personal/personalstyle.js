@@ -201,7 +201,7 @@ export const GaugeBar = styled.div`
     left: 0;
     height: 100%;
     width: ${props => props.completion}%;
-    background-color: #4e53ed;
+    background-color: #ff9900;
     border-radius: 100px;
     transition: width 0.5s ease;
   }

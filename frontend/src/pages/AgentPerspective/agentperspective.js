@@ -1,5 +1,5 @@
 import { Reset } from "styled-reset";
-import Agent from "../../components/Agent/Agent"
+import IamAgent from "../../components/Agent/AgentPerspective/IamAgent"
 import Agent2 from "../../components/Agent/Agent2"
 import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
 import AgentProfile2 from "../../public/Img/forprofile/AgentProfile2.png"
@@ -8,6 +8,7 @@ import AgentProfile4 from "../../public/Img/forprofile/AgentProfile4.png"
 import AgentProfile5 from "../../public/Img/forprofile/AgentProfile5.png"
 import AgentProfile6 from "../../public/Img/forprofile/AgentProfile6.png"
 import AgentNoProfile from "../../public/Img/forprofile/img_1.png"
+import Maratang from "../../public/Img/maratang.png"
 import {
     SubTitle,
     SubTitleWrapper,
@@ -26,13 +27,13 @@ import {
     Agents2,
     DownWrapper,
     Container,
-    Wrapper,
+    Wrapper, SubTitle3,
 } from './agentperspectivestyle'
 import React, { useState } from "react";
 import TopBarComponent from "../../components/TopBar/TopBar";
 
 const AgentData = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
+    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.', reviewImg:Maratang },
 ];
 
 const Agent2Data = [
@@ -97,13 +98,13 @@ export default function ReservationPage() {
                     <AgentContainer>
                         <Agents>
                             {AgentData.map((review, index) => (
-                                <Agent key={index} review={review} />
+                                <IamAgent key={index} review={review} />
                             ))}
                         </Agents>
                     </AgentContainer>
                     <DownWrapper>
                         <SubTitleWrapper>
-                            <SubTitle2>글로플러 찾아보기</SubTitle2>
+                            <SubTitle3>글로플러 찾아보기</SubTitle3>
                         </SubTitleWrapper>
                         <SelectWrapper>
                             <SelectContainer>
