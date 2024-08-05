@@ -1,11 +1,13 @@
-// BoardWrite.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import * as S from "./style";
 import { Modal } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import MapComponent from "./MapComponent";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // 퀼 에디터의 기본 스타일시트를 가져옵니다.
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function BoardWrite(props) {
     const navigate = useNavigate();
@@ -14,13 +16,12 @@ export default function BoardWrite(props) {
     const [body, setBody] = useState("");
     const [titleError, setTitleError] = useState("");
     const [bodyError, setBodyError] = useState("");
-
-    const [address, setAddress] = useState("");
-    const [addressDetail, setAddressDetail] = useState("");
-    const [zipcode] = useState("");
-
+    const [addressTitle, setAddressTitle] = useState(""); // 경로 제목 상태 추가
+    const [addresses, setAddresses] = useState([{ address: "", location: { lat: null, lng: null } }]);
     const [isOpen, setIsOpen] = useState(false);
     const [image, setImage] = useState(null);
+    const [currentAddressIndex, setCurrentAddressIndex] = useState(0);
+    const quillRef = useRef(null); // ReactQuill ref
 
     useEffect(() => {
         if (window.google) {
@@ -37,43 +38,93 @@ export default function BoardWrite(props) {
         }
     }, [isOpen]);
 
+    const imageHandler = useCallback(() => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await axios.post("http://localhost:8080/api/posts/upload/", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                const url = res.data.url; // 서버에서 반환한 이미지 URL
+
+                const quill = quillRef.current.getEditor(); // Quill 인스턴스를 가져옵니다.
+                const range = quill.getSelection();
+                quill.insertEmbed(range.index, 'image', url);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    }, []);
+
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                [{ size: [] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler,
+            },
+        },
+    }), [imageHandler]);
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file);
     };
 
-    const onClickAddressSearch = () => {
+    const onClickAddressSearch = (index) => {
+        setCurrentAddressIndex(index);
         setIsOpen(true);
     };
 
     const handlePlaceSelect = (place) => {
-        setAddress(place.formatted_address);
+        const updatedAddresses = [...addresses];
+        updatedAddresses[currentAddressIndex] = {
+            address: place.formatted_address,
+            location: {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+            },
+        };
+        setAddresses(updatedAddresses);
         setIsOpen(false);
     };
 
     const onClickSubmit = async () => {
         if (title === "") {
             setTitleError("제목을 입력해주세요.");
-        }
-        if (body === "") {
-            setBodyError("내용을 입력해주세요.");
+            return;
         }
 
-        if (title !== "" && body !== "") {
-            const formData = new FormData();
-            formData.append('image', image);
-            formData.append('title', title);
-            formData.append('body', body);
-            formData.append('address', address);
+        const addressStrings = addresses.map(address => address.address);
 
-            try {
-                const response = await axios.post("http://localhost:8080/api/posts/", formData);
-                console.log(response.data);
-                alert("게시물 등록이 정상적으로 완료되었습니다!");
-                navigate(`/board/${response.data.boardID}`);
-            } catch (error) {
-                console.log(error);
-            }
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('addressTitle', addressTitle); // addressTitle 추가
+        formData.append('addresses', JSON.stringify(addressStrings));
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/posts/", formData);
+            console.log(response.data);
+            alert("게시물 등록이 정상적으로 완료되었습니다!");
+            navigate(`/board/${response.data.boardID}`);
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -85,22 +136,55 @@ export default function BoardWrite(props) {
             return;
         }
 
-        if (title !== "" && body !== "" && image) {
-            const formData = new FormData();
-            formData.append('image', image);
-            formData.append('title', title);
-            formData.append('body', body);
-            formData.append('address', address);
+        const addressStrings = addresses.map(address => address.address);
 
-            try {
-                const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);
-                console.log(response.data);
-                alert("게시물 수정이 정상적으로 완료되었습니다!");
-                navigate(`/board/${response.data.boardID}`);
-            } catch (error) {
-                console.log(error);
-            }
+        const formData = new FormData();
+        formData.append('image', image);
+        formData.append('title', title);
+        formData.append('body', body);
+        formData.append('addressTitle', addressTitle); // addressTitle 추가
+        formData.append('addresses', JSON.stringify(addressStrings));
+
+        try {
+            const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);
+            console.log(response.data);
+            alert("게시물 수정이 정상적으로 완료되었습니다!");
+            navigate(`/board/${response.data.boardID}`);
+        } catch (error) {
+            console.log(error);
         }
+    };
+
+    const addAddressField = () => {
+        if (addresses.length < 10) {
+            setAddresses([...addresses, { address: "", location: { lat: null, lng: null } }]);
+        }
+    };
+
+    const removeAddressField = (index) => {
+        if (addresses.length > 1) { // 최소 1개의 주소 필드는 유지
+            const updatedAddresses = addresses.filter((_, i) => i !== index);
+            setAddresses(updatedAddresses);
+        }
+    };
+
+    const handleAddressChange = (index, field, value) => {
+        const updatedAddresses = [...addresses];
+        // Update address field
+        updatedAddresses[index][field] = value;
+        // Reset location fields to null
+        updatedAddresses[index].location = { lat: null, lng: null };
+        setAddresses(updatedAddresses);
+    };
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedAddresses = [...addresses];
+        const [removed] = reorderedAddresses.splice(result.source.index, 1);
+        reorderedAddresses.splice(result.destination.index, 0, removed);
+
+        setAddresses(reorderedAddresses);
     };
 
     return (
@@ -121,65 +205,97 @@ export default function BoardWrite(props) {
                     </S.InputWrapper>
 
                     <S.InputWrapper>
-                        <S.Contents
-                            placeholder="내용을 입력해주세요."
+                        <ReactQuill
+                            ref={quillRef} // ReactQuill ref 설정
+                            theme="snow"
                             value={body}
-                            onChange={(e) => setBody(e.target.value)}
+                            onChange={(value) => setBody(value)}
+                            placeholder="내용을 입력해주세요."
+                            modules={modules}
                         />
                         <S.Error>{bodyError}</S.Error>
                     </S.InputWrapper>
-
 
                     <S.ImageWrapper>
                         <S.Label>사진 추가</S.Label>
                         <input type="file" onChange={handleImageChange} />
                     </S.ImageWrapper>
 
-                    <S.MapWrapper>
-                        <MapComponent address={address} setAddress={setAddress} />
-                    </S.MapWrapper>
-
                     <S.InputWrapper>
-                        <S.Label>위치정보</S.Label>
-                        <S.ZipcodeWrapper>
-                            <S.Zipcode placeholder="우편번호" readOnly value={zipcode} />
-                            <S.SearchButton onClick={onClickAddressSearch}>
-                                위치검색
-                            </S.SearchButton>
-                            {isOpen && (
-                                <Modal
-                                    title="위치 검색"
-                                    open={isOpen}
-                                    onCancel={() => setIsOpen(false)}
-                                    footer={null}
-                                >
-                                    {/* 구글 장소 검색 입력 */}
-                                    <input
-                                        type="text"
-                                        id="autocomplete"
-                                        placeholder="주소를 입력하세요"
-                                        style={{ width: "100%", padding: "10px" }}
-                                    />
-                                </Modal>
-                            )}
-                        </S.ZipcodeWrapper>
-                        <S.Address
-                            placeholder="주소를 입력하세요"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
-                        <S.Address
-                            placeholder="상세주소를 입력하세요"
-                            value={addressDetail}
-                            onChange={(e) => setAddressDetail(e.target.value)}
+                        <S.AddressSubject
+                            type="text"
+                            placeholder="나만의 경로 제목을 입력하세요"
+                            value={addressTitle}
+                            onChange={(e) => setAddressTitle(e.target.value)}
                         />
                     </S.InputWrapper>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="addresses">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef}>
+                                    {addresses.map((address, index) => (
+                                        <Draggable key={index} draggableId={`${index}`} index={index}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    <S.InputWrapper>
+                                                        <S.ZipcodeWrapper>
+                                                            <S.SearchButton onClick={() => onClickAddressSearch(index)}>
+                                                                {`${index + 1}번째 위치 검색`}
+                                                            </S.SearchButton>
+                                                        </S.ZipcodeWrapper>
+                                                        <S.Address
+                                                            placeholder="주소를 입력하세요"
+                                                            value={address.address}
+                                                            onChange={(e) => handleAddressChange(index, 'address', e.target.value)}
+                                                        />
+                                                        {addresses.length > 1 && (
+                                                            <S.RemoveButton onClick={() => removeAddressField(index)}>삭제</S.RemoveButton>
+                                                        )}
+                                                    </S.InputWrapper>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+
+                    {addresses.length < 10 && (
+                        <S.AddButton onClick={addAddressField}>추가</S.AddButton>
+                    )}
+
+                    {isOpen && (
+                        <Modal
+                            title="위치 검색"
+                            visible={isOpen}
+                            onCancel={() => setIsOpen(false)}
+                            footer={null}
+                        >
+                            {/* 구글 장소 검색 입력 */}
+                            <input
+                                type="text"
+                                id="autocomplete"
+                                placeholder="주소를 입력하세요"
+                                style={{ width: "100%", padding: "10px" }}
+                            />
+                        </Modal>
+                    )}
+
+                    <S.MapWrapper>
+                        <MapComponent addresses={addresses} setAddresses={setAddresses} currentAddressIndex={currentAddressIndex} />
+                    </S.MapWrapper>
 
                     <S.ButtonWrapper>
                         <Link to={props.isEdit ? "#" : "/board"}>
                             <S.SubmitButton
                                 onClick={props.isEdit ? onClickUpdate : onClickSubmit}
-                                isActive={title !== "" && body !== ""}
+                                isActive={title !== ""}
                             >
                                 {props.isEdit ? "수정" : "저장"}
                             </S.SubmitButton>

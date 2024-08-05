@@ -1,8 +1,6 @@
-// style.js
 import styled from "@emotion/styled";
 import avantar from '../../../images/도라에몽.jpeg';
 import Vector from '../../../images/Vector.png'
-
 
 export const Container = styled.div`
     display: flex;
@@ -60,7 +58,6 @@ export const Avatar = styled.div`
   background-image: url(${avantar});
   background-size: contain;
   background-repeat: no-repeat;
-
 `;
 
 export const Writer = styled.div`
@@ -114,20 +111,25 @@ export const Body = styled.div`
 
 export const AddressWrapper = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column; /* 수직으로 정렬 */
+  align-items: flex-start;
   padding-top: 20px;
 `;
 
-export const AddressImage = styled.div`
-  background-image: url(${Vector});
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 22px;
-  height: 29px;
+export const AddressItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const AddressIndex = styled.div`
+  font-weight: bold;
+  margin-right: 10px;
 `;
 
 export const Address = styled.div`
-  padding-left: 20px;
+  font-family: Regular;
+  color: #515151;
 `;
 
 export const MapWrapper = styled.div`
@@ -137,6 +139,14 @@ export const MapWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+
+export const RouteTitle = styled.h2`
+  color: #515151;
+  font-family: SubTitle;
+  text-align: left; /* 왼쪽 정렬 */
+  margin-bottom: 20px;
 `;
 
 export const TitleWrapper = styled.div`

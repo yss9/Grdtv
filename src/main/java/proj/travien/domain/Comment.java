@@ -1,12 +1,16 @@
 package proj.travien.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 @Getter
 @Setter
 @Entity
@@ -25,5 +29,8 @@ public class Comment {
     private User author;
 
     private String content;
+
+    @CreationTimestamp
+    private Timestamp createDate; // datetime 필드 추가
 
 }
