@@ -5,6 +5,34 @@ import iconImage from '../../../images/Polygon 6.png';
 import plusImage from '../../../images/Frame 53.png';
 
 
+export const AddButton = styled.button`
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #45a049;
+    }
+`;
+
+export const RemoveButton = styled.button`
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #da190b;
+    }
+`;
+
 
 export const Container = styled.div`
     margin-top: -110px;
@@ -45,6 +73,7 @@ export const Label = styled.div`
 export const InputWrapper = styled.div`
   padding-top: 40px;
 `;
+
 
 export const HiContainer = styled.div`
   display: flex;
@@ -157,6 +186,17 @@ export const Subject = styled.input`
   font-size:25px;
 `;
 
+export const AddressSubject = styled.input`
+  width: 794px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
+  height: 50px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
+  padding-left: 16px;
+  border: 1px solid;
+  outline: none; /* 포커스 효과 제거 */
+  font-size:20px;
+  border-radius:25px;
+`;
+
+
 
 export const Contents = styled.textarea`
   width: 994px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
@@ -172,7 +212,7 @@ export const Contents = styled.textarea`
 
 export const ZipcodeWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   
 `;
@@ -188,17 +228,21 @@ export const SearchButton = styled.button`
   width: 124px;
   height: 52px;
   margin-left: 16px;
-  background-color: black;
   cursor: pointer;
-  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #4E53EE;
+  color:white;
+  border-radius:25px
 `;
 
 export const Address = styled.input`
-  width: 700px;
-  height: 52px;
-  margin-top: 16px;
-  border: 1px solid #bdbdbd;
-  
+  width: 794px; /* 양쪽에 1px의 border가 있으므로 2px를 줄입니다. */
+  height: 50px; /* 테두리의 두께를 고려하여 높이를 조정합니다. */
+  padding-left: 16px;
+  border: none; /* 테두리 제거 */
+  outline: none; /* 포커스 효과 제거 */
+  border-bottom: 1px solid #bdbdbd; /* 하단 테두리만 유지합니다. */
+  font-size:16px;
   
 `;
 

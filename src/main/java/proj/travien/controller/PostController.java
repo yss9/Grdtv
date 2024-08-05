@@ -6,7 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proj.travien.domain.Addresses;
 import proj.travien.domain.Post;
+import proj.travien.dto.AddressResponseDto;
 import proj.travien.service.PostService;
 
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -24,9 +28,10 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+
     private static final String UPLOAD_DIR = "src/main/resources/static/image/";
 
-    @PostMapping("/upload")
+   /* @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             // 파일 저장
@@ -39,6 +44,72 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
         }
+    }*/
+
+    @PostMapping("/upload")
+    public String uploadImage(@RequestParam("image") MultipartFile file) {
+        if (file.isEmpty()) {
+            return "파일이 없습니다.";
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+            // 서버에 저장된 파일의 접근 경로를 반환
+            return "/image/" + file.getOriginalFilename();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "파일 업로드 실패";
+        }
+    }
+
+
+
+
+
+
+   /* @PostMapping("/")
+    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") Set address) {
+        try {
+            Post createdPost = postService.createPost(image, title, body, address);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+*/
+
+    /**
+     * 게시물 업로드
+     */
+    @PostMapping("/")
+    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("addresses") Set<String> addresses, @RequestParam("addressTitle") String addressTitle) {
+            Set<Addresses> addressEntities = addresses.stream()
+                    .map(address -> Addresses.builder().address(address).build())
+                    .collect(Collectors.toSet());
+
+            Post createdPost = postService.createPost(title, addressEntities, addressTitle);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+    }
+
+
+    /**
+     * 루트 추천(랜덤O)
+     */
+    @GetMapping("/addresses/")
+    public ResponseEntity<AddressResponseDto> getRandomPostAddresses() {
+        AddressResponseDto addressResponse = postService.getRandomPostAddresses();
+        return ResponseEntity.ok(addressResponse);
+    }
+
+
+    @GetMapping("/{id}/")
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        Optional<Post> post = postService.getPostById(id);
+        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 
@@ -48,22 +119,6 @@ public class PostController {
         return postService.getAllPosts();
     }
 
-    @GetMapping("/{id}/")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        Optional<Post> post = postService.getPostById(id);
-        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") String address) {
-        try {
-            Post createdPost = postService.createPost(image, title, body, address);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
 
     @PutMapping("/{id}/")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
