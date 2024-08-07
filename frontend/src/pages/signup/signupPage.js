@@ -49,15 +49,20 @@ export default function SignupPage() {
     const [imgFile, setImgFile] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
     const [verificationFile, setVerificationFile] = useState(null);
+    const [percentageIE, setPercentageIE] = useState(null);
+    const [percentageSN, setPercentageSN] = useState(null);
+    const [percentageFT, setPercentageFT] = useState(null);
+    const [percentagePJ, setPercentagePJ] = useState(null);
+
 
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
 
     const [mbti, setMbti] = useState({
-        IE: { active: false, percentage: '' },
-        SN: { active: false, percentage: '' },
-        FT: { active: false, percentage: '' },
-        PJ: { active: false, percentage: '' },
+        IE: { active: false },
+        SN: { active: false },
+        FT: { active: false },
+        PJ: { active: false },
     });
 
     const [IE, setIE] = useState("I");
@@ -93,16 +98,6 @@ export default function SignupPage() {
         setStep(4);
     };
 
-    const handlePercentageChange = (key, value) => {
-        setMbti((prev) => ({
-            ...prev,
-            [key]: {
-                ...prev[key],
-                percentage: value,
-            },
-        }));
-    };
-
     const pageVariants = {
         initial: { x: "100%" },
         enter: { x: 0, transition: { duration: 0.5 } },
@@ -111,7 +106,8 @@ export default function SignupPage() {
 
     const onClickSubmit = () => {
 
-        const MBTI = IE + mbti.IE.percentage + "/" + SN + mbti.SN.percentage + "/" + FT + mbti.FT.percentage + "/" + PJ + mbti.PJ.percentage;
+        const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
+        console.log(MBTI)
 
         if (id && pw && name && birthday && gender && MBTI && nickName) {
             const formData = new FormData();
@@ -152,7 +148,7 @@ export default function SignupPage() {
         }
     };
 
-    const MBTISwitch = ({ label1, label2, isActive, onToggle, percentage, onPercentageChange }) => {
+    const MBTISwitch = ({ label1, label2, isActive, onToggle }) => {
         return (
             <MBTISwitchWrapper>
                 <div>
@@ -162,12 +158,6 @@ export default function SignupPage() {
                     <AntSwitch checked={isActive} onChange={onToggle} style={{ marginLeft: 10, marginRight: 10, backgroundColor:"lightgray" }} />
 
                 </div>
-                <PercentageInput
-                    type="text"
-                    value={percentage}
-                    onChange={onPercentageChange}
-                    placeholder="%"
-                />
             </MBTISwitchWrapper>
         );
     };
@@ -219,6 +209,18 @@ export default function SignupPage() {
     const onClickGlopler = (isGlopler) => {
         setGlopler(isGlopler);
     }
+    const onChangePercentageIE = (event) => {
+        setPercentageIE(event.target.value)
+    };
+    const onChangePercentageSN = (event) => {
+        setPercentageSN(event.target.value)
+    };
+    const onChangePercentageFT = (event) => {
+        setPercentageFT(event.target.value)
+    };
+    const onChangePercentagePJ = (event) => {
+        setPercentagePJ(event.target.value)
+    };
 
     return (
         <>
@@ -301,32 +303,44 @@ export default function SignupPage() {
                                             label2="E"
                                             isActive={mbti.IE.active}
                                             onToggle={() => toggleMBTI("IE")}
-                                            percentage={mbti.IE.percentage}
-                                            onPercentageChange={(e) => handlePercentageChange("IE", e.target.value)}
+                                        />
+                                        <PercentageInput
+                                            type="text"
+                                            onChange={onChangePercentageIE}
+                                            placeholder="%"
                                         />
                                         <MBTISwitch
                                             label1="S"
                                             label2="N"
                                             isActive={mbti.SN.active}
                                             onToggle={() => toggleMBTI("SN")}
-                                            percentage={mbti.SN.percentage}
-                                            onPercentageChange={(e) => handlePercentageChange("SN", e.target.value)}
+                                        />
+                                        <PercentageInput
+                                            type="text"
+                                            onChange={onChangePercentageSN}
+                                            placeholder="%"
                                         />
                                         <MBTISwitch
                                             label1="F"
                                             label2="T"
                                             isActive={mbti.FT.active}
                                             onToggle={() => toggleMBTI("FT")}
-                                            percentage={mbti.FT.percentage}
-                                            onPercentageChange={(e) => handlePercentageChange("FT", e.target.value)}
+                                        />
+                                        <PercentageInput
+                                            type="text"
+                                            onChange={onChangePercentageFT}
+                                            placeholder="%"
                                         />
                                         <MBTISwitch
                                             label1="P"
                                             label2="J"
                                             isActive={mbti.PJ.active}
                                             onToggle={() => toggleMBTI("PJ")}
-                                            percentage={mbti.PJ.percentage}
-                                            onPercentageChange={(e) => handlePercentageChange("PJ", e.target.value)}
+                                        />
+                                        <PercentageInput
+                                            type="text"
+                                            onChange={onChangePercentagePJ}
+                                            placeholder="%"
                                         />
                                     </MBTISwitchContainer>
 
