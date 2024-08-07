@@ -132,7 +132,7 @@ const ChatPage = () => {
 
     return (
         <Wrapper>
-            <div style={{height: '55px'}}></div>
+            <div style={{height: '40px'}}></div>
             <TopBarComponent/>
             <ChatWrapper>
                 <Sidebar>
