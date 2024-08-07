@@ -1,5 +1,12 @@
 import styled  from "@emotion/styled";
 
+
+
+export const MapContainer = styled.div`
+    position: relative; /* Make sure the position is relative if using transform */
+    transform: translateX(-20px); /* Shift the map 30px to the left */
+`;
+
 export const BodyContainer=styled.div`
     display: flex;
   flex-direction: column ;
@@ -104,8 +111,8 @@ export const RightWrapper=styled.div`
   justify-content: center;
   
 `
-export const MapImg=styled.img`
-    width: 12rem;
+export const Map =styled.div`
+  width: 12rem;
   height: 12rem;
   background-color: palevioletred;
 `

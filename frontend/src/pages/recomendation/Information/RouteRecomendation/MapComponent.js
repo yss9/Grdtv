@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
-import { Rnd } from 'react-rnd'; // Import Rnd from react-rnd
+import { Rnd } from 'react-rnd';
+import styled from 'styled-components';
 
 const libraries = ['places'];
 
@@ -12,11 +13,9 @@ const MapComponent = ({ addresses }) => {
 
     const [map, setMap] = useState(null);
 
-    const [size, setSize] = useState({ width: 600, height: 300 }); // Default size
-
     const mapContainerStyle = {
-        width: size.width,
-        height: size.height,
+        width: '200px',
+        height: '200px',
     };
 
     useEffect(() => {
@@ -24,6 +23,12 @@ const MapComponent = ({ addresses }) => {
             const mapElement = document.getElementById('map');
             const initialMap = new window.google.maps.Map(mapElement, {
                 zoom: 12,
+                disableDefaultUI: true, // Disable all default controls
+                zoomControl: false, // Optionally disable zoom control
+                mapTypeControl: false, // Optionally disable map type control
+                streetViewControl: false, // Optionally disable street view control
+                fullscreenControl: false, // Optionally disable fullscreen control
+                gestureHandling: 'greedy' // Optional: Control gesture handling
             });
 
             setMap(initialMap);
@@ -70,25 +75,7 @@ const MapComponent = ({ addresses }) => {
 
     if (loadError) return <div>Error loading map</div>;
     return isLoaded ? (
-        <Rnd
-            default={{
-                x: 0,
-                y: 0,
-                width: 600,
-                height: 300,
-            }}
-            minWidth={300}
-            minHeight={200}
-            bounds="parent"
-            onResizeStop={(e, direction, ref, delta, position) => {
-                setSize({
-                    width: ref.offsetWidth,
-                    height: ref.offsetHeight,
-                });
-            }}
-        >
-            <div id="map" style={mapContainerStyle}></div>
-        </Rnd>
+        <div id="map" style={mapContainerStyle}></div>
     ) : <div>Loading...</div>;
 };
 
