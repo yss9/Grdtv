@@ -8,18 +8,16 @@ import {
     ProgressBar,
     GenderButtonWrapper,
     GenderButton,
-    NextButton,
     FormGroup,
     Input,
     ContentsWrapper,
     InputText,
     NextButtonWrapper,
     ButtonContainer,
-    BackButton,
+    PageButton,
     BoldText,
     PercentageInput,
     MBTISwitchWrapper,
-    MBTISwitchContainer,
     SetCenter,
     RadioButton,
     RadioButtonComment,
@@ -29,9 +27,17 @@ import {
     UserImg,
     FinishText,
     GoToLoginPage,
-    OverlayImageInput, GenderImage, LogoWrapper
+    OverlayImageInput,
+    GenderImage,
+    LogoWrapper,
+    FormLabel,
+    FormField,
+    SubComment,
+    RadioForm,
+    FileInput,
+    Slider, MBTIButton, MBTIButtonWrapper,
 } from "./signupStyle";
-import { Switch as AntSwitch } from "antd";
+import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -221,6 +227,32 @@ export default function SignupPage() {
     const onChangePercentagePJ = (event) => {
         setPercentagePJ(event.target.value)
     };
+    const [value, setValue] = useState(50); // 슬라이더의 초기 값을 설정합니다.
+
+    const handleChange = (event) => {
+        const newValue = parseFloat(event.target.value, 10); // 값을 정수로 변환
+        setValue(newValue);
+    };
+    const [selectedIE, setSelectedIE] = useState('E');
+    const [selectedSN, setSelectedSN] = useState('S');
+    const [selectedFT, setSelectedFT] = useState('F');
+    const [selectedPJ, setSelectedPJ] = useState('P');
+
+    const handleIEClick = (value) => {
+        setSelectedIE(value);
+    };
+
+    const handleSNClick = (value) => {
+        setSelectedSN(value);
+    };
+
+    const handleFTClick = (value) => {
+        setSelectedFT(value);
+    };
+
+    const handlePJClick = (value) => {
+        setSelectedPJ(value);
+    };
 
     return (
         <>
@@ -242,28 +274,33 @@ export default function SignupPage() {
                                     animate="enter"
                                     exit="exit"
                                     variants={pageVariants}
-                                    style={{width:"100%"}}
+                                    style={{width: "100%"}}
                                 >
                                     <BoldText>회원가입</BoldText>
                                     <BoldSubText>글로플의 회원이 되어 색다른 여행을 경험해 보세요.</BoldSubText>
+
                                     <FormGroup>
-                                        <InputText>아이디</InputText>
-                                        <Input type="text" maxlength={20} size="50" placeholder="아이디 입력 (6~20자)" onChange={onChangeId}/>
+                                        <FormField type="input" placeholder="아이디" required="" />
+                                        <FormLabel for="ID">아이디</FormLabel>
+                                        <SubComment>6~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <InputText>비밀번호</InputText>
-                                        <Input type="password" maxlength={20} size="50" placeholder="비밀번호 입력 (문자, 숫자 포함 8~20자)" onChange={onChangePw}/>
+                                        <FormField type="password" placeholder="비밀번호" required="" />
+                                        <FormLabel for="PW">비밀번호</FormLabel>
+                                        <SubComment>문자, 숫자 포함 8~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <InputText>이름</InputText>
-                                        <Input type="text" maxlength={20} size="50" placeholder="이름을 입력해주세요." onChange={onChangeName}/>
+                                        <FormField type="input" placeholder="이름" required="" />
+                                        <FormLabel for="Name">이름</FormLabel>
+                                        <SubComment>이름을 입력해주세요.</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <InputText>생년월일</InputText>
-                                        <Input type="text" maxlength={6} size="50" placeholder="ex)020331" onChange={onChangeBirthday}/>
+                                        <FormField type="input" placeholder="생년월일" required="" />
+                                        <FormLabel for="Birthday">생년월일</FormLabel>
+                                        <SubComment>ex)020331</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <InputText>성별</InputText>
+                                        <InputText>Gender</InputText>
                                         <GenderButtonWrapper>
                                             <GenderButton onClick={onClickWoman}>
                                                 <GenderImage
@@ -280,7 +317,7 @@ export default function SignupPage() {
                                         </GenderButtonWrapper>
                                     </FormGroup>
                                     <NextButtonWrapper>
-                                        <NextButton onClick={goToSecondPage}>다음</NextButton>
+                                        <PageButton onClick={goToSecondPage}>다음</PageButton>
                                     </NextButtonWrapper>
                                 </motion.div>
                             </FormContainer>
@@ -295,54 +332,131 @@ export default function SignupPage() {
                                     variants={pageVariants}
                                     style={{width: "100%"}}
                                 >
-                                    <BoldText>MBTI를 알려주세요.</BoldText>
 
-                                    <MBTISwitchContainer>
-                                        <MBTISwitch
-                                            label1="I"
-                                            label2="E"
-                                            isActive={mbti.IE.active}
-                                            onToggle={() => toggleMBTI("IE")}
+                                    <BoldText>MBTI를 알려주세요.</BoldText>
+                                    <div>
+                                        <Slider
+                                            id="myRange"
+                                            className="slider"
+                                            value={value}
+                                            max="100"
+                                            min="0"
+                                            step="1" // 정수만 허용
+                                            onChange={handleChange}
+                                            type="range"
                                         />
-                                        <PercentageInput
-                                            type="text"
-                                            onChange={onChangePercentageIE}
-                                            placeholder="%"
-                                        />
-                                        <MBTISwitch
-                                            label1="S"
-                                            label2="N"
-                                            isActive={mbti.SN.active}
-                                            onToggle={() => toggleMBTI("SN")}
-                                        />
-                                        <PercentageInput
-                                            type="text"
-                                            onChange={onChangePercentageSN}
-                                            placeholder="%"
-                                        />
-                                        <MBTISwitch
-                                            label1="F"
-                                            label2="T"
-                                            isActive={mbti.FT.active}
-                                            onToggle={() => toggleMBTI("FT")}
-                                        />
-                                        <PercentageInput
-                                            type="text"
-                                            onChange={onChangePercentageFT}
-                                            placeholder="%"
-                                        />
-                                        <MBTISwitch
-                                            label1="P"
-                                            label2="J"
-                                            isActive={mbti.PJ.active}
-                                            onToggle={() => toggleMBTI("PJ")}
-                                        />
-                                        <PercentageInput
-                                            type="text"
-                                            onChange={onChangePercentagePJ}
-                                            placeholder="%"
-                                        />
-                                    </MBTISwitchContainer>
+                                        <p>Value: {value}</p> {/* 슬라이더의 현재 값을 정수로 표시 */}
+                                    </div>
+
+                                    <MBTIButtonWrapper>
+
+                                        <MBTIButton
+                                            selected={selectedIE === 'E'}
+                                            onClick={() => handleIEClick('E')}
+                                        >
+                                            E
+                                        </MBTIButton>
+                                        <MBTIButton
+                                            selected={selectedIE === 'I'}
+                                            onClick={() => handleIEClick('I')}
+                                        >
+                                            I
+                                        </MBTIButton>
+                                    </MBTIButtonWrapper>
+
+                                    <MBTIButtonWrapper>
+                                        <MBTIButton
+                                            selected={selectedSN === 'S'}
+                                            onClick={() => handleSNClick('S')}
+                                        >
+                                            S
+                                        </MBTIButton>
+                                        <MBTIButton
+                                            selected={selectedSN === 'N'}
+                                            onClick={() => handleSNClick('N')}
+                                        >
+                                            N
+                                        </MBTIButton>
+                                    </MBTIButtonWrapper>
+
+                                    <MBTIButtonWrapper>
+                                        <MBTIButton
+                                            selected={selectedFT === 'F'}
+                                            onClick={() => handleFTClick('F')}
+                                        >
+                                            F
+                                        </MBTIButton>
+                                        <MBTIButton
+                                            selected={selectedFT === 'T'}
+                                            onClick={() => handleFTClick('T')}
+                                        >
+                                            T
+                                        </MBTIButton>
+                                    </MBTIButtonWrapper>
+
+                                    <MBTIButtonWrapper>
+                                        <MBTIButton
+                                            selected={selectedPJ === 'P'}
+                                            onClick={() => handlePJClick('P')}
+                                        >
+                                            P
+                                        </MBTIButton>
+                                        <MBTIButton
+                                            selected={selectedPJ === 'J'}
+                                            onClick={() => handlePJClick('J')}
+                                        >
+                                            J
+                                        </MBTIButton>
+                                    </MBTIButtonWrapper>
+
+                                    {/*<MBTISwitchContainer>*/}
+
+
+                                    {/*    <MBTISwitch*/}
+                                    {/*        label1="I"*/}
+                                    {/*        label2="E"*/}
+                                    {/*        isActive={mbti.IE.active}*/}
+                                    {/*        onToggle={() => toggleMBTI("IE")}*/}
+                                    {/*    />*/}
+                                    {/*    <PercentageInput*/}
+                                    {/*        type="text"*/}
+                                    {/*        onChange={onChangePercentageIE}*/}
+                                    {/*        placeholder="%"*/}
+                                    {/*    />*/}
+                                    {/*    <MBTISwitch*/}
+                                    {/*        label1="S"*/}
+                                    {/*        label2="N"*/}
+                                    {/*        isActive={mbti.SN.active}*/}
+                                    {/*        onToggle={() => toggleMBTI("SN")}*/}
+                                    {/*    />*/}
+                                    {/*    <PercentageInput*/}
+                                    {/*        type="text"*/}
+                                    {/*        onChange={onChangePercentageSN}*/}
+                                    {/*        placeholder="%"*/}
+                                    {/*    />*/}
+                                    {/*    <MBTISwitch*/}
+                                    {/*        label1="F"*/}
+                                    {/*        label2="T"*/}
+                                    {/*        isActive={mbti.FT.active}*/}
+                                    {/*        onToggle={() => toggleMBTI("FT")}*/}
+                                    {/*    />*/}
+                                    {/*    <PercentageInput*/}
+                                    {/*        type="text"*/}
+                                    {/*        onChange={onChangePercentageFT}*/}
+                                    {/*        placeholder="%"*/}
+                                    {/*    />*/}
+                                    {/*    <MBTISwitch*/}
+                                    {/*        label1="P"*/}
+                                    {/*        label2="J"*/}
+                                    {/*        isActive={mbti.PJ.active}*/}
+                                    {/*        onToggle={() => toggleMBTI("PJ")}*/}
+                                    {/*    />*/}
+                                    {/*    <PercentageInput*/}
+                                    {/*        type="text"*/}
+                                    {/*        onChange={onChangePercentagePJ}*/}
+                                    {/*        placeholder="%"*/}
+                                    {/*    />*/}
+                                    {/*</MBTISwitchContainer>*/}
 
 
                                     <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
@@ -350,8 +464,8 @@ export default function SignupPage() {
                                     <br/><br/><br/><br/>
 
                                     <ButtonContainer>
-                                        <BackButton onClick={goToFirstPage}>이전</BackButton>
-                                        <NextButton onClick={goToThirdPage}>다음</NextButton>
+                                        <PageButton onClick={goToFirstPage}>이전</PageButton>
+                                        <PageButton onClick={goToThirdPage}>다음</PageButton>
                                     </ButtonContainer>
                                 </motion.div>
                             </FormContainer>
@@ -369,7 +483,8 @@ export default function SignupPage() {
                                     <BoldText>프로필을 설정해 주세요.</BoldText>
                                     <label>
                                         <UserImg src={imgFile ? imgFile : '/Img/signInImg/firstProfileImg.png'}/>
-                                        <OverlayImageInput type="file" accept="image/*" onChange={handleProfilePictureChange} ref={imgRef}/>
+                                        <OverlayImageInput type="file" accept="image/*"
+                                                           onChange={handleProfilePictureChange} ref={imgRef}/>
                                     </label>
                                     <br/>
                                     <FormGroup>
@@ -379,8 +494,8 @@ export default function SignupPage() {
                                     </FormGroup>
                                     <br/><br/>
                                     <ButtonContainer>
-                                        <BackButton onClick={goToSecondPage}>이전</BackButton>
-                                        <NextButton onClick={goToFourthPage}>다음</NextButton>
+                                        <PageButton onClick={goToSecondPage}>이전</PageButton>
+                                        <PageButton onClick={goToFourthPage}>다음</PageButton>
                                     </ButtonContainer>
                                 </motion.div>
                             </FormContainer>
@@ -400,18 +515,18 @@ export default function SignupPage() {
                                         글로플러로 활동하시겠어요?
                                     </BoldText>
                                     <BoldSubText>글로플러는 예약 대행자 분들을 지칭하는 글로플만의 명칭입니다.</BoldSubText>
-                                    <div style={{margin: "30px 0"}}>
-                                        <RadioButtonWrapper>
-                                            <label>
-                                                <RadioButton type="radio" name="glopler" onClick={() => onClickGlopler(true)} />
-                                                <RadioButtonComment>네! 글로플러로 활동 하겠습니다.</RadioButtonComment>
-                                            </label>
-                                        </RadioButtonWrapper>
-                                        <RadioButtonWrapper>
-                                            <RadioButton type="radio" name="glopler" onClick={() => onClickGlopler(false)} />
-                                            <RadioButtonComment>아니요, 예약만 진행할게요.</RadioButtonComment>
-                                            <RadioButtonSubComment>나중에 변경할 수 있습니다.</RadioButtonSubComment>
-                                        </RadioButtonWrapper>
+                                    <div style={{margin: "0 0 80px"}}>
+                                        <RadioForm>
+                                            <input value="a" name="glopler" type="radio" id="a"
+                                                   onClick={() => onClickGlopler(true)}/>
+                                            <label htmlFor="a"><span></span>네! 글로플러로 활동 하겠습니다.</label>
+                                            <input defaultChecked value="b" name="glopler" type="radio" id="b"/>
+                                            <label htmlFor="b"><span></span>아니요, 예약만 진행할게요.</label>
+                                            <div className="worm">
+                                            <div className="worm__segment"></div>
+                                            </div>
+                                        </RadioForm>
+                                        <RadioButtonSubComment>나중에 변경할 수 있습니다.</RadioButtonSubComment>
                                     </div>
 
                                     <BoldText>글로플러 검증을 위한 파일을 첨부하여 제출해 주세요.</BoldText>
@@ -420,12 +535,13 @@ export default function SignupPage() {
                                         주민등록증, 자격증, 여권 등을 첨부해 주시면, 글로플에서 서류를 검토하여 글로플러 리스트에 등록해 줘요.
                                     </BoldSubText>
                                     <div style={{margin: '30px 0'}}>
-                                        <input type="file" onChange={handleVerificationFileChange}/>
+                                        <FileInput type="file" onChange={handleVerificationFileChange}/>
                                     </div>
 
+
                                     <ButtonContainer>
-                                    <BackButton onClick={goToThirdPage}>이전</BackButton>
-                                        <NextButton onClick={onClickSubmit}>완료</NextButton>
+                                        <PageButton onClick={goToThirdPage}>이전</PageButton>
+                                        <PageButton onClick={onClickSubmit}>완료</PageButton>
                                     </ButtonContainer>
                                 </motion.div>
                             </FormContainer>
