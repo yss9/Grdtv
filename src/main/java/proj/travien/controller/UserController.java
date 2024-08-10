@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.JwtUtil;
 import proj.travien.domain.User;
+import proj.travien.dto.AgentDTO;
 import proj.travien.dto.UserDTO;
 import proj.travien.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -99,19 +101,33 @@ public class UserController {
         }
     }
 
-    static class AuthResponse {
-        private String token;
-
-        public AuthResponse(String token) {
-            this.token = token;
+    // 예약대행자 정보 업데이트
+    @PostMapping("/update-agent-details")
+    public ResponseEntity<?> updateAgentDetails(@RequestParam("userId") String userId,
+                                                @RequestBody AgentDTO agentDTO) {
+        boolean updated = userService.updateAgentDetails(userId, agentDTO);
+        if (updated) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Agent details could not be updated");
         }
+    }
 
-        public String getToken() {
-            return token;
-        }
+    // 예약대행자 목록 조회
+    @GetMapping("/agents")
+    public ResponseEntity<List<AgentDTO>> getAllAgents() {
+        List<AgentDTO> agents = userService.getAllAgents();
+        return ResponseEntity.ok(agents);
+    }
 
-        public void setToken(String token) {
-            this.token = token;
+    // 마이페이지 정보 조회
+    @GetMapping("/my-info")
+    public ResponseEntity<?> getMyInfo(@RequestParam("userId") String userId) {
+        UserDTO userDTO = userService.getUserInfo(userId);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
 
@@ -144,6 +160,22 @@ public class UserController {
         } catch (IOException e) {
             log.error("Error loading verification file for userId: " + userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    static class AuthResponse {
+        private String token;
+
+        public AuthResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 }
