@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
+import proj.travien.dto.AgentDTO;
 import proj.travien.repository.UserRepository;
 
 import java.io.File;
@@ -28,6 +29,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    // 회원가입
     public boolean createUser(UserDTO userDTO, MultipartFile profilePictureFile, MultipartFile verificationFile) {
         if (isUserIdInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {
             return false;
@@ -40,7 +42,7 @@ public class UserService {
         user.setGender(userDTO.getGender());
         user.setMbti(userDTO.getMbti());
         user.setNickname(userDTO.getNickname());
-        user.setAdmin(userDTO.isAdmin());
+        user.setAgent(userDTO.isAgent());  // 예약대행자 여부 설정
 
         if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
             String profilePicturePath = saveProfilePicture(profilePictureFile);
@@ -56,6 +58,7 @@ public class UserService {
         return true;
     }
 
+    // 프로필 사진 업로드
     public boolean uploadProfilePicture(String userId, MultipartFile profilePictureFile) {
         User user = userRepository.findByUserId(userId).orElse(null);
         if (user == null) {
@@ -68,6 +71,7 @@ public class UserService {
         return true;
     }
 
+    // 검증 파일 업로드
     public boolean uploadVerificationFile(String userId, MultipartFile verificationFile) {
         User user = userRepository.findByUserId(userId).orElse(null);
         if (user == null) {
@@ -80,14 +84,7 @@ public class UserService {
         return true;
     }
 
-    private String saveProfilePicture(MultipartFile profilePictureFile) {
-        return saveFile(profilePictureFile, Paths.get("static/profile-pictures"));
-    }
-
-    private String saveVerificationFile(MultipartFile verificationFile) {
-        return saveFile(verificationFile, Paths.get("static/verification-files"));
-    }
-
+    // 프로필 사진 로드
     public Resource loadProfilePicture(String userId) throws IOException {
         User user = userRepository.findByUserId(userId).orElse(null);
         if (user == null || user.getProfilePicture() == null) {
@@ -96,6 +93,7 @@ public class UserService {
         return new FileSystemResource(Paths.get("src/main/resources").resolve(user.getProfilePicture()).toAbsolutePath().toString());
     }
 
+    // 검증 파일 로드
     public Resource loadVerificationFile(String userId) throws IOException {
         User user = userRepository.findByUserId(userId).orElse(null);
         if (user == null || user.getVerificationFile() == null) {
@@ -104,6 +102,7 @@ public class UserService {
         return new FileSystemResource(Paths.get("src/main/resources").resolve(user.getVerificationFile()).toAbsolutePath().toString());
     }
 
+    // 파일 저장
     private String saveFile(MultipartFile file, Path directory) {
         try {
             Path absoluteDirectory = Paths.get("src/main/resources").resolve(directory).toAbsolutePath();
@@ -121,18 +120,32 @@ public class UserService {
         }
     }
 
+    // 프로필 사진 저장
+    private String saveProfilePicture(MultipartFile profilePictureFile) {
+        return saveFile(profilePictureFile, Paths.get("static/profile-pictures"));
+    }
+
+    // 검증 파일 저장
+    private String saveVerificationFile(MultipartFile verificationFile) {
+        return saveFile(verificationFile, Paths.get("static/verification-files"));
+    }
+
+    // 유저 ID 사용 여부 확인
     public boolean isUserIdInUse(String userId) {
         return userRepository.findByUserId(userId).isPresent();
     }
 
+    // 닉네임 사용 여부 확인
     public boolean isNicknameInUse(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
     }
 
+    // 비밀번호 해시
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
+    // 로그인
     public User login(String userId, String password) {
         User user = userRepository.findByUserId(userId).orElse(null);
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
@@ -141,13 +154,74 @@ public class UserService {
         return null;
     }
 
+    // 모든 닉네임 조회
     public List<String> getAllNicknames() {
         return userRepository.findAll().stream()
                 .map(User::getNickname)
                 .collect(Collectors.toList());
     }
 
+    // 유저 ID로 사용자 찾기
     public User findByUserId(String userId) {
         return userRepository.findByUserId(userId).orElse(null);
     }
+
+    // 예약대행자 정보 업데이트
+    public boolean updateAgentDetails(String userId, AgentDTO agentDTO) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || !user.isAgent()) {
+            return false;
+        }
+
+        user.setAgentCountry(agentDTO.getAgentCountry());
+        user.setIntroduction(agentDTO.getIntroduction());
+        user.setHashtags(agentDTO.getHashtags());
+        user.setSpecIntroduction(agentDTO.getSpecIntroduction());
+        user.setAverageReviewRating(agentDTO.getAverageReviewRating());
+
+        userRepository.save(user);
+        return true;
+    }
+
+    // 예약대행자 목록 조회
+    public List<User> getAllAgents() {
+        return userRepository.findByIsAgentTrue();
+    }
+
+    // 마이페이지 정보 조회 메서드
+    public UserDTO getUserInfo(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        // 기본 사용자 정보 설정
+        UserDTO userDTO = new UserDTO(
+                user.getUserId(),
+                null, // 비밀번호는 반환하지 않음
+                user.getName(),
+                user.getDateOfBirth(),
+                user.getGender(),
+                user.getMbti(),
+                user.getProfilePicture(),
+                user.getNickname(),
+                user.isAgent(),
+                user.getVerificationFile()
+        );
+
+        // 예약대행자인 경우 AgentDTO 생성
+        if (user.isAgent()) {
+            AgentDTO agentDTO = new AgentDTO(
+                    user.getAgentCountry(),
+                    user.getIntroduction(),
+                    user.getHashtags(),
+                    user.getSpecIntroduction(),
+                    user.getAverageReviewRating()
+            );
+            userDTO.setAgentDetails(agentDTO);
+        }
+
+        return userDTO;
+    }
+
 }

@@ -119,7 +119,7 @@ export default function SignupPage() {
                 gender: gender,
                 mbti: MBTI,
                 nickname: nickName,
-                isAdmin: glopler,
+                isAgent: glopler,
             })], { type: 'application/json' }));
 
             if (profilePicture) {
