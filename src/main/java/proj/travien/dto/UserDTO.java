@@ -1,12 +1,14 @@
 package proj.travien.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor // 기본 생성자 자동 추가
 public class UserDTO {
     private String userId;
     private String password; // 비밀번호는 필요할 경우 null로 설정
@@ -20,11 +22,12 @@ public class UserDTO {
     private String verificationFile;
 
     // AgentDTO를 포함하는 필드
+    @Setter
     private AgentDTO agentDetails;
 
     // 예약대행자 필드를 포함하지 않는 생성자
     public UserDTO(String userId, String password, String name, String dateOfBirth, String gender, String mbti,
-                   String profilePicture, String nickname, boolean isAgent, String verificationFile) {
+                   String profilePicture, String nickname, boolean isAgent) {
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -34,7 +37,7 @@ public class UserDTO {
         this.profilePicture = profilePicture;
         this.nickname = nickname;
         this.isAgent = isAgent;
-        this.verificationFile = verificationFile;
     }
+
 }
 

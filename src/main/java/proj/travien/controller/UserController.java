@@ -116,16 +116,8 @@ public class UserController {
     // 예약대행자 목록 조회
     @GetMapping("/agents")
     public ResponseEntity<List<AgentDTO>> getAllAgents() {
-        List<User> agents = userService.getAllAgents();
-        List<AgentDTO> agentDTOs = agents.stream()
-                .map(user -> new AgentDTO(
-                        user.getAgentCountry(),
-                        user.getIntroduction(),
-                        user.getHashtags(),
-                        user.getSpecIntroduction(),
-                        user.getAverageReviewRating()))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(agentDTOs, HttpStatus.OK);
+        List<AgentDTO> agents = userService.getAllAgents();
+        return ResponseEntity.ok(agents);
     }
 
     // 마이페이지 정보 조회

@@ -184,8 +184,18 @@ public class UserService {
     }
 
     // 예약대행자 목록 조회
-    public List<User> getAllAgents() {
-        return userRepository.findByIsAgentTrue();
+    public List<AgentDTO> getAllAgents() {
+        return userRepository.findByIsAgentTrue().stream()
+                .map(user -> new AgentDTO(
+                        user.getAgentCountry(),
+                        user.getIntroduction(),
+                        user.getHashtags(),
+                        user.getSpecIntroduction(),
+                        user.getAverageReviewRating(),
+                        user.getNickname(),           // 닉네임 추가
+                        user.getProfilePicture()      // 프로필 이미지 추가
+                ))
+                .collect(Collectors.toList());
     }
 
     // 마이페이지 정보 조회 메서드
@@ -205,8 +215,7 @@ public class UserService {
                 user.getMbti(),
                 user.getProfilePicture(),
                 user.getNickname(),
-                user.isAgent(),
-                user.getVerificationFile()
+                user.isAgent()
         );
 
         // 예약대행자인 경우 AgentDTO 생성
@@ -216,7 +225,9 @@ public class UserService {
                     user.getIntroduction(),
                     user.getHashtags(),
                     user.getSpecIntroduction(),
-                    user.getAverageReviewRating()
+                    user.getAverageReviewRating(),
+                    user.getNickname(),
+                    user.getProfilePicture()
             );
             userDTO.setAgentDetails(agentDTO);
         }
