@@ -23,9 +23,9 @@ import Chatbotset from "./pages/chatbot/chatbotset";
 import KeywordSelection from "./pages/recomendation/Personal/keyword";
 import BoardEx from "./pages/board/boardDetail";
 import AgentPerspective from "./pages/AgentPerspective/agentperspective"
-import GloplerDetail from "./pages/gloplerDetail/gloplerDetailPage"
 import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
 import Test from "./pages/test/test"
+import AgentDetail from './pages/agentDetail/agentDetail'
 
 function App() {
     return (
@@ -55,9 +55,9 @@ function App() {
                 <Route path="/keyword" element={<KeywordSelection/>}/>
                 <Route path="/exboard" element={<BoardEx/>}/>
                 <Route path="/agentperspective" element={<AgentPerspective/>}/>
-                <Route path="/gloplerDetail" element={<GloplerDetail/>}/>
                 <Route path="/cosine" element={<RecommendationCosine/>}/>
                 <Route path="/test" element={<Test/>}/>
+                <Route path="/agentdetail" element={<AgentDetail/>}/>
             </Routes>
         </BrowserRouter>
     );
