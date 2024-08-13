@@ -16,10 +16,17 @@ export const Title=styled.div`
     font-size: 30px;
   font-weight: bold;
   width: 80%;
+    display: flex;
+    align-items: center;
   text-align: left;
   color: #4e35ed;
   font-family: "Regular";
   margin-top: 3rem;
+    p{
+        color: #ff9900;
+        font-size: 28px;
+        margin-left: 15px;
+    }
 `
 export const PlacesContainer=styled.div`
     width: 65rem;
@@ -102,6 +109,10 @@ export const Places=styled.img`
 export const PlaceName=styled.div`
     font-family: Title;
   text-align: center;
+`
+export const PlaceName2=styled.div`
+    font-family: Title;
+    font-size: 30px;
 `
 export const RightWrapper=styled.div`
     width: 23%;

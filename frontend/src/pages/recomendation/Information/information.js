@@ -107,8 +107,9 @@ export default function Information() {
     };
 
     const handleGoRouteRec = () => {
-        navigate('/routeRec');
+        navigate('/routeRec', { state: { placename: currentPlace.placename } });
     };
+
 
     const handleGoRoutePage = () =>{
         navigate('/route');

@@ -1,6 +1,6 @@
 import {
     BodyContainer,
-    LeftWrapper, MapContainer, PlaceName, Places,
+    LeftWrapper, MapContainer, PlaceName, PlaceName2, Places,
     PlacesContainer,
     PlacesTitle, PlacesTitleWrapper,
     PlacesWrapper,
@@ -12,17 +12,19 @@ import { Reset } from 'styled-reset';
 import TopBarComponent from '../../../../components/TopBar/TopBar';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import MapComponent from './MapComponent'; // Import the MapComponent
 
 export default function RouteRecomendation() {
-    const { placename } = useParams(); // useParams를 사용하여 placename 받기
+    //const { placename } = useParams(); // useParams를 사용하여 placename 받기
     const [title, setTitle] = useState("");
     const [addressTitle, setAddressTitle] = useState(""); // Address title state
     const [image, setImage] = useState(null);
     const [addresses, setAddresses] = useState([]);
+    const location = useLocation();
+    const { placename } = location.state || {};
 
-    console.log('Placename from URL:', placename); // 콘솔에서 확인
+   // console.log('Placename from URL:', placename); // 콘솔에서 확인
 
     const fetchData = async () => {
         try {
@@ -50,9 +52,9 @@ export default function RouteRecomendation() {
         }
     };
 
-    useEffect(() => {
-        fetchData(); // Fetch data on component mount
-    }, [placename]); // 의존성 배열에 placename 추가
+    //useEffect(() => {
+    //    fetchData(); // Fetch data on component mount
+    //}, [placename]); // 의존성 배열에 placename 추가
 
     return (
         <>
@@ -60,7 +62,7 @@ export default function RouteRecomendation() {
             <div style={{ height: '55px' }}></div>
             <TopBarComponent />
             <BodyContainer>
-                <Title>BEST 리뷰의 추천 루트를 제공할게요 {placename} </Title> {/* Display placename here */}
+                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title> {/* Display placename here */}
                 <RefreshBtnWrapper>
                     <RefreshBtn onClick={fetchData}> {/* Refresh button */}
                         <p>추천 새로고침</p>
