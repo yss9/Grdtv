@@ -90,6 +90,7 @@ export default function SignupPage() {
         setStep(1);
     };
     const goToSecondPage = () => {
+        console.log(id, pw, name, birthday, gender)
         setStep(2);
     };
     const goToThirdPage = () => {
@@ -111,6 +112,13 @@ export default function SignupPage() {
     };
 
     const onClickSubmit = () => {
+
+        if (glopler) {
+            if (verificationFile == null) {
+                alert("인증 파일을 첨부해 주세요.")
+                return;
+            }
+        }
 
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
@@ -135,6 +143,8 @@ export default function SignupPage() {
             if (verificationFile) {
                 formData.append('verificationFile', verificationFile);
             }
+
+            console.log(id, pw, name, birthday, MBTI, nickName, glopler, profilePicture, verificationFile)
 
             axios.post('http://localhost:8080/api/users/signup', formData, {
                 headers: {
@@ -280,22 +290,22 @@ export default function SignupPage() {
                                     <BoldSubText>글로플의 회원이 되어 색다른 여행을 경험해 보세요.</BoldSubText>
 
                                     <FormGroup>
-                                        <FormField type="input" placeholder="아이디" required="" />
+                                        <FormField type="input" onChange={onChangeId} placeholder="아이디" required="" />
                                         <FormLabel for="ID">아이디</FormLabel>
                                         <SubComment>6~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="password" placeholder="비밀번호" required="" />
+                                        <FormField type="password" onChange={onChangePw} placeholder="비밀번호" required="" />
                                         <FormLabel for="PW">비밀번호</FormLabel>
                                         <SubComment>문자, 숫자 포함 8~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="input" placeholder="이름" required="" />
+                                        <FormField type="input" onChange={onChangeName} placeholder="이름" required="" />
                                         <FormLabel for="Name">이름</FormLabel>
                                         <SubComment>이름을 입력해주세요.</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="input" placeholder="생년월일" required="" />
+                                        <FormField type="input" onChange={onChangeBirthday} placeholder="생년월일" required="" />
                                         <FormLabel for="Birthday">생년월일</FormLabel>
                                         <SubComment>ex)020331</SubComment>
                                     </FormGroup>

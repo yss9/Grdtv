@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Modal from 'react-modal';
-import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
+
+// Google Places API 키
+const apiKey = '여기에 api 키 입력';
+
+
 const osakaLocations = [
     { name: '오사카성', img: '/Img/osaka/img.png' },
     { name: '우메다 스카이빌딩 공중정원', img: '/Img/osaka/img_3.png' },
@@ -27,6 +32,34 @@ const MapPage = () => {
     });
     const [markers, setMarkers] = useState([]);
     const navigate = useNavigate();
+
+    const searchPlaceInCountry = async (country, query) => {
+        const url = `/api/search-place?country=${country}&query=${encodeURIComponent(query)}`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Response JSON:', data);
+            if (data.status === "OK") {
+                const latLng = extractLatLng(data);
+                console.log(`Latitude: ${latLng.lat}, Longitude: ${latLng.lng}`);
+            } else {
+                console.log('No results found or an error occurred:', data.status);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const extractLatLng = (data) => {
+        if (data && data.results && data.results.length > 0) {
+            const location = data.results[0].geometry.location;
+            return { lat: location.lat, lng: location.lng };
+        } else {
+            console.log('No results found.');
+            return null;
+        }
+    };
     const openModal = (field, index = null) => {
         setSelectedField(field);
         setEditIndex(index);
@@ -189,6 +222,9 @@ const MapPage = () => {
                             top:"66%",
                         }}> 나가기
                         </button>
+                    
+                        <button onClick={() => searchPlaceInCountry('KR', '도쿄 타워')}>검색</button>
+                    
                         <button onClick={handleGoReservation} style={{
                             border: "none",
                             borderRadius: "10px",
@@ -204,10 +240,7 @@ const MapPage = () => {
                 </div>
                 <div className="map-container">
 
-
-                    {/* ~!~!~!~!~!~~!~!~!~!~!~ 구글 api 키 넣는 곳 ~!~!~!~!~!~~!~!~!~!~!~ */}
-
-                    <LoadScript googleMapsApiKey="api키" libraries={['places']}>
+                    <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
 
                         <GoogleMap
                             mapContainerStyle={{width: '100%', height: '100%'}}
