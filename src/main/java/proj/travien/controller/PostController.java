@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,13 +97,20 @@ public class PostController {
     }
 
 
+
     /**
-     * 루트 추천(랜덤O)
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
-    @GetMapping("/addresses/")
-    public ResponseEntity<AddressResponseDto> getRandomPostAddresses() {
-        AddressResponseDto addressResponse = postService.getRandomPostAddresses();
-        return ResponseEntity.ok(addressResponse);
+    @GetMapping("/addresses/{placename}")
+    public ResponseEntity<AddressResponseDto> getPostAddressesByPlaceName(@PathVariable String placename) {
+        try {
+            AddressResponseDto addressResponse = postService.getPostAddressesByPlaceName(placename);
+            return ResponseEntity.ok(addressResponse);
+        } catch (IllegalStateException e) {
+            // '추천되는 게시물 없음' 예외 처리
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new AddressResponseDto("추천되는 게시물 없음", Collections.emptySet()));
+        }
     }
 
 

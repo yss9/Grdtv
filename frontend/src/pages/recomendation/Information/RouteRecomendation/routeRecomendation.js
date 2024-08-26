@@ -28,7 +28,7 @@ export default function RouteRecomendation() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/posts/addresses/`);
+            const response = await axios.get(`http://localhost:8080/api/posts/addresses/${placename}`);
             const postData = response.data;
 
             console.log('Fetched data:', postData); // Log the fetched data
@@ -49,8 +49,14 @@ export default function RouteRecomendation() {
             setAddresses(processedAddresses);
         } catch (error) {
             console.error('Error fetching data:', error);
+            if (error.response && error.response.status === 404) {
+                // '추천되는 게시물 없음' 처리
+                setAddressTitle("추천되는 게시물 없음");
+                setAddresses([]);
+            }
         }
     };
+
 
     //useEffect(() => {
     //    fetchData(); // Fetch data on component mount

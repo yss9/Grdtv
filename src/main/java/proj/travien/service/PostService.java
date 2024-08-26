@@ -154,21 +154,29 @@ public class PostService {
         return Optional.empty();
     }
 
+
+
     /**
-     *  루트 추천(랜덤O)
+     *  루트 추천 (특정 placename에 맞는 포스트 검색)
      */
     @Transactional(readOnly = true)
-    public AddressResponseDto getRandomPostAddresses() {
+    public AddressResponseDto getPostAddressesByPlaceName(String placename) {
         List<Post> posts = postRepository.findAll();
-        if (posts.isEmpty()) {
-            throw new IllegalStateException("No posts available");
+
+        // placename과 일치하는 주소 또는 제목이 있는 포스트를 찾음
+        Optional<Post> matchingPost = posts.stream()
+                .filter(post -> post.getAddressTitle().contains(placename) ||
+                        post.getAddresses().stream().anyMatch(address -> address.getAddress().contains(placename)))
+                .findFirst();
+
+        if (matchingPost.isPresent()) {
+            Post post = matchingPost.get();
+            return new AddressResponseDto(post.getAddressTitle(), post.getAddresses());
+        } else {
+            throw new IllegalStateException("추천되는 게시물 없음");
         }
-
-        Random random = new Random();
-        Post randomPost = posts.get(random.nextInt(posts.size()));
-
-        return new AddressResponseDto(randomPost.getAddressTitle(), randomPost.getAddresses());
     }
+
 
 
 
