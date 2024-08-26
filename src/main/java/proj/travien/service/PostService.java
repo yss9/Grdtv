@@ -161,12 +161,29 @@ public class PostService {
      */
     @Transactional(readOnly = true)
     public AddressResponseDto getPostAddressesByPlaceName(String placename) {
+        // 검색을 위해 placename을 정규화 (공백 및 특수문자 제거)
+        String normalizedPlacename = placename.replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
+
         List<Post> posts = postRepository.findAll();
 
         // placename과 일치하는 주소 또는 제목이 있는 포스트를 찾음
         Optional<Post> matchingPost = posts.stream()
-                .filter(post -> post.getAddressTitle().contains(placename) ||
-                        post.getAddresses().stream().anyMatch(address -> address.getAddress().contains(placename)))
+                .filter(post -> {
+                    // 제목과 주소를 정규화 (공백 및 특수문자 제거)
+                    String normalizedTitle = post.getAddressTitle().replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
+
+                    // placename이 제목에 포함되어 있는지 확인
+                    boolean titleMatches = normalizedTitle.contains(normalizedPlacename);
+
+                    // placename이 주소에 포함되어 있는지 확인
+                    boolean addressMatches = post.getAddresses().stream()
+                            .anyMatch(address -> {
+                                String normalizedAddress = address.getAddress().replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
+                                return normalizedAddress.contains(normalizedPlacename);
+                            });
+
+                    return titleMatches || addressMatches;
+                })
                 .findFirst();
 
         if (matchingPost.isPresent()) {
@@ -176,6 +193,7 @@ public class PostService {
             throw new IllegalStateException("추천되는 게시물 없음");
         }
     }
+
 
 
 
