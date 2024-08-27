@@ -18,7 +18,6 @@ export default function BoardWrite(props) {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [titleError, setTitleError] = useState("");
-    const [bodyError, setBodyError] = useState("");
     const [addressTitle, setAddressTitle] = useState(""); // 경로 제목 상태 추가
     const [addresses, setAddresses] = useState([{ address: "", location: { lat: null, lng: null } }]);
     const [isOpen, setIsOpen] = useState(false);
@@ -41,10 +40,10 @@ export default function BoardWrite(props) {
         }
     }, [isOpen]);
 
-    const imageHandler = useCallback(() => {
+/*    const imageHandler = useCallback(() => {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
+        input.setAttribute('accept', 'image/!*');
         input.click();
 
         input.onchange = async () => {
@@ -67,28 +66,14 @@ export default function BoardWrite(props) {
                 console.log(error);
             }
         };
-    }, []);
+    }, []);*/
 
-    const modules = useMemo(() => ({
-        toolbar: {
-            container: [
-                [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-                [{ size: [] }],
-                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-                ['link', 'image'],
-                ['clean']
-            ],
-            handlers: {
-                image: imageHandler,
-            },
-        },
-    }), [imageHandler]);
 
-    const handleImageChange = (e) => {
+
+   /* const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file);
-    };
+    };*/
 
     const onClickAddressSearch = (index) => {
         setCurrentAddressIndex(index);
@@ -118,8 +103,12 @@ export default function BoardWrite(props) {
 
         const formData = new FormData();
         formData.append('title', title);
-        formData.append('addressTitle', addressTitle); // addressTitle 추가
+        formData.append('body', body); // 에디터의 내용을 추가
+        formData.append('addressTitle', addressTitle);
         formData.append('addresses', JSON.stringify(addressStrings));
+        if (image) {
+            formData.append('image', image);
+        }
 
         try {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
@@ -127,7 +116,7 @@ export default function BoardWrite(props) {
             alert("게시물 등록이 정상적으로 완료되었습니다!");
             navigate(`/board/${response.data.boardID}`);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
@@ -210,13 +199,8 @@ export default function BoardWrite(props) {
                     </S.InputWrapper>
 
                     <S.InputWrapper>
-                        <QuillEditor />
+                        <QuillEditor value={body} onChange={setBody} />
                     </S.InputWrapper>
-
-                    <S.ImageWrapper>
-                        <S.Label>사진 추가</S.Label>
-                        <input type="file" onChange={handleImageChange} />
-                    </S.ImageWrapper>
 
                     <S.InputWrapper>
                         <S.AddressSubject
