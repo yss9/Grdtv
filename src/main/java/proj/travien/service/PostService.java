@@ -10,6 +10,8 @@ import proj.travien.domain.Post;
 import proj.travien.dto.AddressResponseDto;
 import proj.travien.repository.ImageRepository;
 import proj.travien.repository.PostRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
 
@@ -157,12 +159,22 @@ public class PostService {
 
 
     /**
-     *  루트 추천 (특정 placename에 맞는 포스트 검색)
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
+     */
+    private final ObjectMapper objectMapper;
+
+    public PostService(PostRepository postRepository, ObjectMapper objectMapper) {
+        this.postRepository = postRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
     @Transactional(readOnly = true)
     public AddressResponseDto getPostAddressesByPlaceName(String placename) {
         // 검색을 위해 placename을 정규화 (공백 및 특수문자 제거)
-        String normalizedPlacename = placename.replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
+        String normalizedPlacename = normalizeString(placename);
 
         List<Post> posts = postRepository.findAll();
 
@@ -170,7 +182,7 @@ public class PostService {
         Optional<Post> matchingPost = posts.stream()
                 .filter(post -> {
                     // 제목과 주소를 정규화 (공백 및 특수문자 제거)
-                    String normalizedTitle = post.getAddressTitle().replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
+                    String normalizedTitle = normalizeString(post.getAddressTitle());
 
                     // placename이 제목에 포함되어 있는지 확인
                     boolean titleMatches = normalizedTitle.contains(normalizedPlacename);
@@ -178,8 +190,23 @@ public class PostService {
                     // placename이 주소에 포함되어 있는지 확인
                     boolean addressMatches = post.getAddresses().stream()
                             .anyMatch(address -> {
-                                String normalizedAddress = address.getAddress().replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "");
-                                return normalizedAddress.contains(normalizedPlacename);
+                                String rawAddress = address.getAddress();
+
+                                try {
+                                    // 주소 문자열을 정리하여 JSON 배열로 변환
+                                    String sanitizedAddress = sanitizeAddress(rawAddress);
+
+                                    // JSON 배열 파싱
+                                    List<String> addressList = objectMapper.readValue(sanitizedAddress, new TypeReference<List<String>>() {});
+
+                                    // 각 주소 항목을 정규화하여 비교
+                                    return addressList.stream()
+                                            .map(this::normalizeString)
+                                            .anyMatch(normalizedAddress -> normalizedAddress.contains(normalizedPlacename));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
                             });
 
                     return titleMatches || addressMatches;
@@ -194,8 +221,32 @@ public class PostService {
         }
     }
 
+    /**
+     * 주소 문자열을 JSON 배열 형식으로 정리
+     */
+    private String sanitizeAddress(String rawAddress) {
+        // 불완전한 JSON 배열 형식을 수정
+        String sanitizedAddress = rawAddress;
 
+        if (!sanitizedAddress.startsWith("[")) {
+            sanitizedAddress = "[" + sanitizedAddress;
+        }
+        if (!sanitizedAddress.endsWith("]")) {
+            sanitizedAddress = sanitizedAddress + "]";
+        }
 
+        // 잘못된 구문 제거 및 문자열 정리
+        sanitizedAddress = sanitizedAddress.replaceAll("\\\\", "").replaceAll("\"\"", "\"");
+
+        return sanitizedAddress;
+    }
+
+    /**
+     * 문자열 정규화 (공백 및 특수문자 제거, 소문자 변환)
+     */
+    private String normalizeString(String input) {
+        return input.replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "").toLowerCase();
+    }
 
 
 
