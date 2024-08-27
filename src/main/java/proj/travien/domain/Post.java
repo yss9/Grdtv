@@ -53,15 +53,15 @@ public class Post {
     private Boolean verified;
 
     @Builder
-    public Post(String title, Set<Addresses> addresses) {
+    public Post(String title, String body, Set<Addresses> addresses) {
         this.title = title;
+        this.body = body;
         this.addresses = addresses;
     }
 
-    public void update(String title, String body, String image, Set<Addresses> addresses) {
+    public void update(String title, String body, Set<Addresses> addresses) {
         this.title = title;
         this.body = body;
-        this.image = image;
         this.addresses = addresses;
     }
 

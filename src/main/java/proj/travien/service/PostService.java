@@ -116,9 +116,10 @@ public class PostService {
     /**
      * 게시물 업로드
      */
-    public Post createPost(String title, Set<Addresses> addressStrings, String addressTitle) {
+    public Post createPost(String title, String body, Set<Addresses> addressStrings, String addressTitle) {
         Post post = new Post();
         post.setTitle(title);
+        post.setBody(body);
         post.setAddressTitle(addressTitle);
 
         Set<Addresses> addresses = new HashSet<>();
@@ -253,7 +254,7 @@ public class PostService {
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
-                    post.update(updatedPost.getTitle(), updatedPost.getBody(), updatedPost.getImage(), updatedPost.getAddresses());
+                    post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
