@@ -5,9 +5,12 @@ import { Modal } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import MapComponent from "./MapComponent";
-import ReactQuill from 'react-quill';
+import ReactQuill, {Quill} from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // 퀼 에디터의 기본 스타일시트를 가져옵니다.
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import QuillEditor from "../../../components/Editor/QuillEditor";
+
+
 
 export default function BoardWrite(props) {
     const navigate = useNavigate();
@@ -187,6 +190,8 @@ export default function BoardWrite(props) {
         setAddresses(reorderedAddresses);
     };
 
+    const quill = new Quill("#editor");
+
     return (
         <>
             <TopBarComponent />
@@ -205,15 +210,7 @@ export default function BoardWrite(props) {
                     </S.InputWrapper>
 
                     <S.InputWrapper>
-                        <ReactQuill
-                            ref={quillRef} // ReactQuill ref 설정
-                            theme="snow"
-                            value={body}
-                            onChange={(value) => setBody(value)}
-                            placeholder="내용을 입력해주세요."
-                            modules={modules}
-                        />
-                        <S.Error>{bodyError}</S.Error>
+                        <QuillEditor />
                     </S.InputWrapper>
 
                     <S.ImageWrapper>
