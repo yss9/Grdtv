@@ -68,21 +68,6 @@ public class PostController {
 
 
 
-
-
-
-   /* @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") Set address) {
-        try {
-            Post createdPost = postService.createPost(image, title, body, address);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-*/
-
     /**
      * 게시물 업로드
      */
@@ -114,6 +99,9 @@ public class PostController {
     }
 
 
+    /**
+     * 특정 게시물 가져오기
+     */
     @GetMapping("/{id}/")
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
         Optional<Post> post = postService.getPostById(id);
@@ -122,10 +110,14 @@ public class PostController {
 
 
 
+    /**
+     * 게시물 전체 가져오기
+     */
     @GetMapping("/")
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
     }
+
 
 
     @PutMapping("/{id}/")
@@ -138,17 +130,21 @@ public class PostController {
         }
     }
 
+
     @DeleteMapping("/{id}/")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping("/{id}/report/")
     public ResponseEntity<Void> reportPost(@PathVariable Long id) {
         // Implement your report logic here
         return ResponseEntity.ok().build();
     }
+
+
 
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
