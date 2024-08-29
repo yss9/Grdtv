@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -172,15 +173,18 @@ public class PostService {
     /**
      * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
+    /**
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
+     */
     @Transactional(readOnly = true)
-    public AddressResponseDto getPostAddressesByPlaceName(String placename) {
+    public List<AddressResponseDto> getPostAddressesByPlaceName(String placename) {
         // 검색을 위해 placename을 정규화 (공백 및 특수문자 제거)
         String normalizedPlacename = normalizeString(placename);
 
         List<Post> posts = postRepository.findAll();
 
-        // placename과 일치하는 주소 또는 제목이 있는 포스트를 찾음
-        Optional<Post> matchingPost = posts.stream()
+        // placename과 일치하는 주소 또는 제목이 있는 모든 포스트를 찾음
+        List<AddressResponseDto> matchingPosts = posts.stream()
                 .filter(post -> {
                     // 제목과 주소를 정규화 (공백 및 특수문자 제거)
                     String normalizedTitle = normalizeString(post.getAddressTitle());
@@ -212,15 +216,16 @@ public class PostService {
 
                     return titleMatches || addressMatches;
                 })
-                .findFirst();
+                .map(post -> new AddressResponseDto(post.getAddressTitle(), post.getAddresses()))
+                .collect(Collectors.toList());
 
-        if (matchingPost.isPresent()) {
-            Post post = matchingPost.get();
-            return new AddressResponseDto(post.getAddressTitle(), post.getAddresses());
+        if (!matchingPosts.isEmpty()) {
+            return matchingPosts;
         } else {
             throw new IllegalStateException("추천되는 게시물 없음");
         }
     }
+
 
     /**
      * 주소 문자열을 JSON 배열 형식으로 정리
