@@ -13,4 +13,6 @@ import java.util.Set;
 public class AddressResponseDto {
     private String addressTitle;
     private Set<Addresses> addresses;
+    private Long boardID;  // 추가된 필드
+
 }

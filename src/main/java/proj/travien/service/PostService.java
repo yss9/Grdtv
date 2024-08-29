@@ -170,12 +170,7 @@ public class PostService {
         this.objectMapper = objectMapper;
     }
 
-    /**
-     * 루트 추천 (특정 placename에 맞는 포스트 검색)
-     */
-    /**
-     * 루트 추천 (특정 placename에 맞는 포스트 검색)
-     */
+
     @Transactional(readOnly = true)
     public List<AddressResponseDto> getPostAddressesByPlaceName(String placename) {
         // 검색을 위해 placename을 정규화 (공백 및 특수문자 제거)
@@ -216,7 +211,7 @@ public class PostService {
 
                     return titleMatches || addressMatches;
                 })
-                .map(post -> new AddressResponseDto(post.getAddressTitle(), post.getAddresses()))
+                .map(post -> new AddressResponseDto(post.getAddressTitle(), post.getAddresses(), post.getBoardID()))
                 .collect(Collectors.toList());
 
         if (!matchingPosts.isEmpty()) {

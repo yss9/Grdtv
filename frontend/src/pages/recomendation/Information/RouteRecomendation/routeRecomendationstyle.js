@@ -73,9 +73,9 @@ export const PlacesWriter=styled.div`
   margin-left: 1rem;
 
 `
-export const SaveBtn=styled.button`
-    position: absolute;
-    left: 50%;
+export const GoBtn=styled.button`
+  position: absolute;
+  left: 50%;
   font-family: "Regular";
   margin-left: 5rem;
   font-size: 16px;

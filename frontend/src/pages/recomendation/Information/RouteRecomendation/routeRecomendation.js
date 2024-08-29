@@ -4,30 +4,31 @@ import {
     PlacesContainer,
     PlacesTitle, PlacesTitleWrapper,
     PlacesWriter, PlaceWrapper, RefreshBtn, RefreshBtnWrapper, RightWrapper, ContextWrapper,
-    SaveBtn,
+    GoBtn,
     Title
 } from './routeRecomendationstyle';
 import { Reset } from 'styled-reset';
 import TopBarComponent from '../../../../components/TopBar/TopBar';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
 import MapComponent from './MapComponent'; // Import the MapComponent
 
 export default function RouteRecomendation() {
-    const [recommendations, setRecommendations] = useState([]); // Use an array to hold multiple recommendations
+    const [recommendations, setRecommendations] = useState([]); // 여러 추천 경로를 저장하는 배열
     const location = useLocation();
+    const navigate = useNavigate(); // useNavigate 훅 초기화
     const { placename } = location.state || {};
 
-    // Fetch data for multiple recommendations
+    // 데이터 가져오기
     const fetchData = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/posts/addresses/${placename}`);
             const postData = response.data;
 
-            console.log('Fetched data:', postData); // Log the fetched data
+            console.log('Fetched data:', postData); // 가져온 데이터 로그
 
-            // Assuming postData is an array of recommendation objects
+            // postData가 추천 객체들의 배열이라고 가정
             const processedRecommendations = postData.map(post => {
                 const cleanedAddresses = post.addresses.map(address => {
                     const cleanedAddress = address.address.replace(/[\[\]"]/g, '').trim();
@@ -38,13 +39,14 @@ export default function RouteRecomendation() {
                 });
 
                 return {
+                    boardID: post.boardID, // 게시물 ID 추가
                     title: post.addressTitle,
                     image: post.image,
                     addresses: cleanedAddresses
                 };
             });
 
-            console.log('Processed recommendations:', processedRecommendations); // Log processed recommendations
+            console.log('Processed recommendations:', processedRecommendations); // 처리된 추천 데이터 로그
             setRecommendations(processedRecommendations);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -56,8 +58,14 @@ export default function RouteRecomendation() {
     };
 
     useEffect(() => {
-        fetchData(); // Fetch data on component mount
+        fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
     }, [placename]);
+
+    // 게시물 상세 페이지로 이동하는 함수
+    const handleGoToPost = (boardID) => {
+        navigate(`/board/${boardID}`);
+        console.log(boardID)
+    };
 
     return (
         <>
@@ -65,9 +73,9 @@ export default function RouteRecomendation() {
             <div style={{ height: '55px' }}></div>
             <TopBarComponent />
             <BodyContainer>
-                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title> {/* Display placename here */}
+                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title>
                 <RefreshBtnWrapper>
-                    <RefreshBtn onClick={fetchData}> {/* Refresh button */}
+                    <RefreshBtn onClick={fetchData}> {/* 새로고침 버튼 */}
                         <p>추천 새로고침</p>
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_484_188)">
@@ -83,16 +91,14 @@ export default function RouteRecomendation() {
                 </RefreshBtnWrapper>
 
                 {recommendations.map((recommendation, index) => (
-
-                    <PlacesContainer key={index}> {/* Unique PlacesContainer for each route */}
+                    <PlacesContainer key={index}> {/* 각 추천 루트에 대한 고유한 PlacesContainer */}
                         <LeftWrapper>
                             <PlacesTitleWrapper>
                                 <PlacesTitle>{recommendation.title}</PlacesTitle>
                                 <PlacesWriter>by 사용자 닉네임</PlacesWriter>
-                                <SaveBtn>저장하기</SaveBtn>
+                                <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>바로가기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
                             </PlacesTitleWrapper>
                             <PlaceWrapper>
-
                                 {recommendation.addresses.map((place, index) => (
                                     <React.Fragment key={place.address}>
                                         {index > 0 && (
@@ -108,18 +114,15 @@ export default function RouteRecomendation() {
                                         </ContextWrapper>
                                     </React.Fragment>
                                 ))}
-
                             </PlaceWrapper>
                         </LeftWrapper>
                         <RightWrapper>
                             <MapContainer>
-                                <MapComponent addresses={recommendation.addresses}/> {/* Pass only the addresses of this recommendation */}
+                                <MapComponent addresses={recommendation.addresses}/> {/* 이 추천의 주소만 전달 */}
                             </MapContainer>
                         </RightWrapper>
                     </PlacesContainer>
-
                 ))}
-
             </BodyContainer>
         </>
     );
