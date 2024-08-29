@@ -87,16 +87,17 @@ public class PostController {
      * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
     @GetMapping("/addresses/{placename}")
-    public ResponseEntity<AddressResponseDto> getPostAddressesByPlaceName(@PathVariable String placename) {
+    public ResponseEntity<List<AddressResponseDto>> getPostAddressesByPlaceName(@PathVariable String placename) {
         try {
-            AddressResponseDto addressResponse = postService.getPostAddressesByPlaceName(placename);
-            return ResponseEntity.ok(addressResponse);
+            List<AddressResponseDto> addressResponses = postService.getPostAddressesByPlaceName(placename);
+            return ResponseEntity.ok(addressResponses);
         } catch (IllegalStateException e) {
             // '추천되는 게시물 없음' 예외 처리
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new AddressResponseDto("추천되는 게시물 없음", Collections.emptySet()));
+                    .body(Collections.emptyList());
         }
     }
+
 
 
     /**

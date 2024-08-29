@@ -1,31 +1,25 @@
 import {
     BodyContainer,
-    LeftWrapper, MapContainer, PlaceName, PlaceName2, Places,
+    LeftWrapper, MapContainer, PlaceName, Places,
     PlacesContainer,
     PlacesTitle, PlacesTitleWrapper,
-    PlacesWrapper,
-    PlacesWriter, PlaceWrapper, RefreshBtn, RefreshBtnWrapper, RightWrapper,
+    PlacesWriter, PlaceWrapper, RefreshBtn, RefreshBtnWrapper, RightWrapper, ContextWrapper,
     SaveBtn,
     Title
-} from './routeRecomendationstyle'
+} from './routeRecomendationstyle';
 import { Reset } from 'styled-reset';
 import TopBarComponent from '../../../../components/TopBar/TopBar';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {useLocation, useParams} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import MapComponent from './MapComponent'; // Import the MapComponent
 
 export default function RouteRecomendation() {
-    //const { placename } = useParams(); // useParams를 사용하여 placename 받기
-    const [title, setTitle] = useState("");
-    const [addressTitle, setAddressTitle] = useState(""); // Address title state
-    const [image, setImage] = useState(null);
-    const [addresses, setAddresses] = useState([]);
+    const [recommendations, setRecommendations] = useState([]); // Use an array to hold multiple recommendations
     const location = useLocation();
     const { placename } = location.state || {};
 
-   // console.log('Placename from URL:', placename); // 콘솔에서 확인
-
+    // Fetch data for multiple recommendations
     const fetchData = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/posts/addresses/${placename}`);
@@ -33,34 +27,37 @@ export default function RouteRecomendation() {
 
             console.log('Fetched data:', postData); // Log the fetched data
 
-            setAddressTitle(postData.addressTitle); // 루트 제목 불러오기
-            setImage(postData.image);
+            // Assuming postData is an array of recommendation objects
+            const processedRecommendations = postData.map(post => {
+                const cleanedAddresses = post.addresses.map(address => {
+                    const cleanedAddress = address.address.replace(/[\[\]"]/g, '').trim();
+                    return {
+                        ...address,
+                        address: cleanedAddress
+                    };
+                });
 
-            // Process addresses to remove unwanted characters
-            const processedAddresses = postData.addresses.map(address => {
-                const cleanedAddress = address.address.replace(/[\[\]"]/g, '').trim();
                 return {
-                    ...address,
-                    address: cleanedAddress
+                    title: post.addressTitle,
+                    image: post.image,
+                    addresses: cleanedAddresses
                 };
             });
 
-            console.log('Processed addresses:', processedAddresses); // Log processed addresses
-            setAddresses(processedAddresses);
+            console.log('Processed recommendations:', processedRecommendations); // Log processed recommendations
+            setRecommendations(processedRecommendations);
         } catch (error) {
             console.error('Error fetching data:', error);
             if (error.response && error.response.status === 404) {
                 // '추천되는 게시물 없음' 처리
-                setAddressTitle("추천되는 게시물 없음");
-                setAddresses([]);
+                setRecommendations([]);
             }
         }
     };
 
-
-    //useEffect(() => {
-    //    fetchData(); // Fetch data on component mount
-    //}, [placename]); // 의존성 배열에 placename 추가
+    useEffect(() => {
+        fetchData(); // Fetch data on component mount
+    }, [placename]);
 
     return (
         <>
@@ -84,37 +81,45 @@ export default function RouteRecomendation() {
                         </svg>
                     </RefreshBtn>
                 </RefreshBtnWrapper>
-                <PlacesContainer>
-                    <LeftWrapper>
-                        <PlacesTitleWrapper>
-                            <PlacesTitle>{addressTitle}</PlacesTitle>
-                            <PlacesWriter>by 사용자 닉네임</PlacesWriter>
-                            <SaveBtn>저장하기</SaveBtn>
-                        </PlacesTitleWrapper>
-                        <PlacesWrapper>
-                            {addresses.map((place, index) => (
-                                <React.Fragment key={place.address}>
-                                    {index > 0 && (
-                                        <p>
-                                            <svg width="15" height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M15 9L0 17.6603V0.339745L15 9Z" fill="#5F5F5F" />
-                                            </svg>
-                                        </p>
-                                    )}
-                                    <PlaceWrapper>
-                                        <Places src={image}></Places>
-                                        <PlaceName>{place.address}</PlaceName>
-                                    </PlaceWrapper>
-                                </React.Fragment>
-                            ))}
-                        </PlacesWrapper>
-                    </LeftWrapper>
-                    <RightWrapper>
-                        <MapContainer>
-                            <MapComponent addresses={addresses}/> {/* Pass addresses to MapComponent */}
-                        </MapContainer>
-                    </RightWrapper>
-                </PlacesContainer>
+
+                {recommendations.map((recommendation, index) => (
+
+                    <PlacesContainer key={index}> {/* Unique PlacesContainer for each route */}
+                        <LeftWrapper>
+                            <PlacesTitleWrapper>
+                                <PlacesTitle>{recommendation.title}</PlacesTitle>
+                                <PlacesWriter>by 사용자 닉네임</PlacesWriter>
+                                <SaveBtn>저장하기</SaveBtn>
+                            </PlacesTitleWrapper>
+                            <PlaceWrapper>
+
+                                {recommendation.addresses.map((place, index) => (
+                                    <React.Fragment key={place.address}>
+                                        {index > 0 && (
+                                            <p>
+                                                <svg width="15" height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M15 9L0 17.6603V0.339745L15 9Z" fill="#5F5F5F" />
+                                                </svg>
+                                            </p>
+                                        )}
+                                        <ContextWrapper>
+                                            <Places src={recommendation.image}></Places>
+                                            <PlaceName>{place.address}</PlaceName>
+                                        </ContextWrapper>
+                                    </React.Fragment>
+                                ))}
+
+                            </PlaceWrapper>
+                        </LeftWrapper>
+                        <RightWrapper>
+                            <MapContainer>
+                                <MapComponent addresses={recommendation.addresses}/> {/* Pass only the addresses of this recommendation */}
+                            </MapContainer>
+                        </RightWrapper>
+                    </PlacesContainer>
+
+                ))}
+
             </BodyContainer>
         </>
     );
