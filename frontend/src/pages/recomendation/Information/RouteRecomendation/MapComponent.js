@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
-import { Rnd } from 'react-rnd';
 import styled from 'styled-components';
 
 const libraries = ['places'];
 
-const MapComponent = ({ addresses }) => {
+const MapComponent = ({ addresses, mapId }) => {
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'api키',
+        googleMapsApiKey: 'Api키',
         libraries,
     });
 
     const [map, setMap] = useState(null);
+    const mapRef = useRef(null); // Use ref instead of id for better control
 
     const mapContainerStyle = {
         width: '200px',
@@ -19,16 +19,15 @@ const MapComponent = ({ addresses }) => {
     };
 
     useEffect(() => {
-        if (isLoaded) {
-            const mapElement = document.getElementById('map');
-            const initialMap = new window.google.maps.Map(mapElement, {
+        if (isLoaded && mapRef.current) {
+            const initialMap = new window.google.maps.Map(mapRef.current, {
                 zoom: 12,
                 disableDefaultUI: true, // Disable all default controls
                 zoomControl: false, // Optionally disable zoom control
                 mapTypeControl: false, // Optionally disable map type control
                 streetViewControl: false, // Optionally disable street view control
                 fullscreenControl: false, // Optionally disable fullscreen control
-                gestureHandling: 'greedy' // Optional: Control gesture handling
+                gestureHandling: 'greedy', // Optional: Control gesture handling
             });
 
             setMap(initialMap);
@@ -40,7 +39,7 @@ const MapComponent = ({ addresses }) => {
             const geocoder = new window.google.maps.Geocoder();
             const bounds = new window.google.maps.LatLngBounds();
 
-            let geocodePromises = addresses.map((address, index) => {
+            const geocodePromises = addresses.map((address, index) => {
                 return new Promise((resolve, reject) => {
                     geocoder.geocode({ address: address.address }, (results, status) => {
                         if (status === 'OK') {
@@ -75,7 +74,7 @@ const MapComponent = ({ addresses }) => {
 
     if (loadError) return <div>Error loading map</div>;
     return isLoaded ? (
-        <div id="map" style={mapContainerStyle}></div>
+        <div ref={mapRef} style={mapContainerStyle}></div> // Use ref instead of id
     ) : <div>Loading...</div>;
 };
 
