@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,45 +68,41 @@ public class PostController {
 
 
 
-
-
-
-   /* @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("image") MultipartFile image, @RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("address") Set address) {
-        try {
-            Post createdPost = postService.createPost(image, title, body, address);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-*/
-
     /**
      * 게시물 업로드
      */
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("addresses") Set<String> addresses, @RequestParam("addressTitle") String addressTitle) {
+    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("addresses") Set<String> addresses, @RequestParam("addressTitle") String addressTitle) {
             Set<Addresses> addressEntities = addresses.stream()
                     .map(address -> Addresses.builder().address(address).build())
                     .collect(Collectors.toSet());
 
-            Post createdPost = postService.createPost(title, addressEntities, addressTitle);
+            Post createdPost = postService.createPost(title, body, addressEntities, addressTitle);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
 
+
     /**
-     * 루트 추천(랜덤O)
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
-    @GetMapping("/addresses/")
-    public ResponseEntity<AddressResponseDto> getRandomPostAddresses() {
-        AddressResponseDto addressResponse = postService.getRandomPostAddresses();
-        return ResponseEntity.ok(addressResponse);
+    @GetMapping("/addresses/{placename}")
+    public ResponseEntity<List<AddressResponseDto>> getPostAddressesByPlaceName(@PathVariable String placename) {
+        try {
+            List<AddressResponseDto> addressResponses = postService.getPostAddressesByPlaceName(placename);
+            return ResponseEntity.ok(addressResponses);
+        } catch (IllegalStateException e) {
+            // '추천되는 게시물 없음' 예외 처리
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.emptyList());
+        }
     }
 
 
+
+    /**
+     * 특정 게시물 가져오기
+     */
     @GetMapping("/{id}/")
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
         Optional<Post> post = postService.getPostById(id);
@@ -114,10 +111,14 @@ public class PostController {
 
 
 
+    /**
+     * 게시물 전체 가져오기
+     */
     @GetMapping("/")
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
     }
+
 
 
     @PutMapping("/{id}/")
@@ -130,17 +131,21 @@ public class PostController {
         }
     }
 
+
     @DeleteMapping("/{id}/")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping("/{id}/report/")
     public ResponseEntity<Void> reportPost(@PathVariable Long id) {
         // Implement your report logic here
         return ResponseEntity.ok().build();
     }
+
+
 
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {

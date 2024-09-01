@@ -90,6 +90,7 @@ export default function SignupPage() {
         setStep(1);
     };
     const goToSecondPage = () => {
+        console.log(id, pw, name, birthday, gender)
         setStep(2);
     };
     const goToThirdPage = () => {
@@ -111,6 +112,13 @@ export default function SignupPage() {
     };
 
     const onClickSubmit = () => {
+
+        if (glopler) {
+            if (verificationFile == null) {
+                alert("인증 파일을 첨부해 주세요.")
+                return;
+            }
+        }
 
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
@@ -135,6 +143,8 @@ export default function SignupPage() {
             if (verificationFile) {
                 formData.append('verificationFile', verificationFile);
             }
+
+            console.log(id, pw, name, birthday, MBTI, nickName, glopler, profilePicture, verificationFile)
 
             axios.post('http://localhost:8080/api/users/signup', formData, {
                 headers: {

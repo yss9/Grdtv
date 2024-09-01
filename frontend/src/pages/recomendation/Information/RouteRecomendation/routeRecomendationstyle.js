@@ -35,6 +35,8 @@ export const PlacesContainer=styled.div`
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
   border-radius: 15px;
   margin-bottom: 4rem;
+ 
+ 
 `
 export const LeftWrapper=styled.div`
     display: flex;
@@ -71,9 +73,9 @@ export const PlacesWriter=styled.div`
   margin-left: 1rem;
 
 `
-export const SaveBtn=styled.button`
-    position: absolute;
-    left: 50%;
+export const GoBtn=styled.button`
+  position: absolute;
+  left: 50%;
   font-family: "Regular";
   margin-left: 5rem;
   font-size: 16px;
@@ -92,12 +94,19 @@ export const PlacesWrapper=styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  
 `
+
 export const PlaceWrapper=styled.div`
-    display: flex;
+  display: flex;
+  flex-direction: row;
+`
+
+export const ContextWrapper=styled.div`
+  display: flex;
   flex-direction: column;
 `
+
+
 
 export const Places=styled.img`
     width: 8.5rem;

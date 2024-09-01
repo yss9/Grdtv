@@ -1,60 +1,71 @@
 import {
     BodyContainer,
-    LeftWrapper, MapContainer, PlaceName, PlaceName2, Places,
+    LeftWrapper, MapContainer, PlaceName, Places,
     PlacesContainer,
     PlacesTitle, PlacesTitleWrapper,
-    PlacesWrapper,
-    PlacesWriter, PlaceWrapper, RefreshBtn, RefreshBtnWrapper, RightWrapper,
-    SaveBtn,
+    PlacesWriter, PlaceWrapper, RefreshBtn, RefreshBtnWrapper, RightWrapper, ContextWrapper,
+    GoBtn,
     Title
-} from './routeRecomendationstyle'
+} from './routeRecomendationstyle';
 import { Reset } from 'styled-reset';
 import TopBarComponent from '../../../../components/TopBar/TopBar';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {useLocation, useParams} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
 import MapComponent from './MapComponent'; // Import the MapComponent
 
 export default function RouteRecomendation() {
-    //const { placename } = useParams(); // useParams를 사용하여 placename 받기
-    const [title, setTitle] = useState("");
-    const [addressTitle, setAddressTitle] = useState(""); // Address title state
-    const [image, setImage] = useState(null);
-    const [addresses, setAddresses] = useState([]);
+    const [recommendations, setRecommendations] = useState([]); // 여러 추천 경로를 저장하는 배열
     const location = useLocation();
+    const navigate = useNavigate(); // useNavigate 훅 초기화
     const { placename } = location.state || {};
 
-   // console.log('Placename from URL:', placename); // 콘솔에서 확인
-
+    // 데이터 가져오기
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/posts/addresses/`);
+            const response = await axios.get(`http://localhost:8080/api/posts/addresses/${placename}`);
             const postData = response.data;
 
-            console.log('Fetched data:', postData); // Log the fetched data
+            console.log('Fetched data:', postData); // 가져온 데이터 로그
 
-            setAddressTitle(postData.addressTitle); // 루트 제목 불러오기
-            setImage(postData.image);
+            // postData가 추천 객체들의 배열이라고 가정
+            const processedRecommendations = postData.map(post => {
+                const cleanedAddresses = post.addresses.map(address => {
+                    const cleanedAddress = address.address.replace(/[\[\]"]/g, '').trim();
+                    return {
+                        ...address,
+                        address: cleanedAddress
+                    };
+                });
 
-            // Process addresses to remove unwanted characters
-            const processedAddresses = postData.addresses.map(address => {
-                const cleanedAddress = address.address.replace(/[\[\]"]/g, '').trim();
                 return {
-                    ...address,
-                    address: cleanedAddress
+                    boardID: post.boardID, // 게시물 ID 추가
+                    title: post.addressTitle,
+                    image: post.image,
+                    addresses: cleanedAddresses
                 };
             });
 
-            console.log('Processed addresses:', processedAddresses); // Log processed addresses
-            setAddresses(processedAddresses);
+            console.log('Processed recommendations:', processedRecommendations); // 처리된 추천 데이터 로그
+            setRecommendations(processedRecommendations);
         } catch (error) {
             console.error('Error fetching data:', error);
+            if (error.response && error.response.status === 404) {
+                // '추천되는 게시물 없음' 처리
+                setRecommendations([]);
+            }
         }
     };
 
-    //useEffect(() => {
-    //    fetchData(); // Fetch data on component mount
-    //}, [placename]); // 의존성 배열에 placename 추가
+    useEffect(() => {
+        fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
+    }, [placename]);
+
+    // 게시물 상세 페이지로 이동하는 함수
+    const handleGoToPost = (boardID) => {
+        navigate(`/board/${boardID}`);
+        console.log(boardID)
+    };
 
     return (
         <>
@@ -62,9 +73,9 @@ export default function RouteRecomendation() {
             <div style={{ height: '55px' }}></div>
             <TopBarComponent />
             <BodyContainer>
-                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title> {/* Display placename here */}
+                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title>
                 <RefreshBtnWrapper>
-                    <RefreshBtn onClick={fetchData}> {/* Refresh button */}
+                    <RefreshBtn onClick={fetchData}> {/* 새로고침 버튼 */}
                         <p>추천 새로고침</p>
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_484_188)">
@@ -78,37 +89,40 @@ export default function RouteRecomendation() {
                         </svg>
                     </RefreshBtn>
                 </RefreshBtnWrapper>
-                <PlacesContainer>
-                    <LeftWrapper>
-                        <PlacesTitleWrapper>
-                            <PlacesTitle>{addressTitle}</PlacesTitle>
-                            <PlacesWriter>by 사용자 닉네임</PlacesWriter>
-                            <SaveBtn>저장하기</SaveBtn>
-                        </PlacesTitleWrapper>
-                        <PlacesWrapper>
-                            {addresses.map((place, index) => (
-                                <React.Fragment key={place.address}>
-                                    {index > 0 && (
-                                        <p>
-                                            <svg width="15" height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M15 9L0 17.6603V0.339745L15 9Z" fill="#5F5F5F" />
-                                            </svg>
-                                        </p>
-                                    )}
-                                    <PlaceWrapper>
-                                        <Places src={image}></Places>
-                                        <PlaceName>{place.address}</PlaceName>
-                                    </PlaceWrapper>
-                                </React.Fragment>
-                            ))}
-                        </PlacesWrapper>
-                    </LeftWrapper>
-                    <RightWrapper>
-                        <MapContainer>
-                            <MapComponent addresses={addresses}/> {/* Pass addresses to MapComponent */}
-                        </MapContainer>
-                    </RightWrapper>
-                </PlacesContainer>
+
+                {recommendations.map((recommendation, index) => (
+                    <PlacesContainer key={index}> {/* 각 추천 루트에 대한 고유한 PlacesContainer */}
+                        <LeftWrapper>
+                            <PlacesTitleWrapper>
+                                <PlacesTitle>{recommendation.title}</PlacesTitle>
+                                <PlacesWriter>by 사용자 닉네임</PlacesWriter>
+                                <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>바로가기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
+                            </PlacesTitleWrapper>
+                            <PlaceWrapper>
+                                {recommendation.addresses.map((place, index) => (
+                                    <React.Fragment key={place.address}>
+                                        {index > 0 && (
+                                            <p>
+                                                <svg width="15" height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M15 9L0 17.6603V0.339745L15 9Z" fill="#5F5F5F" />
+                                                </svg>
+                                            </p>
+                                        )}
+                                        <ContextWrapper>
+                                            <Places src={recommendation.image}></Places>
+                                            <PlaceName>{place.address}</PlaceName>
+                                        </ContextWrapper>
+                                    </React.Fragment>
+                                ))}
+                            </PlaceWrapper>
+                        </LeftWrapper>
+                        <RightWrapper>
+                            <MapContainer>
+                                <MapComponent addresses={recommendation.addresses}/> {/* 이 추천의 주소만 전달 */}
+                            </MapContainer>
+                        </RightWrapper>
+                    </PlacesContainer>
+                ))}
             </BodyContainer>
         </>
     );

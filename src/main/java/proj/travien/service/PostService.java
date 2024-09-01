@@ -10,8 +10,11 @@ import proj.travien.domain.Post;
 import proj.travien.dto.AddressResponseDto;
 import proj.travien.repository.ImageRepository;
 import proj.travien.repository.PostRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -114,9 +117,10 @@ public class PostService {
     /**
      * 게시물 업로드
      */
-    public Post createPost(String title, Set<Addresses> addressStrings, String addressTitle) {
+    public Post createPost(String title, String body, Set<Addresses> addressStrings, String addressTitle) {
         Post post = new Post();
         post.setTitle(title);
+        post.setBody(body);
         post.setAddressTitle(addressTitle);
 
         Set<Addresses> addresses = new HashSet<>();
@@ -154,29 +158,103 @@ public class PostService {
         return Optional.empty();
     }
 
+
+
     /**
-     *  루트 추천(랜덤O)
+     * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
-    @Transactional(readOnly = true)
-    public AddressResponseDto getRandomPostAddresses() {
-        List<Post> posts = postRepository.findAll();
-        if (posts.isEmpty()) {
-            throw new IllegalStateException("No posts available");
-        }
+    private final ObjectMapper objectMapper;
 
-        Random random = new Random();
-        Post randomPost = posts.get(random.nextInt(posts.size()));
-
-        return new AddressResponseDto(randomPost.getAddressTitle(), randomPost.getAddresses());
+    public PostService(PostRepository postRepository, ObjectMapper objectMapper) {
+        this.postRepository = postRepository;
+        this.objectMapper = objectMapper;
     }
 
+
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getPostAddressesByPlaceName(String placename) {
+        // 검색을 위해 placename을 정규화 (공백 및 특수문자 제거)
+        String normalizedPlacename = normalizeString(placename);
+
+        List<Post> posts = postRepository.findAll();
+
+        // placename과 일치하는 주소 또는 제목이 있는 모든 포스트를 찾음
+        List<AddressResponseDto> matchingPosts = posts.stream()
+                .filter(post -> {
+                    // 제목과 주소를 정규화 (공백 및 특수문자 제거)
+                    String normalizedTitle = normalizeString(post.getAddressTitle());
+
+                    // placename이 제목에 포함되어 있는지 확인
+                    boolean titleMatches = normalizedTitle.contains(normalizedPlacename);
+
+                    // placename이 주소에 포함되어 있는지 확인
+                    boolean addressMatches = post.getAddresses().stream()
+                            .anyMatch(address -> {
+                                String rawAddress = address.getAddress();
+
+                                try {
+                                    // 주소 문자열을 정리하여 JSON 배열로 변환
+                                    String sanitizedAddress = sanitizeAddress(rawAddress);
+
+                                    // JSON 배열 파싱
+                                    List<String> addressList = objectMapper.readValue(sanitizedAddress, new TypeReference<List<String>>() {});
+
+                                    // 각 주소 항목을 정규화하여 비교
+                                    return addressList.stream()
+                                            .map(this::normalizeString)
+                                            .anyMatch(normalizedAddress -> normalizedAddress.contains(normalizedPlacename));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+                            });
+
+                    return titleMatches || addressMatches;
+                })
+                .map(post -> new AddressResponseDto(post.getAddressTitle(), post.getAddresses(), post.getBoardID()))
+                .collect(Collectors.toList());
+
+        if (!matchingPosts.isEmpty()) {
+            return matchingPosts;
+        } else {
+            throw new IllegalStateException("추천되는 게시물 없음");
+        }
+    }
+
+
+    /**
+     * 주소 문자열을 JSON 배열 형식으로 정리
+     */
+    private String sanitizeAddress(String rawAddress) {
+        // 불완전한 JSON 배열 형식을 수정
+        String sanitizedAddress = rawAddress;
+
+        if (!sanitizedAddress.startsWith("[")) {
+            sanitizedAddress = "[" + sanitizedAddress;
+        }
+        if (!sanitizedAddress.endsWith("]")) {
+            sanitizedAddress = sanitizedAddress + "]";
+        }
+
+        // 잘못된 구문 제거 및 문자열 정리
+        sanitizedAddress = sanitizedAddress.replaceAll("\\\\", "").replaceAll("\"\"", "\"");
+
+        return sanitizedAddress;
+    }
+
+    /**
+     * 문자열 정규화 (공백 및 특수문자 제거, 소문자 변환)
+     */
+    private String normalizeString(String input) {
+        return input.replaceAll("\\s+", "").replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}]", "").toLowerCase();
+    }
 
 
 
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
-                    post.update(updatedPost.getTitle(), updatedPost.getBody(), updatedPost.getImage(), updatedPost.getAddresses());
+                    post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
