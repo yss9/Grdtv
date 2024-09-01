@@ -1,7 +1,11 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
+// 환경 변수 또는 기본값을 사용하여 백엔드 URL 설정
+const backendUrl = process.env.BACKEND_URL ||
+    (process.env.NODE_ENV === 'production' ? "http://backend:8080" : "http://localhost:8080");
+
 const proxyConfig = {
-    target: "http://localhost:8080",
+    target: backendUrl, // 환경에 맞는 백엔드 URL 사용
     changeOrigin: true,
     onProxyReq: (proxyReq, req, res) => {
         proxyReq.setHeader('Origin', 'http://localhost:3000');
@@ -17,5 +21,4 @@ const proxyConfig = {
 
 module.exports = (app) => {
     app.use("/api", createProxyMiddleware(proxyConfig));
-    app.use("/ws", createProxyMiddleware({ ...proxyConfig, ws: true }));
 };
