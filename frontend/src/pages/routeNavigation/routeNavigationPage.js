@@ -5,9 +5,10 @@ import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 // Google Places API 키
-const apiKey = '여기에 api 키 입력';
+const apiKey = 'AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4';
 
 
 const osakaLocations = [
@@ -131,6 +132,28 @@ const MapPage = () => {
         updateMarkers(newLocations);
     };
 
+    const sendPlace = () => {
+        const combinedLocations = [
+            locations.출발지,
+            ...locations.경유지,
+            locations.도착지
+        ].filter(location => location !== '');
+        console.log('combinedLocations:', combinedLocations);
+        if (combinedLocations.length < 2) {
+            alert("여행지를 2개 이상 선택해 주세요.")
+        }
+        else {
+            axios.post('http://localhost:8080/api/navigations', combinedLocations)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("경로 저장에 실패했습니다. 다시 시도해주세요.");
+                });
+        }
+    }
+
     const handleGoMain=() =>{
         navigate('/');
     }
@@ -223,7 +246,8 @@ const MapPage = () => {
                         }}> 나가기
                         </button>
                     
-                        <button onClick={() => searchPlaceInCountry('KR', '도쿄 타워')}>검색</button>
+                        <button onClick={() => searchPlaceInCountry('JP', '도쿄 타워')}>검색</button>
+                        <button onClick={sendPlace}>경로 저장 (DB 저장)</button>
                     
                         <button onClick={handleGoReservation} style={{
                             border: "none",
