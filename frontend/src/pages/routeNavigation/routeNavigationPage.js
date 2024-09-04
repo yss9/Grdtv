@@ -6,6 +6,7 @@ import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {handleKeyDownEnter, searchPlaceInCountry} from './apiService';
 
 // Google Places API 키
 const apiKey = 'AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4';
@@ -33,34 +34,8 @@ const MapPage = () => {
     });
     const [markers, setMarkers] = useState([]);
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const searchPlaceInCountry = async (country, query) => {
-        const url = `/api/search-place?country=${country}&query=${encodeURIComponent(query)}`;
-
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log('Response JSON:', data);
-            if (data.status === "OK") {
-                const latLng = extractLatLng(data);
-                console.log(`Latitude: ${latLng.lat}, Longitude: ${latLng.lng}`);
-            } else {
-                console.log('No results found or an error occurred:', data.status);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const extractLatLng = (data) => {
-        if (data && data.results && data.results.length > 0) {
-            const location = data.results[0].geometry.location;
-            return { lat: location.lat, lng: location.lng };
-        } else {
-            console.log('No results found.');
-            return null;
-        }
-    };
     const openModal = (field, index = null) => {
         setSelectedField(field);
         setEditIndex(index);
@@ -96,7 +71,7 @@ const MapPage = () => {
         const locationCoords = {
             '오사카성': { lat: 34.6873, lng: 135.5259 },
             '우메다 스카이빌딩 공중정원': { lat: 34.7055, lng: 135.4892 },
-            '가메스시': { lat: 34.6985, lng: 135.4941 },
+            '가메스시': { lat: 37.4999579, lng: 127.0276745 },
             '우메다 한큐백화점': { lat: 34.7033, lng: 135.5009 },
             '브루클린 로스팅 컴퍼니': { lat: 34.6765, lng: 135.5038 },
             '야키니쿠엔 닝구': { lat: 34.6731, lng: 135.4970 },
@@ -160,6 +135,16 @@ const MapPage = () => {
 
     const handleGoReservation=() =>{
         navigate('/reservation');
+    }
+
+    const onChangeSearchQuery = (event) => {
+        setSearchQuery(event.target.value)
+    }
+
+    const handleKeyDownEnter = (event) => {
+        if (event.key === 'Enter'){
+            searchPlaceInCountry(searchQuery)
+        }
     }
 
     return (
@@ -246,7 +231,7 @@ const MapPage = () => {
                         }}> 나가기
                         </button>
                     
-                        <button onClick={() => searchPlaceInCountry('JP', '도쿄 타워')}>검색</button>
+                        <button onClick={() => searchPlaceInCountry('고메스시')}>검색</button>
                         <button onClick={sendPlace}>경로 저장 (DB 저장)</button>
                     
                         <button onClick={handleGoReservation} style={{
@@ -294,7 +279,7 @@ const MapPage = () => {
                 >
                     <div className="modal-content">
                         <h2>{selectedField}를 선택해 주세요.</h2>
-                        <DestinationInput type="text" placeholder={`${selectedField}를 선택해 주세요.`}/>
+                        <DestinationInput onChange={onChangeSearchQuery} onKeyDown={handleKeyDownEnter} type="text" placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
                             {osakaLocations.map((location) => (
                                 <div
