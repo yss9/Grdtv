@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +113,7 @@ public class UserService {
             }
 
             String filename = file.getOriginalFilename();
-            Path filePath = absoluteDirectory.resolve(filename);
+            Path filePath = absoluteDirectory.resolve(Objects.requireNonNull(filename));
             file.transferTo(filePath.toFile());
             return directory.resolve(filename).toString(); // 상대 경로 저장
         } catch (IOException e) {
@@ -198,14 +199,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    // 마이페이지 정보 조회 메서드
-    public UserDTO getUserInfo(String userId) {
-        User user = userRepository.findByUserId(userId).orElse(null);
-        if (user == null) {
-            return null;
-        }
-
-        // 기본 사용자 정보 설정
+    public UserDTO createUserDTO(User user) {
         UserDTO userDTO = new UserDTO(
                 user.getUserId(),
                 null, // 비밀번호는 반환하지 않음
@@ -218,21 +212,34 @@ public class UserService {
                 user.isAgent()
         );
 
-        // 예약대행자인 경우 AgentDTO 생성
         if (user.isAgent()) {
-            AgentDTO agentDTO = new AgentDTO(
-                    user.getAgentCountry(),
-                    user.getIntroduction(),
-                    user.getHashtags(),
-                    user.getSpecIntroduction(),
-                    user.getAverageReviewRating(),
-                    user.getNickname(),
-                    user.getProfilePicture()
-            );
-            userDTO.setAgentDetails(agentDTO);
+            userDTO.setAgentDetails(createAgentDTO(user));
         }
 
         return userDTO;
+    }
+
+    // 공통된 AgentDTO 생성 로직을 메소드로 추출
+    public AgentDTO createAgentDTO(User user) {
+        return new AgentDTO(
+                user.getAgentCountry(),
+                user.getIntroduction(),
+                user.getHashtags(),
+                user.getSpecIntroduction(),
+                user.getAverageReviewRating(),
+                user.getNickname(),
+                user.getProfilePicture()
+        );
+    }
+
+    // 마이페이지 정보 조회 메서드
+    public UserDTO getUserInfo(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        return createUserDTO(user);
     }
 
 }
