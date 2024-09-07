@@ -1,5 +1,7 @@
 package proj.travien.controller;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +147,7 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         } catch (IOException e) {
-            log.error("Error loading profile picture for userId: " + userId, e);
+            log.error("Error loading profile picture for userId: {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -158,11 +160,13 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         } catch (IOException e) {
-            log.error("Error loading verification file for userId: " + userId, e);
+            log.error("Error loading verification file for userId: {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
+    @Setter
+    @Getter
     static class AuthResponse {
         private String token;
 
@@ -170,12 +174,5 @@ public class UserController {
             this.token = token;
         }
 
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
     }
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Component
 public class JwtUtil {
 
-    private String secretKey = "chan_ho_woo_dang"; // 실제 환경에서는 환경 변수나 외부 설정 파일에서 가져오는 것이 좋습니다.
+    private final String secretKey = "chan_ho_woo_dang"; // 실제 환경에서는 환경 변수나 외부 설정 파일에서 가져오는 것이 좋습니다.
 
     public String generateToken(Long id, String userId, String nickname) {
         long now = System.currentTimeMillis();

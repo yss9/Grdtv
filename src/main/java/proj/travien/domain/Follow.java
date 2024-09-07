@@ -20,6 +20,4 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "agent_id")
     private User agent; // 팔로우되는 대행자
-
-    // Constructor, getters and setters
 }

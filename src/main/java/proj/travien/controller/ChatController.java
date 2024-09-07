@@ -62,9 +62,7 @@ public class ChatController {
         // 사용자 채팅방 관계 저장
         Long id = jwtUtil.extractId(token);
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomId(roomId);
-        if (chatRoom.isPresent()) {
-            userChatRoomRepository.save(new UserChatRoom(id, chatRoom.get().getId()));
-        }
+        chatRoom.ifPresent(room -> userChatRoomRepository.save(new UserChatRoom(id, room.getId())));
 
         return chatMessage;
     }

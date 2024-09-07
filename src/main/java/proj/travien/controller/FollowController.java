@@ -8,6 +8,7 @@ import proj.travien.domain.User;
 import proj.travien.dto.AgentDTO;
 import proj.travien.dto.UserDTO;
 import proj.travien.service.FollowService;
+import proj.travien.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ public class FollowController {
 
     @Autowired
     private FollowService followService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/follow-agent")
     public ResponseEntity<?> followAgent(@RequestParam String userId, @RequestParam String agentId) {
@@ -31,39 +35,13 @@ public class FollowController {
 
     @GetMapping("/followed-agents")
     public ResponseEntity<List<UserDTO>> getFollowedAgents(@RequestParam String userId) {
+        // FollowService에서 가져온 User 목록을 UserService에서 DTO로 변환
         List<User> agents = followService.getFollowedAgents(userId);
         List<UserDTO> agentDTOs = agents.stream()
-                .map(agent -> {
-                    UserDTO userDTO = new UserDTO(
-                            agent.getUserId(),
-                            null, // 비밀번호는 반환하지 않음
-                            agent.getName(),
-                            agent.getDateOfBirth(),
-                            agent.getGender(),
-                            agent.getMbti(),
-                            agent.getProfilePicture(),
-                            agent.getNickname(),
-                            agent.isAgent()
-                    );
-
-                    if (agent.isAgent()) {
-                        AgentDTO agentDetails = new AgentDTO(
-                                agent.getAgentCountry(),
-                                agent.getIntroduction(),
-                                agent.getHashtags(),
-                                agent.getSpecIntroduction(),
-                                agent.getAverageReviewRating(),
-                                agent.getNickname(),
-                                agent.getProfilePicture()
-                        );
-                        userDTO.setAgentDetails(agentDetails);
-                    }
-
-                    return userDTO;
-                })
+                .map(userService::createUserDTO)  // 중복된 DTO 생성 로직을 UserService로 위임
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(agentDTOs);
     }
-
 }
 
