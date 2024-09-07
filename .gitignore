@@ -4,7 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 ### STS ###
 .apt_generated
 .classpath
@@ -216,3 +215,6 @@ Thumbs.db
 .env.production.local
 application-*.properties
 /application.properties
+
+# post image file is ignored
+/src/main/resources/static/image/
