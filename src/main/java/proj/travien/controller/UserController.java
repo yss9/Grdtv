@@ -115,10 +115,17 @@ public class UserController {
         }
     }
 
-    // 예약대행자 목록 조회
+    // 전체 예약대행자 조회 및 특정 국가의 예약대행자 조회
     @GetMapping("/agents")
-    public ResponseEntity<List<AgentDTO>> getAllAgents() {
-        List<AgentDTO> agents = userService.getAllAgents();
+    public ResponseEntity<List<AgentDTO>> getAgents(@RequestParam(value = "country", required = false) String country) {
+        List<AgentDTO> agents;
+        if (country != null) {
+            // 특정 국가의 에이전트 조회
+            agents = userService.getAgentsByCountry(country);
+        } else {
+            // 전체 에이전트 조회
+            agents = userService.getAllAgents();
+        }
         return ResponseEntity.ok(agents);
     }
 

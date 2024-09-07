@@ -199,6 +199,21 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // 특정 국가의 예약대행자 목록 조회
+    public List<AgentDTO> getAgentsByCountry(String country) {
+        return userRepository.findByIsAgentTrueAndAgentCountry(country).stream()
+                .map(user -> new AgentDTO(
+                        user.getAgentCountry(),
+                        user.getIntroduction(),
+                        user.getHashtags(),
+                        user.getSpecIntroduction(),
+                        user.getAverageReviewRating(),
+                        user.getNickname(),           // 닉네임 추가
+                        user.getProfilePicture()      // 프로필 이미지 추가
+                ))
+                .collect(Collectors.toList());
+    }
+
     public UserDTO createUserDTO(User user) {
         UserDTO userDTO = new UserDTO(
                 user.getUserId(),
