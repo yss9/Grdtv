@@ -7,6 +7,7 @@ import TopBarComponent from "../../../components/TopBar/TopBar";
 import { Avatar, AvatarWrapper } from "./style";
 import MapComponent from "./MapComponent";
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
+import parse from 'html-react-parser'
 
 export default function BoardDetail() {
     const { boardID } = useParams();
@@ -92,6 +93,8 @@ export default function BoardDetail() {
         });
     };
 
+    let bodyParsed = parse(body);
+
     return (
         <>
             <TopBarComponent />
@@ -127,7 +130,8 @@ export default function BoardDetail() {
                             <S.MapWrapper>
                                 <MapComponent addresses={addresses} />
                             </S.MapWrapper>
-                            <S.Contents>{body}</S.Contents>
+                            {/*<S.Contents>{body}</S.Contents>*/}
+                            {bodyParsed}
                             <S.ImageWrapper>
                                 {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100%' }} />}
                             </S.ImageWrapper>

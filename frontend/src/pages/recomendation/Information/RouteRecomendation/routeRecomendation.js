@@ -73,7 +73,7 @@ export default function RouteRecomendation() {
             <div style={{ height: '55px' }}></div>
             <TopBarComponent />
             <BodyContainer>
-                <Title>BEST 리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title>
+                <Title>리뷰의 추천 루트를 제공할게요 <p>{placename}</p> </Title>
                 <RefreshBtnWrapper>
                     <RefreshBtn onClick={fetchData}> {/* 새로고침 버튼 */}
                         <p>추천 새로고침</p>
@@ -96,7 +96,7 @@ export default function RouteRecomendation() {
                             <PlacesTitleWrapper>
                                 <PlacesTitle>{recommendation.title}</PlacesTitle>
                                 <PlacesWriter>by 사용자 닉네임</PlacesWriter>
-                                <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>바로가기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
+                                <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>루트 만들기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
                             </PlacesTitleWrapper>
                             <PlaceWrapper>
                                 {recommendation.addresses.map((place, index) => (
