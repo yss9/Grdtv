@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,8 +24,8 @@ public class User {
     private String mbti;
     private String profilePicture;
     private String nickname;
+    private int points;
 
-    @Column(name = "is_agent")
     private boolean isAgent;
     private String verificationFile;
     private String agentCountry;
@@ -38,13 +39,9 @@ public class User {
     private String specIntroduction;
     private double averageReviewRating;
 
-    // 명시적인 게터와 세터
-    public boolean isAgent() {
-        return isAgent;
-    }
+    // 역할 필드 (ROLE_USER, ROLE_AGENT, ROLE_ADMIN 등)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
 
-    public void setAgent(boolean isAgent) {
-        this.isAgent = isAgent;
-    }
 }
 
