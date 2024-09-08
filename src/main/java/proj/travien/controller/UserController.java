@@ -172,6 +172,48 @@ public class UserController {
         }
     }
 
+    // 포인트 조회
+    @GetMapping("/{userId}/points")
+    public ResponseEntity<?> getUserPoints(@PathVariable String userId) {
+        try {
+            int points = userService.getUserPoints(userId);
+            return ResponseEntity.ok(points);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    // 포인트 추가
+    @PostMapping("/{userId}/points/add")
+    public ResponseEntity<?> addUserPoints(@PathVariable String userId, @RequestParam int pointsToAdd) {
+        try {
+            boolean success = userService.addUserPoints(userId, pointsToAdd);
+            if (success) {
+                return ResponseEntity.ok("Points added successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add points");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 포인트 차감
+    @PostMapping("/{userId}/points/deduct")
+    public ResponseEntity<?> deductUserPoints(@PathVariable String userId, @RequestParam int pointsToDeduct) {
+        try {
+            boolean success = userService.deductUserPoints(userId, pointsToDeduct);
+            if (success) {
+                return ResponseEntity.ok("Points deducted successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to deduct points");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
     @Setter
     @Getter
     static class AuthResponse {
