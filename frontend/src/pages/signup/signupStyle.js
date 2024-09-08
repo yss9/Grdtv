@@ -24,6 +24,7 @@ export const Logo = styled.img`
     width: auto;
     height: 90%;
     float: left;
+    cursor: pointer;
 `
 export const ProgressBar = styled.div`
     width: 100%;
@@ -174,7 +175,7 @@ export const MBTIButtonWrapper = styled.div`
     float: left;
     display: flex;
     justify-content: center;
-    margin: 0 0 50px;
+    margin-top: 20px;
 `
 export const MBTISwitchWrapper = styled.div`
   display: flex;
@@ -223,7 +224,8 @@ export const RadioButtonSubComment = styled.div`
 export const UserImg = styled.img`
     margin: 30px 0 10px 0;
     width: 110px;
-    height: auto;
+    height: 110px;
+    overflow: hidden;
     border-radius: 100%;
     border: 2px solid lightgray;
     display: flex;
@@ -246,6 +248,7 @@ export const GoToLoginPage = styled.button`
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+    color: white;
 `
 export const OverlayImageInput = styled.input`
     display: none;
@@ -493,35 +496,43 @@ export const FileInput = styled.input`
         background: #fd9800;
     }
 `
-
+export const SliderWrapper = styled.div`
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 25px;
+    //background-color: gray;
+`
 // mbti
 export const Slider = styled.input`
     -webkit-appearance: none;
     width: 100%;
+    max-width: 150px;
     height: 10px;
     border-radius: 5px;
-    background-color: #4158D0;
-    background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
-    outline: none;
+    background-image: linear-gradient(43deg, #9fe0ff, #e5d0d0, #ffccba);
+    //outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    
+    //display: inline-block;
+
     ::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background-color: #4c00ff;
-        background-image: linear-gradient(160deg, #4900f5 0%, #80D0C7 100%);
+        background-image: linear-gradient(160deg, rgb(207, 207, 243) 0%, #fa9600 100%);
         cursor: pointer;
     }
+
     ::-moz-range-thumb {
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background-color: #0093E9;
         background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
         cursor: pointer;
     }
@@ -544,3 +555,8 @@ export const MBTIButton = styled.div`
     border-radius: 5px;
     user-select: none;
 `;
+export const PercentValueWrapper = styled.div`
+    width: 100%;
+    font-size: 20px;
+    font-family: "Arial Narrow", sans-serif;
+`

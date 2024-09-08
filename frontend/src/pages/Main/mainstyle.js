@@ -25,9 +25,11 @@ export const Map = styled.div`
 
 export const Background = styled.div`
     background-image: url("/backColors.jpg");
-    height: 900px;
+    height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
+    //background-repeat: no-repeat;
 `;
 
 export const BtnWrapper=styled.div`

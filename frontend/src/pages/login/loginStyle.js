@@ -2,14 +2,12 @@ import styled  from "@emotion/styled";
 
 export const Wrapper=styled.div`
     
-    //display: flex;
-    //justify-content: center;
-    //align-items: center;
     height: 96vh;
-    //background-color: beige;
     flex-direction: column;
     overflow: hidden;
-    //padding-bottom: 500px;
+    @media (max-width: 1000px) {
+        height: 95vh;
+    }
 `
 export const LogoWrapper = styled.div`
     width: auto;
@@ -22,16 +20,17 @@ export const Logo = styled.img`
     width: auto;
     height: 90%;
     float: left;
+    cursor: pointer;
 `
 export const LogInWrapper = styled.div`
-    font-family: Regular;
+    font-family: Regular, sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: end;
+    //align-items: end;
     float: left;
-    width: 40vw;
-    height: 75%;
+    width: 500px;
+    //height: 75%;
     //background-color: #9bbebe;
     //padding: 270px 30px;
     @media (max-width: 1000px) {
@@ -41,18 +40,6 @@ export const LogInWrapper = styled.div`
         justify-content: center;
         align-items: center;
     }
-`
-
-export const RightImgWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: baseline;
-    float: right;
-    width: 50vw;
-    height: 75%;
-    //background-color: #b5ded1;
-    //padding: 20px;
 `
 export const LogInInput = styled.input`
     font-family: Regular;
@@ -107,15 +94,23 @@ export const FindButton = styled.div`
     float: right;
 `
 export const ImgWrapper = styled.div`
-    width: 500px;
+    width: 450px;
     height: 300px;
-    overflow: hidden;
+    //margin: 0 0 0 50px;
     @media (max-width: 1000px) {
         display: none;
     }
 `
 export const RightImg = styled.img`
     width: 100%;
-    height: auto;
-    display: block;
+    overflow: hidden;
+`
+export const MiddleWrapper = styled.div`
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+    //background-color: gray;
 `

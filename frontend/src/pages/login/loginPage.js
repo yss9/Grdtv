@@ -1,7 +1,7 @@
 import {
     Wrapper, Logo, LogInWrapper, RightImg, LogInInput,
     LogInButton, SignInButton, FindButton,
-    LogInUnderWrapper, RightImgWrapper, ImgWrapper, LogoWrapper
+    LogInUnderWrapper, RightImgWrapper, ImgWrapper, LogoWrapper, MiddleWrapper
 } from './loginStyle'
 import {useState} from "react";
 import axios from "axios";
@@ -85,6 +85,10 @@ export default function LoginPage(){
         }
     }
 
+    const handleGoHome = () => {
+        navigate('/')
+    }
+
     return(
         <>
             <motion.div
@@ -95,20 +99,21 @@ export default function LoginPage(){
             >
                 <Wrapper>
                     <LogoWrapper>
-                        <Logo src='/Img/Logo2.png'></Logo>
+                        <Logo onClick={handleGoHome} src='/Img/Logo2.png'></Logo>
                     </LogoWrapper>
-                    <LogInWrapper>
-                        <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />
-                        <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />
-                        <LogInButton type="button" onClick={onClickLogin}>로그인</LogInButton>
-                        <LogInUnderWrapper>
-                            <SignInButton onClick={onClickSignUp}>회원가입</SignInButton>
-                            <FindButton>아이디·비밀번호 찾기</FindButton>
-                        </LogInUnderWrapper>
-                    </LogInWrapper>
-                    <RightImgWrapper>
+                    <MiddleWrapper>
+                        <LogInWrapper>
+                            <LogInInput type="text" maxLength="20" size="44" placeholder="아이디" onChange={onChangeId} onKeyPress={enterKeyPress} />
+                            <LogInInput type="password" maxLength="11" size="44" placeholder="비밀번호" onChange={onChangePw} onKeyDown={enterKeyPress} />
+                            <LogInButton type="button" onClick={onClickLogin}>로그인</LogInButton>
+                            <LogInUnderWrapper>
+                                <SignInButton onClick={onClickSignUp}>회원가입</SignInButton>
+                                <FindButton>아이디·비밀번호 찾기</FindButton>
+                            </LogInUnderWrapper>
+                        </LogInWrapper>
                         <ImgWrapper><RightImg src="/Img/로그인 이미지.png"></RightImg></ImgWrapper>
-                    </RightImgWrapper>
+                    </MiddleWrapper>
+
                 </Wrapper>
             </motion.div>
         </>

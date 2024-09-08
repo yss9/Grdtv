@@ -6,12 +6,12 @@ import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {handleKeyDownEnter, searchPlaceInCountry} from './apiService';
+import {searchPlaceInCountry} from './apiService';
 
 // Google Places API 키
 const apiKey = 'AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4';
 
-
+const librariesPlace = 'places';
 const osakaLocations = [
     { name: '오사카성', img: '/Img/osaka/img.png' },
     { name: '우메다 스카이빌딩 공중정원', img: '/Img/osaka/img_3.png' },
@@ -22,6 +22,8 @@ const osakaLocations = [
     { name: '그랑 프론트 오사카', img: '/Img/osaka/img_7.png' },
     { name: '신세카이 혼도리 상점가', img: '/Img/osaka/img_1.png' },
 ];
+
+
 const MapPage = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedField, setSelectedField] = useState('');
@@ -35,6 +37,8 @@ const MapPage = () => {
     const [markers, setMarkers] = useState([]);
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [searchLocations, setSearchLocations] = useState(osakaLocations);
 
     const openModal = (field, index = null) => {
         setSelectedField(field);
@@ -69,9 +73,9 @@ const MapPage = () => {
 
     const updateMarkers = (newLocations) => {
         const locationCoords = {
-            '오사카성': { lat: 34.6873, lng: 135.5259 },
+            '오사카성': { lat: 35.8338393, lng: 128.7457322 },
             '우메다 스카이빌딩 공중정원': { lat: 34.7055, lng: 135.4892 },
-            '가메스시': { lat: 37.4999579, lng: 127.0276745 },
+            '가메스시': { lat: 37.53564069999999, lng: 126.8956608 },
             '우메다 한큐백화점': { lat: 34.7033, lng: 135.5009 },
             '브루클린 로스팅 컴퍼니': { lat: 34.6765, lng: 135.5038 },
             '야키니쿠엔 닝구': { lat: 34.6731, lng: 135.4970 },
@@ -143,7 +147,9 @@ const MapPage = () => {
 
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter'){
-            searchPlaceInCountry(searchQuery)
+            const searchResults = searchPlaceInCountry(searchQuery);
+            // setSearchLocations(searchResults);
+            console.log("searchResults:",searchResults.length)
         }
     }
 
@@ -221,39 +227,37 @@ const MapPage = () => {
                             </div>
                         )}
                     </Droppable>
-                        <button onClick={handleGoMain} style={{
-                            border: "none",
-                            borderRadius: "10px",
-                            fontFamily: "Regular",
-                            padding: "3%",
-                            position:"relative",
-                            top:"66%",
-                        }}> 나가기
-                        </button>
-                    
-                        <button onClick={() => searchPlaceInCountry('고메스시')}>검색</button>
-                        <button onClick={sendPlace}>경로 저장 (DB 저장)</button>
-                    
-                        <button onClick={handleGoReservation} style={{
-                            border: "none",
-                            borderRadius: "10px",
-                            fontFamily: "Regular",
-                            padding: "3%",
-                            position:"relative",
-                            top:"66%",
-                            left:"26%"
-                        }}
-                        > 예약 대행 신청하러 가기
-                        </button>
+                    <button onClick={handleGoMain} style={{
+                        border: "none",
+                        borderRadius: "10px",
+                        fontFamily: "Regular",
+                        padding: "3%",
+                        position: "relative",
+                        top: "66%",
+                    }}> 나가기
+                    </button>
+
+                    <button onClick={() => searchPlaceInCountry('고메스시')}>검색</button>
+                    <button onClick={sendPlace}>경로 저장 (DB 저장)</button>
+
+                    <button onClick={handleGoReservation} style={{
+                        border: "none",
+                        borderRadius: "10px",
+                        fontFamily: "Regular",
+                        padding: "3%",
+                        position: "relative",
+                        top: "66%",
+                        left: "26%"
+                    }}
+                    > 예약 대행 신청하러 가기
+                    </button>
 
                 </div>
                 <div className="map-container">
-
-                    <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
-
+                    <LoadScript googleMapsApiKey={apiKey} libraries={[librariesPlace]}>
                         <GoogleMap
                             mapContainerStyle={{width: '100%', height: '100%'}}
-                            center={{lat: 34.6937, lng: 135.5023}}
+                            center={{lat: 34.6937, lng: 135.5023}} // 오사카 위치
                             zoom={13}
                             onLoad={() => console.log('Map Loaded')}
                             onError={(e) => console.error('Error loading map', e)}
@@ -261,10 +265,15 @@ const MapPage = () => {
                             {markers.map((marker, index) => (
                                 <Marker key={index} position={marker} label={`${index + 1}`}/>
                             ))}
+
                             {markers.length > 1 && (
                                 <Polyline
                                     path={markers}
-                                    options={{strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 2}}
+                                    options={{
+                                        strokeColor: '#FF0000',
+                                        strokeOpacity: 1.0,
+                                        strokeWeight: 2,
+                                    }}
                                 />
                             )}
                         </GoogleMap>
@@ -279,9 +288,10 @@ const MapPage = () => {
                 >
                     <div className="modal-content">
                         <h2>{selectedField}를 선택해 주세요.</h2>
-                        <DestinationInput onChange={onChangeSearchQuery} onKeyDown={handleKeyDownEnter} type="text" placeholder={`${selectedField}를 선택해 주세요.`}/>
+                        <DestinationInput onChange={onChangeSearchQuery} onKeyDown={handleKeyDownEnter} type="text"
+                                          placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
-                            {osakaLocations.map((location) => (
+                            {searchLocations.map((location) => (
                                 <div
                                     key={location.name}
                                     className={`location-item ${selectedLocation === location.name ? 'selected' : ''}`}
@@ -315,7 +325,6 @@ const customStyles = {
         textAlign: 'center',
     },
 };
-
 
 
 export default MapPage;

@@ -35,7 +35,8 @@ import {
     SubComment,
     RadioForm,
     FileInput,
-    Slider, MBTIButton, MBTIButtonWrapper,
+    Slider, MBTIButton, MBTIButtonWrapper, SliderWrapper,
+    PercentValueWrapper,
 } from "./signupStyle";
 import {Switch as AntSwitch} from "antd";
 import styled from "styled-components";
@@ -44,8 +45,8 @@ import axios from "axios";
 
 export default function SignupPage() {
 
-    const [pw, setPw] = useState("");
     const [id, setId] = useState("");
+    const [pw, setPw] = useState("");
     const [name, setName] = useState("");
     const [birthday, setBirthday] = useState("");
     const [gender, setGender] = useState("");
@@ -98,6 +99,11 @@ export default function SignupPage() {
         mbti.SN.active ? setSN("N") : setSN("S");
         mbti.FT.active ? setFT("T") : setFT("F");
         mbti.PJ.active ? setPJ("J") : setPJ("P");
+
+        setPercentageIE(percentValue[0])
+        setPercentageSN(percentValue[1])
+        setPercentageFT(percentValue[2])
+        setPercentagePJ(percentValue[3])
 
         setStep(3);
     };
@@ -237,11 +243,15 @@ export default function SignupPage() {
     const onChangePercentagePJ = (event) => {
         setPercentagePJ(event.target.value)
     };
-    const [value, setValue] = useState(50); // 슬라이더의 초기 값을 설정합니다.
+    const [percentValue, setPercentValue] = useState([50, 50, 50, 50]);
 
-    const handleChange = (event) => {
+    const handleChange = (percentIndex) => (event) => {
         const newValue = parseFloat(event.target.value, 10); // 값을 정수로 변환
-        setValue(newValue);
+        setPercentValue(prevValues => {
+            const updatedValues = [...prevValues];
+            updatedValues[percentIndex] = newValue;
+            return updatedValues;
+        });
     };
     const [selectedIE, setSelectedIE] = useState('E');
     const [selectedSN, setSelectedSN] = useState('S');
@@ -263,13 +273,16 @@ export default function SignupPage() {
     const handlePJClick = (value) => {
         setSelectedPJ(value);
     };
+    const handleGoHome = () => {
+        navigate('/')
+    }
 
     return (
         <>
             <Wrapper>
 
                 <LogoWrapper>
-                    <Logo src='/Img/Logo2.png'></Logo>
+                    <Logo onClick={handleGoHome} src='/Img/Logo2.png'></Logo>
                 </LogoWrapper>
                 <ContentsWrapper>
                     <ProgressBar>
@@ -290,23 +303,23 @@ export default function SignupPage() {
                                     <BoldSubText>글로플의 회원이 되어 색다른 여행을 경험해 보세요.</BoldSubText>
 
                                     <FormGroup>
-                                        <FormField type="input" onChange={onChangeId} placeholder="아이디" required="" />
-                                        <FormLabel for="ID">아이디</FormLabel>
+                                        <FormField value={id} type="input" onChange={onChangeId} placeholder="아이디" required="" />
+                                        <FormLabel htmlFor="ID">아이디</FormLabel>
                                         <SubComment>6~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="password" onChange={onChangePw} placeholder="비밀번호" required="" />
-                                        <FormLabel for="PW">비밀번호</FormLabel>
+                                        <FormField value={pw} type="password" onChange={onChangePw} placeholder="비밀번호" required="" />
+                                        <FormLabel htmlFor="PW">비밀번호</FormLabel>
                                         <SubComment>문자, 숫자 포함 8~20자</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="input" onChange={onChangeName} placeholder="이름" required="" />
-                                        <FormLabel for="Name">이름</FormLabel>
+                                        <FormField value={name} type="input" onChange={onChangeName} placeholder="이름" required="" />
+                                        <FormLabel htmlFor="Name">이름</FormLabel>
                                         <SubComment>이름을 입력해주세요.</SubComment>
                                     </FormGroup>
                                     <FormGroup>
-                                        <FormField type="input" onChange={onChangeBirthday} placeholder="생년월일" required="" />
-                                        <FormLabel for="Birthday">생년월일</FormLabel>
+                                        <FormField value={birthday} type="input" onChange={onChangeBirthday} placeholder="생년월일" required="" />
+                                        <FormLabel htmlFor="Birthday">생년월일</FormLabel>
                                         <SubComment>ex)020331</SubComment>
                                     </FormGroup>
                                     <FormGroup>
@@ -344,19 +357,7 @@ export default function SignupPage() {
                                 >
 
                                     <BoldText>MBTI를 알려주세요.</BoldText>
-                                    <div>
-                                        <Slider
-                                            id="myRange"
-                                            className="slider"
-                                            value={value}
-                                            max="100"
-                                            min="0"
-                                            step="1" // 정수만 허용
-                                            onChange={handleChange}
-                                            type="range"
-                                        />
-                                        <p>Value: {value}</p> {/* 슬라이더의 현재 값을 정수로 표시 */}
-                                    </div>
+
 
                                     <MBTIButtonWrapper>
 
@@ -373,7 +374,6 @@ export default function SignupPage() {
                                             I
                                         </MBTIButton>
                                     </MBTIButtonWrapper>
-
                                     <MBTIButtonWrapper>
                                         <MBTIButton
                                             selected={selectedSN === 'S'}
@@ -388,7 +388,6 @@ export default function SignupPage() {
                                             N
                                         </MBTIButton>
                                     </MBTIButtonWrapper>
-
                                     <MBTIButtonWrapper>
                                         <MBTIButton
                                             selected={selectedFT === 'F'}
@@ -403,7 +402,6 @@ export default function SignupPage() {
                                             T
                                         </MBTIButton>
                                     </MBTIButtonWrapper>
-
                                     <MBTIButtonWrapper>
                                         <MBTIButton
                                             selected={selectedPJ === 'P'}
@@ -418,57 +416,64 @@ export default function SignupPage() {
                                             J
                                         </MBTIButton>
                                     </MBTIButtonWrapper>
+                                    <SliderWrapper>
+                                        <Slider
+                                            id="myRange"
+                                            className="slider"
+                                            max="100"
+                                            min="50"
+                                            step="1" // 정수만 허용
+                                            type="range"
+                                            value={percentValue[0]}
+                                            onChange={handleChange(0)}
+                                        />
+                                        <Slider
+                                            id="myRange"
+                                            className="slider"
+                                            max="100"
+                                            min="50"
+                                            step="1" // 정수만 허용
+                                            type="range"
+                                            value={percentValue[1]}
+                                            onChange={handleChange(1)}
+                                        />
+                                        <Slider
+                                            id="myRange"
+                                            className="slider"
+                                            max="100"
+                                            min="50"
+                                            step="1" // 정수만 허용
+                                            type="range"
+                                            value={percentValue[2]}
+                                            onChange={handleChange(2)}
+                                        />
+                                        <Slider
+                                            id="myRange"
+                                            className="slider"
+                                            max="100"
+                                            min="50"
+                                            step="1" // 정수만 허용
+                                            type="range"
+                                            value={percentValue[3]}
+                                            onChange={handleChange(3)}
+                                        />
+                                    </SliderWrapper>
+                                    <SliderWrapper>
+                                        <PercentValueWrapper>
+                                            {percentValue[0]}%
+                                        </PercentValueWrapper>
+                                        <PercentValueWrapper>
+                                            {percentValue[1]}%
+                                        </PercentValueWrapper>
+                                        <PercentValueWrapper>
+                                            {percentValue[2]}%
+                                        </PercentValueWrapper>
+                                        <PercentValueWrapper>
+                                            {percentValue[3]}%
+                                        </PercentValueWrapper>
+                                    </SliderWrapper>
 
-                                    {/*<MBTISwitchContainer>*/}
-
-
-                                    {/*    <MBTISwitch*/}
-                                    {/*        label1="I"*/}
-                                    {/*        label2="E"*/}
-                                    {/*        isActive={mbti.IE.active}*/}
-                                    {/*        onToggle={() => toggleMBTI("IE")}*/}
-                                    {/*    />*/}
-                                    {/*    <PercentageInput*/}
-                                    {/*        type="text"*/}
-                                    {/*        onChange={onChangePercentageIE}*/}
-                                    {/*        placeholder="%"*/}
-                                    {/*    />*/}
-                                    {/*    <MBTISwitch*/}
-                                    {/*        label1="S"*/}
-                                    {/*        label2="N"*/}
-                                    {/*        isActive={mbti.SN.active}*/}
-                                    {/*        onToggle={() => toggleMBTI("SN")}*/}
-                                    {/*    />*/}
-                                    {/*    <PercentageInput*/}
-                                    {/*        type="text"*/}
-                                    {/*        onChange={onChangePercentageSN}*/}
-                                    {/*        placeholder="%"*/}
-                                    {/*    />*/}
-                                    {/*    <MBTISwitch*/}
-                                    {/*        label1="F"*/}
-                                    {/*        label2="T"*/}
-                                    {/*        isActive={mbti.FT.active}*/}
-                                    {/*        onToggle={() => toggleMBTI("FT")}*/}
-                                    {/*    />*/}
-                                    {/*    <PercentageInput*/}
-                                    {/*        type="text"*/}
-                                    {/*        onChange={onChangePercentageFT}*/}
-                                    {/*        placeholder="%"*/}
-                                    {/*    />*/}
-                                    {/*    <MBTISwitch*/}
-                                    {/*        label1="P"*/}
-                                    {/*        label2="J"*/}
-                                    {/*        isActive={mbti.PJ.active}*/}
-                                    {/*        onToggle={() => toggleMBTI("PJ")}*/}
-                                    {/*    />*/}
-                                    {/*    <PercentageInput*/}
-                                    {/*        type="text"*/}
-                                    {/*        onChange={onChangePercentagePJ}*/}
-                                    {/*        placeholder="%"*/}
-                                    {/*    />*/}
-                                    {/*</MBTISwitchContainer>*/}
-
-
+                                    <div style={{height:'30px'}}></div>
                                     <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
                                     <p>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
                                     <br/><br/><br/><br/>
@@ -499,7 +504,7 @@ export default function SignupPage() {
                                     <br/>
                                     <FormGroup>
                                         <InputText>닉네임</InputText>
-                                        <Input type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)"
+                                        <Input value={nickName} type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)"
                                                onChange={onChangeNickName}/>
                                     </FormGroup>
                                     <br/><br/>
@@ -569,7 +574,7 @@ export default function SignupPage() {
                                 >
                                     <UserImg src={imgFile ? imgFile :"https://via.placeholder.com/100x100"} />
                                     <FinishText>회원가입이 완료 되었습니다.</FinishText>
-                                    <BoldSubText>글로플과 함께 특별하고 신뢰성 있는 여행을 떠나보아요!</BoldSubText>
+                                    <BoldSubText>글로플과 함께 특별하고 믿을 수 있는 여행을 떠나보아요!</BoldSubText>
                                     <GoToLoginPage onClick={onClickLogin}>
                                         로그인
                                     </GoToLoginPage>

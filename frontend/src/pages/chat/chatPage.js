@@ -35,6 +35,7 @@ const ChatPage = () => {
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
+    const [roomJoined, setRoomJoined] = useState(false);
     const [nicknames, setNicknames] = useState([]);
     const [chatUsername, setChatUsername] = useState('');
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
@@ -50,14 +51,14 @@ const ChatPage = () => {
                     }
                 });
                 setNicknames(response.data);
-                console.log('nicknames:',response.data);
+                // console.log('nicknames:',response.data);
 
                 // 토큰에서 내 닉네임 가져오기
                 const userPayload = jwtDecode(token);
-                console.log("userPayload:", userPayload);
+                // console.log("userPayload:", userPayload);
                 const extractedUsername = userPayload.nickname;
                 setUsername(extractedUsername);
-                console.log("extractedUsername", extractedUsername);
+                // console.log("extractedUsername", extractedUsername);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
@@ -67,8 +68,17 @@ const ChatPage = () => {
     }, [token]);
 
     useEffect(() => {
-        if (joined) {
-            WebSocketService.connect(roomId, onMessageReceived);
+        // joined가 true일 때만 구독 처리
+        if (joined && roomId) {
+            // 이전 방의 구독을 해제
+            const unsubscribe = WebSocketService.connect(roomId, onMessageReceived);
+
+            // 컴포넌트가 언마운트되거나 roomId가 변경될 때 구독 해제
+            return () => {
+                if (unsubscribe) {
+                    unsubscribe(); // 구독 해제 함수 호출
+                }
+            };
         }
     }, [joined, roomId]);
 
@@ -88,6 +98,7 @@ const ChatPage = () => {
     };
 
     const handleAddUser = async (targetUserNickname) => {
+        setMessages([]);
         const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
         if (token) {
             try {
@@ -100,6 +111,7 @@ const ChatPage = () => {
                 setRoomId(newRoomId);
                 setChatUsername(targetUserNickname);
                 setJoined(true);
+                setRoomJoined(true);
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
@@ -116,7 +128,12 @@ const ChatPage = () => {
         setSelectedFile(event.target.files[0]);
     };
     const onClickSendFile = () => {
-
+        const message = {
+            sender: username,
+            content: selectedFile,
+            type: 'CHAT'
+        };
+        WebSocketService.sendMessage(message);
     }
 
     const [isVisible, setIsVisible] = useState(false);
@@ -306,7 +323,7 @@ const ChatPage = () => {
                                                        src=''
                                                 />
                                                 <button style={{marginLeft: '40%', padding: '5px 10px', textAlign: 'center'}}
-                                                        onClick={handleCloseModal}
+                                                        onClick={onClickSendFile}
                                                 >전송하기</button>
                                             </div>
                                         </div>

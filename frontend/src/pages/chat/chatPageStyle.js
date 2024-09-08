@@ -92,6 +92,7 @@ export const SidebarContentInput = styled.input`
 export const ChatList = styled.div`
     list-style: none;
     padding: 0;
+    //background-color: red;
 `
 export const ChatItem = styled.div`
     margin-bottom: 5px;
