@@ -1,5 +1,7 @@
 package proj.travien.controller;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,10 +115,17 @@ public class UserController {
         }
     }
 
-    // 예약대행자 목록 조회
+    // 전체 예약대행자 조회 및 특정 국가의 예약대행자 조회
     @GetMapping("/agents")
-    public ResponseEntity<List<AgentDTO>> getAllAgents() {
-        List<AgentDTO> agents = userService.getAllAgents();
+    public ResponseEntity<List<AgentDTO>> getAgents(@RequestParam(value = "country", required = false) String country) {
+        List<AgentDTO> agents;
+        if (country != null) {
+            // 특정 국가의 에이전트 조회
+            agents = userService.getAgentsByCountry(country);
+        } else {
+            // 전체 에이전트 조회
+            agents = userService.getAllAgents();
+        }
         return ResponseEntity.ok(agents);
     }
 
@@ -145,7 +154,7 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         } catch (IOException e) {
-            log.error("Error loading profile picture for userId: " + userId, e);
+            log.error("Error loading profile picture for userId: {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -158,11 +167,55 @@ public class UserController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         } catch (IOException e) {
-            log.error("Error loading verification file for userId: " + userId, e);
+            log.error("Error loading verification file for userId: {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
+    // 포인트 조회
+    @GetMapping("/{userId}/points")
+    public ResponseEntity<?> getUserPoints(@PathVariable String userId) {
+        try {
+            int points = userService.getUserPoints(userId);
+            return ResponseEntity.ok(points);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    // 포인트 추가
+    @PostMapping("/{userId}/points/add")
+    public ResponseEntity<?> addUserPoints(@PathVariable String userId, @RequestParam int pointsToAdd) {
+        try {
+            boolean success = userService.addUserPoints(userId, pointsToAdd);
+            if (success) {
+                return ResponseEntity.ok("Points added successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add points");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 포인트 차감
+    @PostMapping("/{userId}/points/deduct")
+    public ResponseEntity<?> deductUserPoints(@PathVariable String userId, @RequestParam int pointsToDeduct) {
+        try {
+            boolean success = userService.deductUserPoints(userId, pointsToDeduct);
+            if (success) {
+                return ResponseEntity.ok("Points deducted successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to deduct points");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
+    @Setter
+    @Getter
     static class AuthResponse {
         private String token;
 
@@ -170,12 +223,5 @@ public class UserController {
             this.token = token;
         }
 
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
     }
 }

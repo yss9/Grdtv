@@ -23,6 +23,7 @@ public class Post {
 
     private String title;
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String body;
 
     @ColumnDefault("0")

@@ -20,6 +20,7 @@ public class UserDTO {
     private String nickname;
     private boolean isAgent;
     private String verificationFile;
+    private int points;
 
     // AgentDTO를 포함하는 필드
     @Setter
@@ -27,7 +28,7 @@ public class UserDTO {
 
     // 예약대행자 필드를 포함하지 않는 생성자
     public UserDTO(String userId, String password, String name, String dateOfBirth, String gender, String mbti,
-                   String profilePicture, String nickname, boolean isAgent) {
+                   String profilePicture, String nickname, boolean isAgent, int points) {
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -37,6 +38,7 @@ public class UserDTO {
         this.profilePicture = profilePicture;
         this.nickname = nickname;
         this.isAgent = isAgent;
+        this.points = points;
     }
 
 }

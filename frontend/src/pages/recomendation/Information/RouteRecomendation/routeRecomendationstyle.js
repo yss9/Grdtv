@@ -80,7 +80,7 @@ export const GoBtn=styled.button`
   margin-left: 5rem;
   font-size: 16px;
   border-radius: 30px;
-  width: 6rem;
+  width: 7rem;
   height: 2.2rem;
   border: none;
   color: white;

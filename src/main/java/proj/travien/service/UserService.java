@@ -5,10 +5,13 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import proj.travien.domain.PointsHistory;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.dto.AgentDTO;
+import proj.travien.repository.PointsHistoryRepository;
 import proj.travien.repository.UserRepository;
 
 import java.io.File;
@@ -17,16 +20,20 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PointsHistoryRepository pointsHistoryRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PointsHistoryRepository pointsHistoryRepository) {
         this.userRepository = userRepository;
+        this.pointsHistoryRepository = pointsHistoryRepository;
     }
 
     // 회원가입
@@ -34,6 +41,7 @@ public class UserService {
         if (isUserIdInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {
             return false;
         }
+
         User user = new User();
         user.setUserId(userDTO.getUserId());
         user.setPassword(hashPassword(userDTO.getPassword()));
@@ -42,21 +50,35 @@ public class UserService {
         user.setGender(userDTO.getGender());
         user.setMbti(userDTO.getMbti());
         user.setNickname(userDTO.getNickname());
-        user.setAgent(userDTO.isAgent());  // 예약대행자 여부 설정
 
+        // 기본 역할 부여: 일반 사용자는 ROLE_USER
+        user.setRoles(Set.of("ROLE_USER"));
+
+        // 프로필 사진 저장
         if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
             String profilePicturePath = saveProfilePicture(profilePictureFile);
             user.setProfilePicture(profilePicturePath);
         }
 
-        if (verificationFile != null && !verificationFile.isEmpty()) {
-            String verificationFilePath = saveVerificationFile(verificationFile);
-            user.setVerificationFile(verificationFilePath);
+        // 예약 대행자인 경우 ROLE_AGENT 추가 및 검증 파일만 처리
+        if (userDTO.isAgent()) {
+            user.getRoles().add("ROLE_AGENT");
+
+            // 검증 파일 저장 (예약 대행자만)
+            if (verificationFile != null && !verificationFile.isEmpty()) {
+                String verificationFilePath = saveVerificationFile(verificationFile);
+                user.setVerificationFile(verificationFilePath);
+            }
         }
 
+        // 기본 포인트 1000 설정
+        user.setPoints(1000);
+
+        // 사용자 정보 저장
         userRepository.save(user);
         return true;
     }
+
 
     // 프로필 사진 업로드
     public boolean uploadProfilePicture(String userId, MultipartFile profilePictureFile) {
@@ -112,7 +134,7 @@ public class UserService {
             }
 
             String filename = file.getOriginalFilename();
-            Path filePath = absoluteDirectory.resolve(filename);
+            Path filePath = absoluteDirectory.resolve(Objects.requireNonNull(filename));
             file.transferTo(filePath.toFile());
             return directory.resolve(filename).toString(); // 상대 경로 저장
         } catch (IOException e) {
@@ -198,14 +220,22 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    // 마이페이지 정보 조회 메서드
-    public UserDTO getUserInfo(String userId) {
-        User user = userRepository.findByUserId(userId).orElse(null);
-        if (user == null) {
-            return null;
-        }
+    // 특정 국가의 예약대행자 목록 조회
+    public List<AgentDTO> getAgentsByCountry(String country) {
+        return userRepository.findByIsAgentTrueAndAgentCountry(country).stream()
+                .map(user -> new AgentDTO(
+                        user.getAgentCountry(),
+                        user.getIntroduction(),
+                        user.getHashtags(),
+                        user.getSpecIntroduction(),
+                        user.getAverageReviewRating(),
+                        user.getNickname(),           // 닉네임 추가
+                        user.getProfilePicture()      // 프로필 이미지 추가
+                ))
+                .collect(Collectors.toList());
+    }
 
-        // 기본 사용자 정보 설정
+    public UserDTO createUserDTO(User user) {
         UserDTO userDTO = new UserDTO(
                 user.getUserId(),
                 null, // 비밀번호는 반환하지 않음
@@ -215,24 +245,123 @@ public class UserService {
                 user.getMbti(),
                 user.getProfilePicture(),
                 user.getNickname(),
-                user.isAgent()
+                user.isAgent(),
+                user.getPoints()
         );
 
-        // 예약대행자인 경우 AgentDTO 생성
         if (user.isAgent()) {
-            AgentDTO agentDTO = new AgentDTO(
-                    user.getAgentCountry(),
-                    user.getIntroduction(),
-                    user.getHashtags(),
-                    user.getSpecIntroduction(),
-                    user.getAverageReviewRating(),
-                    user.getNickname(),
-                    user.getProfilePicture()
-            );
-            userDTO.setAgentDetails(agentDTO);
+            userDTO.setAgentDetails(createAgentDTO(user));
         }
 
         return userDTO;
+    }
+
+    // 공통된 AgentDTO 생성 로직을 메소드로 추출
+    public AgentDTO createAgentDTO(User user) {
+        return new AgentDTO(
+                user.getAgentCountry(),
+                user.getIntroduction(),
+                user.getHashtags(),
+                user.getSpecIntroduction(),
+                user.getAverageReviewRating(),
+                user.getNickname(),
+                user.getProfilePicture()
+        );
+    }
+
+    // 마이페이지 정보 조회 메서드
+    public UserDTO getUserInfo(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        return createUserDTO(user);
+    }
+
+    // 포인트 조회
+    public int getUserPoints(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        return user.getPoints();
+    }
+
+    // 포인트 추가
+    @Transactional
+    public boolean addUserPoints(String userId, int pointsToAdd) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (pointsToAdd <= 0) {
+            throw new IllegalArgumentException("Points to add must be positive");
+        }
+
+        user.setPoints(user.getPoints() + pointsToAdd); // 포인트 추가
+        userRepository.save(user);
+
+        // 포인트 히스토리 저장
+        PointsHistory history = new PointsHistory(userId, pointsToAdd, "add");
+        pointsHistoryRepository.save(history);
+
+        return true;
+    }
+
+    // 포인트 차감
+    @Transactional
+    public boolean deductUserPoints(String userId, int pointsToDeduct) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (pointsToDeduct <= 0) {
+            throw new IllegalArgumentException("Points to deduct must be positive");
+        }
+
+        if (user.getPoints() < pointsToDeduct) {
+            throw new IllegalArgumentException("Insufficient points");
+        }
+
+        user.setPoints(user.getPoints() - pointsToDeduct); // 포인트 차감
+        userRepository.save(user);
+
+        // 포인트 히스토리 저장
+        PointsHistory history = new PointsHistory(userId, pointsToDeduct, "deduct");
+        pointsHistoryRepository.save(history);
+
+        return true;
+    }
+
+    //관리자 포인트 조정
+    public boolean adjustPoints(String userId, int points) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setPoints(user.getPoints() + points);
+        userRepository.save(user);
+        return true;
+    }
+
+    //관리자 승격
+    public void promoteToAdmin(String userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.getRoles().add("ROLE_ADMIN");
+        userRepository.save(user);
+    }
+
+    //모든 사용자 조회
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::createUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    //사용자 삭제
+    public void deleteUser(String userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.delete(user);
     }
 
 }

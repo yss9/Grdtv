@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,15 +24,24 @@ public class User {
     private String mbti;
     private String profilePicture;
     private String nickname;
-
+    private int points;
 
     private boolean isAgent;
     private String verificationFile;
     private String agentCountry;
-    @Lob // 대용량 텍스트를 저장하기 위해 사용
-    private String introduction; // 소개문구
-    @ElementCollection // 해시태그 목록을 저장하기 위해 사용
-    private List<String> hashtags; // 해시태그 목록
-    private String specIntroduction; // 스펙 소개글
-    private double averageReviewRating; // 리뷰 별점 평균
+
+    @Lob
+    private String introduction;
+
+    @ElementCollection
+    private List<String> hashtags;
+
+    private String specIntroduction;
+    private double averageReviewRating;
+
+    // 역할 필드 (ROLE_USER, ROLE_AGENT, ROLE_ADMIN 등)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
+
 }
+

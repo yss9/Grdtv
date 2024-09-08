@@ -19,10 +19,15 @@ public class NavigationService {
     @Transactional
     public Navigation saveNavigation(List<String> locations) {
         if (locations.size() < 2 || locations.size() > 10) {
-            throw new IllegalArgumentException("Number of locations must be between 2 and 10.");
+            throw new IllegalArgumentException("위치의 개수는 2개 이상 10개 이하여야 합니다.");
         }
 
         Navigation navigation = new Navigation(locations);
         return navigationRepository.save(navigation);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Navigation> getAllNavigations() {
+        return navigationRepository.findAll();
     }
 }

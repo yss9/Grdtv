@@ -27,4 +27,10 @@ public class NavigationController {
         Navigation navigation = navigationService.saveNavigation(locations);
         return ResponseEntity.ok(navigation);
     }
+
+    @GetMapping
+    public ResponseEntity<List<Navigation>> getAllNavigations() {
+        List<Navigation> navigations = navigationService.getAllNavigations();
+        return ResponseEntity.ok(navigations);
+    }
 }
