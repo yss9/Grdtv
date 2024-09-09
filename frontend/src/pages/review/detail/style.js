@@ -50,14 +50,13 @@ export const Info = styled.div`
   align-items: center; /* 중앙 정렬 */
 `;
 
-export const Avatar = styled.div`
+export const Avatar = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%; /* 원형으로 만들기 */
   margin-bottom: 10px;
-  background-image: url(${avantar});
   background-size: contain;
-  background-repeat: no-repeat;
+ 
 `;
 
 export const Writer = styled.div`

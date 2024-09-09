@@ -8,6 +8,8 @@ import { Avatar, AvatarWrapper } from "./style";
 import MapComponent from "./MapComponent";
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import parse from 'html-react-parser'
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 export default function BoardDetail() {
     const { boardID } = useParams();
@@ -19,6 +21,14 @@ export default function BoardDetail() {
     const [image, setImage] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const [createDate, setCreateDate] = useState("");
+
+    // User 닉네임 가져옴
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+    const [nicknames, setNicknames] = useState([]);
+    const [username, setUsername] = useState('');
+
+    // 사진 가져옴
+    const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
 
     const fetchData = async () => {
         try {
@@ -48,6 +58,60 @@ export default function BoardDetail() {
             console.error('Error fetching data:', error);
         }
     };
+
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setNicknames(response.data);
+                // console.log('nicknames:',response.data);
+
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                // console.log("userPayload:", userPayload);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+                // console.log("extractedUsername", extractedUsername);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+
+        fetchNicknames();
+    }, [token]);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                if (token) {
+                    // 토큰에서 사용자 아이디 추출
+                    const decodedToken = jwtDecode(token);
+                    const userId = decodedToken.userId;  // 'id' 필드에서 userId 추출
+
+                    const response = await axios.get(`http://localhost:8080/api/users/my-info?userId=${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    setProfile(response.data.profilePicture);
+
+                    console.log(response.data.profilePicture);
+
+                } else {
+                    console.error('No JWT token found in cookies');
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
+        };
+
+        fetchUserData();
+    }, [token]);
+
 
 
     useEffect(() => {
@@ -107,8 +171,8 @@ export default function BoardDetail() {
                                     <S.Title>{title}</S.Title>
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
-                                    <Avatar />
-                                    <S.Writer>사용자1</S.Writer>
+                                    <Avatar src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : '/default-avatar.png'} />
+                                    <S.Writer>{nicknames}</S.Writer>
                                 </AvatarWrapper>
                                 <S.Date>{formatCreateDate(createDate)}</S.Date>
                             </S.Info>
@@ -118,7 +182,7 @@ export default function BoardDetail() {
                             </S.SubWrapper>
                         </S.Header>
                         <S.Body>
-                            <S.RouteTitle>사용자1 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
+                            <S.RouteTitle>{nicknames} 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
                             <S.AddressWrapper>
                                 {addresses.map((address, index) => (
                                     <S.AddressItem key={index}>

@@ -11,6 +11,8 @@ import {
     PlaceName
 } from './routeRecomendationstyle';
 
+
+
 function RecommendationRoute({ recommendation }) {
     return (
         <div>
