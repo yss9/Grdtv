@@ -12,13 +12,21 @@ import TopBarComponent from '../../../../components/TopBar/TopBar';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 훅 가져오기
-import MapComponent from './MapComponent'; // Import the MapComponent
+import MapComponent from './MapComponent';
+import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie"; // Import the MapComponent
 
 export default function RouteRecomendation() {
     const [recommendations, setRecommendations] = useState([]); // 여러 추천 경로를 저장하는 배열
     const location = useLocation();
     const navigate = useNavigate(); // useNavigate 훅 초기화
     const { placename } = location.state || {};
+
+
+    // User 닉네임 가져옴
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+    const [nicknames, setNicknames] = useState([]);
+    const [username, setUsername] = useState('');
 
     // 데이터 가져오기
     const fetchData = async () => {
@@ -58,6 +66,32 @@ export default function RouteRecomendation() {
     };
 
     useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setNicknames(response.data);
+                // console.log('nicknames:',response.data);
+
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                // console.log("userPayload:", userPayload);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+                // console.log("extractedUsername", extractedUsername);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+
+        fetchNicknames();
+    }, [token]);
+
+
+    useEffect(() => {
         fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
     }, [placename]);
 
@@ -95,7 +129,7 @@ export default function RouteRecomendation() {
                         <LeftWrapper>
                             <PlacesTitleWrapper>
                                 <PlacesTitle>{recommendation.title}</PlacesTitle>
-                                <PlacesWriter>by 사용자 닉네임</PlacesWriter>
+                                <PlacesWriter>by {nicknames}</PlacesWriter>
                                 <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>루트 만들기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
                             </PlacesTitleWrapper>
                             <PlaceWrapper>
