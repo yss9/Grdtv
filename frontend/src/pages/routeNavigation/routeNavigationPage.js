@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal';
 import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
@@ -7,6 +7,8 @@ import {DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {searchPlaceInCountry} from './apiService';
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 // Google Places API 키
 const apiKey = 'AIzaSyAN_d6a4icKZwbfJCbfyFuWeAKVGQWfRK4';
@@ -25,6 +27,13 @@ const osakaLocations = [
 
 
 const MapPage = () => {
+
+    // User 닉네임 가져옴
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+    const [nicknames, setNicknames] = useState([]);
+    const [username, setUsername] = useState('');
+
+
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedField, setSelectedField] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
@@ -153,12 +162,38 @@ const MapPage = () => {
         }
     }
 
+    // 닉네임 가져옴
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setNicknames(response.data);
+                // console.log('nicknames:',response.data);
+
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                // console.log("userPayload:", userPayload);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+                // console.log("extractedUsername", extractedUsername);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+
+        fetchNicknames();
+    }, [token]);
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="map-page">
                 <div className="sidebar">
                     <img style={{width: '150px'}} src='/Img/Logo1.png'></img>
-                    <h1 style={{marginTop: "20%", marginBottom: "20%"}}>OO님을 위한 경로 추천</h1>
+                    <h1 style={{marginTop: "20%", marginBottom: "20%"}}>오직 {nicknames}님을 위한 경로</h1>
                     <div><br/></div>
                     <Droppable droppableId="travelLocations">
                         {(provided) => (
