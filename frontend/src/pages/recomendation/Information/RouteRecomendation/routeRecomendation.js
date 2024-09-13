@@ -95,10 +95,9 @@ export default function RouteRecomendation() {
         fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
     }, [placename]);
 
-    // 게시물 상세 페이지로 이동하는 함수
-    const handleGoToPost = (boardID) => {
-        navigate(`/board/${boardID}`);
-        console.log(boardID)
+    // 루트 만들기 페이지로 이동하는 함수
+    const handleGoToNavigation = () => {
+        navigate("/routeNavigation");
     };
 
     return (
@@ -130,7 +129,7 @@ export default function RouteRecomendation() {
                             <PlacesTitleWrapper>
                                 <PlacesTitle>{recommendation.title}</PlacesTitle>
                                 <PlacesWriter>by {nicknames}</PlacesWriter>
-                                <GoBtn onClick={() => handleGoToPost(recommendation.boardID)}>루트 만들기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
+                                <GoBtn onClick={() => handleGoToNavigation()}>루트 만들기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
                             </PlacesTitleWrapper>
                             <PlaceWrapper>
                                 {recommendation.addresses.map((place, index) => (
