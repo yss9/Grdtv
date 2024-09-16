@@ -7,10 +7,10 @@ import {motion} from "framer-motion";
 import React from "react";
 
 const MBTIForm = ({
-                      selectedIE,
-                      selectedSN,
-                      selectedFT,
-                      selectedPJ,
+                      IE,
+                      SN,
+                      FT,
+                      PJ,
                       percentValue,
                       handleIEClick,
                       handleSNClick,
@@ -38,27 +38,27 @@ const MBTIForm = ({
                 <MBTIButtonWrapper>
 
                     <MBTIButton
-                        selected={selectedIE === 'E'}
-                        onClick={() => handleIEClick('E')}
-                    >
-                        E
-                    </MBTIButton>
-                    <MBTIButton
-                        selected={selectedIE === 'I'}
+                        selected={IE === 'I'}
                         onClick={() => handleIEClick('I')}
                     >
                         I
                     </MBTIButton>
+                    <MBTIButton
+                        selected={IE === 'E'}
+                        onClick={() => handleIEClick('E')}
+                    >
+                        E
+                    </MBTIButton>
                 </MBTIButtonWrapper>
                 <MBTIButtonWrapper>
                     <MBTIButton
-                        selected={selectedSN === 'S'}
+                        selected={SN === 'S'}
                         onClick={() => handleSNClick('S')}
                     >
                         S
                     </MBTIButton>
                     <MBTIButton
-                        selected={selectedSN === 'N'}
+                        selected={SN === 'N'}
                         onClick={() => handleSNClick('N')}
                     >
                         N
@@ -66,13 +66,13 @@ const MBTIForm = ({
                 </MBTIButtonWrapper>
                 <MBTIButtonWrapper>
                     <MBTIButton
-                        selected={selectedFT === 'F'}
+                        selected={FT === 'F'}
                         onClick={() => handleFTClick('F')}
                     >
                         F
                     </MBTIButton>
                     <MBTIButton
-                        selected={selectedFT === 'T'}
+                        selected={FT === 'T'}
                         onClick={() => handleFTClick('T')}
                     >
                         T
@@ -80,13 +80,13 @@ const MBTIForm = ({
                 </MBTIButtonWrapper>
                 <MBTIButtonWrapper>
                     <MBTIButton
-                        selected={selectedPJ === 'P'}
+                        selected={PJ === 'P'}
                         onClick={() => handlePJClick('P')}
                     >
                         P
                     </MBTIButton>
                     <MBTIButton
-                        selected={selectedPJ === 'J'}
+                        selected={PJ === 'J'}
                         onClick={() => handlePJClick('J')}
                     >
                         J

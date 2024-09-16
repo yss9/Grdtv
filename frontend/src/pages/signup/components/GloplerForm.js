@@ -10,6 +10,8 @@ import {
     RadioForm
 } from "../signupStyle";
 
+// glopler 적용했으나 false로 저장됨
+
 const GloplerForm = ({
                          pageVariants,
                          onClickGlopler,

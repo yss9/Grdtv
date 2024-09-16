@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import BottomBarComponent from './bottomBarComponent';
+import axios from "axios";
+import {jwtDecode} from "jwt-decode";
 
 // styled-components
 const ChatRoomWrapper = styled.div`
-  overflow: hidden;
+    overflow: hidden;
+    height: 100%
 `
 const ChatHeader = styled.div`
     display: flex;
@@ -12,21 +15,23 @@ const ChatHeader = styled.div`
     padding: 15px;
     background-color: white;
     width: calc(100% - 30px);
+    height: 25px;
 `
 const ReviewButton = styled.div`
     float: left;
     border: 1px solid #4E53ED;
     border-radius: 20px;
-    width: 85px;
-    height: 30px;
+    width: 80px;
+    height: 28px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px;
     margin-left: 35px;
+    cursor: pointer;
 `
 const Username = styled.div`
-    font-size: 18px;
+    font-size: 15px;
     margin-left: 20px;
 `
 const ChatRoom = styled.div`
@@ -37,6 +42,10 @@ const ChatRoom = styled.div`
     &::-webkit-scrollbar {
         display: none;  // Chrome, Safari, Opera
     }
+    overflow: hidden;
+    height: 50vh;
+    overflow-y: auto;
+    
 `
 const ChatBubble = styled.div`
     max-width: 40%;
@@ -45,12 +54,12 @@ const ChatBubble = styled.div`
     position: relative;
 `
 const GloplerListButton = styled.button`
-    width: 120px;
-    height: 35px;
+    width: 115px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px;
     color: white;
     background-color: #4E53ED;
     border: 1px solid #4E53ED;
@@ -60,7 +69,7 @@ const GloplerListButton = styled.button`
 const ProcessWrapper = styled.div`
     position: relative;
     width: 100%;
-    height: 47px;
+    height: 40px;
     background-color: #d9d9d9;
     border-radius: 0 30px 30px 0;
     margin-bottom: 5px;
@@ -78,6 +87,7 @@ const Process = styled.div`
                             step === 3 ? '75%' : '100%'};
     display: flex;
     justify-content: space-between;
+    transition: width 0.5s ease-in-out;
 `;
 const ProcessText = styled.div`
     position: absolute;
@@ -88,8 +98,25 @@ const ProcessText = styled.div`
     place-items: center;
     width: 25%;
     color: ${({ active }) => (active ? 'white' : 'black')};
-    font-size: 18px;
+    font-size: 14px;
 `;
+const ProcessButton = styled.button`
+    width: 130px;
+    height: 37px;
+    background-color: #4E53ED;
+    border: none;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    float: right;
+    margin: 5px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    //box-shadow: #515151 1px 5px;
+`
+
 
 const ChatRoomComponent = ({
                                chatUsername,
@@ -106,16 +133,19 @@ const ChatRoomComponent = ({
                                handleKeyDown,
                                isVisible,
                                bottomRef,
+                               isAgent,
+                               userId
                            }) => {
 
-    const [step, setStep] = useState(2);
+    const [step, setStep] = useState(1);
+
 
     return (
         <ChatRoomWrapper>
             <ChatHeader>
                 <img
                     style={{
-                        width: '50px',
+                        width: '45px',
                         float: 'left',
                     }}
                     src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'
@@ -137,13 +167,21 @@ const ChatRoomComponent = ({
                     </ProcessText>
                 ))}
             </ProcessWrapper>
-            <div>
-                <button onClick={() => setStep(1)}>step1</button>
-                <button onClick={() => setStep(2)}>step2</button>
-                <button onClick={() => setStep(3)}>step3</button>
-                <button onClick={() => setStep(4)}>step4</button>
-            </div>
-            <ChatRoom style={{height: '58vh', overflowY: 'auto'}}>
+            {isAgent ? (
+                <div style={{width: '100%',height: '60px'}}>
+                    {step === 1 ? <ProcessButton onClick={() => setStep(2)}>대행 진행하기</ProcessButton>
+                        : step === 2 ? <ProcessButton onClick={() => setStep(3)}>입금 진행하기</ProcessButton>
+                            : step === 3 ? <ProcessButton onClick={() => setStep(4)}>여행 완료하기</ProcessButton>
+                                : <ProcessButton onClick={() => setStep(1)}>step1(임시)</ProcessButton>
+                    }
+                </div>
+            ) : (
+                <div>
+
+                </div>
+            )}
+
+            <ChatRoom>
                 {messages.map((message, index) => (
                     <ChatBubble
 
@@ -156,7 +194,7 @@ const ChatRoomComponent = ({
                         {message.content}
                     </ChatBubble>
                 ))}
-                <div ref={bottomRef}/>
+                <div ref={bottomRef}></div>
             </ChatRoom>
 
             <BottomBarComponent

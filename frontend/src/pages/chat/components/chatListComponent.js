@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const ChatListWrapper = styled.aside`
-    width: 20%;
+    width: 18%;
     padding: 10px;
     overflow-y: auto;
     // 스크롤바 숨기기~♥

@@ -10,6 +10,7 @@ import TopBarComponent from "../../components/TopBar/TopBar";
 import ChatListComponent from "./components/chatListComponent";
 import SideBarComponent from "./components/sideBarComponent";
 import ChatRoomComponent from "./components/chatRoomComponent";
+import {Reset} from "styled-reset";
 
 
 const styles = {
@@ -38,12 +39,35 @@ const ChatPage = () => {
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
-    const [roomJoined, setRoomJoined] = useState(false);
     const [nicknames, setNicknames] = useState([]);
     const [chatUsername, setChatUsername] = useState('');
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
 
     const [selectedFile, setSelectedFile] = useState(null);
+
+    const [id, setId] = useState(null);
+    const [isAgent, setIsAgent] = useState(false);
+
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.userId;
+
+    useEffect(() => {
+        const fetchMyInfo = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/my-info', {
+                    params: {
+                        userId: userId,
+                    },
+                });
+                setIsAgent(response.data.agent);
+                console.log('isAgent:', isAgent)
+            } catch (error) {
+                console.error('Failed to fetch myInfo', error);
+            }
+        };
+
+        fetchMyInfo();
+    }, [token]);
 
     useEffect(() => {
         const fetchNicknames = async () => {
@@ -69,6 +93,8 @@ const ChatPage = () => {
 
         fetchNicknames();
     }, [token]);
+
+
 
     useEffect(() => {
         // joined가 true일 때만 구독 처리
@@ -110,6 +136,8 @@ const ChatPage = () => {
         }
     };
 
+
+
     const handleAddUser = async (targetUserNickname) => {
         setMessages([]);
         const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
@@ -124,7 +152,6 @@ const ChatPage = () => {
                 setRoomId(newRoomId);
                 setChatUsername(targetUserNickname);
                 setJoined(true);
-                setRoomJoined(true);
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
@@ -162,6 +189,7 @@ const ChatPage = () => {
 
     return (
         <Wrapper>
+            <Reset/>
             <div style={{height: '40px'}}></div>
             <TopBarComponent/>
             <ChatPageWrapper>
@@ -188,6 +216,8 @@ const ChatPage = () => {
                             handleKeyDown={handleKeyDown}
                             isVisible={isVisible}
                             bottomRef={bottomRef}
+                            isAgent={isAgent}
+                            userId={userId}
                         />
                     ) : (
                         <div>

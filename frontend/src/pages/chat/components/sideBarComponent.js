@@ -2,12 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 const SideBar = styled.aside`
-    width: 13%;
+    width: 12%;
     background-color: #4E53ED;
     border-right: 1px solid #ddd;
     overflow-y: auto;
     color: white;
     font-size: 14px;
+    height: 100%;
 `
 const SideBarHeader = styled.div`
     margin-bottom: 10px;

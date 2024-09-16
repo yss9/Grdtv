@@ -13,7 +13,7 @@ const TopBar = styled.div`
   align-items: center;
   justify-content: center;
   width: 1500px;
-  height: 60px;
+  height: 50px;
   //margin-top: 3vh;
   //background-color: gray;
 `;
@@ -22,18 +22,19 @@ const LogoWrapper = styled.div`
   width: 37%;
   text-align: left;
   //background-color: #61dafb;
+    
 `;
 
 const Logo = styled.div`
     background-image: url("/GlopleLogo.png");
     background-size: cover;
     background-position: center;
-    width: 300px;
-    height: 80px;
+    width: 250px;
+    height: 50px;
     display: flex;
   margin-bottom: 1.5em;
   cursor: pointer;
- // background-color: pink;
+  //background-color: pink;
     
 `;
 

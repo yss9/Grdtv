@@ -1,40 +1,13 @@
 import React, { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
     Wrapper,
     Logo,
-    FormContainer,
     Progress,
     ProgressBar,
-    GenderButtonWrapper,
-    GenderButton,
-    FormGroup,
-    Input,
     ContentsWrapper,
-    InputText,
-    NextButtonWrapper,
-    ButtonContainer,
-    PageButton,
-    BoldText,
-    MBTISwitchWrapper,
-    SetCenter,
-    RadioButtonSubComment,
-    BoldSubText,
-    UserImg,
-    FinishText,
-    GoToLoginPage,
-    OverlayImageInput,
-    GenderImage,
     LogoWrapper,
-    FormLabel,
-    FormField,
-    SubComment,
-    RadioForm,
-    FileInput,
-    Slider, MBTIButton, MBTIButtonWrapper, SliderWrapper,
-    PercentValueWrapper,
 } from "./signupStyle";
-import {Switch as AntSwitch} from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInfoForm from "./components/UserInfoForm";
@@ -61,31 +34,13 @@ export default function SignupPage() {
     const [percentageFT, setPercentageFT] = useState(null);
     const [percentagePJ, setPercentagePJ] = useState(null);
 
-
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
-
-    const [mbti, setMbti] = useState({
-        IE: { active: false },
-        SN: { active: false },
-        FT: { active: false },
-        PJ: { active: false },
-    });
 
     const [IE, setIE] = useState("I");
     const [SN, setSN] = useState("S");
     const [FT, setFT] = useState("F");
     const [PJ, setPJ] = useState("P");
-
-    const toggleMBTI = (key) => {
-        setMbti((prev) => ({
-            ...prev,
-            [key]: {
-                ...prev[key],
-                active: !prev[key].active,
-            },
-        }));
-    };
 
     const goToFirstPage = () => {
         setStep(1);
@@ -95,15 +50,12 @@ export default function SignupPage() {
         setStep(2);
     };
     const goToThirdPage = () => {
-        mbti.IE.active ? setIE("E") : setIE("I");
-        mbti.SN.active ? setSN("N") : setSN("S");
-        mbti.FT.active ? setFT("T") : setFT("F");
-        mbti.PJ.active ? setPJ("J") : setPJ("P");
 
         setPercentageIE(percentValue[0])
         setPercentageSN(percentValue[1])
         setPercentageFT(percentValue[2])
         setPercentagePJ(percentValue[3])
+        console.log(IE, percentageIE, SN, percentageSN, FT, percentageFT, PJ, percentagePJ )
 
         setStep(3);
     };
@@ -125,6 +77,8 @@ export default function SignupPage() {
                 return;
             }
         }
+
+        console.log('glopler:',glopler)
 
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
@@ -168,20 +122,6 @@ export default function SignupPage() {
         } else {
             alert("모든 정보를 올바르게 기입해 주세요.");
         }
-    };
-
-    const MBTISwitch = ({ label1, label2, isActive, onToggle }) => {
-        return (
-            <MBTISwitchWrapper>
-                <div>
-                    <SetCenter>
-                        {label1}&nbsp;&nbsp;{label2}
-                    </SetCenter>
-                    <AntSwitch checked={isActive} onChange={onToggle} style={{ marginLeft: 10, marginRight: 10, backgroundColor:"lightgray" }} />
-
-                </div>
-            </MBTISwitchWrapper>
-        );
     };
 
     const handleProfilePictureChange = (event) => {
@@ -231,18 +171,7 @@ export default function SignupPage() {
     const onClickGlopler = (isGlopler) => {
         setGlopler(isGlopler);
     }
-    const onChangePercentageIE = (event) => {
-        setPercentageIE(event.target.value)
-    };
-    const onChangePercentageSN = (event) => {
-        setPercentageSN(event.target.value)
-    };
-    const onChangePercentageFT = (event) => {
-        setPercentageFT(event.target.value)
-    };
-    const onChangePercentagePJ = (event) => {
-        setPercentagePJ(event.target.value)
-    };
+
     const [percentValue, setPercentValue] = useState([50, 50, 50, 50]);
 
     const handleChange = (percentIndex) => (event) => {
@@ -253,25 +182,21 @@ export default function SignupPage() {
             return updatedValues;
         });
     };
-    const [selectedIE, setSelectedIE] = useState('E');
-    const [selectedSN, setSelectedSN] = useState('S');
-    const [selectedFT, setSelectedFT] = useState('F');
-    const [selectedPJ, setSelectedPJ] = useState('P');
 
     const handleIEClick = (value) => {
-        setSelectedIE(value);
+        setIE(value);
     };
 
     const handleSNClick = (value) => {
-        setSelectedSN(value);
+        setSN(value);
     };
 
     const handleFTClick = (value) => {
-        setSelectedFT(value);
+        setFT(value);
     };
 
     const handlePJClick = (value) => {
-        setSelectedPJ(value);
+        setPJ(value);
     };
     const handleGoHome = () => {
         navigate('/')
@@ -308,10 +233,10 @@ export default function SignupPage() {
                         )}
                         {step === 2 && (
                             <MBTIForm
-                                selectedIE={selectedIE}
-                                selectedSN={selectedSN}
-                                selectedFT={selectedFT}
-                                selectedPJ={selectedPJ}
+                                IE={IE}
+                                SN={SN}
+                                FT={FT}
+                                PJ={PJ}
                                 percentValue={percentValue}
                                 handleIEClick={handleIEClick}
                                 handleSNClick={handleSNClick}
