@@ -51,19 +51,24 @@ public class Post {
     private Set<Favorite> favorites = new HashSet<>();
 
     private Integer likesCount;
+
     private Boolean verified;
 
+    private String country;
+
     @Builder
-    public Post(String title, String body, Set<Addresses> addresses) {
+    public Post(String title, String body, Set<Addresses> addresses, String country) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
+        this.country = country;
     }
 
-    public void update(String title, String body, Set<Addresses> addresses) {
+    public void update(String title, String body, Set<Addresses> addresses, String country) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
+        this.country = country;
     }
 
     @Override

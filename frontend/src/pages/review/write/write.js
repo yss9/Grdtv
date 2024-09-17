@@ -20,6 +20,7 @@ export default function BoardWrite(props) {
     const [titleError, setTitleError] = useState("");
     const [addressTitle, setAddressTitle] = useState(""); // 경로 제목 상태 추가
     const [addresses, setAddresses] = useState([{ address: "", location: { lat: null, lng: null } }]);
+    const [country, setCountry] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [image, setImage] = useState(null);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(0);
@@ -40,40 +41,6 @@ export default function BoardWrite(props) {
         }
     }, [isOpen]);
 
-/*    const imageHandler = useCallback(() => {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/!*');
-        input.click();
-
-        input.onchange = async () => {
-            const file = input.files[0];
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try {
-                const res = await axios.post("http://localhost:8080/api/posts/upload/", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                const url = res.data.url; // 서버에서 반환한 이미지 URL
-
-                const quill = quillRef.current.getEditor(); // Quill 인스턴스를 가져옵니다.
-                const range = quill.getSelection();
-                quill.insertEmbed(range.index, 'image', url);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-    }, []);*/
-
-
-
-   /* const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        setImage(file);
-    };*/
 
     const onClickAddressSearch = (index) => {
         setCurrentAddressIndex(index);
@@ -109,6 +76,7 @@ export default function BoardWrite(props) {
         if (image) {
             formData.append('image', image);
         }
+        formData.append('country', country);
 
         try {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
@@ -136,6 +104,7 @@ export default function BoardWrite(props) {
         formData.append('body', body);
         formData.append('addressTitle', addressTitle); // addressTitle 추가
         formData.append('addresses', JSON.stringify(addressStrings));
+        formData.append('country', country);
 
         try {
             const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);
@@ -181,6 +150,41 @@ export default function BoardWrite(props) {
 
     const quill = new Quill("#editor");
 
+
+    const countries = [
+        "한국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
+        "뉴질랜드", "뉴칼레도니아", // "뉴"로 시작하는 국가 추가
+    ];
+
+    // 국가 검색어와 필터링된 국가 리스트를 위한 상태
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredCountries, setFilteredCountries] = useState([]);
+
+    // 검색어 입력 시 상태 업데이트 및 필터링 수행
+    const handleSearchChange = (e) => {
+        const term = e.target.value;
+        setSearchTerm(term);
+
+        if (term) {
+            // 검색어로 필터링된 국가 목록 생성
+            const filtered = countries.filter(country =>
+                country.toLowerCase().includes(term.toLowerCase())
+            );
+            setFilteredCountries(filtered);
+        } else {
+            // 검색어가 비어있으면 필터링된 목록 초기화
+            setFilteredCountries([]);
+        }
+    };
+
+    // 국가 선택 시 처리
+    const handleCountrySelect = (country) => {
+        setCountry(country);
+        setSearchTerm(country); // 선택한 국가를 검색창에 표시
+        setFilteredCountries([]); // 필터링된 목록 초기화
+    };
+
+
     return (
         <>
             <TopBarComponent />
@@ -196,7 +200,42 @@ export default function BoardWrite(props) {
                             onChange={(e) => setTitle(e.target.value)}
                         />
                         <S.Error>{titleError}</S.Error>
+
+
+                        {/* 국가 선택 검색창 */}
+                        <S.InputWrapper>
+                            <label>국가 선택:</label>
+                            <input
+                                type="text"
+                                placeholder="국가를 검색하세요"
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                                style={{ width: "100%", padding: "10px" }}
+                            />
+                            {/* 필터링된 국가 목록 표시 */}
+                            {filteredCountries.length > 0 && (
+                                <ul style={{ border: "1px solid #ccc", maxHeight: "150px", overflowY: "auto", padding: "0", listStyle: "none" }}>
+                                    {filteredCountries.map((country, index) => (
+                                        <li
+                                            key={index}
+                                            onClick={() => handleCountrySelect(country)} // 클릭 시 국가 선택
+                                            style={{
+                                                padding: "10px",
+                                                cursor: "pointer",
+                                                backgroundColor: "#f0f0f0",
+                                                borderBottom: "1px solid #ddd",
+                                            }}
+                                        >
+                                            {country}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </S.InputWrapper>
                     </S.InputWrapper>
+
+
+
 
                     <S.InputWrapper>
                         <QuillEditor value={body} onChange={setBody} />
