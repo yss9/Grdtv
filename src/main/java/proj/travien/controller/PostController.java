@@ -72,12 +72,15 @@ public class PostController {
      * 게시물 업로드
      */
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("body") String body, @RequestParam("addresses") Set<String> addresses, @RequestParam("addressTitle") String addressTitle) {
+    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("body") String body,
+                                           @RequestParam("addresses") Set<String> addresses,
+                                           @RequestParam("addressTitle") String addressTitle,
+                                           @RequestParam("country") String country) {
             Set<Addresses> addressEntities = addresses.stream()
                     .map(address -> Addresses.builder().address(address).build())
                     .collect(Collectors.toSet());
 
-            Post createdPost = postService.createPost(title, body, addressEntities, addressTitle);
+            Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 

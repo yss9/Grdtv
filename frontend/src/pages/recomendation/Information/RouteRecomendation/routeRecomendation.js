@@ -96,9 +96,12 @@ export default function RouteRecomendation() {
     }, [placename]);
 
     // 루트 만들기 페이지로 이동하는 함수
-    const handleGoToNavigation = () => {
-        navigate("/routeNavigation");
+    const handleGoToNavigation = (addresses) => {
+        console.log("전달된 주소 배열:", addresses);  // 주소 배열 출력
+        navigate("/routeNavigation", { state: { addresses } });
     };
+
+
 
     return (
         <>
@@ -129,7 +132,8 @@ export default function RouteRecomendation() {
                             <PlacesTitleWrapper>
                                 <PlacesTitle>{recommendation.title}</PlacesTitle>
                                 <PlacesWriter>by {nicknames}</PlacesWriter>
-                                <GoBtn onClick={() => handleGoToNavigation()}>루트 만들기</GoBtn> {/* 바로가기 버튼에 클릭 핸들러 추가 */}
+                                <GoBtn onClick={() => handleGoToNavigation(recommendation.addresses)}>루트 만들기</GoBtn> {/* 주소 배열 전달 */}
+
                             </PlacesTitleWrapper>
                             <PlaceWrapper>
                                 {recommendation.addresses.map((place, index) => (
