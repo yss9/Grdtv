@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import proj.travien.JwtUtil;
+import proj.travien.jwt.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.AgentDTO;
 import proj.travien.dto.UserDTO;
@@ -19,7 +19,6 @@ import proj.travien.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")

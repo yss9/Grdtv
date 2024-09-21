@@ -8,7 +8,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-import proj.travien.JwtUtil;
+import proj.travien.jwt.JwtUtil;
 import proj.travien.domain.ChatMessage;
 import proj.travien.domain.ChatRoom;
 import proj.travien.domain.User;
