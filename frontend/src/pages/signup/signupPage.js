@@ -96,6 +96,8 @@ export default function SignupPage() {
                 isAgent: glopler,
             })], { type: 'application/json' }));
 
+            formData.append('isAgent', glopler ? 'true' : 'false');
+
             if (profilePicture) {
                 formData.append('profilePicture', profilePicture);
             }

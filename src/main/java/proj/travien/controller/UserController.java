@@ -34,11 +34,18 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestPart("user") UserDTO userDTO,
+                                    @RequestParam("isAgent") String isAgentStr,
                                     @RequestPart(value = "profilePicture", required = false) MultipartFile profilePictureFile,
                                     @RequestPart(value = "verificationFile", required = false) MultipartFile verificationFile) {
         if (userService.isUserIdInUse(userDTO.getUserId()) || userService.isNicknameInUse(userDTO.getNickname())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or nickname already in use");
         }
+
+        boolean isAgent = Boolean.parseBoolean(isAgentStr);
+        System.out.println("isAgent: " + isAgent);  // 로그로 확인
+
+        // DTO로 변환된 값에 isAgent 설정
+        userDTO.setAgent(isAgent);
 
         boolean userCreated = userService.createUser(userDTO, profilePictureFile, verificationFile);
 
@@ -57,7 +64,7 @@ public class UserController {
 
             User user = userService.login(userId, password);
             if (user != null) {
-                String token = jwtUtil.generateToken(user.getId(),user.getUserId(), user.getNickname());
+                String token = jwtUtil.generateToken(user.getId(),user.getUserId(), user.getNickname(), user.getRole());
                 return ResponseEntity.ok(new AuthResponse(token));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");

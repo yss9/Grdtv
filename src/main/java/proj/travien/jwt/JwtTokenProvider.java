@@ -1,30 +1,39 @@
 package proj.travien.jwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class JwtTokenProvider {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    // JWT에서 인증 정보를 추출하는 메서드
-    public Authentication getAuthentication(String token) {
-        String userId = jwtUtil.extractUserId(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    public JwtTokenProvider(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
-    // JWT 유효성 검사
+    // 토큰에서 인증 정보 추출
+    public Authentication getAuthentication(String token) {
+        Claims claims = jwtUtil.extractClaims(token);
+
+        String username = claims.getSubject();  // JWT에서 사용자 ID 추출
+        String role = claims.get("role", String.class);  // JWT에서 역할(Role) 추출
+
+        // Spring Security에서 사용할 권한 생성
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+
+        // UsernamePasswordAuthenticationToken을 생성해 Authentication 객체로 반환
+        return new UsernamePasswordAuthenticationToken(username, null, Collections.singleton(authority));
+    }
+
+    // 토큰의 유효성 검증
     public boolean validateToken(String token) {
-        return jwtUtil.validateToken(token);
+        return !jwtUtil.isTokenExpired(token);  // 토큰이 만료되지 않았는지 확인
     }
 }

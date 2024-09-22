@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import proj.travien.domain.Role;
 import proj.travien.domain.User;
 import proj.travien.repository.UserRepository;
 
@@ -27,7 +28,8 @@ public class AdminAccountInitializer implements CommandLineRunner {
             admin.setUserId("admin");
             admin.setPassword(BCrypt.hashpw("admin1234", BCrypt.gensalt()));
             admin.setName("Administrator");
-            admin.setRoles(Set.of("ROLE_ADMIN"));
+            admin.setNickname("admin");
+            admin.setRole(Role.ROLE_ADMIN);
             admin.setPoints(1000);
 
             userRepository.save(admin);
