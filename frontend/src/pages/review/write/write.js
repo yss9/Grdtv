@@ -9,12 +9,19 @@ import ReactQuill, {Quill} from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // 퀼 에디터의 기본 스타일시트를 가져옵니다.
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import QuillEditor from "../../../components/Editor/QuillEditor";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 
 
 export default function BoardWrite(props) {
     const navigate = useNavigate();
 
+
+    // User 닉네임 가져옴
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+
+    const [userId, setUserId] = useState("")
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [titleError, setTitleError] = useState("");
@@ -60,15 +67,46 @@ export default function BoardWrite(props) {
         setIsOpen(false);
     };
 
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                if (token) {
+                    // 토큰에서 사용자 아이디 추출
+                    const decodedToken = jwtDecode(token);
+                    const userId = decodedToken.userId;  // 'id' 필드에서 userId 추출
+
+                    const response = await axios.get(`http://localhost:8080/api/users/my-info?userId=${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                } else {
+                    console.error('No JWT token found in cookies');
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
+        };
+
+        fetchUserData();
+    }, [token]);
+
+
     const onClickSubmit = async () => {
         if (title === "") {
             setTitleError("제목을 입력해주세요.");
             return;
         }
 
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;  // 'id' 필드에서 userId 추출
+
         const addressStrings = addresses.map(address => address.address);
 
         const formData = new FormData();
+        formData.append('userId', userId);  // userId 추가
         formData.append('title', title);
         formData.append('body', body); // 에디터의 내용을 추가
         formData.append('addressTitle', addressTitle);
@@ -87,6 +125,7 @@ export default function BoardWrite(props) {
             console.error(error);
         }
     };
+
 
     const onClickUpdate = async () => {
         const boardID = new URLSearchParams(window.location.search).get('boardID');
