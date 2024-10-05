@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.Addresses;
 import proj.travien.domain.Post;
+import proj.travien.domain.User;
 import proj.travien.dto.AddressResponseDto;
 import proj.travien.service.PostService;
+import proj.travien.service.UserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,6 +30,8 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
+    private UserService userService;  // 새로 추가된 UserService
 
 
     private static final String UPLOAD_DIR = "src/main/resources/static/image/";
@@ -72,18 +76,33 @@ public class PostController {
      * 게시물 업로드
      */
     @PostMapping("/")
-    public ResponseEntity<Post> createPost(@RequestParam("title") String title, @RequestParam("body") String body,
+    public ResponseEntity<Post> createPost(@RequestParam("title") String title,
+                                           @RequestParam("body") String body,
                                            @RequestParam("addresses") Set<String> addresses,
                                            @RequestParam("addressTitle") String addressTitle,
-                                           @RequestParam("country") String country) {
-            Set<Addresses> addressEntities = addresses.stream()
-                    .map(address -> Addresses.builder().address(address).build())
-                    .collect(Collectors.toSet());
+                                           @RequestParam("country") String country,
+                                           @RequestParam("userId") String userId) {
 
-            Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+        // 사용자 조회 로직 추가
+        User user = userService.findByUserId(userId);  // 사용자 정보를 UserService에서 조회
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();  // 사용자 없는 경우 처리
+        }
+
+        // 게시물 생성 로직 (기존 코드 유지)
+        Set<Addresses> addressEntities = addresses.stream()
+                .map(address -> Addresses.builder().address(address).build())
+                .collect(Collectors.toSet());
+
+        Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
+
+        // 포인트 업데이트 추가
+        user.setPoints(user.getPoints() + 10);  // 사용자 포인트 +10
+        userService.save(user);  // 사용자 정보 업데이트
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);  // 생성된 게시물 응답
     }
-
 
 
     /**

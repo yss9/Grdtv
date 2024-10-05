@@ -95,6 +95,7 @@ export default function RouteRecomendation() {
         fetchData(); // 컴포넌트 마운트 시 데이터 가져오기
     }, [placename]);
 
+
     // 루트 만들기 페이지로 이동하는 함수
     const handleGoToNavigation = (addresses) => {
         console.log("전달된 주소 배열:", addresses);  // 주소 배열 출력
