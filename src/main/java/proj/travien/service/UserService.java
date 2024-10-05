@@ -28,12 +28,21 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final PointsHistoryRepository pointsHistoryRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, PointsHistoryRepository pointsHistoryRepository) {
         this.userRepository = userRepository;
         this.pointsHistoryRepository = pointsHistoryRepository;
+    }
+
+
+    /**
+     * 나은이가 추가
+     */
+    public void save(User user) {
+        userRepository.save(user);  // 사용자 정보 저장
     }
 
     // 회원가입

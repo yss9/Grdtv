@@ -101,14 +101,14 @@ export default function BoardWrite(props) {
         }
 
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.userId;  // 'id' 필드에서 userId 추출
+        const userId = decodedToken.userId;
 
         const addressStrings = addresses.map(address => address.address);
 
         const formData = new FormData();
-        formData.append('userId', userId);  // userId 추가
+        formData.append('userId', userId);
         formData.append('title', title);
-        formData.append('body', body); // 에디터의 내용을 추가
+        formData.append('body', body);
         formData.append('addressTitle', addressTitle);
         formData.append('addresses', JSON.stringify(addressStrings));
         if (image) {
@@ -119,12 +119,17 @@ export default function BoardWrite(props) {
         try {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
             console.log(response.data);
-            alert("게시물 등록이 정상적으로 완료되었습니다!");
+
+            // 포인트 정보 확인
+            const userPoints = response.data.userPoints;  // API 응답에서 포인트 가져오기
+            alert(`게시물 등록이 정상적으로 완료되었습니다! 현재 포인트: ${userPoints}`);
+
             navigate(`/board/${response.data.boardID}`);
         } catch (error) {
             console.error(error);
         }
     };
+
 
 
     const onClickUpdate = async () => {
@@ -191,8 +196,8 @@ export default function BoardWrite(props) {
 
 
     const countries = [
-        "한국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
-        "뉴질랜드", "뉴칼레도니아", // "뉴"로 시작하는 국가 추가
+        "대한한국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
+        "뉴질랜드"
     ];
 
     // 국가 검색어와 필터링된 국가 리스트를 위한 상태
@@ -241,7 +246,7 @@ export default function BoardWrite(props) {
                         <S.Error>{titleError}</S.Error>
 
 
-                        {/* 국가 선택 검색창 */}
+
                         <S.InputWrapper>
                             <label>국가 선택:</label>
                             <input
