@@ -101,4 +101,8 @@ public class Post {
         return userIds;
     }
 
+    @Column
+    private String thumbnail;
+
+
 }

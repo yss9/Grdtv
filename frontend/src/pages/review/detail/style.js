@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import avantar from '../../../images/도라에몽.jpeg';
-import Vector from '../../../images/Vector.png'
+
 
 export const Container = styled.div`
     display: flex;

@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -251,6 +253,48 @@ public class PostService {
     }
 
 
+    /**
+     * body에서 썸네일을 추출하는 메서드
+     */
+
+    private String extractThumbnail(String body) {
+        // 정규식을 사용하여 첫 번째 <img> 태그에서 src 속성을 추출
+        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(body);
+        if (matcher.find()) {
+            return matcher.group(1);  // 첫 번째 src URL 반환
+        }
+        return null;  // 이미지가 없을 경우 null 반환
+    }
+
+    @Transactional
+    public void saveThumbnail(Long boardID) {
+        // 해당 boardID로 Post 엔티티 조회
+        Post post = postRepository.findById(boardID)
+                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + boardID));
+
+        // body에서 썸네일 추출
+        String thumbnail = extractThumbnail(post.getBody());
+
+        // 추출한 썸네일을 Post 엔티티에 저장
+        post.setThumbnail(thumbnail != null ? thumbnail : "이미지 없음");
+
+        // 변경된 Post 엔티티 저장
+        postRepository.save(post);
+    }
+
+    /**
+     * 썸네일 반환
+     */
+    @Transactional(readOnly = true)
+    public String getThumbnail(Long boardID) {
+        // 게시물을 조회하여 썸네일을 가져옴
+        Post post = postRepository.findById(boardID)
+                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + boardID));
+
+        // 썸네일이 존재하면 반환, 그렇지 않으면 null 반환
+        return post.getThumbnail();
+    }
 
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
