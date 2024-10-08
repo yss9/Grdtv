@@ -198,6 +198,29 @@ public class PostController {
         }
     }
 
+    /**
+     * 썸네일 저장 API
+     */
+    @PostMapping("/{boardID}/thumbnail")
+    public ResponseEntity<String> saveThumbnail(@PathVariable Long boardID) {
+        postService.saveThumbnail(boardID);
+        return ResponseEntity.ok("썸네일 저장 완료");
+    }
+
+    /**
+     * 썸네일 반환
+     */
+    @GetMapping("/{boardID}/thumbnail")
+    public ResponseEntity<String> getThumbnail(@PathVariable Long boardID) {
+        // PostService를 통해 해당 게시물의 썸네일 URL을 가져옴
+        String thumbnailUrl = postService.getThumbnail(boardID);
+        if (thumbnailUrl != null) {
+            return ResponseEntity.ok(thumbnailUrl);
+        } else {
+            return ResponseEntity.notFound().build();  // 썸네일이 없으면 404 반환
+        }
+    }
+
 
 
 
