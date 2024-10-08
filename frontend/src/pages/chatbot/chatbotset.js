@@ -4,11 +4,13 @@ import Cookies from 'js-cookie';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import TopBarComponent from "../../components/TopBar/TopBar";
+import { Reset } from 'styled-reset';
+
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 98.2vh;
+    height: 100vh;
 `;
 
 const MainContentArea = styled.div`
@@ -197,55 +199,58 @@ const Chatbot = () => {
     };
 
     return (
-        <Container>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
-            <MainContentArea>
-            <Sidebar>
-                    <SidebarItem>새로운 채팅</SidebarItem>
-                    <SidebarItem>이전 채팅</SidebarItem>
-                </Sidebar>
-                <MainContent>
-                    {!connected ? (
-                        <Header>로딩 중...</Header>
-                    ) : (
-                        <>
-                            <Header>
-                                <GlloImg></GlloImg>
-                                챗봇 글로에게 궁금한 점을 물어보세요.<br/>
-                                무엇을 도와드릴까요?<br/><br/><br/>
-                                빠르고 쉽게 물어보세요.
-                                <QuestionListContainer>
-                                    <QuestionButton>이용 방법</QuestionButton>
-                                    <QuestionButton>여행지 추천</QuestionButton>
-                                    <QuestionButton>자주 묻는 질문 1</QuestionButton>
-                                    <QuestionButton>자주 묻는 질문 2</QuestionButton>
-                                </QuestionListContainer>
-                            </Header>
-                            <ChatBox>
-                                {messages.map((msg, index) => (
-                                    <ChatMessage key={index} isUser={msg.sender === username}>
-                                        <MessageBubble isUser={msg.sender === username}>
-                                            {msg.content}
-                                        </MessageBubble>
-                                    </ChatMessage>
-                                ))}
-                            </ChatBox>
-                            <ChatInputContainer>
-                                <ChatInput
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                    placeholder="궁금한 사항을 입력해 주세요."
-                                />
-                                <SendButton onClick={sendMessage}> > </SendButton>
-                            </ChatInputContainer>
-                        </>
-                    )}
-                </MainContent>
-            </MainContentArea>
-        </Container>
+        <>
+            <Reset/>
+            <Container>
+                <div style={{height: '55px'}}></div>
+                <TopBarComponent/>
+                <MainContentArea>
+                    <Sidebar>
+                        <SidebarItem>새로운 채팅</SidebarItem>
+                        <SidebarItem>이전 채팅</SidebarItem>
+                    </Sidebar>
+                    <MainContent>
+                        {!connected ? (
+                            <Header>로딩 중...</Header>
+                        ) : (
+                            <>
+                                <Header>
+                                    <GlloImg></GlloImg>
+                                    챗봇 글로에게 궁금한 점을 물어보세요.<br/>
+                                    무엇을 도와드릴까요?<br/><br/><br/>
+                                    빠르고 쉽게 물어보세요.
+                                    <QuestionListContainer>
+                                        <QuestionButton>이용 방법</QuestionButton>
+                                        <QuestionButton>여행지 추천</QuestionButton>
+                                        <QuestionButton>자주 묻는 질문 1</QuestionButton>
+                                        <QuestionButton>자주 묻는 질문 2</QuestionButton>
+                                    </QuestionListContainer>
+                                </Header>
+                                <ChatBox>
+                                    {messages.map((msg, index) => (
+                                        <ChatMessage key={index} isUser={msg.sender === username}>
+                                            <MessageBubble isUser={msg.sender === username}>
+                                                {msg.content}
+                                            </MessageBubble>
+                                        </ChatMessage>
+                                    ))}
+                                </ChatBox>
+                                <ChatInputContainer>
+                                    <ChatInput
+                                        type="text"
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                        placeholder="궁금한 사항을 입력해 주세요."
+                                    />
+                                    <SendButton onClick={sendMessage}> > </SendButton>
+                                </ChatInputContainer>
+                            </>
+                        )}
+                    </MainContent>
+                </MainContentArea>
+            </Container>
+        </>
     );
 }
 
