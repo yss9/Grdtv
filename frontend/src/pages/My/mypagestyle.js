@@ -35,7 +35,7 @@ export const IntroduceWrapper=styled.div`
   margin-top: 20px;
 `
 export const Mbti=styled.div`
-    width: 5em;
+    width: 10em;
   height: 2em;
   background-color: black;
   display: flex;

@@ -26,6 +26,7 @@ import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
 import Test from "./pages/test/test"
 import AgentDetail from './pages/agentDetail/agentDetail'
+import Similarity from './pages/recomendation/Similarity/similarity'
 
 function App() {
     return (
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/routeNavigation" element={<RouteNavigation />} />
                 <Route path="/recomendation/mbti" element={<RecMbtiPage />}/>
                 <Route path="/recomendation/personal" element={<RecPersonalPage />}/>
+                <Route path="/recomendation/similarity" element={<Similarity />}/>
                 <Route path="/recomendation/information/:placename" element={<InformationPage />} />
                 <Route path="/routeRec" element={<RouteRecomendation />} />
                 <Route path="/my" element={<MyPage/>}/>
