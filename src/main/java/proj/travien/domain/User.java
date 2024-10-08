@@ -43,5 +43,17 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
 
+    //나은이가 추가
+    // 기본 생성자 추가
+    public User() {
+    }
+
+    // ID를 사용하는 생성자 (선택 사항)
+    public User(Long id) {
+        this.id = id;
+    }
+
+
+
 }
 
