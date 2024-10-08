@@ -94,12 +94,13 @@ export const Favorite = styled.button`
   margin-right: 30px;
   color: #515151;
   cursor: pointer;
-  font: inherit; /* 부모의 폰트를 상속받도록 설정 */
-  
+  font: inherit;
+
   &:hover {
-    text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
+    text-decoration: underline;
   }
 `;
+
 
 export const CreatedAt = styled.div``;
 

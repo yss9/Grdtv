@@ -10,6 +10,7 @@ import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
 import parse from 'html-react-parser'
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
+import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 
 export default function BoardDetail() {
     const { boardID } = useParams();
@@ -21,10 +22,12 @@ export default function BoardDetail() {
     const [image, setImage] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const [createDate, setCreateDate] = useState("");
+    const [isLiked, setIsLiked] = useState(false);  // 좋아요 상태 관리
+    const [likesCount, setLikesCount] = useState(0); // 좋아요 수 관리
 
     // User 닉네임 가져옴
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
-    const [nicknames, setNicknames] = useState([]);
+    const [nicknames, setNicknames] = useState("");
     const [username, setUsername] = useState('');
 
     // 사진 가져옴
@@ -72,10 +75,10 @@ export default function BoardDetail() {
 
                 // 토큰에서 내 닉네임 가져오기
                 const userPayload = jwtDecode(token);
-                // console.log("userPayload:", userPayload);
+                console.log("userPayload:", userPayload);
                 const extractedUsername = userPayload.nickname;
                 setUsername(extractedUsername);
-                // console.log("extractedUsername", extractedUsername);
+                console.log("extractedUsername", extractedUsername);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
@@ -83,6 +86,8 @@ export default function BoardDetail() {
 
         fetchNicknames();
     }, [token]);
+
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -157,6 +162,29 @@ export default function BoardDetail() {
         });
     };
 
+    const handleLikeClick = async () => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.id;
+
+            // 좋아요 토글 요청
+            const response = await axios.post('http://localhost:8080/api/likes/toggle', {
+                boardID: boardID,
+                userId: userId
+            });
+
+            // 서버로부터 받은 응답 업데이트
+            setIsLiked(response.data.isLiked);
+            setLikesCount(response.data.likesCount);
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            notification.error({
+                message: '좋아요 처리 실패',
+                description: '좋아요 상태를 업데이트하는 데 실패했습니다.'
+            });
+        }
+    };
+
     let bodyParsed = parse(body);
 
     return (
@@ -172,17 +200,20 @@ export default function BoardDetail() {
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
                                     <Avatar src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : '/default-avatar.png'} />
-                                    <S.Writer>{nicknames}</S.Writer>
+                                    <S.Writer>{username}</S.Writer>
                                 </AvatarWrapper>
                                 <S.Date>{formatCreateDate(createDate)}</S.Date>
                             </S.Info>
                             <S.SubWrapper>
                                 <S.Url onClick={handleCopyUrl}>Url 복사</S.Url>
-                                <S.Favorite>favorite</S.Favorite>
+                                <S.Favorite onClick={handleLikeClick}>
+                                    {isLiked ? <HeartFilled style={{ color: 'red' }} /> : <HeartOutlined />}
+                                    <span>{likesCount}</span> {/* 좋아요 수 표시 */}
+                                </S.Favorite>
                             </S.SubWrapper>
                         </S.Header>
                         <S.Body>
-                            <S.RouteTitle>{nicknames} 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
+                            <S.RouteTitle>{username} 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
                             <S.AddressWrapper>
                                 {addresses.map((address, index) => (
                                     <S.AddressItem key={index}>

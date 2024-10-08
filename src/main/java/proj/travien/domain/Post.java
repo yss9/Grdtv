@@ -44,11 +44,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // 순환 참조 방지
     private Set<Like> likes = new HashSet<>();
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Set<Favorite> favorites = new HashSet<>();
 
     private Integer likesCount;
 
@@ -83,4 +81,24 @@ public class Post {
     public int hashCode() {
         return 31;
     }
+
+    public void addLike() {
+        this.likesCount = this.likesCount == null ? 1 : this.likesCount + 1;
+    }
+
+    public void removeLike() {
+        if (this.likesCount != null && this.likesCount > 0) {
+            this.likesCount--;
+        }
+    }
+
+    // 사용자 ID만 반환하는 메서드 추가
+    public Set<Long> getLikeUserIds() {
+        Set<Long> userIds = new HashSet<>();
+        for (Like like : likes) {
+            userIds.add(like.getUser().getId());
+        }
+        return userIds;
+    }
+
 }
