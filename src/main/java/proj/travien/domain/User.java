@@ -39,9 +39,9 @@ public class User {
     private String specIntroduction;
     private double averageReviewRating;
 
-    // 역할 필드 (ROLE_USER, ROLE_AGENT, ROLE_ADMIN 등)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    // 단일 역할 관리 (Enum 타입)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     //나은이가 추가
     // 기본 생성자 추가
@@ -56,4 +56,5 @@ public class User {
 
 
 }
+
 

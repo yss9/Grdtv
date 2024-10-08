@@ -11,17 +11,18 @@ const Container=styled.div`
 const TopBar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 1500px;
   height: 60px;
   //margin-top: 3vh;
-  //background-color: gray;
+ // background-color: gray;
 `;
 
 const LogoWrapper = styled.div`
-  width: 37%;
-  text-align: left;
-  //background-color: #61dafb;
+  width: 25%;
+    display: flex;
+    justify-content: center; 
+   // background-color: #61dafb;
 `;
 
 const Logo = styled.div`
@@ -30,7 +31,6 @@ const Logo = styled.div`
     background-position: center;
     width: 300px;
     height: 80px;
-    display: flex;
   margin-bottom: 1.5em;
   cursor: pointer;
  // background-color: pink;
@@ -42,6 +42,8 @@ const MenuContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+   // background-color: yellowgreen;
+    margin-left: 14%;
  
 `;
 
@@ -137,6 +139,10 @@ export default function TopBarComponent({ fontColor }) {
     const handleGoPersonal = () => {
         navigate('/recomendation/personal');
     };
+    const handleGoSimilarity = () => {
+        navigate('/recomendation/similarity');
+    };
+
     const handleGoMyPage = () => {
         navigate('/my');
     };
@@ -168,6 +174,7 @@ export default function TopBarComponent({ fontColor }) {
                         <RecomendationDropdown>
                             <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoMbti(); }}>MBTI 기반 추천</RecomendationItem>
                             <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoPersonal(); }}>키워드 추천</RecomendationItem>
+                            <RecomendationItem style={{color:"black"}} onClick={(e) => { e.stopPropagation(); handleGoSimilarity(); }}>사용자 기반 추천</RecomendationItem>
                         </RecomendationDropdown>
                     </Recomendation>
                     <Community style={{color:fontColor}} onClick={handleGoRoute}>루트 탐색</Community>

@@ -1,47 +1,20 @@
 import React, { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
     Wrapper,
     Logo,
-    FormContainer,
     Progress,
     ProgressBar,
-    GenderButtonWrapper,
-    GenderButton,
-    FormGroup,
-    Input,
     ContentsWrapper,
-    InputText,
-    NextButtonWrapper,
-    ButtonContainer,
-    PageButton,
-    BoldText,
-    PercentageInput,
-    MBTISwitchWrapper,
-    SetCenter,
-    RadioButton,
-    RadioButtonComment,
-    RadioButtonWrapper,
-    RadioButtonSubComment,
-    BoldSubText,
-    UserImg,
-    FinishText,
-    GoToLoginPage,
-    OverlayImageInput,
-    GenderImage,
     LogoWrapper,
-    FormLabel,
-    FormField,
-    SubComment,
-    RadioForm,
-    FileInput,
-    Slider, MBTIButton, MBTIButtonWrapper, SliderWrapper,
-    PercentValueWrapper,
 } from "./signupStyle";
-import {Switch as AntSwitch} from "antd";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import UserInfoForm from "./components/UserInfoForm";
+import MBTIForm from "./components/MBTIForm";
+import ProfileForm from "./components/ProfileForm";
+import GloplerForm from "./components/GloplerForm";
+import SignUpComplete from "./components/SignUpComplete";
 
 export default function SignupPage() {
 
@@ -61,31 +34,13 @@ export default function SignupPage() {
     const [percentageFT, setPercentageFT] = useState(null);
     const [percentagePJ, setPercentagePJ] = useState(null);
 
-
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
-
-    const [mbti, setMbti] = useState({
-        IE: { active: false },
-        SN: { active: false },
-        FT: { active: false },
-        PJ: { active: false },
-    });
 
     const [IE, setIE] = useState("I");
     const [SN, setSN] = useState("S");
     const [FT, setFT] = useState("F");
     const [PJ, setPJ] = useState("P");
-
-    const toggleMBTI = (key) => {
-        setMbti((prev) => ({
-            ...prev,
-            [key]: {
-                ...prev[key],
-                active: !prev[key].active,
-            },
-        }));
-    };
 
     const goToFirstPage = () => {
         setStep(1);
@@ -95,15 +50,12 @@ export default function SignupPage() {
         setStep(2);
     };
     const goToThirdPage = () => {
-        mbti.IE.active ? setIE("E") : setIE("I");
-        mbti.SN.active ? setSN("N") : setSN("S");
-        mbti.FT.active ? setFT("T") : setFT("F");
-        mbti.PJ.active ? setPJ("J") : setPJ("P");
 
         setPercentageIE(percentValue[0])
         setPercentageSN(percentValue[1])
         setPercentageFT(percentValue[2])
         setPercentagePJ(percentValue[3])
+        console.log(IE, percentageIE, SN, percentageSN, FT, percentageFT, PJ, percentagePJ )
 
         setStep(3);
     };
@@ -126,6 +78,8 @@ export default function SignupPage() {
             }
         }
 
+        console.log('glopler:',glopler)
+
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
 
@@ -141,6 +95,8 @@ export default function SignupPage() {
                 nickname: nickName,
                 isAgent: glopler,
             })], { type: 'application/json' }));
+
+            formData.append('isAgent', glopler ? 'true' : 'false');
 
             if (profilePicture) {
                 formData.append('profilePicture', profilePicture);
@@ -168,20 +124,6 @@ export default function SignupPage() {
         } else {
             alert("모든 정보를 올바르게 기입해 주세요.");
         }
-    };
-
-    const MBTISwitch = ({ label1, label2, isActive, onToggle }) => {
-        return (
-            <MBTISwitchWrapper>
-                <div>
-                    <SetCenter>
-                        {label1}&nbsp;&nbsp;{label2}
-                    </SetCenter>
-                    <AntSwitch checked={isActive} onChange={onToggle} style={{ marginLeft: 10, marginRight: 10, backgroundColor:"lightgray" }} />
-
-                </div>
-            </MBTISwitchWrapper>
-        );
     };
 
     const handleProfilePictureChange = (event) => {
@@ -231,18 +173,7 @@ export default function SignupPage() {
     const onClickGlopler = (isGlopler) => {
         setGlopler(isGlopler);
     }
-    const onChangePercentageIE = (event) => {
-        setPercentageIE(event.target.value)
-    };
-    const onChangePercentageSN = (event) => {
-        setPercentageSN(event.target.value)
-    };
-    const onChangePercentageFT = (event) => {
-        setPercentageFT(event.target.value)
-    };
-    const onChangePercentagePJ = (event) => {
-        setPercentagePJ(event.target.value)
-    };
+
     const [percentValue, setPercentValue] = useState([50, 50, 50, 50]);
 
     const handleChange = (percentIndex) => (event) => {
@@ -253,25 +184,21 @@ export default function SignupPage() {
             return updatedValues;
         });
     };
-    const [selectedIE, setSelectedIE] = useState('E');
-    const [selectedSN, setSelectedSN] = useState('S');
-    const [selectedFT, setSelectedFT] = useState('F');
-    const [selectedPJ, setSelectedPJ] = useState('P');
 
     const handleIEClick = (value) => {
-        setSelectedIE(value);
+        setIE(value);
     };
 
     const handleSNClick = (value) => {
-        setSelectedSN(value);
+        setSN(value);
     };
 
     const handleFTClick = (value) => {
-        setSelectedFT(value);
+        setFT(value);
     };
 
     const handlePJClick = (value) => {
-        setSelectedPJ(value);
+        setPJ(value);
     };
     const handleGoHome = () => {
         navigate('/')
@@ -290,300 +217,69 @@ export default function SignupPage() {
                     </ProgressBar>
                     <AnimatePresence>
                         {step === 1 && (
-                            <FormContainer>
-                                <motion.div
-                                    key="step1"
-                                    initial="initial"
-                                    animate="enter"
-                                    exit="exit"
-                                    variants={pageVariants}
-                                    style={{width: "100%"}}
-                                >
-                                    <BoldText>회원가입</BoldText>
-                                    <BoldSubText>글로플의 회원이 되어 색다른 여행을 경험해 보세요.</BoldSubText>
-
-                                    <FormGroup>
-                                        <FormField value={id} type="input" onChange={onChangeId} placeholder="아이디" required="" />
-                                        <FormLabel htmlFor="ID">아이디</FormLabel>
-                                        <SubComment>6~20자</SubComment>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <FormField value={pw} type="password" onChange={onChangePw} placeholder="비밀번호" required="" />
-                                        <FormLabel htmlFor="PW">비밀번호</FormLabel>
-                                        <SubComment>문자, 숫자 포함 8~20자</SubComment>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <FormField value={name} type="input" onChange={onChangeName} placeholder="이름" required="" />
-                                        <FormLabel htmlFor="Name">이름</FormLabel>
-                                        <SubComment>이름을 입력해주세요.</SubComment>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <FormField value={birthday} type="input" onChange={onChangeBirthday} placeholder="생년월일" required="" />
-                                        <FormLabel htmlFor="Birthday">생년월일</FormLabel>
-                                        <SubComment>ex)020331</SubComment>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <InputText>Gender</InputText>
-                                        <GenderButtonWrapper>
-                                            <GenderButton onClick={onClickWoman}>
-                                                <GenderImage
-                                                    src={gender === 'W' ? '/Img/signInImg/womanOn.png' : '/Img/signInImg/womanOff.png'}
-                                                    alt="Gender Icon"
-                                                />
-                                            </GenderButton>
-                                            <GenderButton onClick={onClickMan}>
-                                                <GenderImage
-                                                    src={gender === 'M' ? '/Img/signInImg/manOn.png' : '/Img/signInImg/manOff.png'}
-                                                    alt="Gender Icon"
-                                                />
-                                            </GenderButton>
-                                        </GenderButtonWrapper>
-                                    </FormGroup>
-                                    <NextButtonWrapper>
-                                        <PageButton onClick={goToSecondPage}>다음</PageButton>
-                                    </NextButtonWrapper>
-                                </motion.div>
-                            </FormContainer>
+                            <UserInfoForm
+                                id={id}
+                                pw={pw}
+                                name={name}
+                                birthday={birthday}
+                                gender={gender}
+                                onChangeId={onChangeId}
+                                onChangePw={onChangePw}
+                                onChangeName={onChangeName}
+                                onChangeBirthday={onChangeBirthday}
+                                onClickWoman={onClickWoman}
+                                onClickMan={onClickMan}
+                                goToSecondPage={goToSecondPage}
+                                pageVariants={pageVariants}
+                            />
                         )}
                         {step === 2 && (
-                            <FormContainer>
-                                <motion.div
-                                    key="step2"
-                                    initial="initial"
-                                    animate="enter"
-                                    exit="exit"
-                                    variants={pageVariants}
-                                    style={{width: "100%"}}
-                                >
-
-                                    <BoldText>MBTI를 알려주세요.</BoldText>
-
-
-                                    <MBTIButtonWrapper>
-
-                                        <MBTIButton
-                                            selected={selectedIE === 'E'}
-                                            onClick={() => handleIEClick('E')}
-                                        >
-                                            E
-                                        </MBTIButton>
-                                        <MBTIButton
-                                            selected={selectedIE === 'I'}
-                                            onClick={() => handleIEClick('I')}
-                                        >
-                                            I
-                                        </MBTIButton>
-                                    </MBTIButtonWrapper>
-                                    <MBTIButtonWrapper>
-                                        <MBTIButton
-                                            selected={selectedSN === 'S'}
-                                            onClick={() => handleSNClick('S')}
-                                        >
-                                            S
-                                        </MBTIButton>
-                                        <MBTIButton
-                                            selected={selectedSN === 'N'}
-                                            onClick={() => handleSNClick('N')}
-                                        >
-                                            N
-                                        </MBTIButton>
-                                    </MBTIButtonWrapper>
-                                    <MBTIButtonWrapper>
-                                        <MBTIButton
-                                            selected={selectedFT === 'F'}
-                                            onClick={() => handleFTClick('F')}
-                                        >
-                                            F
-                                        </MBTIButton>
-                                        <MBTIButton
-                                            selected={selectedFT === 'T'}
-                                            onClick={() => handleFTClick('T')}
-                                        >
-                                            T
-                                        </MBTIButton>
-                                    </MBTIButtonWrapper>
-                                    <MBTIButtonWrapper>
-                                        <MBTIButton
-                                            selected={selectedPJ === 'P'}
-                                            onClick={() => handlePJClick('P')}
-                                        >
-                                            P
-                                        </MBTIButton>
-                                        <MBTIButton
-                                            selected={selectedPJ === 'J'}
-                                            onClick={() => handlePJClick('J')}
-                                        >
-                                            J
-                                        </MBTIButton>
-                                    </MBTIButtonWrapper>
-                                    <SliderWrapper>
-                                        <Slider
-                                            id="myRange"
-                                            className="slider"
-                                            max="100"
-                                            min="50"
-                                            step="1" // 정수만 허용
-                                            type="range"
-                                            value={percentValue[0]}
-                                            onChange={handleChange(0)}
-                                        />
-                                        <Slider
-                                            id="myRange"
-                                            className="slider"
-                                            max="100"
-                                            min="50"
-                                            step="1" // 정수만 허용
-                                            type="range"
-                                            value={percentValue[1]}
-                                            onChange={handleChange(1)}
-                                        />
-                                        <Slider
-                                            id="myRange"
-                                            className="slider"
-                                            max="100"
-                                            min="50"
-                                            step="1" // 정수만 허용
-                                            type="range"
-                                            value={percentValue[2]}
-                                            onChange={handleChange(2)}
-                                        />
-                                        <Slider
-                                            id="myRange"
-                                            className="slider"
-                                            max="100"
-                                            min="50"
-                                            step="1" // 정수만 허용
-                                            type="range"
-                                            value={percentValue[3]}
-                                            onChange={handleChange(3)}
-                                        />
-                                    </SliderWrapper>
-                                    <SliderWrapper>
-                                        <PercentValueWrapper>
-                                            {percentValue[0]}%
-                                        </PercentValueWrapper>
-                                        <PercentValueWrapper>
-                                            {percentValue[1]}%
-                                        </PercentValueWrapper>
-                                        <PercentValueWrapper>
-                                            {percentValue[2]}%
-                                        </PercentValueWrapper>
-                                        <PercentValueWrapper>
-                                            {percentValue[3]}%
-                                        </PercentValueWrapper>
-                                    </SliderWrapper>
-
-                                    <div style={{height:'30px'}}></div>
-                                    <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
-                                    <p>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
-                                    <br/><br/><br/><br/>
-
-                                    <ButtonContainer>
-                                        <PageButton onClick={goToFirstPage}>이전</PageButton>
-                                        <PageButton onClick={goToThirdPage}>다음</PageButton>
-                                    </ButtonContainer>
-                                </motion.div>
-                            </FormContainer>
+                            <MBTIForm
+                                IE={IE}
+                                SN={SN}
+                                FT={FT}
+                                PJ={PJ}
+                                percentValue={percentValue}
+                                handleIEClick={handleIEClick}
+                                handleSNClick={handleSNClick}
+                                handleFTClick={handleFTClick}
+                                handlePJClick={handlePJClick}
+                                handleChange={handleChange}
+                                goToFirstPage={goToFirstPage}
+                                goToThirdPage={goToThirdPage}
+                                pageVariants={pageVariants}
+                            />
                         )}
                         {step === 3 && (
-                            <FormContainer>
-                                <motion.div
-                                    key="step3"
-                                    initial="initial"
-                                    animate="enter"
-                                    exit="exit"
-                                    variants={pageVariants}
-                                    style={{width: "100%"}}
-                                >
-                                    <BoldText>프로필을 설정해 주세요.</BoldText>
-                                    <label>
-                                        <UserImg src={imgFile ? imgFile : '/Img/signInImg/firstProfileImg.png'}/>
-                                        <OverlayImageInput type="file" accept="image/*"
-                                                           onChange={handleProfilePictureChange} ref={imgRef}/>
-                                    </label>
-                                    <br/>
-                                    <FormGroup>
-                                        <InputText>닉네임</InputText>
-                                        <Input value={nickName} type="text" maxlength={20} size="50" placeholder="닉네임을 입력해 주세요. (1~8자)"
-                                               onChange={onChangeNickName}/>
-                                    </FormGroup>
-                                    <br/><br/>
-                                    <ButtonContainer>
-                                        <PageButton onClick={goToSecondPage}>이전</PageButton>
-                                        <PageButton onClick={goToFourthPage}>다음</PageButton>
-                                    </ButtonContainer>
-                                </motion.div>
-                            </FormContainer>
+                            <ProfileForm
+                                imgFile={imgFile}
+                                handleProfilePictureChange={handleProfilePictureChange}
+                                imgRef={imgRef}
+                                nickName={nickName}
+                                onChangeNickName={onChangeNickName}
+                                goToSecondPage={goToSecondPage}
+                                goToFourthPage={goToFourthPage}
+                                pageVariants={pageVariants}
+                            />
                         )}
                         {step === 4 && (
-                            <FormContainer>
-                                <motion.div
-                                    key="step4"
-                                    initial="initial"
-                                    animate="enter"
-                                    exit="exit"
-                                    variants={pageVariants}
-                                    style={{width: "100%"}}
-                                >
-                                    <BoldText>
-                                        여행자들의 예약 대행을 돕는,<br/>
-                                        글로플러로 활동하시겠어요?
-                                    </BoldText>
-                                    <BoldSubText>글로플러는 예약 대행자 분들을 지칭하는 글로플만의 명칭입니다.</BoldSubText>
-                                    <div style={{margin: "0 0 80px"}}>
-                                        <RadioForm>
-                                            <input value="a" name="glopler" type="radio" id="a"
-                                                   onClick={() => onClickGlopler(true)}/>
-                                            <label htmlFor="a"><span></span>네! 글로플러로 활동 하겠습니다.</label>
-                                            <input defaultChecked value="b" name="glopler" type="radio" id="b"/>
-                                            <label htmlFor="b"><span></span>아니요, 예약만 진행할게요.</label>
-                                            <div className="worm">
-                                            <div className="worm__segment"></div>
-                                            </div>
-                                        </RadioForm>
-                                        <RadioButtonSubComment>나중에 변경할 수 있습니다.</RadioButtonSubComment>
-                                    </div>
-
-                                    <BoldText>글로플러 검증을 위한 파일을 첨부하여 제출해 주세요.</BoldText>
-
-                                    <BoldSubText>
-                                        주민등록증, 자격증, 여권 등을 첨부해 주시면, 글로플에서 서류를 검토하여 글로플러 리스트에 등록해 줘요.
-                                    </BoldSubText>
-                                    <div style={{margin: '30px 0'}}>
-                                        <FileInput type="file" onChange={handleVerificationFileChange}/>
-                                    </div>
-
-
-                                    <ButtonContainer>
-                                        <PageButton onClick={goToThirdPage}>이전</PageButton>
-                                        <PageButton onClick={onClickSubmit}>완료</PageButton>
-                                    </ButtonContainer>
-                                </motion.div>
-                            </FormContainer>
+                            <GloplerForm
+                                pageVariants={pageVariants}
+                                onClickGlopler={onClickGlopler}
+                                handleVerificationFileChange={handleVerificationFileChange}
+                                goToThirdPage={goToThirdPage}
+                                onClickSubmit={onClickSubmit}
+                            />
                         )}
-
                         {step === 5 && (
-                            <FormContainer>
-                                <motion.div
-                                    key="step5"
-                                    initial="initial"
-                                    animate="enter"
-                                    exit="exit"
-                                    variants={pageVariants}
-                                    style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}
-                                >
-                                    <UserImg src={imgFile ? imgFile :"https://via.placeholder.com/100x100"} />
-                                    <FinishText>회원가입이 완료 되었습니다.</FinishText>
-                                    <BoldSubText>글로플과 함께 특별하고 믿을 수 있는 여행을 떠나보아요!</BoldSubText>
-                                    <GoToLoginPage onClick={onClickLogin}>
-                                        로그인
-                                    </GoToLoginPage>
-                                </motion.div>
-                            </FormContainer>
+                            <SignUpComplete
+                                imgFile={imgFile}
+                                onClickLogin={onClickLogin}
+                                pageVariants={pageVariants}
+                            />
                         )}
                     </AnimatePresence>
                 </ContentsWrapper>
-
             </Wrapper>
         </>
     );

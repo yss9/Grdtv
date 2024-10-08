@@ -26,11 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUserId())
                 .password(user.getPassword())
-                .authorities(user.getRoles().stream().map(role -> "ROLE_" + role).collect(Collectors.toList()).toArray(new String[0]))
+                // Enum 타입으로 처리할 때는 접두사 없이 직접 사용 가능
+                .authorities(user.getRole().name())  // Enum에서 직접 이름을 사용
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)
                 .disabled(false)
                 .build();
     }
+
 }

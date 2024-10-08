@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.PointsHistory;
+import proj.travien.domain.Role;
 import proj.travien.domain.User;
 import proj.travien.dto.UserDTO;
 import proj.travien.dto.AgentDTO;
@@ -19,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,9 +61,9 @@ public class UserService {
         user.setGender(userDTO.getGender());
         user.setMbti(userDTO.getMbti());
         user.setNickname(userDTO.getNickname());
+        user.setAgent(userDTO.isAgent());
 
-        // 기본 역할 부여: 일반 사용자는 ROLE_USER
-        user.setRoles(Set.of("ROLE_USER"));
+        Role role = Role.ROLE_USER;
 
         // 프로필 사진 저장
         if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
@@ -69,9 +71,10 @@ public class UserService {
             user.setProfilePicture(profilePicturePath);
         }
 
+
         // 예약 대행자인 경우 ROLE_AGENT 추가 및 검증 파일만 처리
         if (userDTO.isAgent()) {
-            user.getRoles().add("ROLE_AGENT");
+            role = Role.ROLE_AGENT;
 
             // 검증 파일 저장 (예약 대행자만)
             if (verificationFile != null && !verificationFile.isEmpty()) {
@@ -82,7 +85,7 @@ public class UserService {
 
         // 기본 포인트 1000 설정
         user.setPoints(1000);
-
+        user.setRole(role);
         // 사용자 정보 저장
         userRepository.save(user);
         return true;
@@ -353,10 +356,13 @@ public class UserService {
         return true;
     }
 
-    //관리자 승격
+    // 관리자 승격
     public void promoteToAdmin(String userId) {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.getRoles().add("ROLE_ADMIN");
+
+        // 기존 역할을 덮어쓰고 ROLE_ADMIN으로 설정
+        user.setRole(Role.ROLE_ADMIN);
+
         userRepository.save(user);
     }
 

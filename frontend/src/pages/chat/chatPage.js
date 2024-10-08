@@ -1,13 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import TopBarComponent from "../../components/TopBar/TopBar";
+import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
+
+import {ChatPageWrapper, Main, Wrapper} from "./chatPageStyle";
 import WebSocketService from "./WebSocketService";
-import {
-    BottomBar, ChatBubble, ChatButton, ChatHeader, ChatInput, ChatItem, ChatList, ChatListWrapper,
-    ChatRoom, ChatWrapper, Main, Sidebar, SidebarContentInput, SidebarHeader, Username, Wrapper
-} from "./chatPageStyle";
-import {jwtDecode} from "jwt-decode";
+
+import TopBarComponent from "../../components/TopBar/TopBar";
+import ChatListComponent from "./components/chatListComponent";
+import SideBarComponent from "./components/sideBarComponent";
+import ChatRoomComponent from "./components/chatRoomComponent";
+import {Reset} from "styled-reset";
+
 
 const styles = {
     myMessage: {
@@ -28,19 +32,42 @@ const styles = {
 
 const ChatPage = () => {
 
-    const buttonRef = useRef(null);
+    const bottomRef = useRef(null);
 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [username, setUsername] = useState('');
     const [roomId, setRoomId] = useState('');
     const [joined, setJoined] = useState(false);
-    const [roomJoined, setRoomJoined] = useState(false);
     const [nicknames, setNicknames] = useState([]);
     const [chatUsername, setChatUsername] = useState('');
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
 
     const [selectedFile, setSelectedFile] = useState(null);
+
+    const [id, setId] = useState(null);
+    const [isAgent, setIsAgent] = useState(false);
+
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.userId;
+
+    useEffect(() => {
+        const fetchMyInfo = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/my-info', {
+                    params: {
+                        userId: userId,
+                    },
+                });
+                setIsAgent(response.data.agent);
+                console.log('isAgent:', isAgent)
+            } catch (error) {
+                console.error('Failed to fetch myInfo', error);
+            }
+        };
+
+        fetchMyInfo();
+    }, [token]);
 
     useEffect(() => {
         const fetchNicknames = async () => {
@@ -67,6 +94,8 @@ const ChatPage = () => {
         fetchNicknames();
     }, [token]);
 
+
+
     useEffect(() => {
         // joined가 true일 때만 구독 처리
         if (joined && roomId) {
@@ -82,20 +111,32 @@ const ChatPage = () => {
         }
     }, [joined, roomId]);
 
+    // 채팅 전송 시 스크롤 최하단으로 이동
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+    }, [messages]);
+
     const onMessageReceived = (payload) => {
         const message = JSON.parse(payload.body);
         setMessages((prevMessages) => [...prevMessages, message]);
+
     };
 
     const handleSendMessage = () => {
-        const message = {
-            sender: username,
-            content: input,
-            type: 'CHAT'
-        };
-        WebSocketService.sendMessage(message);
-        setInput('');
+        if (input) {
+            const message = {
+                sender: username,
+                content: input,
+                type: 'CHAT'
+            };
+            WebSocketService.sendMessage(message);
+            setInput('');
+        }
     };
+
+
 
     const handleAddUser = async (targetUserNickname) => {
         setMessages([]);
@@ -111,7 +152,6 @@ const ChatPage = () => {
                 setRoomId(newRoomId);
                 setChatUsername(targetUserNickname);
                 setJoined(true);
-                setRoomJoined(true);
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
@@ -121,7 +161,7 @@ const ChatPage = () => {
     };
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
-            buttonRef.current.click();
+            handleSendMessage()
         }
     }
     const handleFileChange = (event) => {
@@ -149,210 +189,43 @@ const ChatPage = () => {
 
     return (
         <Wrapper>
+            <Reset/>
             <div style={{height: '40px'}}></div>
             <TopBarComponent/>
-            <ChatWrapper>
-                <Sidebar>
-                    <div style={{width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black'}}>
-                        <SidebarHeader>
-                            최근 채팅
-                        </SidebarHeader>
-                    </div>
-                    <div>
-                        <SidebarHeader style={{display: "flex", justifyContent: "center", margin: '0 0 10px 0'}}>
-                            완료된 채팅
-                        </SidebarHeader>
-                    </div>
-                    <br/>
-                    <hr style={{margin: '0 7px'}}/>
-                    <br/>
-                    <div style={{display: "flex", justifyContent: "center", margin: '10px 0 0 0'}}>도쿄 예약
-                        대행<br/><br/><br/>○○ 예약 대행
-                    </div>
-
-                </Sidebar>
-                <ChatListWrapper>
-                    <div>
-                        <SidebarContentInput type="text" placeholder="채팅방 내용, 참여자 검색"/>
-                        <ChatList>
-                            <div>
-                                {nicknames.map(nickname => (
-                                    nickname !== username && (
-                                        <div
-                                            style={{
-                                                width: '100%',
-                                                borderBottom: '1px solid lightgray',
-                                                cursor: 'pointer',
-                                                padding: '10px',
-                                                overflow: 'hidden',
-                                            }}
-                                            onClick={() => handleAddUser(nickname)}
-                                        >
-                                            <img style={{
-                                                width: '50px',
-                                                float: 'left',
-                                            }}
-                                                 src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
-                                            <div style={{
-                                                float: 'right',
-                                                width: 'calc(100% - 70px)',
-                                                padding: '0 10px',
-                                            }}>
-                                                <div>
-                                                    {nickname !== username && (
-                                                            <ChatItem key={nickname}>
-                                                                {nickname}
-                                                            </ChatItem>
-                                                        )
-                                                    }
-                                                </div>
-                                                <div style={{fontSize: '12px', color: 'gray'}}>
-                                                    메세지를 보내서 글로플러와...
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                ))}
-                            </div>
-
-
-                        </ChatList>
-                    </div>
-                </ChatListWrapper>
+            <ChatPageWrapper>
+                <SideBarComponent/>
+                <ChatListComponent
+                    nicknames={nicknames}
+                    username={username}
+                    handleAddUser={handleAddUser}
+                />
                 <Main>
                     {joined ? (
-                        <div style={{overflow: 'hidden'}}>
-                            <ChatHeader>
-                                <img style={{
-                                    width: '50px',
-                                    float: 'left',
-                                }}
-                                     src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png' alt='채팅방'/>
-                                <Username>{chatUsername}</Username>
-
-                                <div style={{
-                                    float: 'left',
-                                    border: '1px solid #4E53ED',
-                                    borderRadius: '20px',
-                                    width: '85px',
-                                    height: '30px',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    fontSize: '14px',
-                                    marginLeft: '35px',
-                                }}>
-                                    리뷰 &nbsp;&gt;
-                                </div>
-                                <div style={{
-                                    width: '120px',
-                                    height: '35px',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    fontSize: '14px',
-                                    color: 'white',
-                                    backgroundColor: '#4E53ED',
-                                    border: '1px solid #4E53ED',
-                                    borderRadius: '20px',
-                                    marginLeft: 'auto',
-                                }}>
-                                    글로플러 목록
-                                </div>
-
-                            </ChatHeader>
-                            <ChatRoom style={{marginBottom: '20px', height: '58vh', overflowY: 'auto'}}>
-                                {messages.map((message, index) => (
-                                    <ChatBubble key={index} style={{
-                                        ...(message.sender === username ? styles.myMessage : styles.otherMessage),
-                                        width: "auto",
-                                    }}>
-                                        {message.content}
-                                    </ChatBubble>
-                                ))}
-                            </ChatRoom>
-                            <BottomBar>
-                                <div style={{float: 'left', width: '7%', height: '100%'}}>
-                                    <button style={{
-                                        float: 'none',
-                                        width: '100%',
-                                        height: '100%',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        color: 'gray',
-                                        border: 'none',
-                                        fontSize: '20px',
-                                        cursor: 'pointer',
-                                    }}
-                                        onClick={handleOpenModal}
-                                    >
-                                        +
-                                    </button>
-                                    {isVisible && (
-                                        <div style={{
-                                            display: 'block',
-                                            position: 'fixed',
-                                            left: 0,
-                                            top: 0,
-                                            width: '100%',
-                                            height: '100%',
-                                            overflow: 'auto',
-                                            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                                            zIndex: 1
-                                        }} onClick={handleCloseModal}>
-                                            <div onClick={(e) => e.stopPropagation()} style={{
-                                                backgroundColor: '#fefefe',
-                                                margin: '15% auto',
-                                                padding: '20px',
-                                                border: '1px solid #888',
-                                                width: '30%',
-                                            }}>
-                                                <span onClick={handleCloseModal} style={{
-                                                    color: '#aaa',
-                                                    float: 'right',
-                                                    fontSize: '28px',
-                                                    fontWeight: 'bold',
-                                                    cursor: 'pointer'
-                                                }}>
-                                                    ×
-                                                </span>
-                                                <input style={{width: '100%', height: '50px'}}
-                                                       type="file"
-                                                       onChange={handleFileChange}
-                                                       src=''
-                                                />
-                                                <button style={{marginLeft: '40%', padding: '5px 10px', textAlign: 'center'}}
-                                                        onClick={onClickSendFile}
-                                                >전송하기</button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                                <ChatButton
-                                    ref={buttonRef}
-                                    onClick={handleSendMessage}
-                                ><img style={{height: "60%"}} src='/Img/채팅%20메세지%20버튼.png' alt='채팅 메세지 버튼'/>
-                                </ChatButton>
-                                <ChatInput
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    placeholder="메세지를 보내서 글로플러와 예약을 진행해 보세요."
-                                >
-                                </ChatInput>
-                            </BottomBar>
-
-                        </div>
-
+                        <ChatRoomComponent
+                            chatUsername={chatUsername}
+                            messages={messages}
+                            username={username}
+                            styles={styles}
+                            input={input}
+                            setInput={setInput}
+                            handleOpenModal={handleOpenModal}
+                            handleCloseModal={handleCloseModal}
+                            handleFileChange={handleFileChange}
+                            onClickSendFile={onClickSendFile}
+                            handleSendMessage={handleSendMessage}
+                            handleKeyDown={handleKeyDown}
+                            isVisible={isVisible}
+                            bottomRef={bottomRef}
+                            isAgent={isAgent}
+                            userId={userId}
+                        />
                     ) : (
                         <div>
                             {/*채팅방 입장 필요*/}
                         </div>
                     )}
                 </Main>
-            </ChatWrapper>
+            </ChatPageWrapper>
         </Wrapper>
     );
 };

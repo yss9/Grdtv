@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import proj.travien.JwtUtil;
+import proj.travien.jwt.JwtUtil;
 import proj.travien.dto.ChatMessage;
 import proj.travien.service.ChatBotService;
 import reactor.core.publisher.Mono;

@@ -2,13 +2,15 @@ package proj.travien.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-import proj.travien.JwtUtil;
+import org.springframework.web.multipart.MultipartFile;
+import proj.travien.jwt.JwtUtil;
 import proj.travien.domain.ChatMessage;
 import proj.travien.domain.ChatRoom;
 import proj.travien.domain.User;
@@ -18,6 +20,11 @@ import proj.travien.repository.ChatRoomRepository;
 import proj.travien.repository.UserChatRoomRepository;
 import proj.travien.repository.UserRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +32,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
+
+    @Value("${upload.location}")  // application.properties에서 경로 가져오기
+    private String uploadDir;
 
     @Autowired
     private ChatMessageRepository chatMessageRepository;
@@ -114,6 +124,39 @@ public class ChatController {
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(roomIds, HttpStatus.OK);
+    }
+
+    @PostMapping("/uploadFile/{roomId}")
+    public ResponseEntity<String> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return new ResponseEntity<>("파일이 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            // 파일 저장 경로 생성
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadDir + File.separator + fileName);
+
+            // 디렉토리가 없는 경우 생성
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                directory.mkdirs(); // 경로에 필요한 디렉토리들을 모두 생성
+            }
+
+            // 파일을 해당 경로에 저장
+            Files.copy(file.getInputStream(), path);
+
+            // 파일 경로를 메시지로 저장
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setRoomId(roomId);
+            chatMessage.setType(ChatMessage.MessageType.FILE);
+            chatMessage.setContent("/image/" + fileName); // 파일 경로를 메시지로 설정
+            chatMessageRepository.save(chatMessage);
+
+            return new ResponseEntity<>("파일 업로드 성공", HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("파일 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
