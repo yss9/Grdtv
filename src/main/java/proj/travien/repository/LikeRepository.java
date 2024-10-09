@@ -13,14 +13,11 @@ import java.util.Optional;
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
 
-    boolean existsByPostBoardIDAndUserId(Long boardID, Long userId);
+    boolean existsByPostBoardIDAndUserId(Long boardID, Long id);
 
 
-    Optional<Like> findByPostBoardIDAndUserId(Long boardID, Long userId);
+    Optional<Like> findByPostBoardIDAndUserId(Long boardID, Long id);
 
 
-    // 최근 10명의 닉네임을 가져오는 메서드
-    @Query("SELECT u.nickname FROM Like l JOIN l.user u WHERE l.post.boardID = :postId ORDER BY l.id DESC")
-    List<String> findRecentUsernamesByPostId(@Param("postId") Long postId);
 
 }

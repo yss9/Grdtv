@@ -19,9 +19,9 @@ public class LikeService {
     @Autowired
     private PostRepository postRepository;
 
-    public void toggleLikePost(Long boardID, Long userId) {
+    public void toggleLikePost(Long boardID, Long id) {
         Post post = postRepository.findById(boardID).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
-        Optional<Like> existingLike = likeRepository.findByPostBoardIDAndUserId(boardID, userId);
+        Optional<Like> existingLike = likeRepository.findByPostBoardIDAndUserId(boardID, id);
 
         if (existingLike.isPresent()) {
             // 이미 좋아요가 되어 있으면 좋아요 취소
@@ -31,7 +31,7 @@ public class LikeService {
             // 좋아요가 없으면 좋아요 추가
             Like like = new Like();
             like.setPost(post);
-            like.setUser(new User(userId)); // User는 이미 존재하는 엔티티로 가정
+            like.setUser(new User(id)); // User는 이미 존재하는 엔티티로 가정
             likeRepository.save(like);
 
             post.addLike(); // 좋아요 수 증가
@@ -40,13 +40,10 @@ public class LikeService {
         postRepository.save(post); // 게시물 업데이트
     }
 
-    public boolean isPostLikedByUser(Long boardID, Long userId) {
-        return likeRepository.existsByPostBoardIDAndUserId(boardID, userId);
+    public boolean isPostLikedByUser(Long boardID, Long id) {
+        return likeRepository.existsByPostBoardIDAndUserId(boardID, id);
     }
 
-    public List<String> getRecentUsernames(Long boardID) {
-        return likeRepository.findRecentUsernamesByPostId(boardID);
-    }
 
 }
 

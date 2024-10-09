@@ -23,12 +23,12 @@ public class LikeController {
 
     // 좋아요 토글 (좋아요 추가 또는 취소)
     @PostMapping("/toggle")
-    public ResponseEntity<?> toggleLike(@RequestParam Long boardID, @RequestParam Long userId) {
+    public ResponseEntity<?> toggleLike(@RequestParam Long boardID, @RequestParam Long id) {
         // 좋아요 토글 처리
-        likeService.toggleLikePost(boardID, userId);
+        likeService.toggleLikePost(boardID, id);
 
         // 현재 게시물의 좋아요 상태 확인
-        boolean isLiked = likeService.isPostLikedByUser(boardID, userId);
+        boolean isLiked = likeService.isPostLikedByUser(boardID, id);
         int likesCount = postRepository.findById(boardID).get().getLikesCount();
 
         // 응답 데이터 준비
@@ -56,14 +56,4 @@ public class LikeController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 최근 10명의 사용자 닉네임을 반환하는 API
-     */
-    @GetMapping("/{boardID}/recent-users")
-    public ResponseEntity<?> getRecentUsernames(@PathVariable Long boardID) {
-        List<String> recentUsernames = likeService.getRecentUsernames(boardID);
-
-        // 응답 데이터 준비
-        return ResponseEntity.ok(recentUsernames);
-    }
 }
