@@ -29,6 +29,7 @@ import AgentDetail from './pages/agentDetail/agentDetail'
 import BoardCommentList from "./pages/reviewComment/list/list";
 import BoardCommentWrite from "./pages/reviewComment/write/write";
 import Similarity from './pages/recomendation/Similarity/similarity'
+import MBTItest from "./pages/MBTItest/MBTItestPage";
 
 function App() {
     return (
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/cosine" element={<RecommendationCosine/>}/>
                 <Route path="/test" element={<Test/>}/>
                 <Route path="/agentdetail" element={<AgentDetail/>}/>
+                <Route path="/mbtiTest" element={<MBTItest/>}/>
             </Routes>
         </BrowserRouter>
     );
