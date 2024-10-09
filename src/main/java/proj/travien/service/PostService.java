@@ -300,7 +300,8 @@ public class PostService {
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
-                    post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses(), updatedPost.getCountry());
+                    post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses(),
+                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));

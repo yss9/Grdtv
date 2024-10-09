@@ -55,18 +55,22 @@ public class Post {
     private String country;
 
     @Builder
-    public Post(String title, String body, Set<Addresses> addresses, String country) {
+    public Post(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
         this.country = country;
+        this.nickname = nickname;  // 추가
+        this.mbti = mbti;          // 추가
     }
 
-    public void update(String title, String body, Set<Addresses> addresses, String country) {
+    public void update(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
         this.country = country;
+        this.nickname = nickname;  // 추가
+        this.mbti = mbti;          // 추가
     }
 
     @Override
@@ -103,6 +107,10 @@ public class Post {
 
     @Column
     private String thumbnail;
+
+    private String nickname;  // 추가: 사용자 닉네임
+    private String mbti;      // 추가: 사용자 MBTI
+
 
 
 }

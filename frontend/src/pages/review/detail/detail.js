@@ -17,21 +17,21 @@ export default function BoardDetail() {
     const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
-    const [addressTitle, setAddressTitle] = useState(""); // Address title state
+    const [addressTitle, setAddressTitle] = useState("");
     const [body, setBody] = useState("");
     const [image, setImage] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const [createDate, setCreateDate] = useState("");
-    const [isLiked, setIsLiked] = useState(false);  // 좋아요 상태 관리
-    const [likesCount, setLikesCount] = useState(0); // 좋아요 수 관리
-
-    // User 닉네임 가져옴
-    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
-    const [nicknames, setNicknames] = useState("");
-    const [username, setUsername] = useState('');
-
-    // 사진 가져옴
+    const [isLiked, setIsLiked] = useState(false);  // 좋아요 상태
+    const [likesCount, setLikesCount] = useState(0); // 좋아요 수
+    const [nickname, setNickname] = useState("");
     const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
+
+    /**
+     * 찬호 - 쿠키에서 JWT 토큰 가져오기
+     */
+    const token = Cookies.get('jwt');
+
 
     const fetchData = async () => {
         try {
@@ -44,6 +44,7 @@ export default function BoardDetail() {
             setAddressTitle(postData.addressTitle); // 주소 제목 설정
             setBody(postData.body);
             setImage(postData.image);
+            setNickname(postData.nickname); // 닉네임 설정
 
             // Process addresses to remove any unwanted characters
             const processedAddresses = postData.addresses.map(address => {
@@ -61,31 +62,6 @@ export default function BoardDetail() {
             console.error('Error fetching data:', error);
         }
     };
-
-    useEffect(() => {
-        const fetchNicknames = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                setNicknames(response.data);
-                // console.log('nicknames:',response.data);
-
-                // 토큰에서 내 닉네임 가져오기
-                const userPayload = jwtDecode(token);
-                console.log("userPayload:", userPayload);
-                const extractedUsername = userPayload.nickname;
-                setUsername(extractedUsername);
-                console.log("extractedUsername", extractedUsername);
-            } catch (error) {
-                console.error('Failed to fetch nicknames', error);
-            }
-        };
-
-        fetchNicknames();
-    }, [token]);
 
 
 
@@ -200,7 +176,7 @@ export default function BoardDetail() {
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
                                     <Avatar src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : '/default-avatar.png'} />
-                                    <S.Writer>{username}</S.Writer>
+                                    <S.Writer>{nickname}</S.Writer>
                                 </AvatarWrapper>
                                 <S.Date>{formatCreateDate(createDate)}</S.Date>
                             </S.Info>
@@ -213,7 +189,7 @@ export default function BoardDetail() {
                             </S.SubWrapper>
                         </S.Header>
                         <S.Body>
-                            <S.RouteTitle>{username} 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
+                            <S.RouteTitle>{nickname} 님의 "{addressTitle}"</S.RouteTitle> {/* Render addressTitle here */}
                             <S.AddressWrapper>
                                 {addresses.map((address, index) => (
                                     <S.AddressItem key={index}>
