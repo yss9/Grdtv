@@ -95,7 +95,10 @@ public class PostController {
                 .map(address -> Addresses.builder().address(address).build())
                 .collect(Collectors.toSet());
 
+        // User의 nickname과 mbti 추가
         Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
+        createdPost.setNickname(user.getNickname());  // 추가
+        createdPost.setMbti(user.getMbti());          // 추가
 
         // 포인트 업데이트 추가
         user.setPoints(user.getPoints() + 10);  // 사용자 포인트 +10
@@ -103,6 +106,7 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);  // 생성된 게시물 응답
     }
+
 
 
     /**
