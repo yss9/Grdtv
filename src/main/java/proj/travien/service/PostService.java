@@ -119,7 +119,8 @@ public class PostService {
     /**
      * 게시물 업로드
      */
-    public Post createPost(String title, String body, Set<Addresses> addressStrings, String addressTitle, String country) {
+    public Post createPost(String title, String body, Set<Addresses> addressStrings,
+                           String addressTitle, String country) {
         Post post = new Post();
         post.setTitle(title);
         post.setBody(body);
