@@ -5,10 +5,10 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: '0000'  # spring.datasource.password
-      MYSQL_DATABASE: travien  # 사용 중인 데이터베이스 이름
+      MYSQL_ROOT_PASSWORD: '0000'
+      MYSQL_DATABASE: travien
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -17,7 +17,7 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: Dockerfile.backend
+      dockerfile: docker/Dockerfile.backend
     container_name: backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/travien
@@ -33,7 +33,7 @@ services:
   frontend:
     build:
       context: ..
-      dockerfile: Dockerfile.frontend
+      dockerfile: docker/Dockerfile.frontend
     container_name: frontend
     ports:
       - "3000:80"

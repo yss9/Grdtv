@@ -127,9 +127,14 @@ public class ChatController {
     }
 
     @PostMapping("/uploadFile/{roomId}")
-    public ResponseEntity<String> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file) {
+    @SendTo("/topic/public/{roomId}")
+    public ResponseEntity<String> uploadFile(
+            @PathVariable String roomId,
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("chatMessage") ChatMessage chatMessage) {  // ChatMessage를 함께 받음
+
         if (file.isEmpty()) {
-            return new ResponseEntity<>("파일이 없습니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -147,7 +152,6 @@ public class ChatController {
             Files.copy(file.getInputStream(), path);
 
             // 파일 경로를 메시지로 저장
-            ChatMessage chatMessage = new ChatMessage();
             chatMessage.setRoomId(roomId);
             chatMessage.setType(ChatMessage.MessageType.FILE);
             chatMessage.setContent("/image/" + fileName); // 파일 경로를 메시지로 설정
