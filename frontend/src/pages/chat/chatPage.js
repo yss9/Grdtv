@@ -167,11 +167,20 @@ const ChatPage = () => {
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
     };
-    const onClickSendFile = () => {
+    const onClickSendFile = async() => {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('sender', username);
+
+        // 1. 파일을 HTTP 요청으로 업로드
+        const response = await axios.post(`http://localhost:8080/chat/uploadFile/${roomId}`, formData);
+        const fileUrl = response.data;
+
+        // 2. 업로드된 파일 경로를 WebSocket으로 전송
         const message = {
             sender: username,
-            content: selectedFile,
-            type: 'CHAT'
+            content: fileUrl,
+            type: 'FILE',
         };
         WebSocketService.sendMessage(message);
     }

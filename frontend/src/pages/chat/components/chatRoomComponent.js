@@ -139,6 +139,15 @@ const ChatRoomComponent = ({
 
     const [step, setStep] = useState(1);
 
+    const serverUrl = 'http://localhost:8080';
+
+    const isImage = (filePath) => {
+        return filePath.match(/\.(jpeg|jpg|gif|png)$/);
+    };
+
+    const isPdf = (filePath) => {
+        return filePath.match(/\.pdf$/);
+    };
 
     return (
         <ChatRoomWrapper>
@@ -184,18 +193,38 @@ const ChatRoomComponent = ({
             <ChatRoom>
                 {messages.map((message, index) => (
                     <ChatBubble
-
                         key={index}
                         style={{
                             ...(message.sender === username ? styles.myMessage : styles.otherMessage),
                             width: 'auto',
                         }}
                     >
-                        {message.content}
+                        {isImage(message.content) ? (
+                            // 이미지일 경우 미리보기
+                            <img
+                                src={`${serverUrl}${message.content}`}
+                                alt="Image preview"
+                                style={{ maxWidth: '200px', maxHeight: '200px' }}
+                            />
+                        ) : isPdf(message.content) ? (
+                            // PDF일 경우 보기 링크 제공
+                            <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
+                                PDF 파일 보기
+                            </a>
+                        ) : message.content.includes('/image/') ? (
+                            // 그 외 파일 다운로드 링크 제공
+                            <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
+                                파일 다운로드
+                            </a>
+                        ) : (
+                            // 일반 텍스트 메시지
+                            message.content
+                        )}
                     </ChatBubble>
                 ))}
                 <div ref={bottomRef}></div>
             </ChatRoom>
+
 
             <BottomBarComponent
                 handleOpenModal={handleOpenModal}
