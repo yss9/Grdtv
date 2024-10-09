@@ -19,6 +19,7 @@ import proj.travien.repository.ChatMessageRepository;
 import proj.travien.repository.ChatRoomRepository;
 import proj.travien.repository.UserChatRoomRepository;
 import proj.travien.repository.UserRepository;
+import proj.travien.service.SpeechToTextService;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +48,9 @@ public class ChatController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SpeechToTextService speechToTextService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -146,6 +150,22 @@ public class ChatController {
             return new ResponseEntity<>("파일 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/uploadVoiceMessage/{roomId}")
+    public ResponseEntity<String> uploadVoiceMessage(@PathVariable String roomId, @RequestParam("file") MultipartFile file) {
+        // 음성 파일을 텍스트로 변환
+        String transcript;
+        try {
+            byte[] audioBytes = file.getBytes();
+            transcript = speechToTextService.convertSpeechToText(audioBytes, "ko-KR"); // 언어 코드를 필요에 따라 변경
+        } catch (IOException e) {
+            return new ResponseEntity<>("음성 파일 처리 오류", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 변환된 텍스트를 WebSocket을 통해 전송하기 위해 텍스트만 반환
+        return new ResponseEntity<>(transcript, HttpStatus.OK);
+    }
+
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

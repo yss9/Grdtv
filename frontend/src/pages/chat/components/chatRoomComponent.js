@@ -134,6 +134,7 @@ const ChatRoomComponent = ({
                                isVisible,
                                bottomRef,
                                isAgent,
+                               handleVoiceMessageUpload,
                                userId
                            }) => {
 
@@ -236,6 +237,7 @@ const ChatRoomComponent = ({
                 setInput={setInput}
                 handleKeyDown={handleKeyDown}
                 isVisible={isVisible}
+                handleVoiceMessageUpload={handleVoiceMessageUpload}
             />
         </ChatRoomWrapper>
     );

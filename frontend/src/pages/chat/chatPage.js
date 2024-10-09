@@ -136,6 +136,27 @@ const ChatPage = () => {
         }
     };
 
+    // 음성파일
+    const handleVoiceMessageUpload = async (file) => {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            // 음성 파일을 HTTP로 서버에 업로드
+            const response = await axios.post(`http://localhost:8080/chat/uploadVoiceMessage/${roomId}`, formData);
+            const transcript = response.data;
+
+            // WebSocket을 통해 텍스트 메시지 전송
+            WebSocketService.sendMessage({
+                sender: username,
+                content: transcript,
+                type: 'CHAT',
+            });
+        } catch (error) {
+            console.error('음성 메시지 전송 실패:', error);
+        }
+    };
+
 
 
     const handleAddUser = async (targetUserNickname) => {
@@ -226,6 +247,7 @@ const ChatPage = () => {
                             isVisible={isVisible}
                             bottomRef={bottomRef}
                             isAgent={isAgent}
+                            handleVoiceMessageUpload={handleVoiceMessageUpload}
                             userId={userId}
                         />
                     ) : (

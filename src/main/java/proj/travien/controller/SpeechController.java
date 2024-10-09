@@ -43,7 +43,7 @@ public class SpeechController {
 //spring.servlet.multipart.max-file-size=50MB
 //spring.servlet.multipart.max-request-size=50MB
 //application.properties에 위 두줄 추가
-//환경변수 설정: win+r -> sysdm.cpl -> 고급 들어가서 시스템 환경변수 새로만들기
+// curl -X POST http://localhost:8080/api/convert     -F "file=@C:\\Users\\허찬호\\Downloads\\KakaoTalk_Audio_20240604_1353_06_285.wav"     -F "languageCode=ko-KR"환경변수 설정: win+r -> sysdm.cpl -> 고급 들어가서 시스템 환경변수 새로만들기
 //변수이름: GOOGLE_APPLICATION_CREDENTIALS , 변수값:C:\Users\허찬호\Downloads\travien-52b10c6761f0.json -> 구글api 키 파일 경로 입력(찬호한테 파일 있음)
 
 //주요 언어 코드

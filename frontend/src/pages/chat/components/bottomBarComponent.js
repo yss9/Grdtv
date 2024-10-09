@@ -53,6 +53,7 @@ const BottomBarComponent = ({
                                 setInput,
                                 handleKeyDown,
                                 isVisible,
+                                handleVoiceMessageUpload,
                             }) => {
     return (
         <BottomBar>
@@ -99,7 +100,7 @@ const BottomBarComponent = ({
                                 ×
                             </span>
                             <input
-                                style={{ width: '100%', height: '50px' }}
+                                style={{width: '100%', height: '50px'}}
                                 type="file"
                                 onChange={handleFileChange}
                             />
@@ -113,12 +114,22 @@ const BottomBarComponent = ({
                             >
                                 전송하기
                             </button>
+                            <button
+                                style={{
+                                    marginLeft: '40%',
+                                    padding: '5px 10px',
+                                    textAlign: 'center',
+                                }}
+                                onClick={handleVoiceMessageUpload}
+                            >
+                                음성 전송하기
+                            </button>
                         </div>
                     </ChatModal>
-                )}
+                    )}
             </div>
             <SendButton onClick={handleSendMessage}>
-                <img style={{ height: '60%' }} src='/Img/채팅%20메세지%20버튼.png' alt='채팅 메세지 버튼' />
+                <img style={{height: '60%'}} src='/Img/채팅%20메세지%20버튼.png' alt='채팅 메세지 버튼'/>
             </SendButton>
             <ChatInput
                 type="text"
