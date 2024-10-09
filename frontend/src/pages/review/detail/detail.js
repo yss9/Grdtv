@@ -26,6 +26,7 @@ export default function BoardDetail() {
     const [likesCount, setLikesCount] = useState(0); // 좋아요 수
     const [nickname, setNickname] = useState("");
     const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
+    const [user_id, setUser_id] = useState(0); //user 도메인의 id
 
     /**
      * 찬호 - 쿠키에서 JWT 토큰 가져오기
@@ -141,13 +142,15 @@ export default function BoardDetail() {
     const handleLikeClick = async () => {
         try {
             const decodedToken = jwtDecode(token);
-            const userId = decodedToken.id;
+            console.log(decodedToken);
+            const id = decodedToken.id;
+
+            console.log("boardID:", boardID);  // boardID 값 확인
+            console.log("user_id:", id);  // user_id 값 확인
+
 
             // 좋아요 토글 요청
-            const response = await axios.post('http://localhost:8080/api/likes/toggle', {
-                boardID: boardID,
-                userId: userId
-            });
+            const response = await axios.post(`http://localhost:8080/api/likes/toggle?boardID=${boardID}&id=${id}`);
 
             // 서버로부터 받은 응답 업데이트
             setIsLiked(response.data.isLiked);
@@ -160,6 +163,7 @@ export default function BoardDetail() {
             });
         }
     };
+
 
     let bodyParsed = parse(body);
 
