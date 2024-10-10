@@ -139,6 +139,27 @@ export default function BoardDetail() {
         });
     };
 
+    useEffect(() => {
+        const fetchLikeStatus = async () => {
+            try {
+                const decodedToken = jwtDecode(token);
+                const id = decodedToken.id;
+
+                // 서버에서 현재 유저의 좋아요 상태와 좋아요 수 가져오기
+                const response = await axios.get(`http://localhost:8080/api/likes/${boardID}/is-liked?id=${id}`);
+
+                setIsLiked(response.data.isLiked);   // 좋아요 여부 설정
+                setLikesCount(response.data.likesCount);  // 좋아요 수 설정
+            } catch (error) {
+                console.error('Failed to fetch like status', error);
+            }
+        };
+
+        if (token) {
+            fetchLikeStatus();
+        }
+    }, [boardID, token]);
+    
     const handleLikeClick = async () => {
         try {
             const decodedToken = jwtDecode(token);
@@ -163,6 +184,9 @@ export default function BoardDetail() {
             });
         }
     };
+
+
+
 
 
     let bodyParsed = parse(body);

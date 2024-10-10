@@ -39,6 +39,20 @@ public class LikeController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{boardID}/is-liked")
+    public ResponseEntity<?> isLikedByUser(@PathVariable Long boardID, @RequestParam Long id) {
+        boolean isLiked = likeService.isPostLikedByUser(boardID, id);  // 유저가 좋아요를 눌렀는지 확인
+        int likesCount = postRepository.findById(boardID).get().getLikesCount();  // 게시물의 좋아요 수 가져오기
+
+        // 응답 데이터 구성
+        Map<String, Object> response = new HashMap<>();
+        response.put("isLiked", isLiked);  // 유저의 좋아요 여부
+        response.put("likesCount", likesCount);  // 좋아요 수
+
+        return ResponseEntity.ok(response);  // 응답 반환
+    }
+
+
     // 게시물의 총 좋아요 수를 반환하는 API
     @GetMapping("/{boardID}/count")
     public ResponseEntity<?> getLikesCount(@PathVariable Long boardID) {
