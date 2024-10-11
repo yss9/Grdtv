@@ -26,8 +26,6 @@ import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
 import Test from "./pages/test/test"
 import AgentDetail from './pages/agentDetail/agentDetail'
-import BoardCommentList from "./pages/reviewComment/list/list";
-import BoardCommentWrite from "./pages/reviewComment/write/write";
 import Similarity from './pages/recomendation/Similarity/similarity'
 import MBTItest from "./pages/MBTItest/MBTItestPage";
 
@@ -43,8 +41,6 @@ function App() {
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
-                <Route path="/board/:boardID" element={<BoardCommentWrite />} />
-                <Route path="/board/:boardID" element={<BoardCommentList />} />
                 <Route path="/board/:boardID/edit" element={<BoardWrite isEdit = {true}/>} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />

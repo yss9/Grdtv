@@ -12,6 +12,10 @@ import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 
+import BoardCommentWrite from "../../reviewComment/write/write";
+import BoardCommentList from "../../reviewComment/list/list";
+
+
 export default function BoardDetail() {
     const { boardID } = useParams();
     const navigate = useNavigate();
@@ -27,6 +31,7 @@ export default function BoardDetail() {
     const [nickname, setNickname] = useState("");
     const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
     const [user_id, setUser_id] = useState(0); //user 도메인의 id
+    const [showWriteComment, setShowWriteComment] = useState(false); // 댓글 작성 모드 상태
 
     /**
      * 찬호 - 쿠키에서 JWT 토큰 가져오기
@@ -237,10 +242,18 @@ export default function BoardDetail() {
                         </S.Body>
                     </S.CardWrapper>
                     <S.BottomWrapper>
-                        <Button onClick={() => navigate("/review")}>목록으로</Button>
-                        <Button onClick={() => navigate(`/board/${boardID}/edit`)}>수정하기</Button>
-                        <Button onClick={onClickBoardDelete}>삭제하기</Button>
+                        <Button onClick={() => navigate("/review")} style={{ background: '#4E53EE', color: "white"}}>목록으로</Button>
+                        <Button onClick={() => navigate(`/board/${boardID}/edit`)} style={{ background: '#4E53EE', color: "white"}}>수정하기</Button>
+                        <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: "white"}}>삭제하기</Button>
                     </S.BottomWrapper>
+
+                    {/* 댓글 작성 및 댓글 목록 토글 */}
+                    <div>
+                        <Button onClick={() => setShowWriteComment(!showWriteComment)}>
+                            {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
+                        </Button>
+                        {showWriteComment ? <BoardCommentWrite /> : <BoardCommentWrite />}
+                    </div>
                 </S.Wrapper>
             </S.Container>
         </>
