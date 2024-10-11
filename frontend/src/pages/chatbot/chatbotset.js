@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Reset } from "styled-reset";
 import styled from '@emotion/styled';
 import Cookies from 'js-cookie';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import TopBarComponent from "../../components/TopBar/TopBar";
+import sendButton from "../../public/Img/sendButton.png";
 
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 98.2vh;
+    height: 100vh;
 `;
 
 const MainContentArea = styled.div`
@@ -72,22 +74,33 @@ const MessageBubble = styled.div`
 `;
 
 const ChatInputContainer = styled.div`
-    display: flex;
-    border-top: 1px solid #eee;
-    padding: 10px;
-    background-color: white;
+    text-align: center;
+    padding-bottom: 50px;
+    background-color: #F4F6F8;
+    
 `;
 
 const ChatInput = styled.input`
-    flex: 1;
-    padding: 10px;
-    border: none;
+    padding: 10px 10px 10px 30px;
+    font-size: 15px;    
+    width: 80%;
+    height: 40px;
+    border: 1px solid white ;
+    border-radius: 10px;
+    box-shadow: 0 0 15px darkgrey;
+    border-right: none;
     outline: none;
 `;
 
-const SendButton = styled.button`
-    padding: 10px 30px;
-    background-color: #4E53ED;
+const SendButton = styled.div`
+    display: inline-block;
+    position: relative;
+    top:15px;
+    right: 70px;
+    width: 40px;
+    height: 40px;
+    background-image: url("${sendButton}");
+    background-size: cover;
     color: white;
     border: none;
     cursor: pointer;
@@ -197,55 +210,53 @@ const Chatbot = () => {
     };
 
     return (
-        <Container>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
-            <MainContentArea>
-            <Sidebar>
-                    <SidebarItem>새로운 채팅</SidebarItem>
-                    <SidebarItem>이전 채팅</SidebarItem>
-                </Sidebar>
-                <MainContent>
-                    {!connected ? (
-                        <Header>로딩 중...</Header>
-                    ) : (
-                        <>
-                            <Header>
-                                <GlloImg></GlloImg>
-                                챗봇 글로에게 궁금한 점을 물어보세요.<br/>
-                                무엇을 도와드릴까요?<br/><br/><br/>
-                                빠르고 쉽게 물어보세요.
-                                <QuestionListContainer>
-                                    <QuestionButton>이용 방법</QuestionButton>
-                                    <QuestionButton>여행지 추천</QuestionButton>
-                                    <QuestionButton>자주 묻는 질문 1</QuestionButton>
-                                    <QuestionButton>자주 묻는 질문 2</QuestionButton>
-                                </QuestionListContainer>
-                            </Header>
-                            <ChatBox>
-                                {messages.map((msg, index) => (
-                                    <ChatMessage key={index} isUser={msg.sender === username}>
-                                        <MessageBubble isUser={msg.sender === username}>
-                                            {msg.content}
-                                        </MessageBubble>
-                                    </ChatMessage>
-                                ))}
-                            </ChatBox>
-                            <ChatInputContainer>
-                                <ChatInput
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                                    placeholder="궁금한 사항을 입력해 주세요."
-                                />
-                                <SendButton onClick={sendMessage}> > </SendButton>
-                            </ChatInputContainer>
-                        </>
-                    )}
-                </MainContent>
-            </MainContentArea>
-        </Container>
+        <>
+            <Reset/>
+            <Container>
+                <div style={{height: '55px'}}></div>
+                <TopBarComponent/>
+                <MainContentArea>
+                    <Sidebar>
+                    </Sidebar>
+                    <MainContent>
+                        {!connected ? (
+                            <Header>로딩 중...</Header>
+                        ) : (
+                            <>
+                                <Header>
+                                    <GlloImg></GlloImg>
+                                    <p>
+                                        챗봇 글로에게 궁금한 점을 물어보세요.<br/>
+                                        <br/>
+                                        무엇을 도와드릴까요?
+                                    </p>
+                                </Header>
+                                <ChatBox>
+                                    {messages.map((msg, index) => (
+                                        <ChatMessage key={index} isUser={msg.sender === username}>
+                                            <MessageBubble isUser={msg.sender === username}>
+                                                {msg.content}
+                                            </MessageBubble>
+                                        </ChatMessage>
+                                    ))}
+                                </ChatBox>
+                                <ChatInputContainer>
+                                    <ChatInput
+                                        type="text"
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                                        placeholder="챗봇에게 질문을 입력해주세요!"
+                                    />
+                                    <SendButton onClick={sendMessage}>
+                                    </SendButton>
+                                </ChatInputContainer>
+                            </>
+                        )}
+                    </MainContent>
+                </MainContentArea>
+            </Container>
+        </>
     );
 }
 
