@@ -25,12 +25,12 @@ public class Comment {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
-    private User author;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String content;
 
     @CreationTimestamp
-    private Timestamp createDate; // datetime 필드 추가
+    private Timestamp createDate;
 
 }
