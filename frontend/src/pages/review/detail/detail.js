@@ -252,7 +252,7 @@ export default function BoardDetail() {
                         <Button onClick={() => setShowWriteComment(!showWriteComment)}>
                             {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
                         </Button>
-                        {showWriteComment ? <BoardCommentWrite /> : <BoardCommentWrite />}
+                        {showWriteComment && <BoardCommentWrite boardID={boardID} />} {/* boardID를 전달 */}
                     </div>
                 </S.Wrapper>
             </S.Container>

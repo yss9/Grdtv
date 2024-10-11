@@ -120,9 +120,6 @@ export default function BoardWrite(props) {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
             console.log(response.data);
 
-            // 포인트 정보 확인
-            const userPoints = response.data.userPoints;  // API 응답에서 포인트 가져오기
-            alert(`게시물 등록이 정상적으로 완료되었습니다! 현재 포인트: ${userPoints}`);
 
             navigate(`/board/${response.data.boardID}`);
         } catch (error) {
