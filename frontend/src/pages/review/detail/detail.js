@@ -20,18 +20,24 @@ export default function BoardDetail() {
     const { boardID } = useParams();
     const navigate = useNavigate();
 
+    //게시글
     const [title, setTitle] = useState("");
     const [addressTitle, setAddressTitle] = useState("");
     const [body, setBody] = useState("");
     const [image, setImage] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const [createDate, setCreateDate] = useState("");
+
+    //좋아요
     const [isLiked, setIsLiked] = useState(false);  // 좋아요 상태
     const [likesCount, setLikesCount] = useState(0); // 좋아요 수
+
+    //사용자 정보
     const [nickname, setNickname] = useState("");
     const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
-    const [user_id, setUser_id] = useState(0); //user 도메인의 id
     const [showWriteComment, setShowWriteComment] = useState(false); // 댓글 작성 모드 상태
+    const [postOwnerId, setPostOwnerId] = useState(0); // 게시글 작성자의 ID
+    const [userId, setUserId] = useState(0); // 로그인한 사용자의 ID
 
     /**
      * 찬호 - 쿠키에서 JWT 토큰 가져오기
@@ -51,6 +57,7 @@ export default function BoardDetail() {
             setBody(postData.body);
             setImage(postData.image);
             setNickname(postData.nickname); // 닉네임 설정
+            setPostOwnerId(postData.userId); // 게시글 작성자의 ID 설정
 
             // Process addresses to remove any unwanted characters
             const processedAddresses = postData.addresses.map(address => {
@@ -242,18 +249,26 @@ export default function BoardDetail() {
                         </S.Body>
                     </S.CardWrapper>
                     <S.BottomWrapper>
-                        <Button onClick={() => navigate("/review")} style={{ background: '#4E53EE', color: "white"}}>목록으로</Button>
-                        <Button onClick={() => navigate(`/board/${boardID}/edit`)} style={{ background: '#4E53EE', color: "white"}}>수정하기</Button>
-                        <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: "white"}}>삭제하기</Button>
+                        {userId === postOwnerId && (
+                            <>
+                                <Button onClick={() => navigate("/review")} style={{ background: '#4E53EE', color: "white" }}>목록으로</Button>
+                                <Button onClick={() => navigate(`/board/${boardID}/edit`)} style={{ background: '#4E53EE', color: "white" }}>수정하기</Button>
+                                <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: "white" }}>삭제하기</Button>
+                            </>
+                        )}
                     </S.BottomWrapper>
 
-                    {/* 댓글 작성 및 댓글 목록 토글 */}
                     <div>
                         <Button onClick={() => setShowWriteComment(!showWriteComment)}>
                             {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
                         </Button>
-                        {showWriteComment && <BoardCommentWrite boardID={boardID} />} {/* boardID를 전달 */}
+                        {showWriteComment ? (
+                            <BoardCommentWrite boardID={boardID} />
+                        ) : (
+                            <BoardCommentList /> // 댓글 목록 컴포넌트 렌더링
+                        )}
                     </div>
+
                 </S.Wrapper>
             </S.Container>
         </>

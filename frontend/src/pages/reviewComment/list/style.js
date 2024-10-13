@@ -1,57 +1,46 @@
-import styled from "@emotion/styled";
+import styled from "styled-components";
 
-export const ItemWrapper = styled.div`
-  width: 1200px;
-  padding-top: 20px;
-  height: 128px;
-  border-bottom: 1px solid lightgray;
-  margin-left: 1800px;
-  margin-top: 50px;
+// 댓글 목록을 감싸는 Wrapper
+export const CommentListWrapper = styled.div`
+    width: 100%;
+    margin-top: 20px;
 `;
 
-export const FlexWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
+// 댓글 아이템
+export const CommentItem = styled.div`
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 0;
 `;
 
-export const Avatar = styled.img`
-  width: 48px;
-  height: 48px;
+// 댓글 작성자 이름과 날짜를 포함하는 헤더
+export const CommentHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
-export const MainWrapper = styled.div`
-  width: 100%;
-  padding-left: 10px;
-`;
-export const WriterWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-export const Writer = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-`;
-export const Contents = styled.div``;
-
-export const OptionWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-export const UpdateIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
-export const DeleteIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
+// 사용자 이름 스타일
+export const Username = styled.span`
+    font-weight: bold;
 `;
 
-export const DateString = styled.div`
-  color: lightgray;
-  padding-top: 15px;
-  padding-left: 60px;
+// 댓글 날짜 스타일
+export const CommentDate = styled.span`
+    font-size: 0.875rem;
+    color: #888;
 `;
+
+// 댓글 내용 스타일
+export const CommentContent = styled.p`
+    margin-top: 5px;
+    line-height: 1.5;
+`;
+
+// 댓글이 없을 때 메시지
+export const NoComments = styled.div`
+    text-align: center;
+    color: #888;
+    margin-top: 20px;
+`;
+
 

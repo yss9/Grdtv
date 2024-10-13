@@ -3,6 +3,7 @@ package proj.travien.controller;
 import org.springframework.http.HttpStatus;
 import proj.travien.domain.Comment;
 import proj.travien.dto.CommentRequest;
+import proj.travien.dto.CommentResponse;
 import proj.travien.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +30,15 @@ public class CommentController {
         Comment createdComment = commentService.addComment(boardID, userId, content);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }
+
+    /**
+     * 게시물 댓글 목록 확인
+     */
+    @GetMapping("/{boardID}")
+    public ResponseEntity<List<CommentResponse>> getCommentsByBoardID(@PathVariable Long boardID) {
+        List<CommentResponse> comments = commentService.getCommentsByBoardID(boardID);
+        return ResponseEntity.ok(comments);
+    }
+
 
 }
