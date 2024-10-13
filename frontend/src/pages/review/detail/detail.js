@@ -249,13 +249,22 @@ export default function BoardDetail() {
                         </S.Body>
                     </S.CardWrapper>
                     <S.BottomWrapper>
-                        {userId === postOwnerId && (
-                            <>
-                                <Button onClick={() => navigate("/review")} style={{ background: '#4E53EE', color: "white" }}>목록으로</Button>
+                                <Button
+                                    onClick={() => navigate(`/board/${boardID}/edit`, {
+                                        state: {
+                                            title,
+                                            addressTitle,
+                                            body,
+                                            image,
+                                            addresses
+                                        }
+                                    })}
+                                    style={{ background: '#4E53EE', color: 'white' }}
+                                >
+                                    수정하기
+                                </Button>
                                 <Button onClick={() => navigate(`/board/${boardID}/edit`)} style={{ background: '#4E53EE', color: "white" }}>수정하기</Button>
                                 <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: "white" }}>삭제하기</Button>
-                            </>
-                        )}
                     </S.BottomWrapper>
 
                     <div>
