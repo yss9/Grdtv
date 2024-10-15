@@ -34,6 +34,7 @@ export default function BoardDetail() {
 
     //사용자 정보
     const [nickname, setNickname] = useState("");
+    const [username, setUsername] = useState("");
     const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
     const [showWriteComment, setShowWriteComment] = useState(false); // 댓글 작성 모드 상태
     const [postOwnerId, setPostOwnerId] = useState(0); // 게시글 작성자의 ID
@@ -44,6 +45,29 @@ export default function BoardDetail() {
      */
     const token = Cookies.get('jwt');
 
+
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                // console.log("userPayload:", userPayload);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+                console.log("username: ", username);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+
+        fetchNicknames();
+    }, [token]);
 
     const fetchData = async () => {
         try {
@@ -248,24 +272,34 @@ export default function BoardDetail() {
                             </S.ImageWrapper>
                         </S.Body>
                     </S.CardWrapper>
-                    <S.BottomWrapper>
-                                <Button
-                                    onClick={() => navigate(`/board/${boardID}/edit`, {
-                                        state: {
-                                            title,
-                                            addressTitle,
-                                            body,
-                                            image,
-                                            addresses
-                                        }
-                                    })}
-                                    style={{ background: '#4E53EE', color: 'white' }}
-                                >
-                                    수정하기
-                                </Button>
-                                <Button onClick={() => navigate(`/board/${boardID}/edit`)} style={{ background: '#4E53EE', color: "white" }}>수정하기</Button>
-                                <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: "white" }}>삭제하기</Button>
-                    </S.BottomWrapper>
+                    {/* 작성자와 토큰 내의 사용자 이름이 같을 경우 수정 및 삭제 버튼 표시 */}
+
+                        <S.BottomWrapper>
+                            {username === nickname && (
+                                <div>
+                                    <Button
+                                        onClick={() => navigate(`/board/${boardID}/edit`, {
+                                            state: { title, addressTitle, body, image, addresses }
+                                        })}
+                                        style={{ background: '#4E53EE', color: 'white' }}
+                                    >
+                                        수정하기
+                                    </Button>
+                                    <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: 'white' }}>
+                                        삭제하기
+                                    </Button>
+                                </div>
+                                )}
+                            <Button
+                                onClick={() => navigate(`/review`)}
+                                style={{ background: '#4E53EE', color: 'white' }}
+                            >
+                                목록보기
+                            </Button>
+
+                        </S.BottomWrapper>
+
+
 
                     <div>
                         <Button onClick={() => setShowWriteComment(!showWriteComment)}>

@@ -65,6 +65,8 @@ export default function BoardWrite(props) {
         };
         setAddresses(updatedAddresses);
         setIsOpen(false);
+
+
     };
 
 
