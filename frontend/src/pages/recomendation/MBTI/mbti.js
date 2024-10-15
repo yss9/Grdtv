@@ -17,53 +17,86 @@ import {
     SubTitle,
     SubTitleWrapper
 } from "../Personal/personalstyle";
-import Osaka from '../../../public/Img/osaka.png'
-import Paris from '../../../public/Img/paris.png'
-import Sydney from '../../../public/Img/sydney.png'
-import Kyoto from "../../../public/Img/kyoto.png";
-import ApelTower from "../../../public/Img/apeltower.png";
-import ThaiMarket from "../../../public/Img/thaimarket.png";
-import Morein from "../../../public/Img/morein.png";
-import Bbatong from "../../../public/Img/bbatong.png";
-import Louis from "../../../public/Img/louis.png";
-import Apls from "../../../public/Img/alps.png";
 
+// Google Maps Places API 키 추가
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0'; // 본인의 Google Maps API 키로 교체
+
+// PlaceData 배열에서 이미지 URL을 Google Maps API에서 동적으로 불러오도록 수정
 const PlaceData = [
-    {placename:'오사카', image: Osaka},
-    {placename:'파리', image: Paris },
-    {placename:'호주', image: Sydney },
-    { placename: '도초지', image: Kyoto},
-    { placename: '에펠탑', image: ApelTower},
-    { placename: '수상시장', image: ThaiMarket},
-    { placename: '모레인 호수', image: Morein },
-    { placename: '빠통 비치', image: Bbatong },
-    { placename: '루이스 호수', image: Louis },
-    { placename: '알프스 산맥', image: Apls },
+    { placename: '오사카' },
+    { placename: '파리' },
+    { placename: '호주' },
+    { placename: '도초지' },
+    { placename: '파리 에펠탑' },
+    { placename: '짜뚜짝 시장' },
+    { placename: '모레인 호수' },
+    { placename: '빠통 비치' },
+    { placename: '루이스 호수' },
+    { placename: '알프스 산맥' }
 ];
 
 export default function RecMbtiPage() {
-
     const navigate = useNavigate();
     const [displayedPlaces, setDisplayedPlaces] = useState([]);
+    const [placeImages, setPlaceImages] = useState({});
 
     useEffect(() => {
         refreshPlaces();
+        loadGoogleMapsScript();
     }, []);
+
+    const loadGoogleMapsScript = () => {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+        script.async = true;
+        document.body.appendChild(script);
+    };
 
     const refreshPlaces = () => {
         const shuffled = [...PlaceData].sort(() => 0.5 - Math.random());
         setDisplayedPlaces(shuffled.slice(0, 3));
     };
 
-    const handleGoInformation = (placename) => {
-        navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
+    const fetchPlacePhoto = (placeName) => {
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        const request = {
+            query: placeName,
+            fields: ['place_id', 'photos']
+        };
+
+        service.findPlaceFromQuery(request, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results[0]) {
+                const place = results[0];
+                if (place.photos && place.photos.length > 0) {
+                    const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
+                    setPlaceImages(prevState => ({
+                        ...prevState,
+                        [placeName]: photoUrl
+                    }));
+                }
+            } else {
+                console.error(`Could not fetch place photo for ${placeName}`);
+            }
+        });
     };
 
-    return(
+    useEffect(() => {
+        displayedPlaces.forEach((place) => {
+            if (!placeImages[place.placename]) {
+                fetchPlacePhoto(place.placename);
+            }
+        });
+    }, [displayedPlaces]);
+
+    const handleGoInformation = (placename) => {
+        navigate(`/recomendation/information/${placename}`);
+    };
+
+    return (
         <>
-            <Reset/>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
+            <Reset />
+            <div style={{ height: '55px' }}></div>
+            <TopBarComponent />
             <Wrapper>
                 <Container>
                     <MbtiTitleContainer>
@@ -111,7 +144,11 @@ export default function RecMbtiPage() {
                             {displayedPlaces.map(place => (
                                 <PlaceWrapper key={place.placename}
                                               onClick={() => handleGoInformation(place.placename)}>
-                                    <Place src={place.image}/>
+                                    {placeImages[place.placename] ? (
+                                        <Place src={placeImages[place.placename]} alt={place.placename}/>
+                                    ) : (
+                                        <p>Loading image...</p>
+                                    )}
                                     <PlaceName1>{place.placename}</PlaceName1>
                                 </PlaceWrapper>
                             ))}
