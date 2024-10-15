@@ -218,11 +218,8 @@ const Chatbot = () => {
                 <TopBarComponent/>
                 <MainContentArea>
                     <Sidebar>
-<<<<<<< HEAD
                         <SidebarItem>새로운 채팅</SidebarItem>
                         <SidebarItem>이전 채팅</SidebarItem>
-=======
->>>>>>> sys
                     </Sidebar>
                     <MainContent>
                         {!connected ? (
@@ -231,7 +228,7 @@ const Chatbot = () => {
                             <>
                                 <Header>
                                     <GlloImg></GlloImg>
-<<<<<<< HEAD
+
                                     챗봇 글로에게 궁금한 점을 물어보세요.<br/>
                                     무엇을 도와드릴까요?<br/><br/><br/>
                                     빠르고 쉽게 물어보세요.
@@ -241,13 +238,13 @@ const Chatbot = () => {
                                         <QuestionButton>자주 묻는 질문 1</QuestionButton>
                                         <QuestionButton>자주 묻는 질문 2</QuestionButton>
                                     </QuestionListContainer>
-=======
+
                                     <p>
                                         챗봇 글로에게 궁금한 점을 물어보세요.<br/>
                                         <br/>
                                         무엇을 도와드릴까요?
                                     </p>
->>>>>>> sys
+
                                 </Header>
                                 <ChatBox>
                                     {messages.map((msg, index) => (
@@ -264,16 +261,16 @@ const Chatbot = () => {
                                         value={input}
                                         onChange={(e) => setInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-<<<<<<< HEAD
+
                                         placeholder="궁금한 사항을 입력해 주세요."
                                     />
                                     <SendButton onClick={sendMessage}> > </SendButton>
-=======
+
                                         placeholder="챗봇에게 질문을 입력해주세요!"
                                     />
                                     <SendButton onClick={sendMessage}>
                                     </SendButton>
->>>>>>> sys
+
                                 </ChatInputContainer>
                             </>
                         )}
