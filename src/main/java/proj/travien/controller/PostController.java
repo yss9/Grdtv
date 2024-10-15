@@ -136,6 +136,19 @@ public class PostController {
     }
 
 
+    /**
+     * 나라별 게시물 목록 가져오기
+     */
+    @GetMapping("/{country}")
+    public ResponseEntity<List<Post>> getPostsByCountry(@PathVariable String country) {
+        List<Post> posts = postService.getPostsByCountry(country);
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
     /**
      * 게시물 전체 가져오기

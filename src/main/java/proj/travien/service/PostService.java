@@ -297,6 +297,15 @@ public class PostService {
         return post.getThumbnail();
     }
 
+    /**
+     * 나라별 게시물 가져오기
+     */
+    @Transactional(readOnly = true)
+    public List<Post> getPostsByCountry(String country) {
+        return postRepository.findByCountry(country);
+    }
+
+
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
