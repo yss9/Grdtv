@@ -7,7 +7,6 @@ import SockJS from 'sockjs-client';
 import TopBarComponent from "../../components/TopBar/TopBar";
 import sendButton from "../../public/Img/sendButton.png";
 
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -49,7 +48,7 @@ const MainContent = styled.div`
 const Header = styled.div`
     padding-top: 50px;
     padding-left: 100px;
-    
+
     margin-bottom: 30px;
 `;
 
@@ -78,12 +77,12 @@ const ChatInputContainer = styled.div`
     text-align: center;
     padding-bottom: 50px;
     background-color: #F4F6F8;
-    
+
 `;
 
 const ChatInput = styled.input`
     padding: 10px 10px 10px 30px;
-    font-size: 15px;    
+    font-size: 15px;
     width: 80%;
     height: 40px;
     border: 1px solid white ;
@@ -129,7 +128,7 @@ const GlloImg = styled.div`
     left: 310px;
     top: 140px;
     background-image: url("/gllo.png");
-    
+
 `
 
 
@@ -218,8 +217,6 @@ const Chatbot = () => {
                 <TopBarComponent/>
                 <MainContentArea>
                     <Sidebar>
-                        <SidebarItem>새로운 채팅</SidebarItem>
-                        <SidebarItem>이전 채팅</SidebarItem>
                     </Sidebar>
                     <MainContent>
                         {!connected ? (
@@ -228,23 +225,11 @@ const Chatbot = () => {
                             <>
                                 <Header>
                                     <GlloImg></GlloImg>
-
-                                    챗봇 글로에게 궁금한 점을 물어보세요.<br/>
-                                    무엇을 도와드릴까요?<br/><br/><br/>
-                                    빠르고 쉽게 물어보세요.
-                                    <QuestionListContainer>
-                                        <QuestionButton>이용 방법</QuestionButton>
-                                        <QuestionButton>여행지 추천</QuestionButton>
-                                        <QuestionButton>자주 묻는 질문 1</QuestionButton>
-                                        <QuestionButton>자주 묻는 질문 2</QuestionButton>
-                                    </QuestionListContainer>
-
                                     <p>
                                         챗봇 글로에게 궁금한 점을 물어보세요.<br/>
                                         <br/>
                                         무엇을 도와드릴까요?
                                     </p>
-
                                 </Header>
                                 <ChatBox>
                                     {messages.map((msg, index) => (
@@ -261,16 +246,10 @@ const Chatbot = () => {
                                         value={input}
                                         onChange={(e) => setInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-
-                                        placeholder="궁금한 사항을 입력해 주세요."
-                                    />
-                                    <SendButton onClick={sendMessage}> > </SendButton>
-
                                         placeholder="챗봇에게 질문을 입력해주세요!"
                                     />
                                     <SendButton onClick={sendMessage}>
                                     </SendButton>
-
                                 </ChatInputContainer>
                             </>
                         )}
