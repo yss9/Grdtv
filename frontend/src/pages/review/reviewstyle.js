@@ -1,8 +1,12 @@
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `
 export const SearchBarWrapper = styled.div`
+    width: 1500px;
     height: 8vh;
     //background-color: yellow;
     margin-top: 5vh;
@@ -55,6 +59,7 @@ export const Magnifier = styled.div`
 export const SubTitleContainer = styled.div`
     display: flex;
     justify-content: center;
+    width: 100%;
 `
 export const SubTitle1 = styled.div`
     width: 80%;
@@ -78,8 +83,20 @@ export const BestReviewContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 1500px;
 `;
 
+export const DownContainer=styled.div`
+    width: 1500px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    //background-color: green;
+`
+export const DownWrapper=styled.div`
+    width: 1200px;
+    //background-color: yellowgreen;
+`
 export const BestReviews = styled.div`
     display: flex;
     justify-content: space-between;
@@ -108,7 +125,7 @@ export const Indicator = styled.span`
     }
 `;
 export const SubTitle2 = styled.div`
-    width: 80%;
+    width: 100%;
     margin-top: 70px;
     font-size: 25px;
     //background-color: coral;
@@ -138,12 +155,15 @@ export const Select = styled.select`
 `
 export const BlogWrapper = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    //background-color: blue;
 `
 export const BlogContainer = styled.div`
     justify-content: space-between;
     width: 80%;
-    //background-color: palegoldenrod;
+    background-color: palegoldenrod;
     margin-top: 50px;
     display: flex;
     font-family: Regular;
@@ -152,11 +172,12 @@ export const Blogs = styled.div`
     width: 70%;
     display: flex;
     flex-direction: column;
+    //background-color: pink;
 `
 
 export const MyMenuWrapper = styled.div`
     width: 27%;
-    height: 55rem;
+    height: 700px;
     background-color: #f5f6f8;
     border-radius: 15px;
 
@@ -165,7 +186,7 @@ export const MyMenuContainer = styled.div`
     display: flex;
     flex-direction: column;
 `
-export const Profile = styled.div`
+export const Profile2 = styled.div`
     width: 100%;
     height: 12vh;
     //background-color: palevioletred;
@@ -174,7 +195,7 @@ export const Profile = styled.div`
     align-items: center;
     //margin: 10px;
 `
-export const PImg = styled.img`
+export const PImg2 = styled.img`
     width: 9vh;
     height: 9vh;
     border-radius: 50%;
@@ -183,14 +204,14 @@ export const PImg = styled.img`
     object-fit: cover; /* 이미지를 가득 채우도록 설정 */
 
 `;
-export const PContainer = styled.div`
+export const PContainer2 = styled.div`
     display: flex;
     flex-direction: column;
     width: 27vh;
     height: 100%;
     margin-left: 10px;
 `;
-export const Pname = styled.div`
+export const Pname2 = styled.div`
     width: 100%;
     height: 56%;
     //background-color: orchid;
@@ -214,7 +235,7 @@ export const PIntro = styled.div`
 `;
 export const ButtonContainer = styled.div`
     width: 100%;
-    height: 5vh;
+    height: 60px;
     background-color: #4e53ed;
     display: flex;
     align-items: center;
@@ -311,7 +332,7 @@ export const AutoCompleteList = styled.ul`
 `;
 
 export const AutoCompleteListWrapper = styled.div`
-    width: 100%;
+    width: 1500px;
     display: flex;
     justify-content: center;
     

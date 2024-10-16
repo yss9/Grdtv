@@ -19,7 +19,10 @@ const PersonalRecData = [
     { placename: '에펠탑' },
     { placename: '하루카스 300' },
     { placename: '왓 아룬' },
-    { placename: '파리' },
+    { placename: '밀라노' },
+    { placename: '탄식의 다리' },
+    { placename: '피사의 사탑' },
+    { placename: '우룰루' },
     { placename: '화이트 비치' }
 ];
 

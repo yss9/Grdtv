@@ -62,6 +62,7 @@ function App() {
                 <Route path="/test" element={<Test/>}/>
                 <Route path="/agentdetail" element={<AgentDetail/>}/>
                 <Route path="/mbtiTest" element={<MBTItest/>}/>
+                <Route path="/review/list" element={<BoardList/>}/>
             </Routes>
         </BrowserRouter>
     );
