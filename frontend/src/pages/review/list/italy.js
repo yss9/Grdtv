@@ -202,6 +202,11 @@ const BlogList = () => {
         navigate('/board/new')
     }
 
+    const onClickMoveToBoardDetail = (id) => {
+        navigate(`/board/${id}`);
+        console.log(id);
+    };
+
     return (
         <Wrapper>
             <SubTitleContainer>
@@ -227,7 +232,7 @@ const BlogList = () => {
                 <Blogs>
                         {posts.length > 0 ? (
                             posts.map((post) => (
-                                <BlogContainer  key={post.boardID}>
+                                <BlogContainer  key={post.boardID} onClick={() => onClickMoveToBoardDetail(post.boardID)}>
                                     <ContentWrapper>
                                         <Content>
                                             <Profile>
