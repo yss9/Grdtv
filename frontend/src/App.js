@@ -28,6 +28,7 @@ import Test from "./pages/test/test"
 import AgentDetail from './pages/agentDetail/agentDetail'
 import Similarity from './pages/recomendation/Similarity/similarity'
 import MBTItest from "./pages/MBTItest/MBTItestPage";
+import SearchResult from "./pages/review/search-results"
 
 function App() {
     return (
@@ -63,6 +64,7 @@ function App() {
                 <Route path="/agentdetail" element={<AgentDetail/>}/>
                 <Route path="/mbtiTest" element={<MBTItest/>}/>
                 <Route path="/review/list" element={<BoardList/>}/>
+                <Route path="/search-results" element={<SearchResult/>}/>
             </Routes>
         </BrowserRouter>
     );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BestReview1 from '../../components/reviewPage/BestRivew1/BestReview1';
 import Down from './list/italy';
 import { Reset } from 'styled-reset';
+import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {
     Wrapper, BestReiviewer, SearchBarContainer, BestReviewTitle,
@@ -53,7 +54,8 @@ const regionList = [
 
 export default function ReviewPage() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [searchQuery, setSearchQuery] = useState("");  // 여기서 상태 정의
+    const [searchQuery, setSearchQuery] = useState("");
+    const [reqData, setReqData] = useState([]);
     const [filteredRegions, setFilteredRegions] = useState([]);
     const reviewsPerPage = 3;
 
@@ -62,10 +64,16 @@ export default function ReviewPage() {
 
     const navigate = useNavigate();
 
-
     const handleGoBoard = () =>{
         navigate('/exboard');
     }
+
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter" && searchQuery.trim() !== "") {
+            // 검색 결과 페이지로 이동, 검색어 전달
+            navigate(`/search?query=${searchQuery}`);
+        }
+    };
 
     const choSeong = [
         'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
@@ -113,6 +121,23 @@ export default function ReviewPage() {
         setFilteredRegions([]);
     };
 
+    const fetchData = async (query) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/posts?query=${query}`);
+            setReqData(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleSearchSubmit = () => {
+        if (searchQuery.trim() !== "") {
+            fetchData(searchQuery);
+            navigate(`/search-results?query=${searchQuery}`);  // Redirect to the search results page with the query
+        }
+    };
+
     return (
         <>
             <Reset />
@@ -130,8 +155,9 @@ export default function ReviewPage() {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="지역을 입력하세요"
+                        onKeyPress={handleKeyPress}
                     />
-                        <Magnifier>
+                        <Magnifier onClick={handleSearchSubmit}>
                             <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M24.9 27L15.45 17.55C14.7 18.15 13.8375 18.625 12.8625 18.975C11.8875 19.325 10.85 19.5 9.75 19.5C7.025 19.5 4.719 18.556 2.832 16.668C0.945001 14.78 0.00100079 12.474 7.93651e-07 9.75C-0.000999206 7.026 0.943001 4.72 2.832 2.832C4.721 0.944 7.027 0 9.75 0C12.473 0 14.7795 0.944 16.6695 2.832C18.5595 4.72 19.503 7.026 19.5 9.75C19.5 10.85 19.325 11.8875 18.975 12.8625C18.625 13.8375 18.15 14.7 17.55 15.45L27 24.9L24.9 27ZM9.75 16.5C11.625 16.5 13.219 15.844 14.532 14.532C15.845 13.22 16.501 11.626 16.5 9.75C16.499 7.874 15.843 6.2805 14.532 4.9695C13.221 3.6585 11.627 3.002 9.75 3C7.873 2.998 6.2795 3.6545 4.9695 4.9695C3.6595 6.2845 3.003 7.878 3 9.75C2.997 11.622 3.6535 13.216 4.9695 14.532C6.2855 15.848 7.879 16.504 9.75 16.5Z" fill="#4E53EE"/>
                             </svg>
