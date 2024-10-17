@@ -224,6 +224,18 @@ public class PostController {
         }
     }
 
+    /**
+     * 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Post>> searchPosts(@RequestParam String query) {
+        List<Post> posts = postService.searchPosts(query);
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 검색 결과가 없는 경우
+        }
+        return ResponseEntity.ok(posts);  // 검색 결과가 있는 경우
+    }
+
 
 
 

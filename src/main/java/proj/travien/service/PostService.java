@@ -320,5 +320,14 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    /**
+     * 검색
+     */
+    // 검색 기능 추가
+    @Transactional(readOnly = true)
+    public List<Post> searchPosts(String keyword) {
+        return postRepository.findByKeyword(keyword);
+    }
+
 
 }
