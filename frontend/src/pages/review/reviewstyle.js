@@ -15,7 +15,7 @@ export const SearchBarWrapper = styled.div`
     justify-content: center;
 `
 export const SearchBarContainer = styled.div`
-    width: 40%;
+    width: 600px;
     height: 100%;
     border-radius: ${(props) => (props.hasAutoComplete ? '15px 15px 0 0' : '15px')};
     background-color: white;
@@ -312,7 +312,7 @@ export const BookMarked2 = styled.div`
 `
 export const AutoCompleteList = styled.ul`
   position: absolute;
-  width: 40%;
+  width: 600px;
   list-style-type: none;
   padding: 0;
   z-index: 10;

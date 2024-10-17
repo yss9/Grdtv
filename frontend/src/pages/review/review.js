@@ -71,7 +71,7 @@ export default function ReviewPage() {
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && searchQuery.trim() !== "") {
             // 검색 결과 페이지로 이동, 검색어 전달
-            navigate(`/search?query=${searchQuery}`);
+            navigate(`/search-results?query=${searchQuery}`);
         }
     };
 
@@ -123,8 +123,8 @@ export default function ReviewPage() {
 
     const fetchData = async (query) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/posts?query=${query}`);
-            setReqData(response.data);
+            const response = await axios.get(`http://localhost:8080/api/posts/search?query=${query}`);
+            setReqData(response.data); // Set the retrieved data
             console.log(response.data);
         } catch (error) {
             console.log(error);
@@ -133,8 +133,8 @@ export default function ReviewPage() {
 
     const handleSearchSubmit = () => {
         if (searchQuery.trim() !== "") {
-            fetchData(searchQuery);
-            navigate(`/search-results?query=${searchQuery}`);  // Redirect to the search results page with the query
+            fetchData(searchQuery); // Fetch data using the new endpoint
+            navigate(`/search-results?query=${searchQuery}`); // Redirect to search results page
         }
     };
 
