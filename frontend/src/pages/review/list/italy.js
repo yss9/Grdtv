@@ -171,6 +171,8 @@ const Wrapper=styled.div`
 const BlogList = () => {
     const [posts, setPosts] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState("");
+    const [likes, setLikes] = useState({});
+    const [comments, setComments] = useState({});
     const navigate = useNavigate();
 
     const fetchPosts = (country) => {
@@ -184,6 +186,43 @@ const BlogList = () => {
             });
     };
 
+    const fetchLikes = (boardID) => {
+        axios
+            .get(`http://localhost:8080/api/likes/${boardID}/count`)
+            .then((response) => {
+                setLikes((prevLikes) => ({
+                    ...prevLikes,
+                    [boardID]: response.data.likesCount, // Store likes count per boardID
+                }));
+            })
+            .catch((error) => {
+                console.error(`Error fetching likes for post ${boardID}:`, error);
+            });
+    };
+
+    const fetchComments = (boardID) => {
+        axios
+            .get(`http://localhost:8080/api/comments/${boardID}/count`)
+            .then((response) => {
+                setComments((prevComments) => ({
+                    ...prevComments,
+                    [boardID]: response.data, // response.data에 바로 숫자가 담겨 있는 경우
+                }));
+            })
+            .catch((error) => {
+                console.error(`Error fetching comments for post ${boardID}:`, error);
+            });
+    };
+
+
+    useEffect(() => {
+        if (posts.length > 0) {
+            posts.forEach((post) => {
+                fetchLikes(post.boardID); // 각 게시글에 대해 좋아요 수 가져오기
+                fetchComments(post.boardID); // 각 게시글에 대해 댓글 수 가져오기
+            });
+        }
+    }, [posts]);
     useEffect(() => {
         // 컴포넌트가 마운트될 때 기본 국가로 데이터 불러오기
         fetchPosts(selectedCountry);
@@ -252,14 +291,14 @@ const BlogList = () => {
                                                                 <path d="M7.5 14L6.5575 13.0649C3.21 9.7564 1 7.5673 1 4.89646C1 2.70736 2.573 1 4.575 1C5.706 1 6.7915 1.57384 7.5 2.47357C8.2085 1.57384 9.294 1 10.425 1C12.427 1 14 2.70736 14 4.89646C14 7.5673 11.79 9.7564 8.4425 13.0649L7.5 14Z" fill="#DD3F3F"/>
                                                             </svg>
                                                         </LikeIcon>
-                                                        공감+999</Like>
+                                                        공감{likes[post.boardID] || 0}</Like>
                                                     <Comment>
                                                         <CommentIcon>
                                                             <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                 <path d="M0 1.56891V8.74154C0 9.60772 0.734238 10.3104 1.64072 10.3104H9.03235L11.6298 13V10.3102H13.3593C14.2653 10.3102 15 9.60748 15 8.7413V1.56891C14.9998 0.702482 14.2653 0 13.3593 0H1.64072C0.734238 0 0 0.702482 0 1.56891ZM10.4483 5.15498C10.4483 4.59815 10.9203 4.14652 11.5031 4.14652C12.0858 4.14652 12.5578 4.59815 12.5578 5.15498C12.5578 5.7123 12.0858 6.16369 11.5031 6.16369C10.9203 6.16369 10.4483 5.71254 10.4483 5.15498ZM6.44514 5.15498C6.44514 4.59815 6.91763 4.14652 7.49988 4.14652C8.08212 4.14652 8.55461 4.59815 8.55461 5.15498C8.55461 5.7123 8.08212 6.16369 7.49988 6.16369C6.91763 6.16369 6.44514 5.71254 6.44514 5.15498ZM2.44221 5.15498C2.44221 4.59815 2.9147 4.14652 3.49694 4.14652C4.07968 4.14652 4.55167 4.59815 4.55167 5.15498C4.55167 5.7123 4.07968 6.16369 3.49694 6.16369C2.91445 6.16393 2.44221 5.71254 2.44221 5.15498Z" fill="black"/>
                                                             </svg>
                                                         </CommentIcon>
-                                                        댓글 10</Comment>
+                                                        댓글 {comments[post.boardID] || 0}</Comment>
                                                 </Icons>
                                             </Read>
                                         </Content>
