@@ -60,8 +60,8 @@ public class LikeController {
         Post post = postRepository.findById(boardID)
                 .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
 
-        // 좋아요 수 반환
-        int likesCount = post.getLikesCount();
+        // 좋아요 수가 null인 경우 0을 반환
+        int likesCount = post.getLikesCount() != null ? post.getLikesCount() : 0;
 
         // 응답 데이터 준비
         Map<String, Object> response = new HashMap<>();
