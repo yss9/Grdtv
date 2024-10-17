@@ -40,5 +40,16 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
+    /**
+     * 게시물 댓글 개수 확인
+     */
+    @GetMapping("/{boardID}/count")
+    public ResponseEntity<Long> getCommentCountByBoardID(@PathVariable Long boardID) {
+        Long commentCount = commentService.getCommentsByBoardID(boardID).stream().count();
+        return ResponseEntity.ok(commentCount);
+    }
+
+
+
 
 }
