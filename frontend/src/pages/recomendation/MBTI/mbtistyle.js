@@ -80,7 +80,6 @@ export const WriteMbtiBtn=styled.button`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
     background-color: black;
     border: none;
     cursor: pointer;
@@ -91,8 +90,7 @@ export const WriteMbtiBtn=styled.button`
         font-family: "Regular";
     }
     svg{
-        position: absolute;
-        right: 6%;
+        margin-right: 10px;
     }
 `
 

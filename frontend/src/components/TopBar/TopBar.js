@@ -89,6 +89,7 @@ const RecomendationItem = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
+    z-index: 3;
 `;
 
 const RecomendationDropdown = ({ children }) => {
@@ -101,6 +102,7 @@ const Community = styled.button`
   font-weight: bolder;
   font-size: 14px;
   cursor: pointer;
+    z-index: 3;
     
 `;
 
@@ -110,6 +112,7 @@ const MyPage = styled.button`
   font-weight: bolder;
   font-size: 14px;
   cursor: pointer;
+    z-index: 3;
 `;
 
 
