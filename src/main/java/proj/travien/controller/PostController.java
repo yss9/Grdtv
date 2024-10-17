@@ -36,20 +36,6 @@ public class PostController {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/image/";
 
-   /* @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            // 파일 저장
-            String fileName = file.getOriginalFilename();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOAD_DIR + fileName);
-            Files.write(path, bytes);
-            return ResponseEntity.ok().body("File uploaded successfully: " + fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
-        }
-    }*/
 
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile file) {
@@ -216,7 +202,7 @@ public class PostController {
     }
 
     /**
-     * 썸네일 저장 API
+     * 썸네일 저장
      */
     @PostMapping("/{boardID}/thumbnail")
     public ResponseEntity<String> saveThumbnail(@PathVariable Long boardID) {
@@ -224,17 +210,17 @@ public class PostController {
         return ResponseEntity.ok("썸네일 저장 완료");
     }
 
+
     /**
      * 썸네일 반환
      */
     @GetMapping("/{boardID}/thumbnail")
     public ResponseEntity<String> getThumbnail(@PathVariable Long boardID) {
-        // PostService를 통해 해당 게시물의 썸네일 URL을 가져옴
         String thumbnailUrl = postService.getThumbnail(boardID);
         if (thumbnailUrl != null) {
             return ResponseEntity.ok(thumbnailUrl);
         } else {
-            return ResponseEntity.notFound().build();  // 썸네일이 없으면 404 반환
+            return ResponseEntity.notFound().build();
         }
     }
 

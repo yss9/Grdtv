@@ -27,7 +27,10 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
-    // 댓글 작성 메서드
+
+    /**
+     * 댓글 작성 메서드
+     */
     public Comment addComment(Long boardID, Long userId, String content) {
         Post post = postRepository.findById(boardID).orElseThrow(() -> new RuntimeException("Post not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -41,11 +44,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    // 댓글 정보 가져오기 메서드
+
+    /**
+     * 댓글 정보 가져오기 메서드
+     */
     public Comment getComment(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
     }
+
 
     public List<CommentResponse> getCommentsByBoardID(Long boardID) {
         Post post = postRepository.findById(boardID)
