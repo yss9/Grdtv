@@ -70,4 +70,21 @@ public class LikeController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/best-reviews")
+    public ResponseEntity<?> getBestReviews() {
+        // 좋아요가 많은 게시물 상위 3개를 가져옴
+        List<Post> bestPosts = likeService.getTopBestPosts();
+
+        if (bestPosts.isEmpty()) {
+            // 좋아요가 0인 게시물만 있는 경우 빈 응답
+            return ResponseEntity.ok("No posts with likes.");
+        }
+
+        // 응답 데이터 준비
+        Map<String, Object> response = new HashMap<>();
+        response.put("bestPosts", bestPosts);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
