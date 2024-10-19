@@ -20,6 +20,9 @@ public class UserInfoRecommendationService {
     public List<UserInfo> getSimilarUsers(UserInfo newUser) {
         List<UserInfo> users = userInfoRepository.findAll();
         List<UserSimilarity> similarities = new ArrayList<>();
+        newUser.setMbti("" + newUser.getMbti().charAt(0) + newUser.getMbti().charAt(4) +
+                newUser.getMbti().charAt(8) + newUser.getMbti().charAt(12));
+
         double[] newUserVector = convertToVector(newUser);
 
         for (UserInfo user : users) {
@@ -41,7 +44,7 @@ public class UserInfoRecommendationService {
     private double[] convertToVector(UserInfo user) {
         double[] vector = new double[7];
 
-        vector[0] = user.getAge() / MAX_AGE;
+        vector[0] = calculateAge(user.getAge()) / MAX_AGE;
         vector[1] = user.getGender().equals("M") ? 0 : 1;
         vector[2] = user.getMbti().charAt(0) == 'E' ? 0 : 1;
         vector[3] = user.getMbti().charAt(1) == 'S' ? 0 : 1;
@@ -49,6 +52,17 @@ public class UserInfoRecommendationService {
         vector[5] = user.getMbti().charAt(3) == 'J' ? 0 : 1;
 
         return vector;
+    }
+
+    private int calculateAge(String birthDateString) {
+        int birthYear = Integer.parseInt(birthDateString.substring(0, 4));
+        int birthMonth = Integer.parseInt(birthDateString.substring(4, 6));
+        int birthDay = Integer.parseInt(birthDateString.substring(6, 8));
+
+        java.time.LocalDate birthDate = java.time.LocalDate.of(birthYear, birthMonth, birthDay);
+        java.time.LocalDate currentDate = java.time.LocalDate.now();
+
+        return java.time.Period.between(birthDate, currentDate).getYears();
     }
 
     private double cosineSimilarity(double[] vec1, double[] vec2) {
@@ -89,5 +103,4 @@ public class UserInfoRecommendationService {
             return similarity;
         }
     }
-
 }

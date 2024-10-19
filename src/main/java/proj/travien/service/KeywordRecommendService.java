@@ -37,6 +37,8 @@ public class KeywordRecommendService {
         KeywordResultDTO dto = new KeywordResultDTO();
         dto.setId(entity.getId());
         dto.setDestName(entity.getDestName());
+        dto.setCountry(entity.getCountry());
+        dto.setLocation(entity.getLocation());
         dto.setInfo(entity.getInfo());
         return dto;
     }

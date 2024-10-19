@@ -122,7 +122,7 @@ const RecommendationCosine = () => {
     const handleSubmit = async () => {
         try {
             const response = await axios.post('/api/info-recommend', {
-                age: parseInt(age),
+                age: age,
                 gender: gender,
                 mbti: mbti
             });

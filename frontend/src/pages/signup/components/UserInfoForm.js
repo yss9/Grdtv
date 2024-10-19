@@ -57,7 +57,7 @@ const UserInfoForm = ({
                 <FormGroup>
                     <FormField value={birthday} type="input" onChange={onChangeBirthday} placeholder="생년월일" required />
                     <FormLabel htmlFor="Birthday">생년월일</FormLabel>
-                    <SubComment>ex)020331</SubComment>
+                    <SubComment>ex)19950101</SubComment>
                 </FormGroup>
                 <FormGroup>
                     <InputText>Gender</InputText>
