@@ -53,12 +53,12 @@ public class LikeService {
         List<Post> posts = postRepository.findAllByLikesAndBoardID();
 
         // 게시물이 3개 미만일 경우 있는 만큼만 반환
-        if (posts.size() <= 3) {
+        if (posts.size() <= 9) {
             return posts;
         }
 
         // 상위 3개의 게시물만 반환
-        return posts.subList(0, 3);
+        return posts.subList(0, 9);
     }
 
 

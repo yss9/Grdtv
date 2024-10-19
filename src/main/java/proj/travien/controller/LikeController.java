@@ -72,7 +72,7 @@ public class LikeController {
 
     @GetMapping("/best-reviews")
     public ResponseEntity<?> getBestReviews() {
-        // 좋아요가 많은 게시물 상위 3개를 가져옴
+        // 좋아요가 많은 게시물 상위 9개를 가져옴
         List<Post> bestPosts = likeService.getTopBestPosts();
 
         if (bestPosts.isEmpty()) {
