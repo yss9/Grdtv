@@ -17,13 +17,13 @@ const MyReviewData = [
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr)); /* 2 columns */
-  gap: 3rem; /* Adds space between components */
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* 2 columns */
+    row-gap: 3rem;
 `;
 
 const Container = styled.div`
-  width: 30rem;
-  height: 35rem;
+  width: 450px;
+  height: 500px;
   overflow: hidden;
   position: relative;
   border-radius: 20px;

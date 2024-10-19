@@ -39,18 +39,26 @@ export default function RecMbtiPage() {
     const navigate = useNavigate();
     const [displayedPlaces, setDisplayedPlaces] = useState([]);
     const [placeImages, setPlaceImages] = useState({});
+    const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
 
     useEffect(() => {
-        refreshPlaces();
         loadGoogleMapsScript();
     }, []);
+
+    useEffect(() => {
+        if (isGoogleMapsLoaded) {
+            refreshPlaces();
+        }
+    }, [isGoogleMapsLoaded]);
 
     const loadGoogleMapsScript = () => {
         const script = document.createElement('script');
         script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
         script.async = true;
+        script.onload = () => setIsGoogleMapsLoaded(true);  // 스크립트 로드 완료 후 상태 업데이트
         document.body.appendChild(script);
     };
+
 
     const refreshPlaces = () => {
         const shuffled = [...PlaceData].sort(() => 0.5 - Math.random());
@@ -58,6 +66,8 @@ export default function RecMbtiPage() {
     };
 
     const fetchPlacePhoto = (placeName) => {
+        if (!isGoogleMapsLoaded) return;  // Google Maps가 로드되지 않았으면 중단
+
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
         const request = {
             query: placeName,
@@ -81,12 +91,14 @@ export default function RecMbtiPage() {
     };
 
     useEffect(() => {
-        displayedPlaces.forEach((place) => {
-            if (!placeImages[place.placename]) {
-                fetchPlacePhoto(place.placename);
-            }
-        });
-    }, [displayedPlaces]);
+        if (isGoogleMapsLoaded) {
+            displayedPlaces.forEach((place) => {
+                if (!placeImages[place.placename]) {
+                    fetchPlacePhoto(place.placename);
+                }
+            });
+        }
+    }, [displayedPlaces, isGoogleMapsLoaded]);
 
     const handleGoInformation = (placename) => {
         navigate(`/recomendation/information/${placename}`);

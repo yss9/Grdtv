@@ -329,6 +329,20 @@ export const AutoCompleteList = styled.ul`
       background-color: #f0f0f0;
     }
   }
+
+    &::-webkit-scrollbar {
+        width: 8px; 
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #ff9900; /* Color of the scrollbar thumb (the draggable part) */
+        border-radius: 10px; /* Round the scrollbar edges */
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
+        border-radius: 10px;
+    }
 `;
 
 export const AutoCompleteListWrapper = styled.div`
