@@ -44,6 +44,23 @@ public class LikeService {
         return likeRepository.existsByPostBoardIDAndUserId(boardID, id);
     }
 
+    public List<Post> getTop3BestPosts() {
+        return postRepository.findTop3ByOrderByLikesCountDesc();
+    }
+
+    public List<Post> getTopBestPosts() {
+        // 좋아요 수가 0보다 큰 게시물만 가져옴, 좋아요 수 동일할 경우 boardID로 정렬
+        List<Post> posts = postRepository.findAllByLikesAndBoardID();
+
+        // 게시물이 3개 미만일 경우 있는 만큼만 반환
+        if (posts.size() <= 3) {
+            return posts;
+        }
+
+        // 상위 3개의 게시물만 반환
+        return posts.subList(0, 3);
+    }
+
 
 }
 
