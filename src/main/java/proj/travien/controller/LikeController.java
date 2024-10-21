@@ -87,4 +87,14 @@ public class LikeController {
         return ResponseEntity.ok(response);
     }
 
+    // 특정 사용자가 좋아요한 게시물 목록 조회
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Post>> getLikedPostsByUser(@PathVariable Long id) {
+        List<Post> likedPosts = likeService.getLikedPostsByUser(id);
+        if (likedPosts.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 좋아요한 게시물이 없을 경우 204 응답
+        }
+        return ResponseEntity.ok(likedPosts);  // 좋아요한 게시물 목록 반환
+    }
+
 }
