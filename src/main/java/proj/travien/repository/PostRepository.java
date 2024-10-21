@@ -18,4 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 좋아요 수가 동일한 경우 boardID 순으로 정렬하고, 좋아요 수가 0보다 큰 게시물만 가져옴
     @Query("SELECT p FROM Post p WHERE p.likesCount > 0 ORDER BY p.likesCount DESC, p.boardID ASC")
     List<Post> findAllByLikesAndBoardID();
+
+    @Query("SELECT p FROM Post p WHERE p.nickname = :nickname")
+    List<Post> findByNickname(String nickname);
+
 }
