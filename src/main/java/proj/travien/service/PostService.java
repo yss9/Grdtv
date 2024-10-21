@@ -329,5 +329,11 @@ public class PostService {
         return postRepository.findByKeyword(keyword);
     }
 
+    @Transactional(readOnly = true)
+    public List<Post> getPostsByUser(String nickname) {
+        return postRepository.findByNickname(nickname);
+    }
+
+
 
 }
