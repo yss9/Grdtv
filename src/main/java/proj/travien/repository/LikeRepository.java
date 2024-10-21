@@ -18,6 +18,8 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     Optional<Like> findByPostBoardIDAndUserId(Long boardID, Long id);
 
+    List<Like> findByUserId(Long id);  // 유저 ID로 좋아요 목록 조회
+
 
 
 }
