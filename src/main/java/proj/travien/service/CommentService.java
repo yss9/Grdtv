@@ -60,11 +60,22 @@ public class CommentService {
 
         return commentRepository.findByPost(post).stream()
                 .map(comment -> new CommentResponse(
+                        comment.getId(),
                         comment.getContent(),
                         comment.getUser().getNickname(),
                         comment.getCreateDate()
                 ))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * 댓글 삭제 메서드
+     */
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("Comment not found"));
+        commentRepository.delete(comment);
     }
 
 }

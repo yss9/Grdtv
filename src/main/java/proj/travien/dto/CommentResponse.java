@@ -6,11 +6,14 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class CommentResponse {
+
+    private Long commentId;
     private String content;
     private String username;
     private Timestamp createDate;
 
-    public CommentResponse(String content, String username, Timestamp createDate) {
+    public CommentResponse(Long commentId, String content, String username, Timestamp createDate) {
+        this.commentId = commentId;
         this.content = content;
         this.username = username;
         this.createDate = createDate;
