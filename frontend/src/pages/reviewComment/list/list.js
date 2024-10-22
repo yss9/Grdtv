@@ -12,8 +12,20 @@ export default function BoardCommentList() {
         try {
             const response = await axios.get(`http://localhost:8080/api/comments/${boardID}`);
             setComments(response.data); // 댓글 목록 상태 업데이트
+            console.log("댓글 목록:", response.data);
         } catch (error) {
             console.error("댓글 불러오기 실패:", error);
+        }
+    };
+
+    // 댓글 삭제 요청
+    const deleteComment = async (commentId) => {
+        try {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`);
+            // 댓글 삭제 후 댓글 목록을 다시 가져오기
+            fetchComments();
+        } catch (error) {
+            console.error("댓글 삭제 실패:", error);
         }
     };
 
@@ -27,15 +39,24 @@ export default function BoardCommentList() {
             {comments.length === 0 ? (
                 <S.NoComments>아직 댓글이 없습니다.</S.NoComments>
             ) : (
-                comments.map((comment, index) => (
-                    <S.CommentItem key={index}>
-                        <S.CommentHeader>
-                            <S.Username>{comment.username}</S.Username>
-                            <S.CommentDate>{new Date(comment.createDate).toLocaleString()}</S.CommentDate>
-                        </S.CommentHeader>
-                        <S.CommentContent>{comment.content}</S.CommentContent>
-                    </S.CommentItem>
-                ))
+                comments.map((comment) => {
+                    console.log("댓글 ID:", comment.commentId);
+
+                    return (
+                        <S.CommentItem key={comment.id}>
+                            <S.CommentHeader>
+                                <S.Username>{comment.username}</S.Username>
+                                <S.CommentDate>
+                                    {new Date(comment.createDate).toLocaleString()}
+                                </S.CommentDate>
+                            </S.CommentHeader>
+                            <S.CommentContent>{comment.content}</S.CommentContent>
+                            <S.DeleteButton onClick={() => deleteComment(comment.commentId)}>
+                                삭제하기
+                            </S.DeleteButton>
+                        </S.CommentItem>
+                    );
+                })
             )}
         </S.CommentListWrapper>
     );
