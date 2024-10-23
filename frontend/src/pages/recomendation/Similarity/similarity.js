@@ -1,46 +1,90 @@
 import { Reset } from 'styled-reset';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Age,
-    Body,
-    Container,
-    Detail,
-    Gender,
-    Left,
-    Mbti,
-    Name,
-    Profile,
-    RecentContainer,
-    RecomContainer,
-    RouteName,
-    SaveBtn,
-    Subtitle,
-    Routes,
-    Subtitle2,
-    SubtitleContainer,
-    Top,
-    User,
-    Wrapper,
-    Map,
-    Left2,
-    Place,
-    SubtitleContainer2,
-    PlaceName,
-    PlaceWrapper,
-    Triangle,
-    Left3,
-    Country,
-    RightArrow,
-    ProfileWrapper
+    Age, Body, Container, Detail, Gender,
+    Left, Mbti, Name, Profile, RecentContainer,
+    RecomContainer, RouteName, SaveBtn, Subtitle, Routes,
+    Subtitle2, SubtitleContainer, Top, User, Wrapper, Map,
+    Left2, Place, SubtitleContainer2, PlaceName, PlaceWrapper,
+    Triangle, Left3, Country, RightArrow, ProfileWrapper
 } from "./similarityStlye";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
+
 export default function RecSimilarityPage() {
-    return(
+    const [placeImages, setPlaceImages] = useState({});
+    const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
+
+    const places = [
+        { name: "티엔미미" },
+        { name: "비아톨레도" },
+        { name: "하이디라오" },
+        { name: "여의도" },
+        { name: "동성로" },
+        { name: "영남대학교" },
+        { name: "경대병원" },
+    ];
+
+    const loadGoogleMapsScript = () => {
+        return new Promise((resolve) => {
+            if (window.google && window.google.maps && window.google.maps.places) {
+                resolve();
+            } else {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+                script.async = true;
+                script.onload = () => {
+                    resolve();
+                };
+                document.body.appendChild(script);
+            }
+        });
+    };
+
+    useEffect(() => {
+        loadGoogleMapsScript().then(() => {
+            setIsGoogleMapsScriptLoaded(true);
+        });
+    }, []);
+
+    const fetchPlacePhoto = (placeName) => {
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        const request = {
+            query: placeName,
+            fields: ['place_id', 'photos']
+        };
+
+        service.findPlaceFromQuery(request, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results[0]) {
+                const place = results[0];
+                if (place.photos && place.photos.length > 0) {
+                    const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
+                    setPlaceImages(prevState => ({
+                        ...prevState,
+                        [placeName]: photoUrl
+                    }));
+                }
+            } else {
+                console.error(`Could not fetch place photo for ${placeName}`);
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (isGoogleMapsScriptLoaded) {
+            // Google Maps 스크립트가 로드되었을 때만 장소명에 대해 사진을 가져옵니다.
+            places.forEach(place => {
+                fetchPlacePhoto(place.name);
+            });
+        }
+    }, [isGoogleMapsScriptLoaded]);
+
+    return (
         <>
-            <Reset/>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
+            <Reset />
+            <div style={{ height: '55px' }}></div>
+            <TopBarComponent />
             <Container>
                 <Wrapper>
                     <SubtitleContainer>
@@ -69,40 +113,15 @@ export default function RecSimilarityPage() {
                             <Left2>
                                 <RouteName>가성비 관광루트</RouteName>
                                 <Routes>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
-                                    <Triangle/>
-                                    <PlaceWrapper>
-                                        <Place></Place>
-                                        <PlaceName>장소명</PlaceName>
-                                    </PlaceWrapper>
+                                    {places.map((place, index) => (
+                                        <>
+                                            <PlaceWrapper key={index}>
+                                                <Place src={placeImages[place.name] || ''} alt={place.name} />
+                                                <PlaceName>{place.name}</PlaceName>
+                                            </PlaceWrapper>
+                                            <Triangle />
+                                        </>
+                                    ))}
                                 </Routes>
                             </Left2>
                             <Map></Map>
