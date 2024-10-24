@@ -7,7 +7,6 @@
     import MyReservation from "../../components/MyPageDetail/MyReservation";
     import MyProfile2 from '../../public/Img/forprofile/img.png'; // 임시 이미지
     import { Reset } from "styled-reset";
-    
     import {
     GloplerSettingBtn, Introduce, IntroduceWrapper,
     Mbti, MyPageDetailContainer, MyProfileContainer, NameWrapper, PointSettingBtn,
@@ -16,10 +15,9 @@
     SelectorItem2, Highlight2, SelectorWrapper2, Wrapper
 } from './mypagestyle';
     import {useNavigate} from "react-router-dom";
-    
-    // 사용자 인증 토큰을 가져오는 함수
+
     const getAuthToken = () => {
-        return Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+        return Cookies.get('jwt');
     };
     
     const Mypage = () => {
@@ -43,7 +41,7 @@
                     if (token) {
                         // 토큰에서 사용자 아이디 추출
                         const decodedToken = jwtDecode(token);
-                        const userId = decodedToken.userId; // userId 필드가 있는지 확인하고 사용
+                        const userId = decodedToken.userId;
     
                         const response = await axios.get(`http://localhost:8080/api/users/my-info?userId=${userId}`, {
                             headers: {
@@ -89,9 +87,17 @@
 
         const processMbti = (mbtiString) => {
             return mbtiString
-                .split('/')  // '/' 기준으로 문자열을 나눔
-                .map(item => item.charAt(0))  // 각 부분에서 첫 글자만 추출
-                .join('');  // 추출한 문자들을 합침
+                .split('/')
+                .map(item => item.charAt(0))
+                .join('');
+        };
+
+        const processProfilePicture = (profilePicture) => {
+            if (profilePicture) {
+                return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+            } else {
+                return MyProfile2;
+            }
         };
     
         return (
@@ -103,9 +109,7 @@
                     {userData && (
                         <MyProfileContainer>
                             <ProfileImg
-                                src={userData.profilePicture
-                                    ? `http://localhost:8080/${userData.profilePicture.replace('static/', '')}`
-                                    : MyProfile2}
+                                src={processProfilePicture(userData.profilePicture)}
                                 alt="프로필 이미지"
                             />
                             <NameWrapper>{userData.nickname}</NameWrapper>

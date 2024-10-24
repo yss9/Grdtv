@@ -1,6 +1,8 @@
 // BestReview1.js
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from "react-router-dom";
+
 
 const ReviewContainer = styled.div`
   width: 32%;
@@ -72,8 +74,14 @@ const CommentIcon =styled.div`
   justify-content: center;
 `
 const BestReview1 = ({ review }) => {
+    const navigate = useNavigate();
+
+    const onClickMoveToBoardDetail = (id) => {
+        navigate(`/board/${id}`);
+    };
+
     return (
-        <ReviewContainer>
+        <ReviewContainer key={review.boardID} onClick={() => onClickMoveToBoardDetail(review.boardID)}>
             <ReviewImg src={review.image}/>
             <InformContainer>
                 <Inform>

@@ -31,7 +31,7 @@ const regionList = [
 export default function ReviewPage() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
-    const [reqData, setReqData] = useState([]);
+    const [setReqData] = useState([]);
     const [bestReviews, setBestReviews] = useState([]);
     const [filteredRegions, setFilteredRegions] = useState([]);
     const reviewsPerPage = 3;
@@ -187,6 +187,7 @@ export default function ReviewPage() {
                     <BestReviews>
                         {visibleReviews.map((review, index) => (
                             <BestReview1 key={index} review={{
+                                boardID:review.boardID,
                                 title: review.title,
                                 author: review.nickname,
                                 likesCount: review.likesCount
