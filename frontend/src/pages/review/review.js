@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import BestReview1 from '../../components/reviewPage/BestRivew1/BestReview1';
 import Down from './list/italy';
 import { Reset } from 'styled-reset';
@@ -11,30 +11,6 @@ import {
     Indicator, Search, AutoCompleteListWrapper, DownContainer, DownWrapper
 } from './reviewstyle';
 import TopBarComponent from "../../components/TopBar/TopBar";
-import Ramen from "../../public/Img/ramen.png";
-import Sushi from "../../public/Img/sushi.png";
-import Canada from "../../public/Img/canada.png"
-import Paris from "../../public/Img/paris.png"
-import Sydney from "../../public/Img/sydney.png"
-import Osaka from "../../public/Img/osaka.png"
-
-const BestreviewsData = [
-    { title: '라멘의 모든 것', author: '김라멘', image: Ramen },
-    { title: '스시의 진수', author: '이초밥', image: Sushi },
-    { title: '캐나다 여행기', author: '박캐나다', image: Canada },
-    { title: '파리의 낭만', author: '최파리', image: Paris },
-    { title: '시드니의 매력', author: '장시드니', image: Sydney },
-    { title: '오사카 탐방기', author: '윤오사카', image: Osaka },
-    { title: '뉴욕의 하루', author: '김뉴욕' },
-    { title: '로마의 유적지', author: '이로마' },
-    { title: '런던의 역사', author: '박런던' },
-    { title: '베를린의 문화', author: '최베를린' },
-    { title: '도쿄의 밤', author: '장도쿄' },
-    { title: '방콕의 하루', author: '윤방콕' },
-    { title: '하노이의 음식', author: '김하노이' },
-    { title: '싱가포르의 랜드마크', author: '이싱가포르' },
-    { title: '두바이의 럭셔리', author: '박두바이' }
-];
 
 
 const regionList = [
@@ -46,7 +22,7 @@ const regionList = [
     "터키", "이스탄불", "러시아", "모스크바", "상트페테르부르크", "인도", "델리", "뭄바이", "태국", "방콕", "푸켓",
     "싱가포르", "베트남", "하노이", "호찌민", "말레이시아", "쿠알라룸푸르", "인도네시아", "발리", "필리핀", "마닐라",
     "두바이", "아부다비", "몰디브", "피지", "스리랑카", "콜롬보", "모로코", "마라케시", "페루", "마추픽추", "칠레",
-    "이탈리아", "피렌체", "베네치아", "스위스", "취리히", "루체른", "오스트리아", "빈", "체코", "프라하",
+     "피렌체", "베네치아", "스위스", "취리히", "루체른", "오스트리아", "빈", "체코", "프라하",
     "헝가리", "부다페스트", "네덜란드", "암스테르담", "벨기에", "브뤼셀", "아이슬란드", "레이캬비크", "노르웨이", "오슬로",
     "핀란드", "헬싱키", "스웨덴", "스톡홀름", "덴마크", "코펜하겐", "폴란드", "바르샤바", "크로아티아", "두브로브니크",
     "슬로베니아", "류블랴나", "루마니아", "부쿠레슈티", "불가리아", "소피아"
@@ -56,13 +32,34 @@ export default function ReviewPage() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
     const [reqData, setReqData] = useState([]);
+    const [bestReviews, setBestReviews] = useState([]);
     const [filteredRegions, setFilteredRegions] = useState([]);
     const reviewsPerPage = 3;
 
-    const startIndex = activeIndex * reviewsPerPage;
-    const visibleReviews = BestreviewsData.slice(startIndex, startIndex + reviewsPerPage);
-
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchBestReviews = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/likes/best-reviews');
+                // bestPosts 배열을 상태에 설정
+                if (Array.isArray(response.data.bestPosts)) {
+                    setBestReviews(response.data.bestPosts); // 상태 업데이트
+                } else {
+                    console.error("Expected an array but got:", response.data.bestPosts);
+                    setBestReviews([]); // 빈 배열로 설정
+                }
+            } catch (error) {
+                console.error("Error fetching best reviews:", error);
+                setBestReviews([]); // 빈 배열로 설정
+            }
+        };
+
+        fetchBestReviews();
+    }, []);
+
+    const startIndex = activeIndex * reviewsPerPage;
+    const visibleReviews = bestReviews.slice(startIndex, startIndex + reviewsPerPage);
 
     const handleGoBoard = () =>{
         navigate('/exboard');
@@ -180,7 +177,7 @@ export default function ReviewPage() {
                         <BestReviewTitle>오늘의 BEST 리뷰어 </BestReviewTitle>
                         <BestReiviewer>> 김라멘 님</BestReiviewer>
                         <IndicatorContainer>
-                            {Array.from({ length: Math.ceil(BestreviewsData.length / reviewsPerPage) }).map((_, index) => (
+                            {Array.from({ length: Math.ceil(bestReviews.length / reviewsPerPage) }).map((_, index) => (
                                 <Indicator
                                     key={index}
                                     className={index === activeIndex ? 'active' : ''}
@@ -191,9 +188,13 @@ export default function ReviewPage() {
                     </SubTitle1>
                 </SubTitleContainer>
                 <BestReviewContainer>
-                    <BestReviews onClick={handleGoBoard}>
+                    <BestReviews>
                         {visibleReviews.map((review, index) => (
-                            <BestReview1 key={index} review={review} />
+                            <BestReview1 key={index} review={{
+                                title: review.title,
+                                author: review.nickname,
+                                likesCount: review.likesCount
+                                 }}  />
                         ))}
                     </BestReviews>
                 </BestReviewContainer>
