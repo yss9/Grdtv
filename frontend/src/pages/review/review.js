@@ -61,10 +61,6 @@ export default function ReviewPage() {
     const startIndex = activeIndex * reviewsPerPage;
     const visibleReviews = bestReviews.slice(startIndex, startIndex + reviewsPerPage);
 
-    const handleGoBoard = () =>{
-        navigate('/exboard');
-    }
-
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && searchQuery.trim() !== "") {
             // 검색 결과 페이지로 이동, 검색어 전달
