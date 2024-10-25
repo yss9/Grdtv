@@ -110,19 +110,27 @@ export default function BoardWrite(props) {
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('title', title);
-        formData.append('body', body);
+        formData.append('body', body); // 본문 전송
         formData.append('addressTitle', addressTitle);
         formData.append('addresses', JSON.stringify(addressStrings));
+        formData.append('country', country);
+
         if (image) {
             formData.append('image', image);
         }
-        formData.append('country', country);
 
         try {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
             console.log(response.data);
 
+            
+            await axios.post(
+                `http://localhost:8080/api/posts/${response.data.boardID}/thumbnail`,
+                { body },
+                { headers: { 'Content-Type': 'application/json' } } // JSON 형식 명시
+            );
 
+            console.log("board가 찍히나:", response.data.boardID);
             navigate(`/board/${response.data.boardID}`);
         } catch (error) {
             console.error(error);
@@ -195,7 +203,7 @@ export default function BoardWrite(props) {
 
 
     const countries = [
-        "대한한국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
+        "대한민국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
         "뉴질랜드"
     ];
 
