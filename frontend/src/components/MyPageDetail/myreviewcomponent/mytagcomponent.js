@@ -1,60 +1,78 @@
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import Kyoto from '../../../public/Img/kyoto.png';
-import Osaka from '../../../public/Img/osaka.png';
-import Paris from '../../../public/Img/paris.png';
-import ThaiMarket from '../../../public/Img/thaimarket.png'
-import Alps from '../../../public/Img/alps.png'
-import Sushi from '../../../public/Img/sushi.png'
-
-const MyReviewData = [
-    { title: '제목1', image: Kyoto, date: '날짜1' },
-    { title: '제목2', image: Osaka, date: '날짜2' },
-    { title: '제목3', image: Paris, date: '날짜3' },
-    { title: '제목4', image: ThaiMarket, date: '날짜4' },
-    { title: '제목5', image: Alps, date: '날짜5' },
-    { title: '제목6', image: Sushi, date: '날짜6' },
-];
+import axios from "axios";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import Thumnail from "../../../public/Img/forprofile/img.png";
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr)); /* 2 columns */
-  gap: 1rem; /* Adds space between components */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
+    gap: 1rem;
 `;
 
 const Container = styled.div`
-  width: 25rem;
-  height: 23rem;
-  overflow: hidden;
-  position: relative;
-  margin: auto; /* Horizontally center the component */
+    width: 25rem;
+    height: 23rem;
+    overflow: hidden;
+    position: relative;
+    margin: auto;
 `;
-
 
 const Thumbnail = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    background-color: navy;
 `;
 
-
-function MyReviewComponent({image}) {
+function MyReviewComponent({ title, image, date }) {
     return (
         <Container>
-            <Thumbnail src={image} />
+            <Thumbnail src={image || Thumnail} />
         </Container>
     );
 }
 
 export default function Mytagcomponent() {
+    const [reviews, setReviews] = useState([]); // Ensure the state is an array
+    const token = Cookies.get("jwt");
+
+    useEffect(() => {
+        const fetchLikedPosts = async () => {
+            try {
+                if (token) {
+                    const decodedToken = jwtDecode(token);
+                    const Id = decodedToken.id; // Get user ID from token
+
+                    const response = await axios.get(`http://localhost:8080/api/likes/user/${Id}`);
+
+                    // Ensure the response data is an array
+                    if (Array.isArray(response.data)) {
+                        setReviews(response.data); // Set the data from the response
+                    } else {
+                        console.error("Response is not an array:", response.data);
+                        setReviews([]); // Set reviews to an empty array in case of error
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching liked posts:", error);
+                setReviews([]); // Set reviews to an empty array in case of error
+            }
+        };
+
+        fetchLikedPosts();
+    }, [token]);
+
     return (
         <Wrapper>
-            {MyReviewData.map((review, index) => (
+            {reviews.map((review) => (
                 <MyReviewComponent
-                    key={index}
+                    key={review.boardID}
                     title={review.title}
-                    image={review.image}
-                    date={review.date}
+                    image={review.imageUrl || review.thumbnail}
+                    date={review.createDate}
                 />
             ))}
         </Wrapper>
