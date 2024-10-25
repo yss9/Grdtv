@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
 @Service
 public class PostService {
 
@@ -258,30 +259,31 @@ public class PostService {
      * body에서 썸네일을 추출하는 메서드
      */
 
-    private String extractThumbnail(String body) {
-        // 정규식을 사용하여 첫 번째 <img> 태그에서 src 속성을 추출
-        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
-        Matcher matcher = pattern.matcher(body);
-        if (matcher.find()) {
-            return matcher.group(1);  // 첫 번째 src URL 반환
+    public void saveThumbnail(Long boardID, String body) {
+        Post post = postRepository.findById(boardID)
+                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+
+        // 본문(body) 내 첫 번째 <img> 태그의 src 속성 추출
+        String thumbnailUrl = extractFirstImageUrl(body);
+
+        if (thumbnailUrl == null) {
+            // 이미지가 없을 경우 기본 이미지 경로 설정
+            thumbnailUrl = "/image/no_image.png";
         }
-        return null;  // 이미지가 없을 경우 null 반환
+
+        post.setThumbnail(thumbnailUrl);
+        postRepository.save(post);
     }
 
-    @Transactional
-    public void saveThumbnail(Long boardID) {
-        // 해당 boardID로 Post 엔티티 조회
-        Post post = postRepository.findById(boardID)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + boardID));
+    private String extractFirstImageUrl(String body) {
+        // <img> 태그의 src 속성 추출 정규표현식
+        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(body);
 
-        // body에서 썸네일 추출
-        String thumbnail = extractThumbnail(post.getBody());
-
-        // 추출한 썸네일을 Post 엔티티에 저장
-        post.setThumbnail(thumbnail != null ? thumbnail : "이미지 없음");
-
-        // 변경된 Post 엔티티 저장
-        postRepository.save(post);
+        if (matcher.find()) {
+            return matcher.group(1); // 첫 번째 이미지 URL 반환
+        }
+        return null; // 이미지가 없을 경우 null 반환
     }
 
     /**

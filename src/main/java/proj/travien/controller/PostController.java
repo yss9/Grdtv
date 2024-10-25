@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -201,14 +198,24 @@ public class PostController {
         }
     }
 
+
     /**
      * 썸네일 저장
      */
     @PostMapping("/{boardID}/thumbnail")
-    public ResponseEntity<String> saveThumbnail(@PathVariable Long boardID) {
-        postService.saveThumbnail(boardID);
+    public ResponseEntity<String> saveThumbnail(
+            @PathVariable Long boardID,
+            @RequestBody Map<String, String> requestBody
+    ) {
+        if (requestBody == null || !requestBody.containsKey("body")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("body 값이 필요합니다.");
+        }
+
+        String body = requestBody.get("body");
+        postService.saveThumbnail(boardID, body);
         return ResponseEntity.ok("썸네일 저장 완료");
     }
+
 
 
     /**
@@ -223,6 +230,7 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     /**
      * 검색
