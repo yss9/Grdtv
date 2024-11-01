@@ -254,6 +254,14 @@ public class PostController {
         }
     }
 
+    /**
+     * title과 boardID
+     */
+    @GetMapping("/titles")
+    public ResponseEntity<List<Map<String, Object>>> getTitleAndBoardIDList() {
+        List<Map<String, Object>> titles = postService.getTitleAndBoardIDList();
+        return ResponseEntity.ok(titles);
+    }
 
 
 

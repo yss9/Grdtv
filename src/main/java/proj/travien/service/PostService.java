@@ -337,5 +337,20 @@ public class PostService {
     }
 
 
+    /**
+     * title과 boardID만 존재하는 목록
+     */
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getTitleAndBoardIDList() {
+        return postRepository.findAll().stream()
+                .map(post -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("title", post.getTitle());
+                    map.put("boardID", post.getBoardID());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }
