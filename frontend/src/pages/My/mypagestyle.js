@@ -74,8 +74,7 @@ export const SettingWrapper=styled.div`
   align-items: center;
 `
 export const SettingContainer=styled.div`
-    //background-color: #61dafb;
-  width: 33%;
+  width: 500px;
   display: flex;
   justify-content: space-between;
 `

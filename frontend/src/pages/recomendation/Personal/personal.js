@@ -2,8 +2,7 @@ import { Reset } from 'styled-reset';
 import React, { useEffect, useState } from 'react';
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import {
-    HashTag,
-    HashTagContaienr,
+    HashTag, HashTagContaienr,
     KeywordBtn, KeywordContainer, Place, PlaceContainer, PlaceName1, PlaceWrapper, RefreshBtn,
     SubTitle, SubTitleWrapper, Title, TitleWrapper, Wrapper,
     BestCourseContainer,
@@ -21,7 +20,7 @@ const KeywordData = [
     { keyword: '#휴식' }, { keyword: '#호수' }, { keyword: '#전통음식' }
 ];
 
-export default function MainPage() {
+export default function PersonalRecPage() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [placeImages, setPlaceImages] = useState({});
     const [displayedPlaces, setDisplayedPlaces] = useState([]); // 3개의 장소만 표시하기 위한 상태

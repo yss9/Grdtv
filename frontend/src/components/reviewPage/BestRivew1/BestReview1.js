@@ -15,7 +15,7 @@ const ReviewImg=styled.img`
   height: 100%;
   background-color: #4e53ed;
   border-radius: 15px;
-
+    object-fit: cover;
 `
 const InformContainer=styled.div`
   width: 100%;
@@ -82,7 +82,7 @@ const BestReview1 = ({ review }) => {
 
     return (
         <ReviewContainer key={review.boardID} onClick={() => onClickMoveToBoardDetail(review.boardID)}>
-            <ReviewImg src={review.image}/>
+            <ReviewImg src={review.thumbnail}/>
             <InformContainer>
                 <Inform>
                     <Title>{review.title}</Title>

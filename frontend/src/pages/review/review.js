@@ -190,7 +190,8 @@ export default function ReviewPage() {
                                 boardID:review.boardID,
                                 title: review.title,
                                 author: review.nickname,
-                                likesCount: review.likesCount
+                                likesCount: review.likesCount,
+                                thumbnail: review.thumbnail
                                  }}  />
                         ))}
                     </BestReviews>

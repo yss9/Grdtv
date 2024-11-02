@@ -15,6 +15,7 @@ import {useNavigate} from "react-router-dom";
 
 
 
+
 const DropdownContainer = styled.div`
     margin-left: 430px;
     display: flex;
@@ -246,6 +247,7 @@ const BlogList = () => {
         console.log(id);
     };
 
+
     return (
         <Wrapper>
             <SubTitleContainer>
@@ -304,7 +306,7 @@ const BlogList = () => {
                                         </Content>
                                     </ContentWrapper>
                                     <BPicWrapper>
-                                        <BPic ></BPic>
+                                        <BPic src={post.thumbnail} alt="Thumbnail"></BPic>
                                     </BPicWrapper>
                                 </BlogContainer>
                             ))

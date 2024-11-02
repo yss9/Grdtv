@@ -21,7 +21,6 @@ import {
 // Google Maps Places API 키 추가
 const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0'; // 본인의 Google Maps API 키로 교체
 
-// PlaceData 배열에서 이미지 URL을 Google Maps API에서 동적으로 불러오도록 수정
 const PlaceData = [
     { placename: '오사카' },
     { placename: '파리' },

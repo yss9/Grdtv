@@ -19,13 +19,13 @@
     const getAuthToken = () => {
         return Cookies.get('jwt');
     };
-    
+
     const Mypage = () => {
         const [activeItem, setActiveItem] = useState('Left');
         const [highlightPosition, setHighlightPosition] = useState({ left: 0, width: 0 });
         const [userData, setUserData] = useState(null); // 사용자 데이터를 저장할 상태
         const token = getAuthToken(); // JWT 토큰 가져오기
-    
+
         useEffect(() => {
             const selectedElement = document.querySelector(`div[data-item="${activeItem}"]`);
             if (selectedElement) {
@@ -34,7 +34,7 @@
                 setHighlightPosition({ left, width });
             }
         }, [activeItem]);
-    
+
         useEffect(() => {
             const fetchUserData = async () => {
                 try {
@@ -42,7 +42,7 @@
                         // 토큰에서 사용자 아이디 추출
                         const decodedToken = jwtDecode(token);
                         const userId = decodedToken.userId;
-    
+
                         const response = await axios.get(`http://localhost:8080/api/users/my-info?userId=${userId}`, {
                             headers: {
                                 'Authorization': `Bearer ${token}`
@@ -56,25 +56,25 @@
                     console.error('Failed to fetch user data', error);
                 }
             };
-    
+
             fetchUserData();
         }, [token]);
-    
+
         function selectItem(event) {
             const target = event.target;
             const item = target.dataset.item;
-    
+
             if (item === '진행 목록' || item === 'Righ') {
                 setActiveItem('Righ');
             } else if (item === '게시물 확인' || item === 'Left') {
                 setActiveItem('Left');
             }
         }
-    
+
         const ActiveTextStyle = {
             color: 'gray' // 원하는 색상으로 변경
         };
-    
+
         const InactiveTextStyle = {
             color: '#efefef' // 기본 색상으로 변경
         };
@@ -103,7 +103,7 @@
                 return MyProfile2;
             }
         };
-    
+
         return (
             <>
                 <Reset />
@@ -206,5 +206,5 @@
             </>
         );
     };
-    
+
     export default Mypage;
