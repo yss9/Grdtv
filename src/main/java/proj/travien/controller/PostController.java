@@ -82,7 +82,7 @@ public class PostController {
         Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
         createdPost.setNickname(user.getNickname());  // 추가
         createdPost.setMbti(user.getMbti());          // 추가
-
+        createdPost.setProfilePicture(user.getProfilePicture());
         // 포인트 업데이트 추가
         user.setPoints(user.getPoints() + 10);  // 사용자 포인트 +10
         userService.save(user);  // 사용자 정보 업데이트
