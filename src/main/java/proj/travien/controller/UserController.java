@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proj.travien.dto.AgentApplicationDTO;
 import proj.travien.jwt.JwtUtil;
 import proj.travien.domain.User;
 import proj.travien.dto.AgentDTO;
@@ -34,20 +35,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestPart("user") UserDTO userDTO,
-                                    @RequestParam("isAgent") String isAgentStr,
-                                    @RequestPart(value = "profilePicture", required = false) MultipartFile profilePictureFile,
-                                    @RequestPart(value = "verificationFile", required = false) MultipartFile verificationFile) {
+                                    @RequestPart(value = "profilePicture", required = false) MultipartFile profilePictureFile) {
         if (userService.isUserIdInUse(userDTO.getUserId()) || userService.isNicknameInUse(userDTO.getNickname())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username or nickname already in use");
         }
 
-        boolean isAgent = Boolean.parseBoolean(isAgentStr);
-        System.out.println("isAgent: " + isAgent);  // 로그로 확인
-
-        // DTO로 변환된 값에 isAgent 설정
-        userDTO.setAgent(isAgent);
-
-        boolean userCreated = userService.createUser(userDTO, profilePictureFile, verificationFile);
+        // 기본 사용자로만 가입
+        userDTO.setAgent(false); // 기본 사용자는 예약대행자가 아님
+        boolean userCreated = userService.createUser(userDTO, profilePictureFile, null);
 
         if (userCreated) {
             return ResponseEntity.ok().build();
@@ -55,6 +50,32 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User could not be created");
         }
     }
+
+    @PostMapping("/apply-agent")
+    public ResponseEntity<?> applyAsAgent(@RequestParam("userId") String userId,
+                                          @RequestPart("agentDetails") AgentApplicationDTO agentDTO,
+                                          @RequestPart("verificationFile") MultipartFile verificationFile) {
+        boolean applied = userService.applyAsAgent(userId, agentDTO, verificationFile);
+
+        if (applied) {
+            return ResponseEntity.ok().body("Successfully applied as an agent");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Agent application failed");
+        }
+    }
+
+    // 관리자가 예약대행자 신청 승인
+    @PostMapping("/approve-agent/{userId}")
+    public ResponseEntity<?> approveAgentApplication(@PathVariable String userId) {
+        boolean approved = userService.approveAgentApplication(userId);
+
+        if (approved) {
+            return ResponseEntity.ok("Agent application approved successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to approve agent application");
+        }
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {

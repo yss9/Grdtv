@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.PointsHistory;
 import proj.travien.domain.Role;
 import proj.travien.domain.User;
+import proj.travien.dto.AgentApplicationDTO;
 import proj.travien.dto.UserDTO;
 import proj.travien.dto.AgentDTO;
 import proj.travien.repository.PointsHistoryRepository;
@@ -20,11 +21,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -47,7 +46,7 @@ public class UserService {
         userRepository.save(user);  // 사용자 정보 저장
     }
 
-    // 회원가입
+    // 회원가입 시 기본 사용자로만 등록
     public boolean createUser(UserDTO userDTO, MultipartFile profilePictureFile, MultipartFile verificationFile) {
         if (isUserIdInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {
             return false;
@@ -61,9 +60,9 @@ public class UserService {
         user.setGender(userDTO.getGender());
         user.setMbti(userDTO.getMbti());
         user.setNickname(userDTO.getNickname());
-        user.setAgent(userDTO.isAgent());
-
-        Role role = Role.ROLE_USER;
+        user.setAgent(false); // 기본 사용자는 예약대행자가 아님
+        user.setRole(Role.ROLE_USER);
+        user.setPoints(1000);
 
         // 프로필 사진 저장
         if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
@@ -71,26 +70,48 @@ public class UserService {
             user.setProfilePicture(profilePicturePath);
         }
 
-
-        // 예약 대행자인 경우 ROLE_AGENT 추가 및 검증 파일만 처리
-        if (userDTO.isAgent()) {
-            role = Role.ROLE_AGENT;
-
-            // 검증 파일 저장 (예약 대행자만)
-            if (verificationFile != null && !verificationFile.isEmpty()) {
-                String verificationFilePath = saveVerificationFile(verificationFile);
-                user.setVerificationFile(verificationFilePath);
-            }
-        }
-
-        // 기본 포인트 1000 설정
-        user.setPoints(1000);
-        user.setRole(role);
-        // 사용자 정보 저장
         userRepository.save(user);
         return true;
     }
 
+    // 예약대행자 신청
+    public boolean applyAsAgent(String userId, AgentApplicationDTO agentDTO, MultipartFile verificationFile) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || user.isAgent()) {
+            return false;
+        }
+
+        user.setAgent(true); // 예약대행자로 설정
+        user.setAgentCountry(agentDTO.getAgentCountry());
+        user.setIntroduction(agentDTO.getIntroduction());
+        user.setHashtags(agentDTO.getHashtags());
+        user.setSpecIntroduction(agentDTO.getSpecIntroduction());
+        user.setAverageReviewRating(agentDTO.getAverageReviewRating());
+        user.setRole(Role.ROLE_AGENT);
+
+        // 검증 파일 저장
+        if (verificationFile != null && !verificationFile.isEmpty()) {
+            String verificationFilePath = saveVerificationFile(verificationFile);
+            user.setVerificationFile(verificationFilePath);
+        }
+
+        userRepository.save(user);
+        return true;
+    }
+
+    // 예약대행자 신청 승인 (관리자 권한 필요)
+    public boolean approveAgentApplication(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || !user.isAgent() || user.getRole() != Role.ROLE_USER) {
+            // 사용자가 없거나 이미 예약대행자이거나 ROLE_USER가 아닌 경우 승인 불가
+            return false;
+        }
+
+        // 예약대행자 권한 부여
+        user.setRole(Role.ROLE_AGENT);
+        userRepository.save(user);
+        return true;
+    }
 
     // 프로필 사진 업로드
     public boolean uploadProfilePicture(String userId, MultipartFile profilePictureFile) {
