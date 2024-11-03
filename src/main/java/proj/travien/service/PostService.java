@@ -36,8 +36,6 @@ public class PostService {
 
     @Transactional
     public void writePost(Post post) { // title, body, address
-        post.setCount(0);
-       // post.setUser(user); user 가져오기
         postRepository.save(post);
     }
 
@@ -312,7 +310,7 @@ public class PostService {
         return postRepository.findById(id)
                 .map(post -> {
                     post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses(),
-                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti());
+                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti(), updatedPost.getProfilePicture());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));

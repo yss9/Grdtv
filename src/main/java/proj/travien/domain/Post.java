@@ -26,26 +26,24 @@ public class Post {
     @Column(columnDefinition = "LONGTEXT")
     private String body;
 
-    @ColumnDefault("0")
-    private int count;  // 조회수
     private String image;
 
-    private String imageUrl; // 이미지 URL 필드 추가
+    private String imageUrl;
 
     @CreationTimestamp
-    private Timestamp createDate; // datetime 필드 추가
+    private Timestamp createDate;
 
-    private String AddressTitle;  //주소 이름 필드
+    private String AddressTitle;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // 순환 참조 방지
+    @JsonManagedReference
     private Set<Addresses> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // 순환 참조 방지
+    @JsonManagedReference
     private Set<Like> likes = new HashSet<>();
 
     private Integer likesCount;
@@ -55,22 +53,24 @@ public class Post {
     private String country;
 
     @Builder
-    public Post(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti) {
+    public Post(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti, String profilePicture) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
         this.country = country;
-        this.nickname = nickname;  // 추가
-        this.mbti = mbti;          // 추가
+        this.nickname = nickname;
+        this.mbti = mbti;
+        this.profilePicture = profilePicture;
     }
 
-    public void update(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti) {
+    public void update(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti, String profilePicture) {
         this.title = title;
         this.body = body;
         this.addresses = addresses;
         this.country = country;
-        this.nickname = nickname;  // 추가
-        this.mbti = mbti;          // 추가
+        this.nickname = nickname;
+        this.mbti = mbti;
+        this.profilePicture = profilePicture;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class Post {
         }
     }
 
-    // 사용자 ID만 반환하는 메서드 추가
+
     public Set<Long> getLikeUserIds() {
         Set<Long> userIds = new HashSet<>();
         for (Like like : likes) {
@@ -108,8 +108,13 @@ public class Post {
     @Column
     private String thumbnail;
 
-    private String nickname;  // 추가: 사용자 닉네임
-    private String mbti;      // 추가: 사용자 MBTI
+    /**
+     * User 정보 domain
+     */
+    private String nickname;
+    private String mbti;
+
+    private String profilePicture;
 
 
 
