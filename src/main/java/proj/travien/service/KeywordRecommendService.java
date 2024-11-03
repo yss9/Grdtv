@@ -22,6 +22,7 @@ public class KeywordRecommendService {
                         countMatchingKeywords(e2.getInfo(), keywords),
                         countMatchingKeywords(e1.getInfo(), keywords)))
                 .map(this::convertToDTO)
+                .limit(21)
                 .collect(Collectors.toList());
     }
 

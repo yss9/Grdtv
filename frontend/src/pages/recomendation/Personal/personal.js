@@ -27,12 +27,12 @@ export default function PersonalRecPage() {
     const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
     const location = useLocation();
     const { results } = location.state || {};
-    console.log(results);
     const reviewsPerPage = 4;
     const startIndex = activeIndex * reviewsPerPage;
     const visibleAgents = CourseData.slice(startIndex, startIndex + reviewsPerPage);
     const totalIndicators = Math.ceil(CourseData.length / reviewsPerPage);
     const navigate = useNavigate();
+    console.log(results);
 
     const loadGoogleMapsScript = () => {
         return new Promise((resolve) => {

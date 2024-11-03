@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Reset } from "styled-reset";
 import styled from '@emotion/styled';
@@ -13,27 +14,31 @@ const Container = styled.div`
     height: 100vh;
 `;
 
+const GlloImg = styled.div`
+    width: 73px;
+    height: 65px;
+    display: inline-block;
+    position: relative;
+    right: 80px;
+    top: 60px;
+    background-image: url("/gllo.png");
+
+`
+
 const MainContentArea = styled.div`
     display: flex;
     flex: 1;
-    overflow: hidden; // Main content area에 스크롤 숨기기
+    overflow: hidden;
 `;
 
 const Sidebar = styled.div`
-    width: 250px;
-    background-color: #4E53ED;
+    width: 160px;
+    background-color: white;
     color: white;
     display: flex;
     flex-direction: column;
     padding: 20px;
     font-family: Regular;
-`;
-
-const SidebarItem = styled.div`
-    margin-bottom: 20px;
-    padding-left: 40px;
-    padding-top: 20px;
-    cursor: pointer;
 `;
 
 const MainContent = styled.div`
@@ -43,19 +48,24 @@ const MainContent = styled.div`
     background-color: white;
     overflow: hidden;
     font-family: Regular;
+    border-radius: 20px;
+    height: 95%;
+    
 `;
 
-const Header = styled.div`
-    padding-top: 50px;
-    padding-left: 100px;
 
+const Header = styled.div`
+    padding-left: 100px;
     margin-bottom: 30px;
+    border-radius: 20px;
 `;
 
 const ChatBox = styled.div`
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     flex: 1;
     padding: 20px;
-    overflow-y: auto; // ChatBox에 스크롤 추가
+    overflow-y: auto;
     background-color: #F4F6F8;
 `;
 
@@ -73,11 +83,24 @@ const MessageBubble = styled.div`
     color: ${(props) => (props.isUser ? 'black' : 'white')};
 `;
 
+const LoadingMessage = styled.div`
+    color: #4a5fc1;
+    font-size: 50px;
+    margin-top: 10px;
+    animation: blink 1.5s steps(5, start) infinite;
+    text-align: center;
+
+    @keyframes blink {
+        0% { opacity: 0.2; }
+        20% { opacity: 1; }
+        100% { opacity: 0.2; }
+    }
+`;
+
 const ChatInputContainer = styled.div`
     text-align: center;
     padding-bottom: 50px;
     background-color: #F4F6F8;
-
 `;
 
 const ChatInput = styled.input`
@@ -85,7 +108,7 @@ const ChatInput = styled.input`
     font-size: 15px;
     width: 80%;
     height: 40px;
-    border: 1px solid white ;
+    border: 1px solid white;
     border-radius: 10px;
     box-shadow: 0 0 15px darkgrey;
     border-right: none;
@@ -95,7 +118,7 @@ const ChatInput = styled.input`
 const SendButton = styled.div`
     display: inline-block;
     position: relative;
-    top:15px;
+    top: 15px;
     right: 70px;
     width: 40px;
     height: 40px;
@@ -106,38 +129,13 @@ const SendButton = styled.div`
     cursor: pointer;
 `;
 
-const QuestionListContainer = styled.div`
-    margin-top: 13px;
-`;
-
-const QuestionButton = styled.button`
-    font-family: SubTitle;
-    margin-right: 20px;
-    padding: 12px 40px 12px 40px;
-    background-color: transparent;
-    border: 1px solid #4E53ED;
-    border-radius: 13px;
-    cursor: pointer;
-`;
-
-const GlloImg = styled.div`
-    width: 73px;
-    height: 65px;
-    display: inline-block;
-    position: absolute;
-    left: 310px;
-    top: 140px;
-    background-image: url("/gllo.png");
-
-`
-
-
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [username, setUsername] = useState('');
     const [connected, setConnected] = useState(false);
     const [client, setClient] = useState(null);
+    const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
     useEffect(() => {
         const token = Cookies.get('jwt');
@@ -170,6 +168,7 @@ const Chatbot = () => {
             reconnectDelay: 5000,
             onConnect: () => {
                 stompClient.subscribe('/topic/public', (message) => {
+                    setLoading(false); // 응답이 오면 로딩을 해제합니다
                     const msg = JSON.parse(message.body);
                     setMessages((prevMessages) => [...prevMessages, msg]);
                 });
@@ -200,6 +199,7 @@ const Chatbot = () => {
             };
 
             setMessages((prevMessages) => [...prevMessages, message]);
+            setLoading(true); // 메시지 전송 후 로딩 상태 활성화
 
             client.publish({
                 destination: "/app/chat.sendMessage",
@@ -211,10 +211,10 @@ const Chatbot = () => {
 
     return (
         <>
-            <Reset/>
+            <Reset />
             <Container>
-                <div style={{height: '55px'}}></div>
-                <TopBarComponent/>
+                <div style={{ height: '45px' }}></div>
+                <TopBarComponent />
                 <MainContentArea>
                     <Sidebar>
                     </Sidebar>
@@ -238,7 +238,8 @@ const Chatbot = () => {
                                                 {msg.content}
                                             </MessageBubble>
                                         </ChatMessage>
-                                    ))}
+                                    ))}{loading && <LoadingMessage>메시지 입력 중...</LoadingMessage>}
+
                                 </ChatBox>
                                 <ChatInputContainer>
                                     <ChatInput
@@ -248,16 +249,17 @@ const Chatbot = () => {
                                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                                         placeholder="챗봇에게 질문을 입력해주세요!"
                                     />
-                                    <SendButton onClick={sendMessage}>
-                                    </SendButton>
+                                    <SendButton onClick={sendMessage}></SendButton>
                                 </ChatInputContainer>
                             </>
                         )}
                     </MainContent>
+                    <Sidebar>
+                    </Sidebar>
                 </MainContentArea>
             </Container>
         </>
     );
-}
+};
 
 export default Chatbot;

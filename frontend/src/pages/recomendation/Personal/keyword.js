@@ -127,6 +127,7 @@ const KeywordSelection = () => {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [page, setPage] = useState(0);
     const [results, setResults] = useState([]);
+    const [navigated, setNavigated] = useState(false); // 새로운 상태 추가
 
     const toggleKeyword = (keyword) => {
         setSelectedKeywords(prev =>
@@ -144,8 +145,10 @@ const KeywordSelection = () => {
         setPage(page - 1);
     };
 
-
     const completeSelection = async () => {
+        if (navigated) return; // 이미 이동한 경우 중복 방지
+        setNavigated(true); // 플래그를 true로 설정하여 추가 이동 방지
+
         try {
             const response = await axios.post('/api/search', {
                 keywords: selectedKeywords
@@ -153,22 +156,22 @@ const KeywordSelection = () => {
             setResults(response.data);
             navigate('/recomendation/personal', { state: { triggerButtonClick: true, results: response.data } });
         } catch (error) {
-            console.error("Error during search:", error);
+            console.error("검색 중 오류:", error);
             alert('검색 중 오류가 발생했습니다.');
+            setNavigated(false); // 오류 발생 시 플래그 리셋
         }
     };
-
 
     const displayedKeywords = keywordsList.slice(page * 20, (page + 1) * 20);
 
     return (
         <>
-            <Reset/>
+            <Reset />
             <Wrapper>
-                <Background/>
+                <Background />
                 <Container>
-                    <div style={{height: '55px'}}></div>
-                    <TopBarComponent/>
+                    <div style={{ height: '55px' }}></div>
+                    <TopBarComponent />
                     <Header>여행 키워드를 선정해 주세요.</Header>
                     <Ptag>자신의 취향에 맞는 키워드를 고른 후, 맞춤형 추천을 제공해 줄게요.</Ptag>
                     <KeywordsContainer>
@@ -188,12 +191,11 @@ const KeywordSelection = () => {
                             <NavButton onClick={nextPage}>다음</NavButton>
                         )}
                         {page === Math.floor(keywordsList.length / 20) && (
-                            <NavButton onClick={completeSelection}>완료</NavButton>
+                            <NavButton onClick={completeSelection} disabled={navigated}>완료</NavButton>
                         )}
                     </ButtonContainer>
                 </Container>
             </Wrapper>
-
         </>
     );
 };
