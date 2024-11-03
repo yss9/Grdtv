@@ -74,7 +74,7 @@ export const WriteMbtiBtnWrapper=styled.div`
     margin-top: 3rem;
 `
 export const WriteMbtiBtn=styled.button`
-    width: 250px;
+    width: 160px;
     height: 40px;
     border-radius: 25px;
     display: flex;
@@ -103,16 +103,53 @@ export const Horizonalline=styled.div`
 `
 export const MbtiContainer=styled.div`
     margin-top: 20px;
+    width: 520px;
 `
 
-export const Mbti=styled.text`
+export const Mbti = styled.button`
+    width: 40px;
+    text-align: center;
     font-size: 30px;
     color: #ff9900;
+    background-color: white;
     font-family: "Title";
-`
+    border-radius: 30px;
+    appearance: none;
+    position: relative;
+    border: 2px solid #4353ed;
+    margin-left:2px;
+    cursor: pointer;
+    
+    :hover{
+        color: #4353ed;
+    }   
+
+`;
+
 export const Explain=styled.text`
     font-size: 25px;
     color: #515151;
     font-family: "SubTitle";
+    margin-left: 3px;
 
+`
+export const Explain2=styled.text`
+    width: 1000px;
+    margin-top: 30px;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    p{
+        font-size: 15px;
+        color: #515151;
+        font-family: "SubTitle";
+        width: 480px;
+        margin-top: 10px;
+    }
+`
+export const GlopleCharacterImg=styled.img`
+    position: absolute;
+    width: 120px;
+    height: auto;
+    margin-right: 620px;
 `
