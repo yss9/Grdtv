@@ -20,6 +20,7 @@ import proj.travien.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -76,6 +77,11 @@ public class UserController {
         }
     }
 
+    @GetMapping("/recent-agents")
+    public ResponseEntity<List<Map<String, Object>>> getRecentAgents() {
+        List<Map<String, Object>> recentAgents = userService.getRecentAgents(8);
+        return ResponseEntity.ok(recentAgents);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {

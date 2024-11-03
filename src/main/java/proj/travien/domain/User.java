@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -53,8 +54,10 @@ public class User {
         this.id = id;
     }
 
-
-
+    // 예약대행자 승인 시점을 기록할 필드
+    @Getter
+    @Setter
+    private LocalDateTime agentApprovedDate;
 }
 
 
