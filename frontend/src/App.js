@@ -4,6 +4,7 @@ import LoginPage from './pages/login/loginPage';
 import ReservationPage from './pages/reservation/reservation'
 import AdminPage from './pages/admin/admin'
 import SignupPage from './pages/signup/signupPage';
+import GloplerSetPage from './pages/gloplerset/gloplesetPage';
 import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Write from "./pages/review/write/write";
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/mbtiTest" element={<MBTItest/>}/>
                 <Route path="/review/list" element={<BoardList/>}/>
                 <Route path="/search-results" element={<SearchResult/>}/>
+                <Route path="/RegisterAgent" element={<GloplerSetPage/>}/>
             </Routes>
         </BrowserRouter>
     );
