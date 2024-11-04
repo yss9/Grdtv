@@ -3,6 +3,7 @@ package proj.travien.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -99,18 +102,29 @@ public class UserService {
         return true;
     }
 
-    // 예약대행자 신청 승인 (관리자 권한 필요)
     public boolean approveAgentApplication(String userId) {
         User user = userRepository.findByUserId(userId).orElse(null);
-        if (user == null || !user.isAgent() || user.getRole() != Role.ROLE_USER) {
-            // 사용자가 없거나 이미 예약대행자이거나 ROLE_USER가 아닌 경우 승인 불가
+        if (user == null || !user.isAgent()) {
             return false;
         }
 
-        // 예약대행자 권한 부여
+        // 역할을 예약대행자로 설정하고 승인 날짜를 현재 시점으로 설정
         user.setRole(Role.ROLE_AGENT);
+        user.setAgentApprovedDate(LocalDateTime.now()); // 현재 시점을 저장
         userRepository.save(user);
         return true;
+    }
+
+    public List<Map<String, Object>> getRecentAgents(int limit) {
+        return userRepository.findByIsAgentTrueOrderByAgentApprovedDateDesc(PageRequest.of(0, limit))
+                .stream()
+                .map(user -> Map.of(
+                        "nickname", user.getNickname(),
+                        "profilePicture", user.getProfilePicture(),
+                        "hashtags", user.getHashtags(),
+                        "agentCountry", user.getAgentCountry()
+                ))
+                .collect(Collectors.toList());
     }
 
     // 프로필 사진 업로드

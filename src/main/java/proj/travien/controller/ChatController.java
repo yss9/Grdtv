@@ -166,7 +166,6 @@ public class ChatController {
         return new ResponseEntity<>(transcript, HttpStatus.OK);
     }
 
-
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
