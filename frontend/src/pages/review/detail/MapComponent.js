@@ -6,7 +6,7 @@ const libraries = ['places'];
 
 const MapComponent = ({ addresses }) => {
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'Api 키',
+        googleMapsApiKey: 'AIzaSyCB8gNH_zw9UV7DBo8g9T5jHVjCR6KbgdY',
         libraries,
     });
 

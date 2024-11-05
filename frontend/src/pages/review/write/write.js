@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import * as S from "./style";
-import { Modal } from 'antd';
+import {Modal, Tooltip} from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import MapComponent from "./MapComponent";
@@ -32,6 +32,16 @@ export default function BoardWrite(props) {
     const [image, setImage] = useState(null);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(0);
     const quillRef = useRef(null); // ReactQuill ref
+
+    const [modalMessage, setModalMessage] = useState(""); // 모달 메시지 상태 추가
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+        setModalMessage("");
+    };
+
+    const isFormValid = title && body && country && addressTitle && addresses.every(address => address.address);
 
     useEffect(() => {
         if (window.google) {
@@ -97,8 +107,15 @@ export default function BoardWrite(props) {
 
 
     const onClickSubmit = async () => {
-        if (title === "") {
-            setTitleError("제목을 입력해주세요.");
+        if (!isFormValid) {
+            setModalMessage("제목, 본문, 경로 제목, 주소를 모두 입력해 주세요.");
+            setIsModalVisible(true);
+            return;
+        }
+
+        if (!token) {
+            setModalMessage("로그인이 필요합니다.");
+            setIsModalVisible(true);
             return;
         }
 
@@ -364,16 +381,29 @@ export default function BoardWrite(props) {
 
                     <S.ButtonWrapper>
                         <Link to={props.isEdit ? "#" : "/board"}>
+                            <Tooltip title={!isFormValid ? "모든 내용을 다 채워주세요" : ""}>
                             <S.SubmitButton
                                 onClick={props.isEdit ? onClickUpdate : onClickSubmit}
-                                isActive={title !== ""}
+                                disabled={!isFormValid}
+
                             >
                                 {props.isEdit ? "수정" : "저장"}
                             </S.SubmitButton>
+                            </Tooltip>
                         </Link>
                     </S.ButtonWrapper>
                 </S.Wrapper>
             </S.Container>
+
+            {/* 모달 컴포넌트 */}
+            <Modal
+                title="알림"
+                visible={isModalVisible}
+                onOk={handleModalClose}
+                onCancel={handleModalClose}
+            >
+                <p>{modalMessage}</p>
+            </Modal>
         </>
     );
 }
