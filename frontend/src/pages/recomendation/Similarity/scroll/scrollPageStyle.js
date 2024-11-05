@@ -7,14 +7,13 @@ export const StyledApp = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  //background-image: linear-gradient(45deg, #8B5CF6, #EC4899);
-  font-family: 'Montserrat', sans-serif;
+  font-family: Regular;
 `;
 
 export const StyledCarousel = styled.div`
     position: relative;
     width: 900px;
-    height: 350px;
+    height: 310px;
     perspective: 600px;
     transform-style: preserve-3d;
   align-items: center;

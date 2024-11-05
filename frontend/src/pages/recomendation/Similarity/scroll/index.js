@@ -18,6 +18,7 @@ import {
 } from "../similarityStlye";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import Cutie from '../../../../images/blingbling.png'
 
 const MAX_VISIBILITY = 3;
 const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
@@ -72,6 +73,15 @@ const Carousel = ({ children, active, setActive }) => {
         </>
     );
 };
+const generateRouteMap = (travelDestinations) => {
+    const baseURL = `https://maps.googleapis.com/maps/api/staticmap?key=${GOOGLE_MAPS_API_KEY}`;
+    const markers = travelDestinations
+        .map((place, index) => `markers=label:${index + 1}|color:red|${place}`)
+        .join('&');
+    const path = travelDestinations.join('|');
+
+    return `${baseURL}&size=600x300&${markers}&path=color:0x0000ff|weight:5|${path}`;
+};
 
 const Scroll = () => {
     const [active, setActive] = useState(1);
@@ -79,7 +89,15 @@ const Scroll = () => {
     const [userInfo, setUserInfo] = useState({ age: '', gender: '', mbti: '' });
     const [userName, setUserName] = useState('');
     const [recommendations, setRecommendations] = useState([]);
+    const [routeMap, setRouteMap] = useState('');
     const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
+
+    useEffect(() => {
+        if (recommendations.length > 0) {
+            const currentRoute = recommendations[active - 1].travelDestinations;
+            setRouteMap(generateRouteMap(currentRoute));
+        }
+    }, [active, recommendations]);
 
     const loadGoogleMapsScript = () => {
         return new Promise((resolve) => {
@@ -174,8 +192,8 @@ const Scroll = () => {
         }
     }, [isGoogleMapsScriptLoaded, recommendations]);
 
-    const getNickname = (dateOfBirth, gender, mbti) => {
-        const birthYear = parseInt(dateOfBirth.substring(0, 4));
+    const getNickname = (age, gender, mbti) => {
+        const birthYear = parseInt(age.substring(0, 4));
         const isE = mbti.charAt(0) === 'E';
         const isF = gender === 'F';
 
@@ -194,23 +212,24 @@ const Scroll = () => {
                 return isF ? "매혹적인 신비로운 요정" : "로맨틱 감성 왕자";
             }
         }
-        return "익명의 여행자"; // 기본값
+        return "익명의 여행자";
     };
+
     const saveRoute = async (userInfoId) => {
         try {
-            const token = getAuthToken(); // 토큰 가져오기
-            if (!token) throw new Error('Token not found. Please log in.'); // 토큰 확인
+            const token = getAuthToken();
+            if (!token) throw new Error('Token not found. Please log in.');
 
-            const decodedToken = jwtDecode(token); // 토큰 디코딩
-            const userId = decodedToken.id; // id 필드를 사용하여 사용자 ID 추출
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.id;
 
             const response = await axios.post('http://localhost:8080/api/save-route', {
-                userId, // 사용자 ID
-                userInfoId, // 추천 배열의 ID
+                userId,
+                userInfoId,
             });
 
             console.log("Route saved successfully:", response.data);
-            alert('Route saved successfully!'); // 성공 메시지
+            alert('Route saved successfully!');
             window.location.reload();
 
         } catch (error) {
@@ -218,6 +237,26 @@ const Scroll = () => {
             alert('Error saving route. Please try again.'); // 오류 메시지
         }
     };
+
+    const calculateAge = (age) => {
+        if (!age) return '정보 없음';
+        const birthYear = parseInt(age.substring(0, 4));
+        const birthMonth = parseInt(age.substring(4, 6));
+        const birthDate = parseInt(age.substring(6, 8));
+
+        const today = new Date();
+        let age2 = today.getFullYear() - birthYear;
+        if (today.getMonth() + 1 < birthMonth || (today.getMonth() + 1 === birthMonth && today.getDate() < birthDate)) {
+            age2--;
+        }
+
+        return age2;
+    };
+
+    const getGenderText = (gender) => {
+        return gender === 'F' ? '여성' : gender === 'M' ? '남성' : '정보 없음';
+    };
+
 
     return (
         <StyledApp>
@@ -229,12 +268,12 @@ const Scroll = () => {
                             <>
                                 <Top>
                                     <Left>
-                                        <Profile></Profile>
+                                        <Profile src={Cutie}></Profile>
                                         <User>
                                             <Name>{userName}</Name>
                                             <Detail>
-                                                <Gender>{recommendation.gender}</Gender>ᆞ
-                                                <Age>{recommendation.age}세</Age>ᆞ
+                                                <Gender>{getGenderText(recommendation.gender)}</Gender>ᆞ
+                                                <Age>{calculateAge(recommendation.age)}세</Age>ᆞ
                                                 <Mbti>{recommendation.mbti}</Mbti>
                                             </Detail>
                                         </User>
@@ -245,7 +284,7 @@ const Scroll = () => {
                                 </Top>
                                 <Body>
                                     <Left2>
-                                        <RouteName>가성비 관광루트</RouteName>
+                                        <RouteName>당신과 유사한 사용자의 루트</RouteName>
                                         <Routes>
                                             {recommendation.travelDestinations.map((place, index) => (
                                                 <>
@@ -253,12 +292,12 @@ const Scroll = () => {
                                                         <Place src={placeImages[place] || ''} alt={place} />
                                                         <PlaceName>{place}</PlaceName>
                                                     </PlaceWrapper>
-                                                    <Triangle />
+                                                    {index < recommendation.travelDestinations.length - 1 && <Triangle />} {/* 마지막 요소가 아닐 경우에만 Triangle 렌더링 */}
                                                 </>
                                             ))}
                                         </Routes>
                                     </Left2>
-                                    <Mapp></Mapp>
+                                    <Mapp src={routeMap} alt="Travel Route"></Mapp>
                                 </Body>
                             </>
                         }

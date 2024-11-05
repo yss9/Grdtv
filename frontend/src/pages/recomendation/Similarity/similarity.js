@@ -3,14 +3,15 @@ import React, { useEffect, useState } from 'react';
 import {
     Age, Container, Detail, Gender,
     Mbti, Name, Profile, RecentContainer,
-    Subtitle, Subtitle2, SubtitleContainer,  User, Wrapper,
-    SubtitleContainer2, Left3, RightArrow, ProfileWrapper,
+    Subtitle, Subtitle2, SubtitleContainer, User, Wrapper,
+    SubtitleContainer2, Left3,  ProfileWrapper, SavedRoute, Triangle2,
 } from "./similarityStlye";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import Scroll from './scroll/index';
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import Cutie from '../../../images/blingbling.png';
 
 const getAuthToken = () => {
     return Cookies.get('jwt');
@@ -18,6 +19,7 @@ const getAuthToken = () => {
 
 export default function RecSimilarityPage() {
     const [routes, setRoutes] = useState([]);
+    const [userName, setUserName] = useState('');
 
     const fetchRoutes = async () => {
         try {
@@ -37,6 +39,52 @@ export default function RecSimilarityPage() {
     useEffect(() => {
         fetchRoutes(); // 컴포넌트가 마운트될 때 루트 정보 가져오기
     }, []);
+
+    const calculateAge = (age) => {
+        if (!age) return '정보 없음';
+        const birthYear = parseInt(age.substring(0, 4));
+        const birthMonth = parseInt(age.substring(4, 6));
+        const birthDate = parseInt(age.substring(6, 8));
+
+        const today = new Date();
+        let age2 = today.getFullYear() - birthYear;
+        if (today.getMonth() + 1 < birthMonth || (today.getMonth() + 1 === birthMonth && today.getDate() < birthDate)) {
+            age2--;
+        }
+
+        return age2;
+    };
+
+    const getGenderText = (gender) => {
+        return gender === 'F' ? '여성' : gender === 'M' ? '남성' : '정보 없음';
+    };
+
+    const getNickname = (age, gender, mbti) => {
+        if (!age || !gender || !mbti) return "익명의 여행자";
+        const birthYear = parseInt(age.substring(0, 4));
+        const isE = mbti.charAt(0) === 'E';
+        const isF = gender === 'F';
+
+        if (birthYear >= 1984 && birthYear <= 1993) {
+            // 1984-1993년생
+            return isF ? (isE ? "화려한 매력의 사교 여왕" : "은은한 매력의 감성 여신") :
+                (isE ? "멋진 분위기 황제" : "든든한 따뜻한 왕자");
+        } else if (birthYear >= 1994 && birthYear <= 2004) {
+            // 1994-2004년생
+            return isF ? (isE ? "톡톡 분위기 메이커 매력 공주" : "매혹적인 신비로운 요정") :
+                (isE ? "활력 에너지 대마왕" : "로맨틱 감성 왕자");
+        }
+        return "익명의 여행자";
+    };
+
+    // routes가 변경될 때마다 userName 업데이트
+    useEffect(() => {
+        if (routes.length > 0) {
+            const firstRoute = routes[0]; // 첫 번째 루트를 사용
+            const nickname = getNickname(firstRoute.age, firstRoute.gender, firstRoute.mbti);
+            setUserName(nickname);
+        }
+    }, [routes]);
 
     return (
         <>
@@ -63,23 +111,25 @@ export default function RecSimilarityPage() {
                         <RecentContainer key={route.id}>
                             <Left3>
                                 <ProfileWrapper>
-                                    <Profile></Profile>
+                                    <Profile src={Cutie}></Profile>
                                     <User>
-                                        <Name>{`${route.age}세, ${route.gender} - ${route.mbti}`}</Name>
+                                        <Name>{userName}</Name>
                                         <Detail>
-                                            <Gender>{route.gender}</Gender>ᆞ
-                                            <Age>{route.age}세</Age>ᆞ
+                                            <Gender>{getGenderText(route.gender)}</Gender>ᆞ
+                                            <Age>{calculateAge(route.age)} 세</Age>ᆞ
                                             <Mbti>{route.mbti}</Mbti>
                                         </Detail>
                                     </User>
                                 </ProfileWrapper>
-                                <RightArrow></RightArrow>
                             </Left3>
-                            <div>
+                            <SavedRoute>
                                 {route.travelDestinations.map((destination, index) => (
-                                    <p key={index}>{destination}</p>
+                                    <>
+                                        <p key={index}>{destination}</p>
+                                        {index < route.travelDestinations.length - 1 && <Triangle2 />}
+                                    </>
                                 ))}
-                            </div>
+                            </SavedRoute>
                         </RecentContainer>
                     ))}
                 </Wrapper>
