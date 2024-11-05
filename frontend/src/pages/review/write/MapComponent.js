@@ -7,7 +7,7 @@ const defaultCenter = { lat: 37.7749, lng: -122.4194 }; // 샌프란시스코의
 
 const MapComponent = ({ addresses, setAddresses, currentAddressIndex }) => {
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'api 키', // 여기에 Google Maps API 키를 입력하세요.
+        googleMapsApiKey: 'AIzaSyCB8gNH_zw9UV7DBo8g9T5jHVjCR6KbgdY', // 여기에 Google Maps API 키를 입력하세요.
         libraries: ['places'], // 여기에 'places' 라이브러리가 포함되어야 합니다.
     });
 
