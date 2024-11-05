@@ -19,7 +19,7 @@ export const Container = styled.div`
 
 `
 export const Wrapper = styled.div`
-    height: 1250px;
+    height: 1900px;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -142,6 +142,7 @@ export const SaveBtn=styled.button`
     font-family: Regular;
     border-radius: 30px;
     font-size: 17px;
+    cursor: pointer;
 `
 
 export const Body=styled.div`
@@ -231,7 +232,7 @@ export const PlaceName=styled.div`
     font-size: 17px;
 `
 
-export const Map=styled.img`
+export const Mapp=styled.img`
     width: 220px;
     height: 220px;
     background-color: pink;
