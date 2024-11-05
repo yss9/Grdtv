@@ -244,6 +244,7 @@ public class PostController {
         return ResponseEntity.ok(posts);  // 검색 결과가 있는 경우
     }
 
+
     @GetMapping("/user/{nickname}")
     public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String nickname) {
         List<Post> posts = postService.getPostsByUser(nickname);

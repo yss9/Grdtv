@@ -323,9 +323,11 @@ public class PostService {
     /**
      * 검색
      */
-    // 검색 기능 추가
     @Transactional(readOnly = true)
     public List<Post> searchPosts(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Collections.emptyList();  // 빈 문자열일 경우 빈 리스트 반환
+        }
         return postRepository.findByKeyword(keyword);
     }
 
