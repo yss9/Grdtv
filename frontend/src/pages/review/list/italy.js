@@ -12,9 +12,14 @@ import {
     SubTitleContainer, VirticalLine
 } from "../reviewstyle";
 import {useNavigate} from "react-router-dom";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import MyProfile2 from "../../../public/Img/forprofile/img.png";
 
 
-
+const getAuthToken = () => {
+    return Cookies.get('jwt');
+};
 
 const DropdownContainer = styled.div`
     margin-left: 430px;
@@ -175,6 +180,41 @@ const BlogList = () => {
     const [likes, setLikes] = useState({});
     const [comments, setComments] = useState({});
     const navigate = useNavigate();
+    const [userData, setUserData] = useState(null); // 사용자 데이터를 저장할 상태
+    const token = getAuthToken(); // JWT 토큰 가져오기
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                if (token) {
+                    // 토큰에서 사용자 아이디 추출
+                    const decodedToken = jwtDecode(token);
+                    const userId = decodedToken.userId;
+
+                    const response = await axios.get(`http://localhost:8080/api/users/my-info?userId=${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    setUserData(response.data);
+                } else {
+                    console.error('No JWT token found in cookies');
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
+        };
+
+        fetchUserData();
+    }, [token])
+
+    const processProfilePicture = (profilePicture) => {
+        if (profilePicture) {
+            return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+        } else {
+            return MyProfile2;
+        }
+    };
 
     const fetchPosts = (country) => {
         axios
@@ -219,18 +259,18 @@ const BlogList = () => {
     useEffect(() => {
         if (posts.length > 0) {
             posts.forEach((post) => {
-                fetchLikes(post.boardID); // 각 게시글에 대해 좋아요 수 가져오기
-                fetchComments(post.boardID); // 각 게시글에 대해 댓글 수 가져오기
+                fetchLikes(post.boardID);
+                fetchComments(post.boardID);
             });
         }
     }, [posts]);
     useEffect(() => {
-        // 컴포넌트가 마운트될 때 기본 국가로 데이터 불러오기
+
         fetchPosts(selectedCountry);
     }, [selectedCountry]);
 
     const handleCountryChange = (event) => {
-        setSelectedCountry(event.target.value); // 드롭다운에서 선택된 국가로 변경
+        setSelectedCountry(event.target.value);
     };
 
     const formatDate = (dateString) => {
@@ -246,6 +286,7 @@ const BlogList = () => {
         navigate(`/board/${id}`);
         console.log(id);
     };
+
 
 
     return (
@@ -277,7 +318,7 @@ const BlogList = () => {
                                     <ContentWrapper>
                                         <Content>
                                             <Profile>
-                                                <PImg ></PImg>
+                                                <PImg src={processProfilePicture(post.profilePicture)}></PImg>
                                                 <PContainer>
                                                     <Pname>{post.nickname}</Pname>
                                                     <Pdate>{formatDate(post.createDate)}</Pdate>
@@ -315,25 +356,30 @@ const BlogList = () => {
                         )}
                 </Blogs>
                 <MyMenuWrapper>
-                    <MyMenuContainer>
-                        <Profile2>
-                            <PImg2></PImg2>
-                            <PContainer2>
-                                <Pname2>문경서</Pname2>
-                                <PIntro>나는 여행을 즐기는 20대</PIntro>
-                            </PContainer2>
-                        </Profile2>
-                        <ButtonContainer>
-                            <MyWrites>나의 글</MyWrites>
-                            <VirticalLine/>
-                            <GoWrite onClick={handleGoWrite}>글쓰기</GoWrite>
-                        </ButtonContainer>
-                        <BookMarkContainer>
-                            <BookMarkTitle>즐겨찾기</BookMarkTitle>
-                            <BookMarked1></BookMarked1>
-                            <BookMarked2></BookMarked2>
-                        </BookMarkContainer>
-                    </MyMenuContainer>
+                    {userData && (
+                        <MyMenuContainer>
+                            <Profile2>
+                                <PImg2
+                                    src={processProfilePicture(userData.profilePicture)}
+                                />
+                                <PContainer2>
+                                    <Pname2>{userData.nickname}</Pname2>
+                                    <PIntro>{userData.introduce}</PIntro>
+                                </PContainer2>
+                            </Profile2>
+                            <ButtonContainer>
+                                <MyWrites>나의 글</MyWrites>
+                                <VirticalLine/>
+                                <GoWrite onClick={handleGoWrite}>글쓰기</GoWrite>
+                            </ButtonContainer>
+                            <BookMarkContainer>
+                                <BookMarkTitle>즐겨찾기</BookMarkTitle>
+                                <BookMarked1></BookMarked1>
+                                <BookMarked2></BookMarked2>
+                            </BookMarkContainer>
+                        </MyMenuContainer>
+                    )}
+
                 </MyMenuWrapper>
             </BlogWrapper>
         </Wrapper>
