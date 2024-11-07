@@ -4,7 +4,7 @@ import {
     PageButton, BoldSubText, FileInput, Letknow, BoldText2
 } from "../gloplesetStyle";
 import {motion} from "framer-motion";
-import React from "react";
+import React, { useState } from "react";
 import Gloglo from '../../../images/GlopleCharacter.png'
 import {GlopleCharacterImg} from "../../recomendation/MBTI/mbtistyle";
 
@@ -17,11 +17,23 @@ const Second = ({
                     pageVariants,
                 }) => {
 
+    const [verificationFile, setVerificationFile] = useState(null);
+
+    // 파일이 변경될 때 상태 업데이트
+    const handleFileChange = (event) => {
+        setVerificationFile(event.target.files[0]);  // 파일 선택 시 상태 업데이트
+        if (handleVerificationFileChange) {
+            handleVerificationFileChange(event);  // 부모 컴포넌트로 파일 변경 핸들링
+        }
+    };
+
     const handleNextPage = () => {
         if (!selectedCountry) {
             alert("나라를 선택해야 합니다.");
+        } else if (!verificationFile) {
+            alert("글로플러 검증 파일을 첨부해야 합니다.");
         } else {
-            goToThirdPage();
+            goToThirdPage();  // 파일이 있으면 다음 페이지로 이동
         }
     };
 
@@ -64,11 +76,10 @@ const Second = ({
                             주민등록증, 자격증, 여권 등을 첨부해 주시면, 글로플에서 서류를 검토하여 글로플러 리스트에 등록해 줘요.
                         </BoldSubText>
                         <div style={{margin: '30px 0'}}>
-                            <FileInput type="file" onChange={handleVerificationFileChange}/>
+                            <FileInput type="file" onChange={handleFileChange}/>
                         </div>
 
                     </>
-
                 )}
 
                 <ButtonContainer>

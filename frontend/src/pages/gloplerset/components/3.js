@@ -9,6 +9,7 @@ import {
 } from "../gloplesetStyle";
 
 const Third = ({
+                   onClickSubmit,
                    goToSecondPage,
                    goToFourthPage,
                    name,
@@ -19,6 +20,10 @@ const Third = ({
                    setSpecs,
                    pageVariants,
                }) => {
+    const handleNext = () => {
+        onClickSubmit();
+        goToFourthPage();
+    };
     return (
         <FormContainer>
             <motion.div
@@ -42,7 +47,7 @@ const Third = ({
                 </div>
                 <ButtonContainer>
                     <PageButton onClick={goToSecondPage}>이전</PageButton>
-                    <PageButton onClick={goToFourthPage}>다음</PageButton>
+                    <PageButton onClick={handleNext}>다음</PageButton>
                 </ButtonContainer>
             </motion.div>
         </FormContainer>
