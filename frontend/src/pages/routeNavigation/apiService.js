@@ -5,7 +5,7 @@ export const searchPlaceInCountry = async (query) => {
         const response = await fetch(url);
         console.log('response:', response)
         const data = await response.json();
-        if (data.status === "OK") {
+        if (data.status === "200") {
             const results = extractResults(data);
             const resultsLength = data.results.length
             let i = 0;

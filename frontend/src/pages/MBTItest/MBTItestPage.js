@@ -1,7 +1,25 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Reset } from "styled-reset";
+import {
+    Answer,
+    Character,
+    ContentDiv,
+    MBTIResult,
+    ModalDiv,
+    Process,
+    ProcessBar,
+    Question,
+    ResultButton, ResultButtonWrapper,
+    ResultCharacter,
+    ResultSentence,
+} from './MBTItestStyle';
+import {AnimatePresence} from "framer-motion";
+import { motion } from 'framer-motion';
+import {questions, answers} from "./questionsData";
+import {useNavigate} from "react-router-dom";
 
 const MBTItestPage = () => {
+    const navigate = useNavigate();
 
     const containerStyle = {
         display: 'flex',
@@ -18,6 +36,64 @@ const MBTItestPage = () => {
         height: 'auto', // 높이를 비율에 맞게 자동 조정
     };
 
+
+
+    const [E, setE] = useState(0);
+    const [I, setI] = useState(0);
+    const [N, setN] = useState(0);
+    const [S, setS] = useState(0);
+    const [T, setT] = useState(0);
+    const [F, setF] = useState(0);
+    const [J, setJ] = useState(0);
+    const [P, setP] = useState(0);
+
+    const setters = {
+        E: () => setE(prev => prev + 1),
+        I: () => setI(prev => prev + 1),
+        N: () => setN(prev => prev + 1),
+        S: () => setS(prev => prev + 1),
+        T: () => setT(prev => prev + 1),
+        F: () => setF(prev => prev + 1),
+        J: () => setJ(prev => prev + 1),
+        P: () => setP(prev => prev + 1),
+    };
+
+    const [step, setStep] = useState(0);
+    const [result, setResult] = useState([null]);
+    const [resultMBTI, setResultMBTI] = useState(null);
+
+    const onClickAnswer = (selected) => {
+        let value;
+        if (selected === 1) value = answers[step*2-2].value;
+        else value = answers[step*2-1].value;
+        setters[value]?.();
+        setResultMBTI(result[0].split(" ")[0]+result[1].split(" ")[0]+result[2].split(" ")[0]+result[3].split(" ")[0])
+        setStep(step+1);
+    }
+
+
+    useEffect(() => {
+        const calculateResult = (value1, value2, type1, type2) => {
+            const mbti = value1 > value2 ? type1 : type2;
+            const percent = Math.max(value1, value2) === 3 ? (80) : (60);
+
+                Math.round((Math.max(value1, value2) / (value1 + value2)) * 100);
+            return `${mbti} ${percent}`;
+        };
+
+        // 첫 번째와 두 번째 결과 계산
+        const firstResult = calculateResult(E, I, 'E', 'I');
+        const secondResult = calculateResult(N, S, 'N', 'S');
+        const thirdResult = calculateResult(T, F, 'T', 'F');
+        const fourthResult = calculateResult(J, P, 'J', 'P');
+
+        setResult([firstResult, secondResult, thirdResult, fourthResult]);
+    }, [E, I, N, S, T, F, J, P]);
+
+    const onClickSaveButton = () => {
+        localStorage.setItem('mbtiResult', JSON.stringify(result));
+        navigate('/signup');
+    }
     
     return (
         <div style={containerStyle}>
@@ -43,6 +119,49 @@ const MBTItestPage = () => {
                     </clipPath>
                 </defs>
             </svg>
+            <ModalDiv step={step}>
+                <Character step={step} src='/Img/character/img.png'></Character>
+                <ContentDiv step={step}>
+                    <AnimatePresence>
+                        <ProcessBar step={step}><Process step={step}></Process></ProcessBar>
+                        <motion.div
+                            key={step}
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            exit={{opacity: 0, x: 20}}
+                            transition={{duration: 0.3}}
+                            style={{position: "absolute", width: "100%"}}
+                        >
+                            {step === 0 ? (
+                                <div>
+                                    <Question step={step}>글로플에서 알아보는 나의 MBTI는?</Question>
+                                    <Answer step={step} onClick={() => (setStep(1))}>테스트 시작하기</Answer>
+                                    <p style={{marginTop:'80px'}}>총 16가지의 유형을 통해 여행 스타일을 알아보아요.</p>
+                                </div>
+                            ) : (step < 13 ? (
+                                <div>
+                                    <Question>{questions[step]}</Question>
+                                    <Answer onClick={() => onClickAnswer(1)}>{answers[step*2-2].answer}</Answer>
+                                    <Answer onClick={() => onClickAnswer(2)}>{answers[step*2-1].answer}</Answer>
+                                </div>
+                            ) : (
+                                <div>
+                                    <ResultSentence>OO님의 MBTI 테스트 결과는?</ResultSentence>
+                                    <ResultCharacter src={`/Img/character/${resultMBTI}.png`} alt="Character"/>
+                                    <MBTIResult>
+                                        {resultMBTI}
+                                        {result}
+                                    </MBTIResult>
+                                    <ResultButtonWrapper>
+                                        <ResultButton onClick={() => (setStep(0))}>다시 테스트하기</ResultButton>
+                                        <ResultButton onClick={onClickSaveButton}>저장하기</ResultButton>
+                                    </ResultButtonWrapper>
+                                </div>
+                            ))}
+                        </motion.div>
+                    </AnimatePresence>
+                </ContentDiv>
+            </ModalDiv>
         </div>
     );
 };

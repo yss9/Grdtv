@@ -560,3 +560,6 @@ export const PercentValueWrapper = styled.div`
     font-size: 20px;
     font-family: "Arial Narrow", sans-serif;
 `
+export const ErrorMessage = styled.div`
+    color: red;
+`

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { AnimatePresence } from "framer-motion";
 import {
     Wrapper,
@@ -18,6 +18,8 @@ import SignUpComplete from "./components/SignUpComplete";
 
 export default function SignupPage() {
 
+    const navigate = useNavigate();
+
     const [id, setId] = useState("");
     const [pw, setPw] = useState("");
     const [name, setName] = useState("");
@@ -33,21 +35,37 @@ export default function SignupPage() {
     const [percentageSN, setPercentageSN] = useState(null);
     const [percentageFT, setPercentageFT] = useState(null);
     const [percentagePJ, setPercentagePJ] = useState(null);
-
     const [step, setStep] = useState(1);
-    const navigate = useNavigate();
-
     const [IE, setIE] = useState("I");
     const [SN, setSN] = useState("S");
     const [FT, setFT] = useState("F");
     const [PJ, setPJ] = useState("P");
+    const [idError, setIdError] = useState('');
+    const [pwError, setPwError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [birthdayError, setBirthdayError] = useState('');
 
     const goToFirstPage = () => {
         setStep(1);
     };
     const goToSecondPage = () => {
-        console.log(id, pw, name, birthday, gender)
-        setStep(2);
+        if (!idError && !pwError && !nameError && !birthdayError){
+            const signupData = {
+                id,
+                pw,
+                name,
+                birthday,
+                gender,
+                nickName,
+                glopler,
+                imgFile,
+                profilePicture,
+                verificationFile
+            };
+            localStorage.setItem('signupData', JSON.stringify(signupData));
+            console.log(signupData)
+            setStep(2);
+        }
     };
     const goToThirdPage = () => {
 
@@ -149,17 +167,43 @@ export default function SignupPage() {
         navigate('/login');
     }
 
-    const onChangeId = (event) => {
-        setId(event.target.value)
+    const onChangeId = (e) => {
+        const value = e.target.value;
+        setId(value);
+        if (value.length < 6 || value.length > 20) {
+            setIdError('아이디는 6~20자 사이여야 합니다.');
+        } else {
+            setIdError('');
+        }
     }
-    const onChangePw = (event) => {
-        setPw(event.target.value)
+    const onChangePw = (e) => {
+        const value = e.target.value;
+        setPw(value);
+        const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+        if (!pwRegex.test(value)) {
+            setPwError('비밀번호는 문자, 숫자를 포함하여 8~20자 사이여야 합니다.');
+        } else {
+            setPwError('');
+        }
     }
-    const onChangeName = (event) => {
-        setName(event.target.value)
+    const onChangeName = (e) => {
+        const value = e.target.value;
+        setName(value);
+        if (value.trim() === '') {
+            setNameError('이름을 입력해주세요.');
+        } else {
+            setNameError('');
+        }
     }
-    const onChangeBirthday = (event) => {
-        setBirthday(event.target.value)
+    const onChangeBirthday = (e) => {
+        const value = e.target.value;
+        setBirthday(value);
+        const birthdayRegex = /^\d{8}$/; // 생년월일은 8자리 숫자여야 함
+        if (!birthdayRegex.test(value)) {
+            setBirthdayError('생년월일은 8자리 숫자로 입력해주세요.');
+        } else {
+            setBirthdayError('');
+        }
     }
     const onClickMan = () => {
         setGender("M");
@@ -174,7 +218,29 @@ export default function SignupPage() {
         setGlopler(isGlopler);
     }
 
-    const [percentValue, setPercentValue] = useState([50, 50, 50, 50]);
+    const [percentValue, setPercentValue] = useState([51, 51, 51, 51]);
+    const [mbtiResult, setMbtiResult] = useState([]);
+
+    useEffect(() => {
+        // localStorage에서 JSON 문자열을 불러와 배열로 변환
+        const storedResult = localStorage.getItem('mbtiResult');
+        const parsedResult = JSON.parse(storedResult);
+        console.log(parsedResult);
+        if (storedResult) {
+            setMbtiResult(parsedResult);
+            setIE(parsedResult[0].split(' ')[0]);
+            setSN(parsedResult[1].split(' ')[0]);
+            setFT(parsedResult[2].split(' ')[0]);
+            setPJ(parsedResult[3].split(' ')[0]);
+            for (let i = 0; i < 4; i++) {
+                setPercentValue((prevValues) => {
+                    const newValues = [...prevValues]; // 이전 배열을 복사
+                    newValues[i] = parsedResult[i].split(' ')[1]; // i번째 요소 업데이트
+                    return newValues; // 새로운 배열 반환
+                });
+            }
+        }
+    }, []);
 
     const handleChange = (percentIndex) => (event) => {
         const newValue = parseFloat(event.target.value, 10); // 값을 정수로 변환
@@ -204,6 +270,25 @@ export default function SignupPage() {
         navigate('/')
     }
 
+    useEffect(() => {
+        const savedData = localStorage.getItem('signupData');
+        console.log(savedData)
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            setId(parsedData.id || "");
+            setPw(parsedData.pw || "");
+            setName(parsedData.name || "");
+            setBirthday(parsedData.birthday || "");
+            setGender(parsedData.gender || "");
+            setNickName(parsedData.nickName || "");
+            setImgFile(parsedData.imgFile || "");
+            setProfilePicture(parsedData.profilePicture || null);
+            setGlopler(parsedData.glopler || false);
+            setVerificationFile(parsedData.verificationFile || null);
+        }
+    }, []);
+
+
     return (
         <>
             <Wrapper>
@@ -231,6 +316,10 @@ export default function SignupPage() {
                                 onClickMan={onClickMan}
                                 goToSecondPage={goToSecondPage}
                                 pageVariants={pageVariants}
+                                idError={idError}
+                                pwError={pwError}
+                                nameError={nameError}
+                                birthdayError={birthdayError}
                             />
                         )}
                         {step === 2 && (

@@ -5,6 +5,7 @@ import {
 } from "../signupStyle";
 import {motion} from "framer-motion";
 import React from "react";
+import {useNavigate} from "react-router-dom";
 
 const MBTIForm = ({
                       IE,
@@ -21,6 +22,8 @@ const MBTIForm = ({
                       goToThirdPage,
                       pageVariants,
                   }) => {
+    const navigate = useNavigate();
+
     return (
         <FormContainer>
             <motion.div
@@ -97,7 +100,7 @@ const MBTIForm = ({
                         id="myRange"
                         className="slider"
                         max="100"
-                        min="50"
+                        min="51"
                         step="1" // 정수만 허용
                         type="range"
                         value={percentValue[0]}
@@ -107,7 +110,7 @@ const MBTIForm = ({
                         id="myRange"
                         className="slider"
                         max="100"
-                        min="50"
+                        min="51"
                         step="1" // 정수만 허용
                         type="range"
                         value={percentValue[1]}
@@ -117,7 +120,7 @@ const MBTIForm = ({
                         id="myRange"
                         className="slider"
                         max="100"
-                        min="50"
+                        min="51"
                         step="1" // 정수만 허용
                         type="range"
                         value={percentValue[2]}
@@ -127,7 +130,7 @@ const MBTIForm = ({
                         id="myRange"
                         className="slider"
                         max="100"
-                        min="50"
+                        min="51"
                         step="1" // 정수만 허용
                         type="range"
                         value={percentValue[3]}
@@ -151,7 +154,7 @@ const MBTIForm = ({
 
                 <div style={{height:'30px'}}></div>
                 <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
-                <p>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
+                <p style={{cursor: "pointer"}} onClick={() => (navigate('/MBTItest'))}>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
                 <br/><br/><br/><br/>
 
                 <ButtonContainer>

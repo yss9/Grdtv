@@ -1,5 +1,5 @@
 // MainPage.js
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Reset } from 'styled-reset';
 import {
     Wrapper, Map, Background,
@@ -11,11 +11,19 @@ import TopBarComponent from '../../components/TopBar/TopBar';
 import {useNavigate} from "react-router-dom";
 import Popup2 from "../test/Popup2";
 import Popup from "../test/Popup";
+import Cookies from "js-cookie";
 
 export default function MainPage() {
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     const [showPopup, setShowPopup] = useState(false);
     const [popupType, setPopupType] = useState(''); // 팝업 종류를 상태로 관리합니다.
+    const [isLoggedIn, setIsLoggedIn] = useState(!!Cookies.get('jwt'));
+
+    useEffect(() => {
+        const token = Cookies.get('jwt');
+        setIsLoggedIn(!!token);
+        console.log(!!token);
+    }, [isLoggedIn]);
 
     const handleClosePopup = () => {
         setShowPopup(false);
@@ -41,13 +49,26 @@ export default function MainPage() {
         navigate('/login');
     }
 
+    const handleLogout = () => {
+        Cookies.remove('jwt');
+        setIsLoggedIn(false);
+        alert('로그아웃되었습니다.');
+    };
+
     return (
         <>
             <Reset />
             <Background>
                 <Wrapper>
                     <BtnWrapper>
-                        <LoginBtn onClick={handleGoLogin}>로그인</LoginBtn>
+                        <div>
+                            {isLoggedIn ? (
+                                <LoginBtn onClick={handleLogout}>로그아웃</LoginBtn>
+                            ) : (
+                                <LoginBtn onClick={handleGoLogin}>로그인</LoginBtn>
+                            )}
+                        </div>
+
                         <VirticalLineWrapper>
                             <VirticalLine/>
                         </VirticalLineWrapper>

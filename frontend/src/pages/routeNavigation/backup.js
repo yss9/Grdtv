@@ -15,7 +15,7 @@ import {jwtDecode} from "jwt-decode";
 const apiKey = 'AIzaSyDHNaifEbMYJPv6_mg2QJLKuJT3AqxFc7Y';
 
 const librariesPlace = 'places';
-const initLocations = [
+const osakaLocations = [
     { name: '오사카성', img: '/Img/osaka/img.png' },
     { name: '우메다 스카이빌딩 공중정원', img: '/Img/osaka/ENFJ.png' },
     { name: '가메스시', img: '/Img/osaka/ENFP.png' },
@@ -39,7 +39,7 @@ const MapPage = () => {
     const [selectedField, setSelectedField] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
     const [editIndex, setEditIndex] = useState(null);
-    const [route, setRoute] = useState({
+    const [locations, setLocations] = useState({
         출발지: '',
         경유지: [],
         도착지: '',
@@ -48,10 +48,11 @@ const MapPage = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
 
-    const [searchLocations, setSearchLocations] = useState(initLocations);
+    const [searchLocations, setSearchLocations] = useState(osakaLocations);
 
     // 검색용
     const [query, setQuery] = useState('');
+    const [place, setPlace] = useState(null);
     const [isSearched, setIsSearched] = useState(false);
     const [placesData, setPlacesData] = useState([]);
     const [selectedPlaces, setSelectedPlaces] = useState([]); // 선택된 장소들을 저장할 상태 변수
@@ -60,7 +61,7 @@ const MapPage = () => {
     const openModal = (field, index = null) => {
         setSelectedField(field);
         setEditIndex(index);
-        setSelectedLocation(index !== null && field === '경유지' ? route.경유지[index] : route[field]);
+        setSelectedLocation(index !== null && field === '경유지' ? locations.경유지[index] : locations[field]);
         setModalIsOpen(true);
     };
 
@@ -73,28 +74,28 @@ const MapPage = () => {
     };
 
     const handleSelectComplete = () => {
-        const newRoute = { ...route };
+        const newLocations = { ...locations };
         if (selectedField === '경유지') {
             if (editIndex !== null) {
-                newRoute.경유지[editIndex] = selectedLocation;
+                newLocations.경유지[editIndex] = selectedLocation;
             } else {
-                newRoute.경유지.push(selectedLocation);
+                newLocations.경유지.push(selectedLocation);
             }
         } else {
-            newRoute[selectedField] = selectedLocation;
+            newLocations[selectedField] = selectedLocation;
         }
-        setRoute(newRoute);
-        updateMarkers(newRoute);
+        setLocations(newLocations);
+        updateMarkers(newLocations);
         closeModal();
     };
 
-    const updateMarkers = (newRoute) => {
+    const updateMarkers = (newLocations) => {
 
         console.log(`~~ handleSelectComplete 함수
-                    route:${newRoute}`)
-        console.log(newRoute)
+                    locations:${newLocations}`)
+        console.log(newLocations)
 
-        const initLocationsInfo = {
+        const locationCoords = {
             '오사카성': { lat: 35.8338393, lng: 128.7457322 },
             '우메다 스카이빌딩 공중정원': { lat: 34.7055, lng: 135.4892 },
             '가메스시': { lat: 37.53564069999999, lng: 126.8956608 },
@@ -105,9 +106,9 @@ const MapPage = () => {
             '신세카이 혼도리 상점가': { lat: 34.6525, lng: 135.5060 },
         };
         const newMarkers = [
-            newRoute.출발지 && initLocationsInfo[newRoute.출발지],
-            ...newRoute.경유지.map(loc => initLocationsInfo[loc]),
-            newRoute.도착지 && initLocationsInfo[newRoute.도착지]
+            newLocations.출발지 && locationCoords[newLocations.출발지],
+            ...newLocations.경유지.map(loc => locationCoords[loc]),
+            newLocations.도착지 && locationCoords[newLocations.도착지]
         ].filter(Boolean);
 
         setMarkers(newMarkers);
@@ -117,28 +118,28 @@ const MapPage = () => {
         if (!result.destination) return;
         const { source, destination } = result;
 
-        const newRoute = { ...route };
+        const newLocations = { ...locations };
         const items = Array.from([
-            newRoute.출발지,
-            ...newRoute.경유지,
-            newRoute.도착지
+            newLocations.출발지,
+            ...newLocations.경유지,
+            newLocations.도착지
         ]);
         const [reorderedItem] = items.splice(source.index, 1);
         items.splice(destination.index, 0, reorderedItem);
 
-        newRoute.출발지 = items[0];
-        newRoute.경유지 = items.slice(1, items.length - 1);
-        newRoute.도착지 = items[items.length - 1];
+        newLocations.출발지 = items[0];
+        newLocations.경유지 = items.slice(1, items.length - 1);
+        newLocations.도착지 = items[items.length - 1];
 
-        setRoute(newRoute);
-        updateMarkers(newRoute);
+        setLocations(newLocations);
+        updateMarkers(newLocations);
     };
 
     const sendPlace = () => {
         const combinedLocations = [
-            route.출발지,
-            ...route.경유지,
-            route.도착지
+            locations.출발지,
+            ...locations.경유지,
+            locations.도착지
         ].filter(location => location !== '');
         console.log('combinedLocations:', combinedLocations);
         if (combinedLocations.length < 2) {
@@ -188,17 +189,17 @@ const MapPage = () => {
         }
 
         setSelectedLocation(placeName);
-        const newRoute = { ...route };
+        const newLocations = { ...locations };
         if (selectedField === '경유지') {
             if (editIndex !== null) {
-                newRoute.경유지[editIndex] = selectedLocation;
+                newLocations.경유지[editIndex] = selectedLocation;
             } else {
-                newRoute.경유지.push(selectedLocation);
+                newLocations.경유지.push(selectedLocation);
             }
         } else {
-            newRoute[selectedField] = selectedLocation;
+            newLocations[selectedField] = selectedLocation;
         }
-        setRoute(newRoute);
+        setLocations(newLocations);
 
         const newMarkers = [
             ...selectedPlaces.map(loc => loc && { lat: loc.lat, lng: loc.lng }),
@@ -288,8 +289,6 @@ const MapPage = () => {
                     <Droppable droppableId="travelLocations">
                         {(provided) => (
                             <div style={{fontSize: "20px"}} {...provided.droppableProps} ref={provided.innerRef}>
-                                
-                                {/*출발지*/}
                                 <Draggable key="출발지" draggableId="출발지" index={0}>
                                     {(provided) => (
                                         <div
@@ -302,14 +301,12 @@ const MapPage = () => {
                                             <div style={{fontSize: "15px"}}
                                                  className="location-input"
                                                  onClick={() => openModal('출발지')}
-                                            >{route.출발지 || '출발지'}</div>
+                                            >{locations.출발지 || '출발지'}</div>
                                         </div>
                                     )}
                                 </Draggable>
                                 <div className="arrow">▼</div>
-                                
-                                {/*경유지*/}
-                                {route.경유지.map((waypoint, index) => (
+                                {locations.경유지.map((waypoint, index) => (
                                     <React.Fragment key={`fragment-${index}`}>
                                         <Draggable key={`경유지-${index}`} draggableId={`경유지-${index}`} index={index + 1}>
                                             {(provided) => (
@@ -331,9 +328,7 @@ const MapPage = () => {
                                     </React.Fragment>
                                 ))}
                                 {provided.placeholder}
-                                
-                                {/*도착지*/}
-                                <Draggable key="도착지" draggableId="도착지" index={route.경유지.length + 1}>
+                                <Draggable key="도착지" draggableId="도착지" index={locations.경유지.length + 1}>
                                     {(provided) => (
                                         <div style={{fontSize: "15px"}}
                                              ref={provided.innerRef}
@@ -341,11 +336,11 @@ const MapPage = () => {
                                              {...provided.dragHandleProps}
                                              className="dropdown"
                                         >
-                                            <label className="location-label">{route.경유지.length + 2}</label>
+                                            <label className="location-label">{locations.경유지.length + 2}</label>
                                             <div style={{fontSize: "15px"}}
                                                  className="location-input"
                                                  onClick={() => openModal('도착지')}
-                                            >{route.도착지 || '도착지'}</div>
+                                            >{locations.도착지 || '도착지'}</div>
                                         </div>
                                     )}
                                 </Draggable>
@@ -467,7 +462,7 @@ const MapPage = () => {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)} // 사용자의 입력을 query 상태로 업데이트
                             onKeyDown={handleKeyDownEnter} type="text"
-                                          placeholder={`${selectedField}를 선택해 주세요.`}/>
+                            placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
                             {isSearched ? (
                                 <div>
