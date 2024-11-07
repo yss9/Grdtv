@@ -1,5 +1,6 @@
 package proj.travien.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Operation(summary = "회원가입", description = "새로운 사용자를 등록")
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestPart("user") UserDTO userDTO,
                                     @RequestPart(value = "profilePicture", required = false) MultipartFile profilePictureFile) {
@@ -52,6 +54,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "예약대행자 신청")
     @PostMapping("/apply-agent")
     public ResponseEntity<?> applyAsAgent(@RequestParam("userId") String userId,
                                           @RequestPart("agentDetails") AgentApplicationDTO agentDTO,
@@ -65,7 +68,7 @@ public class UserController {
         }
     }
 
-    // 관리자가 예약대행자 신청 승인
+    @Operation(summary = "관리자가 예약대행자 신청 승인")
     @PostMapping("/approve-agent/{userId}")
     public ResponseEntity<?> approveAgentApplication(@PathVariable String userId) {
         boolean approved = userService.approveAgentApplication(userId);
@@ -77,7 +80,7 @@ public class UserController {
         }
     }
 
-    // 해시태그로 예약대행자 검색
+    @Operation(summary = "해시태그로 예약대행자 검색")
     @GetMapping("/search-agents-by-hashtag")
     public ResponseEntity<List<AgentDTO>> searchAgentsByHashtag(@RequestParam("hashtag") String hashtag) {
         List<AgentDTO> agents = userService.searchAgentsByHashtag(hashtag);
@@ -87,12 +90,14 @@ public class UserController {
         return ResponseEntity.ok(agents);
     }
 
+    @Operation(summary = "최근 승인된 예약대행자 리스트8명")
     @GetMapping("/recent-agents")
     public ResponseEntity<List<Map<String, Object>>> getRecentAgents() {
         List<Map<String, Object>> recentAgents = userService.getRecentAgents(8);
         return ResponseEntity.ok(recentAgents);
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
@@ -112,18 +117,21 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "username으로 userid 체크")
     @GetMapping("/check-userid")
     public ResponseEntity<?> checkUserId(@RequestParam String username) {
         boolean exists = userService.isUserIdInUse(username);
         return ResponseEntity.ok(exists);
     }
 
+    @Operation(summary = "닉네임 중복체크")
     @GetMapping("/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
         boolean exists = userService.isNicknameInUse(nickname);
         return ResponseEntity.ok(exists);
     }
 
+    @Operation(summary = "프로필사진 업로드")
     @PostMapping("/upload-profile-picture")
     public ResponseEntity<?> uploadProfilePicture(@RequestParam("userId") String userId,
                                                   @RequestPart("profilePicture") MultipartFile profilePictureFile) {
@@ -135,6 +143,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "검증 문서 업로드")
     @PostMapping("/upload-verification-file")
     public ResponseEntity<?> uploadVerificationFile(@RequestParam("userId") String userId,
                                                     @RequestPart("verificationFile") MultipartFile verificationFile) {
@@ -146,7 +155,7 @@ public class UserController {
         }
     }
 
-    // 프로필 수정
+    @Operation(summary = "프로필 수정")
     @PostMapping("/update-profile")
     public ResponseEntity<?> updateUserProfile(@RequestParam("userId") String userId, @RequestBody UserDTO userDTO) {
         boolean updated = userService.updateUserProfile(userId, userDTO);
@@ -157,7 +166,7 @@ public class UserController {
         }
     }
 
-    // 예약대행자 정보 업데이트
+    @Operation(summary = "예약대행자 정보 수정")
     @PostMapping("/update-agent-details")
     public ResponseEntity<?> updateAgentDetails(@RequestParam("userId") String userId,
                                                 @RequestBody AgentDTO agentDTO) {
@@ -169,7 +178,7 @@ public class UserController {
         }
     }
 
-    // 전체 예약대행자 조회 및 특정 국가의 예약대행자 조회
+    @Operation(summary = "전체 예약대행자 조회 및 특정 국가의 예약대행자 조회")
     @GetMapping("/agents")
     public ResponseEntity<List<AgentDTO>> getAgents(@RequestParam(value = "country", required = false) String country) {
         List<AgentDTO> agents;
@@ -183,7 +192,7 @@ public class UserController {
         return ResponseEntity.ok(agents);
     }
 
-    // 마이페이지 정보 조회
+    @Operation(summary = "마이페이지 정보 조회")
     @GetMapping("/my-info")
     public ResponseEntity<?> getMyInfo(@RequestParam("userId") String userId) {
         UserDTO userDTO = userService.getUserInfo(userId);
@@ -194,12 +203,14 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "모든 유저 닉네임 조회")
     @GetMapping("/nicknames")
     public ResponseEntity<List<String>> getAllNicknames() {
         List<String> nicknames = userService.getAllNicknames();
         return new ResponseEntity<>(nicknames, HttpStatus.OK);
     }
 
+    @Operation(summary = "프로필 사진 조회")
     @GetMapping("/profile-picture/{userId}")
     public ResponseEntity<Resource> getProfilePicture(@PathVariable String userId) {
         try {
@@ -213,6 +224,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "검증파일 조회")
     @GetMapping("/verification-file/{userId}")
     public ResponseEntity<Resource> getVerificationFile(@PathVariable String userId) {
         try {
@@ -226,7 +238,7 @@ public class UserController {
         }
     }
 
-    // 포인트 조회
+    @Operation(summary = "포인트 조회")
     @GetMapping("/{userId}/points")
     public ResponseEntity<?> getUserPoints(@PathVariable String userId) {
         try {
@@ -237,7 +249,7 @@ public class UserController {
         }
     }
 
-    // 포인트 추가
+    @Operation(summary = "포인트 추가")
     @PostMapping("/{userId}/points/add")
     public ResponseEntity<?> addUserPoints(@PathVariable String userId, @RequestParam int pointsToAdd) {
         try {
@@ -252,7 +264,7 @@ public class UserController {
         }
     }
 
-    // 포인트 차감
+    @Operation(summary = "포인트 차감")
     @PostMapping("/{userId}/points/deduct")
     public ResponseEntity<?> deductUserPoints(@PathVariable String userId, @RequestParam int pointsToDeduct) {
         try {
