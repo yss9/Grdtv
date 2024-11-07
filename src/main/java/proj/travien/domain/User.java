@@ -37,8 +37,11 @@ public class User {
     @ElementCollection
     private List<String> hashtags;
 
-    private String specIntroduction;
+    @ElementCollection
+    private List<String> specIntroduction;
     private double averageReviewRating;
+
+    private String statusMessage = "아직 설정되지 않음";
 
     // 단일 역할 관리 (Enum 타입)
     @Enumerated(EnumType.STRING)
