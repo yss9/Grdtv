@@ -235,6 +235,31 @@ public class UserService {
         return userRepository.findByUserId(userId).orElse(null);
     }
 
+    // 프로필 수정 메서드
+    public boolean updateUserProfile(String userId, UserDTO userDTO) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return false;
+        }
+
+        // ID를 제외한 모든 필드를 수정
+        user.setPassword(userDTO.getPassword() != null ? hashPassword(userDTO.getPassword()) : user.getPassword());
+        user.setName(userDTO.getName());
+        user.setDateOfBirth(userDTO.getDateOfBirth());
+        user.setGender(userDTO.getGender());
+        user.setMbti(userDTO.getMbti());
+        user.setProfilePicture(userDTO.getProfilePicture());
+        user.setNickname(userDTO.getNickname());
+        user.setStatusMessage(userDTO.getStatusMessage()); // 상태 메시지 추가
+
+        // 포인트는 수정하지 않음
+        // user.setPoints(userDTO.getPoints());
+
+        userRepository.save(user);
+
+        return true;
+    }
+
     // 예약대행자 정보 업데이트
     public boolean updateAgentDetails(String userId, AgentDTO agentDTO) {
         User user = userRepository.findByUserId(userId).orElse(null);
@@ -309,13 +334,13 @@ public class UserService {
                 user.getProfilePicture(),
                 user.getNickname(),
                 user.isAgent(),
-                user.getPoints()
+                user.getPoints(), // 포인트 필드 추가
+                user.getStatusMessage() // 상태 메시지 추가
         );
 
         if (user.isAgent()) {
             userDTO.setAgentDetails(createAgentDTO(user));
         }
-
         return userDTO;
     }
 

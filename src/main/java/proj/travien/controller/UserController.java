@@ -146,6 +146,17 @@ public class UserController {
         }
     }
 
+    // 프로필 수정
+    @PostMapping("/update-profile")
+    public ResponseEntity<?> updateUserProfile(@RequestParam("userId") String userId, @RequestBody UserDTO userDTO) {
+        boolean updated = userService.updateUserProfile(userId, userDTO);
+        if (updated) {
+            return ResponseEntity.ok("User profile updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
     // 예약대행자 정보 업데이트
     @PostMapping("/update-agent-details")
     public ResponseEntity<?> updateAgentDetails(@RequestParam("userId") String userId,
