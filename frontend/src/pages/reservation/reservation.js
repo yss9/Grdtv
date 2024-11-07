@@ -1,8 +1,20 @@
 import { Reset } from "styled-reset";
-import Agent from "../../components/Agent/Agent"
+import Agent from "../../components/Agent/Agent";
+import Progress from "../../components/Agent/progress";
+import axios from "axios";
+import {
+    SubTitle, SubTitleWrapper, SearchBarWrapper, SearchBarContainer,
+    Magnifier, Search, Icon, SubTitle2,
+    AgentContainer, Agents, GaugeBar, GaugeBarWrapper,
+    SelectContainer, Select, SelectWrapper, SeeAllBtn, Agents2, DownWrapper,
+    Container, Wrapper, ProgressContainer, RecentViewAgentContainer, RecentViewAgentWrapper,
+    SeeAllBtn2, SeeAllBtnWrapper
+} from './reservationstyle';
+import React, { useState, useEffect } from "react";
 import Agent2 from "../../components/Agent/Agent2"
 import Agent3 from "../../components/Agent/Agent3"
-import Progress from "../../components/Agent/progress";
+import TopBarComponent from "../../components/TopBar/TopBar";
+import MyProfile2 from "../../public/Img/forprofile/img.png";
 import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
 import AgentProfile2 from "../../public/Img/forprofile/AgentProfile2.png"
 import AgentProfile3 from "../../public/Img/forprofile/AgentProfile3.png"
@@ -10,52 +22,14 @@ import AgentProfile4 from "../../public/Img/forprofile/AgentProfile4.png"
 import AgentProfile5 from "../../public/Img/forprofile/AgentProfile5.png"
 import AgentProfile6 from "../../public/Img/forprofile/AgentProfile6.png"
 import AgentNoProfile from "../../public/Img/forprofile/img_1.png"
-import Sushi from "../../public/Img/sushi2.png"
-import {
-    SubTitle,
-    SubTitleWrapper,
-    SearchBarWrapper,
-    SearchBarContainer,
-    Magnifier,
-    Search,
-    Icon,
-    SubTitle2,
-    AgentContainer,
-    Agents,
-    GaugeBar,
-    GaugeBarWrapper,
-    SelectContainer,
-    Select,
-    SelectWrapper,
-    SeeAllBtn,
-    Agents2,
-    DownWrapper,
-    Container,
-    Wrapper,
-    ProgressContainer,
-    RecentViewAgentContainer,
-    RecentViewAgentWrapper,
-    SeeAllBtn2,
-    SeeAllBtnWrapper
-} from './reservationstyle'
-import React, { useState } from "react";
-import TopBarComponent from "../../components/TopBar/TopBar";
-import Maratang2 from "../../public/Img/maratang.png";
 
-const AgentData = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.', reviewImg:Maratang2},
-    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!', reviewImg:Sushi },
-    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentNoProfile, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.', reviewImg:Maratang2 },
-    { author: '미국 길라잡이', introduce: '미국 전역 여행 안내합니다.', hashtags: ['#미국여행', '#로드트립', '#대자연'], spec: ['미국 10년 거주', '영어 능통'], image: AgentProfile3, score: '4.6', number: '250', agentreview: '미국 서부 여행이 정말 인상 깊었어요.' },
-    { author: '독일 전문가', introduce: '독일의 모든 것을 안내합니다.', hashtags: ['#독일여행', '#맥주투어', '#역사탐방'], spec: ['독일 6년 거주', '독일어 자격증'], image: AgentNoProfile, score: '4.8', number: '310', agentreview: '맥주 투어가 정말 재미있었어요!' },
-    { author: '스페인 가이드', introduce: '스페인의 아름다움을 경험하세요.', hashtags: ['#스페인여행', '#예술투어', '#현지체험'], spec: ['스페인 5년 거주', '스페인어 능통'], image: AgentProfile4, score: '4.7', number: '280', agentreview: '가우디 투어가 인상 깊었어요.' },
-    { author: '이탈리아 탐험가', introduce: '이탈리아의 숨은 매력을 알려드립니다.', hashtags: ['#이탈리아여행', '#와인투어', '#미식여행'], spec: ['이탈리아 8년 거주', '이탈리아어 능통'], image: AgentNoProfile, score: '4.9', number: '360', agentreview: '이탈리아 음식과 와인이 최고였어요.' },
-    { author: '캐나다 전문가', introduce: '캐나다 자연 탐험의 진수를 보여드립니다.', hashtags: ['#캐나다여행', '#자연탐험', '#액티비티'], spec: ['캐나다 7년 거주', '영어 능통'], image: AgentNoProfile, score: '4.8', number: '290', agentreview: '자연 경관이 정말 아름다웠어요.' },
-    { author: '호주 가이드', introduce: '호주의 다양한 매력을 안내합니다.', hashtags: ['#호주여행', '#해변', '#현지투어'], spec: ['호주 5년 거주', '영어 능통'], image: AgentProfile5, score: '4.7', number: '310', agentreview: '해변과 도시 투어가 모두 좋았어요.' },
-    { author: '영국 여행 전문가', introduce: '영국의 역사와 문화를 체험하세요.', hashtags: ['#영국여행', '#역사탐방', '#문화체험'], spec: ['영국 6년 거주', '영어 능통'], image: AgentProfile6, score: '4.8', number: '275', agentreview: '역사적인 장소들을 잘 안내해주셨어요.' }
-
-];
-
+const processProfilePicture = (profilePicture) => {
+    if (profilePicture) {
+        return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+    } else {
+        return MyProfile2;
+    }
+};
 const Agent2Data = [
     { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile },
     { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2 },
@@ -75,13 +49,33 @@ const Agent3Data = [
 ];
 
 export default function ReservationPage() {
+    const [agentData, setAgentData] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCountry, setSelectedCountry] = useState("");
 
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
-    const visibleAgents = AgentData.slice(startIndex, startIndex + reviewsPerPage);
-    const totalIndicators = Math.ceil(AgentData.length / reviewsPerPage);
+    const visibleAgents = agentData.slice(startIndex, startIndex + reviewsPerPage);
+    const totalIndicators = Math.ceil(agentData.length / reviewsPerPage);
+
+    useEffect(() => {
+        // 백엔드에서 데이터 가져오기
+        axios.get("http://localhost:8080/api/users/agents")
+            .then((response) => {
+                const fetchedData = response.data.map((agent) => ({
+                    author: agent.nickname,
+                    introduce: agent.introduction || '소개 내용이 없습니다.',
+                    hashtags: agent.hashtags,
+                    spec: agent.specIntroduction,
+                    image: processProfilePicture(agent.profilePicture),
+                    score: agent.averageReviewRating,
+                    number: '0', // 평점 개수 미지원 시 0으로 기본값 설정
+                    agentreview: '', // 리뷰가 없는 경우 빈 문자열로 설정
+                }));
+                setAgentData(fetchedData);
+            })
+            .catch((error) => console.error("Error fetching agents:", error));
+    }, []);
 
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
@@ -94,8 +88,8 @@ export default function ReservationPage() {
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
     };
-
     const visibleAgents2 = Agent2Data.slice(0, 6); // Adjust the number here as needed
+
 
     return (
         <>
@@ -103,28 +97,34 @@ export default function ReservationPage() {
             <Container>
                 <Wrapper>
                     <div style={{ height: '55px' }}></div>
-                    <TopBarComponent/>
+                    <TopBarComponent />
                     <SubTitleWrapper>
                         <SubTitle>검색을 통해 원하는 <p>글로플러</p>와 예약을 진행할 수 있어요.</SubTitle>
                     </SubTitleWrapper>
                     <SearchBarWrapper>
                         <Icon>
-                            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="30" height="30" viewBox="0 0 32 32" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clipPath="url(#clip0_74_14)">
-                                    <path d="M14.2222 32V21.3333H17.7778V24.8889H32V28.4444H17.7778V32H14.2222ZM0 28.4444V24.8889H10.6667V28.4444H0ZM7.11111 21.3333V17.7778H0V14.2222H7.11111V10.6667H10.6667V21.3333H7.11111ZM14.2222 17.7778V14.2222H32V17.7778H14.2222ZM21.3333 10.6667V0H24.8889V3.55556H32V7.11111H24.8889V10.6667H21.3333ZM0 7.11111V3.55556H17.7778V7.11111H0Z" fill="#5F6368" />
+                                    <path
+                                        d="M14.2222 32V21.3333H17.7778V24.8889H32V28.4444H17.7778V32H14.2222ZM0 28.4444V24.8889H10.6667V28.4444H0ZM7.11111 21.3333V17.7778H0V14.2222H7.11111V10.6667H10.6667V21.3333H7.11111ZM14.2222 17.7778V14.2222H32V17.7778H14.2222ZM21.3333 10.6667V0H24.8889V3.55556H32V7.11111H24.8889V10.6667H21.3333ZM0 7.11111V3.55556H17.7778V7.11111H0Z"
+                                        fill="#5F6368"/>
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_74_14">
-                                        <rect width="32" height="32" fill="white" />
+                                        <rect width="32" height="32" fill="white"/>
                                     </clipPath>
                                 </defs>
                             </svg>
                         </Icon>
                         <SearchBarContainer>
-                            <Search placeholder="여행 관련 키워드를 검색해보세요." />
+                            <Search placeholder="여행 관련 키워드를 검색해보세요."/>
                             <Magnifier>
-                                <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M24.9 27L15.45 17.55C14.7 18.15 13.8375 18.625 12.8625 18.975C11.8875 19.325 10.85 19.5 9.75 19.5C7.025 19.5 4.719 18.556 2.832 16.668C0.945001 14.78 0.00100079 12.474 7.93651e-07 9.75C-0.000999206 7.026 0.943001 4.72 2.832 2.832C4.721 0.944 7.027 0 9.75 0C12.473 0 14.7795 0.944 16.6695 2.832C18.5595 4.72 19.503 7.026 19.5 9.75C19.5 10.85 19.325 11.8875 18.975 12.8625C18.625 13.8375 18.15 14.7 17.55 15.45L27 24.9L24.9 27ZM9.75 16.5C11.625 16.5 13.219 15.844 14.532 14.532C15.845 13.22 16.501 11.626 16.5 9.75C16.499 7.874 15.843 6.2805 14.532 4.9695C13.221 3.6585 11.627 3.002 9.75 3C7.873 2.998 6.2795 3.6545 4.9695 4.9695C3.6595 6.2845 3.003 7.878 3 9.75C2.997 11.622 3.6535 13.216 4.9695 14.532C6.2855 15.848 7.879 16.504 9.75 16.5Z" fill="#4E53EE"/>
+                                <svg width="27" height="27" viewBox="0 0 27 27" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M24.9 27L15.45 17.55C14.7 18.15 13.8375 18.625 12.8625 18.975C11.8875 19.325 10.85 19.5 9.75 19.5C7.025 19.5 4.719 18.556 2.832 16.668C0.945001 14.78 0.00100079 12.474 7.93651e-07 9.75C-0.000999206 7.026 0.943001 4.72 2.832 2.832C4.721 0.944 7.027 0 9.75 0C12.473 0 14.7795 0.944 16.6695 2.832C18.5595 4.72 19.503 7.026 19.5 9.75C19.5 10.85 19.325 11.8875 18.975 12.8625C18.625 13.8375 18.15 14.7 17.55 15.45L27 24.9L24.9 27ZM9.75 16.5C11.625 16.5 13.219 15.844 14.532 14.532C15.845 13.22 16.501 11.626 16.5 9.75C16.499 7.874 15.843 6.2805 14.532 4.9695C13.221 3.6585 11.627 3.002 9.75 3C7.873 2.998 6.2795 3.6545 4.9695 4.9695C3.6595 6.2845 3.003 7.878 3 9.75C2.997 11.622 3.6535 13.216 4.9695 14.532C6.2855 15.848 7.879 16.504 9.75 16.5Z"
+                                        fill="#4E53EE"/>
                                 </svg>
                             </Magnifier>
                         </SearchBarContainer>
@@ -136,16 +136,17 @@ export default function ReservationPage() {
                         <Progress/>
                     </ProgressContainer>
                     <SubTitleWrapper>
-                        <SubTitle2>최근 이용자 수가 증가한 대행자 리스트예요.</SubTitle2>
+                        <SubTitle2>최근 등록된 글로플러 리스트예요.</SubTitle2>
                     </SubTitleWrapper>
                     <AgentContainer>
                         <Agents>
                             {visibleAgents.map((review, index) => (
-                                <Agent key={index} review={review} />
+                                <Agent key={index} review={review}/>
                             ))}
                         </Agents>
                         <GaugeBarWrapper>
-                            <GaugeBar completion={(activeIndex + 1) / totalIndicators * 100} onClick={handleGaugeClick} />
+                            <GaugeBar completion={(activeIndex + 1) / totalIndicators * 100}
+                                      onClick={handleGaugeClick}/>
                         </GaugeBarWrapper>
                     </AgentContainer>
                     <SubTitleWrapper>
