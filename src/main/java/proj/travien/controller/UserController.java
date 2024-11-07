@@ -77,6 +77,16 @@ public class UserController {
         }
     }
 
+    // 해시태그로 예약대행자 검색
+    @GetMapping("/search-agents-by-hashtag")
+    public ResponseEntity<List<AgentDTO>> searchAgentsByHashtag(@RequestParam("hashtag") String hashtag) {
+        List<AgentDTO> agents = userService.searchAgentsByHashtag(hashtag);
+        if (agents.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(agents);
+    }
+
     @GetMapping("/recent-agents")
     public ResponseEntity<List<Map<String, Object>>> getRecentAgents() {
         List<Map<String, Object>> recentAgents = userService.getRecentAgents(8);

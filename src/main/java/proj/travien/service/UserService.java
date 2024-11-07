@@ -267,6 +267,22 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // 해시태그로 예약대행자 검색
+    public List<AgentDTO> searchAgentsByHashtag(String hashtag) {
+        return userRepository.findByIsAgentTrue().stream()
+                .filter(user -> user.getHashtags() != null && user.getHashtags().contains(hashtag))
+                .map(user -> new AgentDTO(
+                        user.getAgentCountry(),
+                        user.getIntroduction(),
+                        user.getHashtags(),
+                        user.getSpecIntroduction(),
+                        user.getAverageReviewRating(),
+                        user.getNickname(),
+                        user.getProfilePicture()
+                ))
+                .collect(Collectors.toList());
+    }
+
     // 특정 국가의 예약대행자 목록 조회
     public List<AgentDTO> getAgentsByCountry(String country) {
         return userRepository.findByIsAgentTrueAndAgentCountry(country).stream()
