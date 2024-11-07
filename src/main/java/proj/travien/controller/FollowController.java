@@ -1,5 +1,6 @@
 package proj.travien.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "예약대행자 팔로우")
     @PostMapping("/follow-agent")
     public ResponseEntity<?> followAgent(@RequestParam String userId, @RequestParam String agentId) {
         boolean followed = followService.followAgent(userId, agentId);
@@ -33,6 +35,7 @@ public class FollowController {
         }
     }
 
+    @Operation(summary = "팔로우한 예약대행자")
     @GetMapping("/followed-agents")
     public ResponseEntity<List<UserDTO>> getFollowedAgents(@RequestParam String userId) {
         // FollowService에서 가져온 User 목록을 UserService에서 DTO로 변환

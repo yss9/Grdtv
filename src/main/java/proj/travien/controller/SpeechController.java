@@ -1,5 +1,6 @@
 package proj.travien.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class SpeechController {
     @Autowired
     private SpeechToTextService speechToTextService;
 
+    @Operation(summary = "stt 사용")
     @PostMapping("/convert")
     public ResponseEntity<String> convertSpeechToText(@RequestParam("file") MultipartFile file, @RequestParam("languageCode") String languageCode) throws IOException {
         // 파일이 비어있는지 확인
