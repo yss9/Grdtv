@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,20 +33,6 @@ public class PostController {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/image/";
 
-   /* @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            // 파일 저장
-            String fileName = file.getOriginalFilename();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOAD_DIR + fileName);
-            Files.write(path, bytes);
-            return ResponseEntity.ok().body("File uploaded successfully: " + fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
-        }
-    }*/
 
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("image") MultipartFile file) {
@@ -99,7 +82,7 @@ public class PostController {
         Post createdPost = postService.createPost(title, body, addressEntities, addressTitle, country);
         createdPost.setNickname(user.getNickname());  // 추가
         createdPost.setMbti(user.getMbti());          // 추가
-
+        createdPost.setProfilePicture(user.getProfilePicture());
         // 포인트 업데이트 추가
         user.setPoints(user.getPoints() + 10);  // 사용자 포인트 +10
         userService.save(user);  // 사용자 정보 업데이트
@@ -135,6 +118,19 @@ public class PostController {
         return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+
+    /**
+     * 나라별 게시물 목록 가져오기
+     */
+    @GetMapping("/{country}")
+    public ResponseEntity<List<Post>> getPostsByCountry(@PathVariable String country) {
+        List<Post> posts = postService.getPostsByCountry(country);
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 
     /**
@@ -202,27 +198,70 @@ public class PostController {
         }
     }
 
+
     /**
-     * 썸네일 저장 API
+     * 썸네일 저장
      */
     @PostMapping("/{boardID}/thumbnail")
-    public ResponseEntity<String> saveThumbnail(@PathVariable Long boardID) {
-        postService.saveThumbnail(boardID);
+    public ResponseEntity<String> saveThumbnail(
+            @PathVariable Long boardID,
+            @RequestBody Map<String, String> requestBody
+    ) {
+        if (requestBody == null || !requestBody.containsKey("body")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("body 값이 필요합니다.");
+        }
+
+        String body = requestBody.get("body");
+        postService.saveThumbnail(boardID, body);
         return ResponseEntity.ok("썸네일 저장 완료");
     }
+
+
 
     /**
      * 썸네일 반환
      */
     @GetMapping("/{boardID}/thumbnail")
     public ResponseEntity<String> getThumbnail(@PathVariable Long boardID) {
-        // PostService를 통해 해당 게시물의 썸네일 URL을 가져옴
         String thumbnailUrl = postService.getThumbnail(boardID);
         if (thumbnailUrl != null) {
             return ResponseEntity.ok(thumbnailUrl);
         } else {
-            return ResponseEntity.notFound().build();  // 썸네일이 없으면 404 반환
+            return ResponseEntity.notFound().build();
         }
+    }
+
+
+    /**
+     * 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Post>> searchPosts(@RequestParam String query) {
+        List<Post> posts = postService.searchPosts(query);
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 검색 결과가 없는 경우
+        }
+        return ResponseEntity.ok(posts);  // 검색 결과가 있는 경우
+    }
+
+
+    @GetMapping("/user/{nickname}")
+    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String nickname) {
+        List<Post> posts = postService.getPostsByUser(nickname);
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    /**
+     * title과 boardID
+     */
+    @GetMapping("/titles")
+    public ResponseEntity<List<Map<String, Object>>> getTitleAndBoardIDList() {
+        List<Map<String, Object>> titles = postService.getTitleAndBoardIDList();
+        return ResponseEntity.ok(titles);
     }
 
 

@@ -3,6 +3,7 @@ package proj.travien.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import proj.travien.domain.PointsHistory;
 import proj.travien.domain.Role;
 import proj.travien.domain.User;
+import proj.travien.dto.AgentApplicationDTO;
 import proj.travien.dto.UserDTO;
 import proj.travien.dto.AgentDTO;
 import proj.travien.repository.PointsHistoryRepository;
@@ -20,11 +22,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -47,7 +49,7 @@ public class UserService {
         userRepository.save(user);  // 사용자 정보 저장
     }
 
-    // 회원가입
+    // 회원가입 시 기본 사용자로만 등록
     public boolean createUser(UserDTO userDTO, MultipartFile profilePictureFile, MultipartFile verificationFile) {
         if (isUserIdInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {
             return false;
@@ -61,9 +63,9 @@ public class UserService {
         user.setGender(userDTO.getGender());
         user.setMbti(userDTO.getMbti());
         user.setNickname(userDTO.getNickname());
-        user.setAgent(userDTO.isAgent());
-
-        Role role = Role.ROLE_USER;
+        user.setAgent(false); // 기본 사용자는 예약대행자가 아님
+        user.setRole(Role.ROLE_USER);
+        user.setPoints(1000);
 
         // 프로필 사진 저장
         if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
@@ -71,26 +73,59 @@ public class UserService {
             user.setProfilePicture(profilePicturePath);
         }
 
-
-        // 예약 대행자인 경우 ROLE_AGENT 추가 및 검증 파일만 처리
-        if (userDTO.isAgent()) {
-            role = Role.ROLE_AGENT;
-
-            // 검증 파일 저장 (예약 대행자만)
-            if (verificationFile != null && !verificationFile.isEmpty()) {
-                String verificationFilePath = saveVerificationFile(verificationFile);
-                user.setVerificationFile(verificationFilePath);
-            }
-        }
-
-        // 기본 포인트 1000 설정
-        user.setPoints(1000);
-        user.setRole(role);
-        // 사용자 정보 저장
         userRepository.save(user);
         return true;
     }
 
+    // 예약대행자 신청
+    public boolean applyAsAgent(String userId, AgentApplicationDTO agentDTO, MultipartFile verificationFile) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || user.isAgent()) {
+            return false;
+        }
+
+        user.setAgent(true); // 예약대행자로 설정
+        user.setAgentCountry(agentDTO.getAgentCountry());
+        user.setIntroduction(agentDTO.getIntroduction());
+        user.setHashtags(agentDTO.getHashtags());
+        user.setSpecIntroduction(agentDTO.getSpecIntroduction());
+        user.setAverageReviewRating(agentDTO.getAverageReviewRating());
+        user.setRole(Role.ROLE_AGENT);
+
+        // 검증 파일 저장
+        if (verificationFile != null && !verificationFile.isEmpty()) {
+            String verificationFilePath = saveVerificationFile(verificationFile);
+            user.setVerificationFile(verificationFilePath);
+        }
+
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean approveAgentApplication(String userId) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null || !user.isAgent()) {
+            return false;
+        }
+
+        // 역할을 예약대행자로 설정하고 승인 날짜를 현재 시점으로 설정
+        user.setRole(Role.ROLE_AGENT);
+        user.setAgentApprovedDate(LocalDateTime.now()); // 현재 시점을 저장
+        userRepository.save(user);
+        return true;
+    }
+
+    public List<Map<String, Object>> getRecentAgents(int limit) {
+        return userRepository.findByIsAgentTrueOrderByAgentApprovedDateDesc(PageRequest.of(0, limit))
+                .stream()
+                .map(user -> Map.of(
+                        "nickname", user.getNickname(),
+                        "profilePicture", user.getProfilePicture(),
+                        "hashtags", user.getHashtags(),
+                        "agentCountry", user.getAgentCountry()
+                ))
+                .collect(Collectors.toList());
+    }
 
     // 프로필 사진 업로드
     public boolean uploadProfilePicture(String userId, MultipartFile profilePictureFile) {
@@ -200,6 +235,31 @@ public class UserService {
         return userRepository.findByUserId(userId).orElse(null);
     }
 
+    // 프로필 수정 메서드
+    public boolean updateUserProfile(String userId, UserDTO userDTO) {
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return false;
+        }
+
+        // ID를 제외한 모든 필드를 수정
+        user.setPassword(userDTO.getPassword() != null ? hashPassword(userDTO.getPassword()) : user.getPassword());
+        user.setName(userDTO.getName());
+        user.setDateOfBirth(userDTO.getDateOfBirth());
+        user.setGender(userDTO.getGender());
+        user.setMbti(userDTO.getMbti());
+        user.setProfilePicture(userDTO.getProfilePicture());
+        user.setNickname(userDTO.getNickname());
+        user.setStatusMessage(userDTO.getStatusMessage()); // 상태 메시지 추가
+
+        // 포인트는 수정하지 않음
+        // user.setPoints(userDTO.getPoints());
+
+        userRepository.save(user);
+
+        return true;
+    }
+
     // 예약대행자 정보 업데이트
     public boolean updateAgentDetails(String userId, AgentDTO agentDTO) {
         User user = userRepository.findByUserId(userId).orElse(null);
@@ -232,6 +292,22 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    // 해시태그로 예약대행자 검색
+    public List<AgentDTO> searchAgentsByHashtag(String hashtag) {
+        return userRepository.findByIsAgentTrue().stream()
+                .filter(user -> user.getHashtags() != null && user.getHashtags().contains(hashtag))
+                .map(user -> new AgentDTO(
+                        user.getAgentCountry(),
+                        user.getIntroduction(),
+                        user.getHashtags(),
+                        user.getSpecIntroduction(),
+                        user.getAverageReviewRating(),
+                        user.getNickname(),
+                        user.getProfilePicture()
+                ))
+                .collect(Collectors.toList());
+    }
+
     // 특정 국가의 예약대행자 목록 조회
     public List<AgentDTO> getAgentsByCountry(String country) {
         return userRepository.findByIsAgentTrueAndAgentCountry(country).stream()
@@ -258,13 +334,13 @@ public class UserService {
                 user.getProfilePicture(),
                 user.getNickname(),
                 user.isAgent(),
-                user.getPoints()
+                user.getPoints(), // 포인트 필드 추가
+                user.getStatusMessage() // 상태 메시지 추가
         );
 
         if (user.isAgent()) {
             userDTO.setAgentDetails(createAgentDTO(user));
         }
-
         return userDTO;
     }
 

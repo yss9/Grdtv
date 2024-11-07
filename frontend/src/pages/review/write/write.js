@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import * as S from "./style";
-import { Modal } from 'antd';
+import {Modal, Tooltip} from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import MapComponent from "./MapComponent";
@@ -32,6 +33,16 @@ export default function BoardWrite(props) {
     const [image, setImage] = useState(null);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(0);
     const quillRef = useRef(null); // ReactQuill ref
+
+    const [modalMessage, setModalMessage] = useState(""); // 모달 메시지 상태 추가
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+        setModalMessage("");
+    };
+
+    const isFormValid = title && body && country && addressTitle && addresses.every(address => address.address);
 
     useEffect(() => {
         if (window.google) {
@@ -65,6 +76,8 @@ export default function BoardWrite(props) {
         };
         setAddresses(updatedAddresses);
         setIsOpen(false);
+
+
     };
 
 
@@ -95,8 +108,15 @@ export default function BoardWrite(props) {
 
 
     const onClickSubmit = async () => {
-        if (title === "") {
-            setTitleError("제목을 입력해주세요.");
+        if (!isFormValid) {
+            setModalMessage("제목, 본문, 경로 제목, 주소를 모두 입력해 주세요.");
+            setIsModalVisible(true);
+            return;
+        }
+
+        if (!token) {
+            setModalMessage("로그인이 필요합니다.");
+            setIsModalVisible(true);
             return;
         }
 
@@ -108,22 +128,27 @@ export default function BoardWrite(props) {
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('title', title);
-        formData.append('body', body);
+        formData.append('body', body); // 본문 전송
         formData.append('addressTitle', addressTitle);
         formData.append('addresses', JSON.stringify(addressStrings));
+        formData.append('country', country);
+
         if (image) {
             formData.append('image', image);
         }
-        formData.append('country', country);
 
         try {
             const response = await axios.post("http://localhost:8080/api/posts/", formData);
             console.log(response.data);
 
-            // 포인트 정보 확인
-            const userPoints = response.data.userPoints;  // API 응답에서 포인트 가져오기
-            alert(`게시물 등록이 정상적으로 완료되었습니다! 현재 포인트: ${userPoints}`);
+            
+            await axios.post(
+                `http://localhost:8080/api/posts/${response.data.boardID}/thumbnail`,
+                { body },
+                { headers: { 'Content-Type': 'application/json' } } // JSON 형식 명시
+            );
 
+            console.log("board가 찍히나:", response.data.boardID);
             navigate(`/board/${response.data.boardID}`);
         } catch (error) {
             console.error(error);
@@ -196,7 +221,7 @@ export default function BoardWrite(props) {
 
 
     const countries = [
-        "대한한국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
+        "대한민국", "미국", "일본", "중국", "영국", "독일", "프랑스", "캐나다", "호주", "이탈리아",
         "뉴질랜드"
     ];
 
@@ -357,16 +382,29 @@ export default function BoardWrite(props) {
 
                     <S.ButtonWrapper>
                         <Link to={props.isEdit ? "#" : "/board"}>
+                            <Tooltip title={!isFormValid ? "모든 내용을 다 채워주세요" : ""}>
                             <S.SubmitButton
                                 onClick={props.isEdit ? onClickUpdate : onClickSubmit}
-                                isActive={title !== ""}
+                                disabled={!isFormValid}
+
                             >
                                 {props.isEdit ? "수정" : "저장"}
                             </S.SubmitButton>
+                            </Tooltip>
                         </Link>
                     </S.ButtonWrapper>
                 </S.Wrapper>
             </S.Container>
+
+            {/* 모달 컴포넌트 */}
+            <Modal
+                title="알림"
+                visible={isModalVisible}
+                onOk={handleModalClose}
+                onCancel={handleModalClose}
+            >
+                <p>{modalMessage}</p>
+            </Modal>
         </>
     );
 }

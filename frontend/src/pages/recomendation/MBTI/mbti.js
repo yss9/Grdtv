@@ -5,65 +5,131 @@ import React from 'react';
 import {
     Explain, Horizonalline, Mbti,
     MbtiContainer, MbtiSubTitle, MbtiTitle, MbtiTitleContainer,
-    WriteMbtiBtn, WriteMbtiBtnWrapper, Container, MbtiTitleWrapper,Wrapper
+    WriteMbtiBtn, WriteMbtiBtnWrapper, Container, MbtiTitleWrapper, Wrapper, Explain2, GlopleCharacterImg
 } from "./mbtistyle";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import {
-    Place,
-    PlaceContainer,
-    PlaceName1,
-    PlaceWrapper,
-    RefreshBtn,
-    SubTitle,
-    SubTitleWrapper
+    Place, PlaceContainer, PlaceName1, PlaceWrapper,
+    RefreshBtn, SubTitle, SubTitleWrapper
 } from "../Personal/personalstyle";
-import Osaka from '../../../public/Img/osaka.png'
-import Paris from '../../../public/Img/paris.png'
-import Sydney from '../../../public/Img/sydney.png'
-import Kyoto from "../../../public/Img/kyoto.png";
-import ApelTower from "../../../public/Img/apeltower.png";
-import ThaiMarket from "../../../public/Img/thaimarket.png";
-import Morein from "../../../public/Img/morein.png";
-import Bbatong from "../../../public/Img/bbatong.png";
-import Louis from "../../../public/Img/louis.png";
-import Apls from "../../../public/Img/alps.png";
+import GlopleCharacter from '../../../images/GlopleCharacter.png'
 
-const PlaceData = [
-    {placename:'오사카', image: Osaka},
-    {placename:'파리', image: Paris },
-    {placename:'호주', image: Sydney },
-    { placename: '도초지', image: Kyoto},
-    { placename: '에펠탑', image: ApelTower},
-    { placename: '수상시장', image: ThaiMarket},
-    { placename: '모레인 호수', image: Morein },
-    { placename: '빠통 비치', image: Bbatong },
-    { placename: '루이스 호수', image: Louis },
-    { placename: '알프스 산맥', image: Apls },
-];
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
+
+const mbtiRecommendations = {
+    ISTJ: ["워싱턴 D.C., 미국", "뮌헨, 독일", "교토, 일본", "암스테르담, 네덜란드", "취리히, 스위스", "에든버러, 스코틀랜드"],
+    ISFJ: ["파리, 프랑스", "토스카나, 이탈리아", "찰스턴, 미국", "프라하, 체코", "교토, 일본", "블레드 호수, 슬로베니아"],
+    INFJ: ["세도나, 미국", "산토리니, 그리스", "발리, 인도네시아", "레이캬비크, 아이슬란드", "교토, 일본", "부탄"],
+    INTJ: ["베를린, 독일", "싱가포르", "두바이, 아랍에미리트", "도쿄, 일본", "스톡홀름, 스웨덴", "바르셀로나, 스페인"],
+    ISTP: ["밴프 국립공원, 캐나다", "뉴질랜드", "알래스카, 미국", "아이슬란드", "스위스 알프스", "파타고니아, 아르헨티나"],
+    ISFP: ["아말피 해안, 이탈리아", "발리, 인도네시아", "바르셀로나, 스페인", "피렌체, 이탈리아", "마우이, 미국", "산토리니, 그리스"],
+    INFP: ["에든버러, 스코틀랜드", "애쉬빌, 미국", "프라하, 체코", "뉴올리언스, 미국", "키웨스트, 미국", "부탄"],
+    INTP: ["실리콘밸리, 미국", "캠브리지, 영국","암스테르담, 네덜란드", "베를린, 독일", "레이캬비크, 아이슬란드", "도쿄, 일본"],
+    ESTP: ["라스베이거스, 미국", "마이애미, 미국", "칸쿤, 멕시코", "시드니, 호주", "바르셀로나, 스페인", "리우데자네이루, 브라질"],
+    ESFP: ["이비사, 스페인", "칸쿤, 멕시코", "뉴올리언스, 미국", "발리, 인도네시아", "마이애미, 미국", "시드니, 호주"],
+    ENFP: ["내슈빌, 미국", "밴쿠버, 캐나다", "바르셀로나, 스페인", "레이캬비크, 아이슬란드", "암스테르담, 네덜란드", "시드니, 호주"],
+    ENFJ: ["교토, 일본", "워싱턴 D.C., 미국", "파리, 프랑스", "로마, 이탈리아", "바르셀로나, 스페인", "부에노스아이레스, 아르헨티나"],
+    ENTP: ["뉴욕, 미국", "베를린, 독일", "도쿄, 일본", "샌프란시스코, 미국", "오스틴, 미국", "런던, 영국"],
+    ESTJ: ["뉴욕, 미국", "런던, 영국", "워싱턴 D.C., 미국", "싱가포르", "프랑크푸르트, 독일", "시드니, 호주"],
+    ESFJ: ["피렌체, 이탈리아", "파리, 프랑스", "바르셀로나, 스페인", "내슈빌, 미국", "찰스턴, 미국", "몬트리올, 캐나다"],
+    ENTJ: ["런던, 영국", "두바이, 아랍에미리트", "싱가포르", "샌프란시스코, 미국", "뉴욕, 미국", "도쿄, 일본",],
+};
+
 
 export default function RecMbtiPage() {
-
     const navigate = useNavigate();
+    const [selectedDimensions, setSelectedDimensions] = useState({
+        E_I: "E",
+        N_S: "N",
+        T_F: "T",
+        J_P: "J"
+    });
     const [displayedPlaces, setDisplayedPlaces] = useState([]);
+    const [placeImages, setPlaceImages] = useState({});
+    const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
 
     useEffect(() => {
-        refreshPlaces();
+        loadGoogleMapsScript();
     }, []);
 
+    useEffect(() => {
+        if (isGoogleMapsLoaded) {
+            refreshPlaces();
+        }
+    }, [isGoogleMapsLoaded, selectedDimensions]);
+
+    const loadGoogleMapsScript = () => {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+        script.async = true;
+        script.onload = () => setIsGoogleMapsLoaded(true);
+        document.body.appendChild(script);
+    };
+
     const refreshPlaces = () => {
-        const shuffled = [...PlaceData].sort(() => 0.5 - Math.random());
+        const mbtiType = `${selectedDimensions.E_I}${selectedDimensions.N_S}${selectedDimensions.T_F}${selectedDimensions.J_P}`;
+        const places = mbtiRecommendations[mbtiType] || [];
+        const shuffled = [...places].sort(() => 0.5 - Math.random());
         setDisplayedPlaces(shuffled.slice(0, 3));
     };
 
-    const handleGoInformation = (placename) => {
-        navigate(`/recomendation/information/${placename}`); // URL에 선택된 장소 이름을 추가하여 전달
+    const fetchPlacePhoto = (placeName) => {
+        if (!isGoogleMapsLoaded) return;
+
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        const request = {
+            query: placeName,
+            fields: ['place_id', 'photos']
+        };
+
+        service.findPlaceFromQuery(request, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results[0]) {
+                const place = results[0];
+                if (place.photos && place.photos.length > 0) {
+                    const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
+                    setPlaceImages(prevState => ({
+                        ...prevState,
+                        [placeName]: photoUrl
+                    }));
+                }
+            } else {
+                console.error(`Could not fetch place photo for ${placeName}`);
+            }
+        });
     };
 
-    return(
+    useEffect(() => {
+        if (isGoogleMapsLoaded) {
+            displayedPlaces.forEach((place) => {
+                if (!placeImages[place]) {
+                    fetchPlacePhoto(place);
+                }
+            });
+        }
+    }, [displayedPlaces, isGoogleMapsLoaded]);
+
+    const handleGoInformation = (placename) => {
+        navigate(`/recomendation/information/${placename}`);
+    };
+
+    const toggleDimension = (dimension) => {
+        setSelectedDimensions(prevState => {
+            const currentValue = prevState[dimension];
+            return {
+                ...prevState,
+                [dimension]: currentValue === "E" ? "I" : currentValue === "I" ? "E" :
+                    currentValue === "N" ? "S" : currentValue === "S" ? "N" :
+                        currentValue === "T" ? "F" : currentValue === "F" ? "T" :
+                            currentValue === "J" ? "P" : "J"
+            };
+        });
+    };
+
+    return (
         <>
-            <Reset/>
-            <div style={{height: '55px'}}></div>
-            <TopBarComponent/>
+            <Reset />
+            <div style={{ height: '55px' }}></div>
+            <TopBarComponent />
             <Wrapper>
                 <Container>
                     <MbtiTitleContainer>
@@ -71,11 +137,11 @@ export default function RecMbtiPage() {
                             <MbtiTitle>MBTI 기반 추천</MbtiTitle>
                             <MbtiSubTitle>
                                 <p>나와 비슷한 성격의 소유자들은 어떤 여행지를 선호하고 있을까요?</p>
-                                <p>나의 MBTI와 나와 비슷한 성향의 사용자 데이터를 통해 맞춤형 여행 정보를 제공합니다. </p>
+                                <p>나의 MBTI와 나와 비슷한 성향의 사용자 데이터를 통해 맞춤형 여행 정보를 제공합니다.</p>
                             </MbtiSubTitle>
                             <WriteMbtiBtnWrapper>
                                 <WriteMbtiBtn>
-                                    <p>MBTI를 다시 작성해야 할까요?</p>
+                                    <p>MBTI 검사하기</p>
                                     <svg width="12" height="18" viewBox="0 0 12 18" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 1L10 9L1 17" stroke="white" stroke-width="2"/>
@@ -84,8 +150,15 @@ export default function RecMbtiPage() {
                             </WriteMbtiBtnWrapper>
                         </MbtiTitleWrapper>
                         <Horizonalline></Horizonalline>
+                        <Explain2>
+                            <GlopleCharacterImg src={GlopleCharacter}/>
+                            <p>MBTI를 클릭해보세요!</p>
+                        </Explain2>
                         <MbtiContainer>
-                            <Mbti>ISFP</Mbti>
+                            <Mbti onClick={() => toggleDimension("E_I")}>{selectedDimensions.E_I}</Mbti>
+                            <Mbti onClick={() => toggleDimension("N_S")}>{selectedDimensions.N_S}</Mbti>
+                            <Mbti onClick={() => toggleDimension("T_F")}>{selectedDimensions.T_F}</Mbti>
+                            <Mbti onClick={() => toggleDimension("J_P")}>{selectedDimensions.J_P}</Mbti>
                             <Explain>가 선호하는 여행지를 알려드릴게요.</Explain>
                         </MbtiContainer>
                         <SubTitleWrapper>
@@ -109,10 +182,13 @@ export default function RecMbtiPage() {
                         </SubTitleWrapper>
                         <PlaceContainer>
                             {displayedPlaces.map(place => (
-                                <PlaceWrapper key={place.placename}
-                                              onClick={() => handleGoInformation(place.placename)}>
-                                    <Place src={place.image}/>
-                                    <PlaceName1>{place.placename}</PlaceName1>
+                                <PlaceWrapper key={place} onClick={() => handleGoInformation(place)}>
+                                    {placeImages[place] ? (
+                                        <Place src={placeImages[place]} alt={place}/>
+                                    ) : (
+                                        <p>Loading image...</p>
+                                    )}
+                                    <PlaceName1>{place}</PlaceName1>
                                 </PlaceWrapper>
                             ))}
                         </PlaceContainer>

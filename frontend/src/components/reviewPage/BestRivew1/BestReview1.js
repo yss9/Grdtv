@@ -1,6 +1,8 @@
 // BestReview1.js
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from "react-router-dom";
+
 
 const ReviewContainer = styled.div`
   width: 32%;
@@ -13,7 +15,7 @@ const ReviewImg=styled.img`
   height: 100%;
   background-color: #4e53ed;
   border-radius: 15px;
-
+    object-fit: cover;
 `
 const InformContainer=styled.div`
   width: 100%;
@@ -72,9 +74,15 @@ const CommentIcon =styled.div`
   justify-content: center;
 `
 const BestReview1 = ({ review }) => {
+    const navigate = useNavigate();
+
+    const onClickMoveToBoardDetail = (id) => {
+        navigate(`/board/${id}`);
+    };
+
     return (
-        <ReviewContainer>
-            <ReviewImg src={review.image}/>
+        <ReviewContainer key={review.boardID} onClick={() => onClickMoveToBoardDetail(review.boardID)}>
+            <ReviewImg src={review.thumbnail}/>
             <InformContainer>
                 <Inform>
                     <Title>{review.title}</Title>
@@ -86,7 +94,7 @@ const BestReview1 = ({ review }) => {
                                     <path d="M6.5 13L5.5575 12.0649C2.21 8.7564 0 6.5673 0 3.89646C0 1.70736 1.573 0 3.575 0C4.706 0 5.7915 0.573842 6.5 1.47357C7.2085 0.573842 8.294 0 9.425 0C11.427 0 13 1.70736 13 3.89646C13 6.5673 10.79 8.7564 7.4425 12.0649L6.5 13Z" fill="white"/>
                                 </svg>
                             </LikeIcon>
-                            공감+999</Like>
+                            공감 {review.likesCount} </Like>
                         <Comment>
                             <CommentIcon>
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">

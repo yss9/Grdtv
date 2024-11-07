@@ -15,7 +15,7 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int age;
+    private String age;
 
     private String gender;
 

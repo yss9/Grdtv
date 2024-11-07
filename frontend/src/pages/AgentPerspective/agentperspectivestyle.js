@@ -2,19 +2,18 @@ import styled  from "@emotion/styled";
 
 export const Container=styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
 `
 export const Wrapper = styled.div`
     width: 1500px;
-    height: 1900px;
-    //background-color: lightcyan;
+    height: 84vh;
 `
 export const SubTitleWrapper=styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 10px;
 `
 export const SubTitle=styled.div`
     text-align: center;
@@ -33,8 +32,8 @@ export const SubTitle2=styled.div`
     font-size: 22px;
     color: #515151;
     font-family: "Regular";
+    margin-top: 25px;
     font-weight: bold;
-    margin-top: 3rem;
     display: flex;
     justify-content: center;
 
@@ -126,7 +125,7 @@ export const AgentContainer=styled.div`
 
 export const Agents=styled.div`
     width: 57%;
-    height: 32rem;
+    height: 200px;
     //background-color: gray;
     display: flex;
     justify-content: center;

@@ -38,8 +38,17 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
     implementation 'org.springframework.boot:spring-boot-devtools'
 
+<<<<<<< HEAD
     implementation 'com.google.cloud:google-cloud-speech:4.13.0'
     implementation 'org.jboss.logging:jboss-logging:3.4.2.Final'
+=======
+    implementation 'com.google.cloud:google-cloud-speech:1.28.0'
+    implementation 'org.jboss.logging:jboss-logging:3.4.2.Final'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+
+>>>>>>> 8f85783ea0179a11b2a1337cfc8941e80178bb52
 }
 
 tasks.named('test') {

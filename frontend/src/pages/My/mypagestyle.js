@@ -1,5 +1,21 @@
 import styled  from "@emotion/styled";
 
+export const Wrapper=styled.div`
+  max-height: 84vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 8px; 
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+  }
+`
 export const MyProfileContainer=styled.div`
     height: 24em;
  // background-color: palegoldenrod;
@@ -35,8 +51,8 @@ export const IntroduceWrapper=styled.div`
   margin-top: 20px;
 `
 export const Mbti=styled.div`
-    width: 10em;
-  height: 2em;
+    width: 80px;
+  height: 30px;
   background-color: black;
   display: flex;
   color: white;
@@ -58,8 +74,7 @@ export const SettingWrapper=styled.div`
   align-items: center;
 `
 export const SettingContainer=styled.div`
-    //background-color: #61dafb;
-  width: 33%;
+  width: 500px;
   display: flex;
   justify-content: space-between;
 `

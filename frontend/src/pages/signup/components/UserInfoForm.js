@@ -69,7 +69,6 @@ const UserInfoForm = ({
                     <FormLabel htmlFor="Birthday">생년월일</FormLabel>
                     <SubComment>{birthdayError && <ErrorMessage>{birthdayError}</ErrorMessage>}
                         ex)20020331</SubComment>
-
                 </FormGroup>
                 <FormGroup>
                     <InputText>Gender</InputText>

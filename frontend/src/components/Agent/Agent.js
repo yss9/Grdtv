@@ -264,7 +264,7 @@ const Agent = ({ review, pageType }) => {
                                     <GoChatBtn>
                                         <p>채팅하기</p>
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clip-path="url(#clip0_746_1335)">
+                                            <g clipPath="url(#clip0_746_1335)">
                                                 <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="white"/>
                                             </g>
                                             <defs>
@@ -297,7 +297,7 @@ const Agent = ({ review, pageType }) => {
                                 <SeeAllBtn>
                                     <p style={{fontFamily: "SubTitle", marginBottom:"10px"}}>전체보기</p>
                                     <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" stroke-width="2"/>
+                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
                                     </svg>
                                 </SeeAllBtn>
                             </SubWrapper>

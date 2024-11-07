@@ -10,6 +10,7 @@ import proj.travien.repository.PostRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeService {
@@ -42,6 +43,31 @@ public class LikeService {
 
     public boolean isPostLikedByUser(Long boardID, Long id) {
         return likeRepository.existsByPostBoardIDAndUserId(boardID, id);
+    }
+
+    public List<Post> getTop3BestPosts() {
+        return postRepository.findTop3ByOrderByLikesCountDesc();
+    }
+
+    public List<Post> getTopBestPosts() {
+        // 좋아요 수가 0보다 큰 게시물만 가져옴, 좋아요 수 동일할 경우 boardID로 정렬
+        List<Post> posts = postRepository.findAllByLikesAndBoardID();
+
+        // 게시물이 3개 미만일 경우 있는 만큼만 반환
+        if (posts.size() <= 9) {
+            return posts;
+        }
+
+        // 상위 3개의 게시물만 반환
+        return posts.subList(0, 9);
+    }
+
+    public List<Post> getLikedPostsByUser(Long id) {
+        // 해당 유저가 좋아요한 Like 엔티티 목록을 가져오고, 각 엔티티의 Post 객체를 추출
+        List<Like> likes = likeRepository.findByUserId(id);
+        return likes.stream()
+                .map(Like::getPost)
+                .collect(Collectors.toList());
     }
 
 

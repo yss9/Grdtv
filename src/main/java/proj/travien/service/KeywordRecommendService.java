@@ -22,6 +22,7 @@ public class KeywordRecommendService {
                         countMatchingKeywords(e2.getInfo(), keywords),
                         countMatchingKeywords(e1.getInfo(), keywords)))
                 .map(this::convertToDTO)
+                .limit(21)
                 .collect(Collectors.toList());
     }
 
@@ -37,6 +38,8 @@ public class KeywordRecommendService {
         KeywordResultDTO dto = new KeywordResultDTO();
         dto.setId(entity.getId());
         dto.setDestName(entity.getDestName());
+        dto.setCountry(entity.getCountry());
+        dto.setLocation(entity.getLocation());
         dto.setInfo(entity.getInfo());
         return dto;
     }

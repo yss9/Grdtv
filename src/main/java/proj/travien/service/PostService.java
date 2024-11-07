@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
 @Service
 public class PostService {
 
@@ -35,8 +36,6 @@ public class PostService {
 
     @Transactional
     public void writePost(Post post) { // title, body, address
-        post.setCount(0);
-       // post.setUser(user); user 가져오기
         postRepository.save(post);
     }
 
@@ -258,30 +257,31 @@ public class PostService {
      * body에서 썸네일을 추출하는 메서드
      */
 
-    private String extractThumbnail(String body) {
-        // 정규식을 사용하여 첫 번째 <img> 태그에서 src 속성을 추출
-        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
-        Matcher matcher = pattern.matcher(body);
-        if (matcher.find()) {
-            return matcher.group(1);  // 첫 번째 src URL 반환
+    public void saveThumbnail(Long boardID, String body) {
+        Post post = postRepository.findById(boardID)
+                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+
+        // 본문(body) 내 첫 번째 <img> 태그의 src 속성 추출
+        String thumbnailUrl = extractFirstImageUrl(body);
+
+        if (thumbnailUrl == null) {
+            // 이미지가 없을 경우 기본 이미지 경로 설정
+            thumbnailUrl = "/image/no_image.png";
         }
-        return null;  // 이미지가 없을 경우 null 반환
+
+        post.setThumbnail(thumbnailUrl);
+        postRepository.save(post);
     }
 
-    @Transactional
-    public void saveThumbnail(Long boardID) {
-        // 해당 boardID로 Post 엔티티 조회
-        Post post = postRepository.findById(boardID)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다: " + boardID));
+    private String extractFirstImageUrl(String body) {
+        // <img> 태그의 src 속성 추출 정규표현식
+        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(body);
 
-        // body에서 썸네일 추출
-        String thumbnail = extractThumbnail(post.getBody());
-
-        // 추출한 썸네일을 Post 엔티티에 저장
-        post.setThumbnail(thumbnail != null ? thumbnail : "이미지 없음");
-
-        // 변경된 Post 엔티티 저장
-        postRepository.save(post);
+        if (matcher.find()) {
+            return matcher.group(1); // 첫 번째 이미지 URL 반환
+        }
+        return null; // 이미지가 없을 경우 null 반환
     }
 
     /**
@@ -297,11 +297,20 @@ public class PostService {
         return post.getThumbnail();
     }
 
+    /**
+     * 나라별 게시물 가져오기
+     */
+    @Transactional(readOnly = true)
+    public List<Post> getPostsByCountry(String country) {
+        return postRepository.findByCountry(country);
+    }
+
+
     public Post updatePost(Long id, Post updatedPost) {
         return postRepository.findById(id)
                 .map(post -> {
                     post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses(),
-                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti());
+                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti(), updatedPost.getProfilePicture());
                     return postRepository.save(post);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
@@ -309,6 +318,38 @@ public class PostService {
 
     public void deletePost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    /**
+     * 검색
+     */
+    @Transactional(readOnly = true)
+    public List<Post> searchPosts(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Collections.emptyList();  // 빈 문자열일 경우 빈 리스트 반환
+        }
+        return postRepository.findByKeyword(keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Post> getPostsByUser(String nickname) {
+        return postRepository.findByNickname(nickname);
+    }
+
+
+    /**
+     * title과 boardID만 존재하는 목록
+     */
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getTitleAndBoardIDList() {
+        return postRepository.findAll().stream()
+                .map(post -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("title", post.getTitle());
+                    map.put("boardID", post.getBoardID());
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 
 

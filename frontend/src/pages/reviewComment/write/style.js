@@ -1,59 +1,77 @@
 import styled from "@emotion/styled";
 
-export const Wrapper = styled.div`
-  width: 1200px;
-  margin-left: 1800px;
-  margin-top: 50px;
+export const CommentWrapper = styled.div`
+  width: 100%;
+  max-width: 1000px;  /* Adjusted for better visibility */
+  margin: 40px auto;  /* Centering the comment box */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
 `;
 
-export const PencilIcon = styled.img``;
+export const CommentTitle = styled.h3`
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+`;
 
 export const InputWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  margin-top: 40px;
-  margin-bottom: 20px;
-`;
-
-export const ContentsWrapper = styled.div`
-  border: 1px solid lightgray;
+  gap: 15px;  /* Added spacing between inputs */
+  margin-bottom: 15px;
 `;
 
 export const Input = styled.input`
-  width: 180px;
-  height: 52px;
-  padding-left: 20px;
-  border: 1px solid lightgray;
-  margin-right: 20px;
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+`;
+
+export const ContentsWrapper = styled.div`
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 10px;
+  background-color: white;
 `;
 
 export const Contents = styled.textarea`
   width: 100%;
-  min-height: 108px;
-  padding: 20px;
+  height: 120px;
   border: none;
-  border-bottom: 1px solid lightgray;
+  resize: none;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 `;
 
 export const BottomWrapper = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 `;
 
 export const ContentsLength = styled.div`
-  width: 100%;
-  height: 51px;
-  line-height: 51px;
-  padding-left: 20px;
   color: gray;
+  font-size: 12px;
 `;
 
 export const Button = styled.button`
-  width: 91px;
-  height: 51px;
-  background-color: black;
-  color: white;
+  padding: 10px 20px;
+  background-color: #4E53EE;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #555;
+  }
 `;

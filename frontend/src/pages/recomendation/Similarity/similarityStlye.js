@@ -19,7 +19,7 @@ export const Container = styled.div`
 
 `
 export const Wrapper = styled.div`
-    height: 1250px;
+    height: 1900px;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -80,7 +80,7 @@ export const RecentContainer=styled.div`
 
 export const Top=styled.div`
     width: 93%;
-    height: 80px;
+    height: 60px;
     //background-color: beige;
     display: flex;
     justify-content: space-between;
@@ -89,9 +89,9 @@ export const Top=styled.div`
 export const Left=styled.div`
     display: flex;    
     align-items: center;
-    margin-top: 10px;
 `
 export const Left3=styled.div`
+    width: 35%;
     display: flex;    
     flex-direction: column;
 `
@@ -103,8 +103,8 @@ export const ProfileWrapper=styled.div`
 export const Profile=styled.img`
     width: 60px;
     height: 60px;
-    background-color: black;
-    border-radius: 50%;
+    background-color: transparent;
+    
 `
 
 export const User=styled.div`
@@ -142,6 +142,7 @@ export const SaveBtn=styled.button`
     font-family: Regular;
     border-radius: 30px;
     font-size: 17px;
+    cursor: pointer;
 `
 
 export const Body=styled.div`
@@ -217,6 +218,11 @@ export const Triangle=styled.div`
     border-left: 15px solid #5f5f5f;
     margin-bottom: 20px;
 `
+export const Triangle2=styled.div`
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #5f5f5f;
+`
 export const Place=styled.img`
     width: 110px;
     height: 110px;
@@ -231,10 +237,11 @@ export const PlaceName=styled.div`
     font-size: 17px;
 `
 
-export const Map=styled.img`
+export const Mapp=styled.img`
     width: 220px;
     height: 220px;
     background-color: pink;
+    object-fit: cover;
 `
 
 export const Country=styled.div`
@@ -250,4 +257,15 @@ export const Country=styled.div`
 export const RightArrow=styled.div`
     margin-right: 30px;
 
+`
+export const SavedRoute=styled.div`
+    width: 65%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-family: Regular;
+    p{
+        margin: 7px;
+        font-size: 17px;
+    }
 `

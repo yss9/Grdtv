@@ -4,6 +4,7 @@ import LoginPage from './pages/login/loginPage';
 import ReservationPage from './pages/reservation/reservation'
 import AdminPage from './pages/admin/admin'
 import SignupPage from './pages/signup/signupPage';
+import GloplerSetPage from './pages/gloplerset/gloplesetPage';
 import ChatPage from './pages/chat/chatPage';
 import MainPage from './pages/Main/main'
 import Write from "./pages/review/write/write";
@@ -26,10 +27,9 @@ import AgentPerspective from "./pages/AgentPerspective/agentperspective"
 import RecommendationCosine from "./pages/recomendation/MBTI/cosine";
 import Test from "./pages/test/test"
 import AgentDetail from './pages/agentDetail/agentDetail'
-import BoardCommentList from "./pages/reviewComment/list/list";
-import BoardCommentWrite from "./pages/reviewComment/write/write";
 import Similarity from './pages/recomendation/Similarity/similarity'
 import MBTItest from "./pages/MBTItest/MBTItestPage";
+import SearchResult from "./pages/review/search-results"
 
 function App() {
     return (
@@ -43,8 +43,6 @@ function App() {
                 <Route path="/review/listbymks" element={<ListByMKS />}/>
                 <Route path="/review/writeTest" element={<WriteTest />}/>
                 <Route path="/board/:boardID" element={<BoardDetail />} />
-                <Route path="/board/:boardID" element={<BoardCommentWrite />} />
-                <Route path="/board/:boardID" element={<BoardCommentList />} />
                 <Route path="/board/:boardID/edit" element={<BoardWrite isEdit = {true}/>} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
@@ -66,6 +64,9 @@ function App() {
                 <Route path="/test" element={<Test/>}/>
                 <Route path="/agentdetail" element={<AgentDetail/>}/>
                 <Route path="/mbtiTest" element={<MBTItest/>}/>
+                <Route path="/review/list" element={<BoardList/>}/>
+                <Route path="/search-results" element={<SearchResult/>}/>
+                <Route path="/RegisterAgent" element={<GloplerSetPage/>}/>
             </Routes>
         </BrowserRouter>
     );

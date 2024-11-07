@@ -106,23 +106,20 @@ const Wrapper=styled.div`
 
 
 const keywordsList = [
-    '역사', '건축', '문화', '백사장', '불꽃놀이',
-    '산', '등산', '경치', '사찰', '중요성',
-    '아름다움', '공원', '사계절', '한옥', '음식',
-    '해안', '놀이공원', '레포츠', '해변', '활동',
-    '야경', '쇼핑', '게이트', '산책로', '번화가',
-    '네온사인', '축제', '정원', '평화', '성벽',
-    '요새', '산책', '조각상', '현대', '도시',
-    '판다', '파노라마', '고딕', '가치', '전망',
-    '바다', '와인', '극장', '로마', '공학',
-    '운하', '성당', '양식', '고대', '고고학',
-    '조명', '엔터테인먼트', '영화', '사인', '건축물',
-    '상징', '카지노', '리조트', '조각품', '녹지',
-    '전망대', '거리', '세계유산', '지구', '폭포',
-    '공연', '예술', '바위', '랜드마크', '산호초',
-    '다이빙', '와이너리', '동상', '탐험', '호수',
-    '휴식', '레크'
+    "해안", "수영", "조각", "사원", "문화", "역사", "건축", "산", "등산", "호수",
+    "폭포", "사막", "박물관", "미술관", "자연", "경치", "도시", "해변", "섬",
+    "온천", "다이빙", "트레킹", "동물", "사파리", "야경", "시장", "열기구",
+    "불교", "기차", "성당", "성", "원숭이", "온천욕", "탐험", "보트", "운하",
+    "와인", "카누", "바다", "스노클링", "다문화", "협곡", "지열", "동굴",
+    "사찰", "모스크", "탑", "성벽", "화산", "빙하", "설산", "캠핑", "하이킹",
+    "스포츠", "레크리에이션", "축제", "음식", "전통", "공연", "예술", "유적",
+    "랜드마크", "식물원", "미로", "정원", "유네스코", "해양", "아치",
+    "호랑이", "철새", "낙타", "열대우림", "바위", "서핑", "산호", "빙벽",
+    "하늘", "설경", "강", "대성당", "불상", "기념물", "전망대", "국립공원",
+    "야생동물", "보트 투어", "역사적인 장소", "하이킹 코스", "전통 마을",
+    "고대 유적", "야외 활동", "휴양지", "역사적 건축", "철도 여행"
 ];
+
 
 
 const KeywordSelection = () => {
@@ -130,6 +127,7 @@ const KeywordSelection = () => {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [page, setPage] = useState(0);
     const [results, setResults] = useState([]);
+    const [navigated, setNavigated] = useState(false); // 새로운 상태 추가
 
     const toggleKeyword = (keyword) => {
         setSelectedKeywords(prev =>
@@ -147,32 +145,33 @@ const KeywordSelection = () => {
         setPage(page - 1);
     };
 
-
     const completeSelection = async () => {
+        if (navigated) return; // 이미 이동한 경우 중복 방지
+        setNavigated(true); // 플래그를 true로 설정하여 추가 이동 방지
+
         try {
             const response = await axios.post('/api/search', {
                 keywords: selectedKeywords
             });
             setResults(response.data);
-            alert('선택이 완료되었습니다.');
             navigate('/recomendation/personal', { state: { triggerButtonClick: true, results: response.data } });
         } catch (error) {
-            console.error("Error during search:", error);
+            console.error("검색 중 오류:", error);
             alert('검색 중 오류가 발생했습니다.');
+            setNavigated(false); // 오류 발생 시 플래그 리셋
         }
     };
-
 
     const displayedKeywords = keywordsList.slice(page * 20, (page + 1) * 20);
 
     return (
         <>
-            <Reset/>
+            <Reset />
             <Wrapper>
-                <Background/>
+                <Background />
                 <Container>
-                    <div style={{height: '55px'}}></div>
-                    <TopBarComponent/>
+                    <div style={{ height: '55px' }}></div>
+                    <TopBarComponent />
                     <Header>여행 키워드를 선정해 주세요.</Header>
                     <Ptag>자신의 취향에 맞는 키워드를 고른 후, 맞춤형 추천을 제공해 줄게요.</Ptag>
                     <KeywordsContainer>
@@ -192,12 +191,11 @@ const KeywordSelection = () => {
                             <NavButton onClick={nextPage}>다음</NavButton>
                         )}
                         {page === Math.floor(keywordsList.length / 20) && (
-                            <NavButton onClick={completeSelection}>완료</NavButton>
+                            <NavButton onClick={completeSelection} disabled={navigated}>완료</NavButton>
                         )}
                     </ButtonContainer>
                 </Container>
             </Wrapper>
-
         </>
     );
 };

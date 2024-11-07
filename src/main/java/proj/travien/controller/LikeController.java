@@ -60,14 +60,41 @@ public class LikeController {
         Post post = postRepository.findById(boardID)
                 .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
 
-        // 좋아요 수 반환
-        int likesCount = post.getLikesCount();
+        // 좋아요 수가 null인 경우 0을 반환
+        int likesCount = post.getLikesCount() != null ? post.getLikesCount() : 0;
 
         // 응답 데이터 준비
         Map<String, Object> response = new HashMap<>();
         response.put("likesCount", likesCount);  // 좋아요 수
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/best-reviews")
+    public ResponseEntity<?> getBestReviews() {
+        // 좋아요가 많은 게시물 상위 9개를 가져옴
+        List<Post> bestPosts = likeService.getTopBestPosts();
+
+        if (bestPosts.isEmpty()) {
+            // 좋아요가 0인 게시물만 있는 경우 빈 응답
+            return ResponseEntity.ok("No posts with likes.");
+        }
+
+        // 응답 데이터 준비
+        Map<String, Object> response = new HashMap<>();
+        response.put("bestPosts", bestPosts);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 특정 사용자가 좋아요한 게시물 목록 조회
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Post>> getLikedPostsByUser(@PathVariable Long id) {
+        List<Post> likedPosts = likeService.getLikedPostsByUser(id);
+        if (likedPosts.isEmpty()) {
+            return ResponseEntity.noContent().build();  // 좋아요한 게시물이 없을 경우 204 응답
+        }
+        return ResponseEntity.ok(likedPosts);  // 좋아요한 게시물 목록 반환
     }
 
 }

@@ -177,6 +177,10 @@ const Blog1 = ({ review }) => {
                     <BPic src={review.blogImg}></BPic>
                 </BPicWrapper>
             </BlogContainer>
+
+
+
+
         </>
     );
 };

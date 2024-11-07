@@ -18,6 +18,9 @@ const Tab = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+    &:hover {
+        background-color: #f0f0f0;
+    }
 `;
 
 const ReviewWrapper = styled.div`

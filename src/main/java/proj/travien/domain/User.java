@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +37,11 @@ public class User {
     @ElementCollection
     private List<String> hashtags;
 
-    private String specIntroduction;
+    @ElementCollection
+    private List<String> specIntroduction;
     private double averageReviewRating;
+
+    private String statusMessage = "아직 설정되지 않음";
 
     // 단일 역할 관리 (Enum 타입)
     @Enumerated(EnumType.STRING)
@@ -53,8 +57,10 @@ public class User {
         this.id = id;
     }
 
-
-
+    // 예약대행자 승인 시점을 기록할 필드
+    @Getter
+    @Setter
+    private LocalDateTime agentApprovedDate;
 }
 
 
