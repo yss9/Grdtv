@@ -146,19 +146,29 @@ const KeywordSelection = () => {
     };
 
     const completeSelection = async () => {
-        if (navigated) return; // 이미 이동한 경우 중복 방지
-        setNavigated(true); // 플래그를 true로 설정하여 추가 이동 방지
+        if (navigated) return;
+        setNavigated(true);
 
         try {
             const response = await axios.post('/api/search', {
                 keywords: selectedKeywords
             });
-            setResults(response.data);
-            navigate('/recomendation/personal', { state: { triggerButtonClick: true, results: response.data } });
+
+            const randomKeywords = selectedKeywords
+                .sort(() => Math.random() - Math.random())
+                .slice(0, 3)
+                .map(keyword => ({ keyword: `#${keyword}` }));
+
+            navigate('/recomendation/personal', {
+                state: {
+                    triggerButtonClick: true,
+                    results: response.data,
+                    KeywordData: randomKeywords,
+                }
+            });
         } catch (error) {
             console.error("검색 중 오류:", error);
-            alert('검색 중 오류가 발생했습니다.');
-            setNavigated(false); // 오류 발생 시 플래그 리셋
+            setNavigated(false);
         }
     };
 

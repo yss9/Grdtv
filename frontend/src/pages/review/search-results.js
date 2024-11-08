@@ -24,7 +24,7 @@ import {Magnifier, Pin, Search, SearchBarContainer, SearchBarWrapper} from "./re
      &::-webkit-scrollbar-track {
          background-color: #f0f0f0; /* Background color of the scrollbar track */
      }
-    //background-color: pink;
+    //background-color: pink
 `
 const LetKnow=styled.div`
     margin-top: 20px;
@@ -233,8 +233,8 @@ const SearchResults = () => {
     useEffect(() => {
         if (searchResults.length > 0) {
             searchResults.forEach((post) => {
-                fetchLikes(post.boardID); // 각 게시글에 대해 좋아요 수 가져오기
-                fetchComments(post.boardID); // 각 게시글에 대해 댓글 수 가져오기
+                fetchLikes(post.boardID);
+                fetchComments(post.boardID);
             });
         }
     }, [searchResults]);

@@ -30,6 +30,7 @@ import AgentDetail from './pages/agentDetail/agentDetail'
 import Similarity from './pages/recomendation/Similarity/similarity'
 import MBTItest from "./pages/MBTItest/MBTItestPage";
 import SearchResult from "./pages/review/search-results"
+import SearchResultforGlopler from "./pages/reservation/search-results"
 
 function App() {
     return (
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/mbtiTest" element={<MBTItest/>}/>
                 <Route path="/review/list" element={<BoardList/>}/>
                 <Route path="/search-results" element={<SearchResult/>}/>
+                <Route path="/search-resultsforglopler" element={<SearchResultforGlopler/>}/>
                 <Route path="/RegisterAgent" element={<GloplerSetPage/>}/>
             </Routes>
         </BrowserRouter>

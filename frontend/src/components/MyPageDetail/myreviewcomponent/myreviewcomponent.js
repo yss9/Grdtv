@@ -35,6 +35,7 @@ const Title = styled.div`
     background: rgba(0, 0, 0, 0.5);
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    
 `;
 
 const Date = styled.div`

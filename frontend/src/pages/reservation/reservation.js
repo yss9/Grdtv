@@ -15,6 +15,7 @@ import Agent2 from "../../components/Agent/Agent2";
 import Agent3 from "../../components/Agent/Agent3";
 import TopBarComponent from "../../components/TopBar/TopBar";
 import Profile from '../../images/도라에몽.jpeg';
+import { useNavigate } from "react-router-dom";
 
 const processProfilePicture = (profilePicture) => {
     if (profilePicture) {
@@ -34,6 +35,8 @@ export default function ReservationPage() {
     const [agent2Data, setAgent2Data] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCountry, setSelectedCountry] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");  // State to hold search input value
+    const navigate = useNavigate();  // Use useNavigate instead of useHistory
 
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
@@ -86,6 +89,17 @@ export default function ReservationPage() {
         setSelectedCountry(event.target.value);
     };
 
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleSearchClick = () => {
+        if (searchQuery) {
+            // Navigate to search results page with query
+            navigate(`/search-resultsforglopler?hashtag=${encodeURIComponent(searchQuery)}`);
+        }
+    };
+
     return (
         <>
             <Reset />
@@ -113,8 +127,12 @@ export default function ReservationPage() {
                             </svg>
                         </Icon>
                         <SearchBarContainer>
-                            <Search placeholder="여행 관련 키워드를 검색해보세요."/>
-                            <Magnifier>
+                            <Search
+                                placeholder="여행 관련 키워드를 검색해보세요."
+                                value={searchQuery}
+                                onChange={handleSearchInputChange}
+                            />
+                            <Magnifier onClick={handleSearchClick}>
                                 <svg width="27" height="27" viewBox="0 0 27 27" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <path
