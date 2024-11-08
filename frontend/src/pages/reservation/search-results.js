@@ -60,19 +60,16 @@ export default function SearchResultsPage() {
         }
     }, [hashtag]);
 
-    // Update search query as the user types
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
 
-    // Handle pressing Enter in the search field
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
             handleSearchSubmit();
         }
     };
 
-    // Handle clicking the search button or pressing Enter
     const handleSearchSubmit = () => {
         if (searchQuery.trim()) {
             // Navigate to the same page with the new search query as a URL parameter

@@ -84,7 +84,6 @@ export const Magnifier=styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: pink;
 `
 export const SubTitle2=styled.div`
     width: 85%;

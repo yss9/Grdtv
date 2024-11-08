@@ -6,7 +6,7 @@ const BlogContainer=styled.div`
   //width: 30%;
   height: 30rem;
   background-color: white;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* x-offset, y-offset, blur-radius, color */
   border-radius: 15px;
   display: flex;
   justify-content: space-between;
@@ -39,6 +39,7 @@ const PImg=styled.img`
   height: 120px;
   border-radius: 50%;
   background-color: #7d7d7d;
+    object-fit: cover;
 `;
 const PContainer=styled.div`
     display: flex;
@@ -218,11 +219,7 @@ const ReviewContent=styled.div`
   color: #515151;
   line-height: 1.5;
 `
-const ReviewPhoto=styled.img`
-    width: 5rem;
-  height: 5rem;
-  background-color: #5F5F5F;
-`
+
 
 const Agent = ({ review, pageType }) => {
 
@@ -246,7 +243,7 @@ const Agent = ({ review, pageType }) => {
                                     <Heart onClick={toggleHeart}>
                                         {isHeartFilled ? (
                                             <svg width="38" height="38" viewBox="-3.3 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#5F6368"/>
+                                                <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#ff0000"/>
                                             </svg>
                                         ) : (
                                             <svg width="38" height="38" viewBox="0 8 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -314,7 +311,6 @@ const Agent = ({ review, pageType }) => {
                                     </UserStar>
                                     <ReviewContent>{review.agentreview}</ReviewContent>
                                 </ReviewDetail>
-                                <ReviewPhoto src={review.reviewImg}></ReviewPhoto>
                             </UserReview>
                         </ReviewWrapper>
                     </Content>

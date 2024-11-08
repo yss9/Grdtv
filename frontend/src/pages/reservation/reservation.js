@@ -100,6 +100,12 @@ export default function ReservationPage() {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            handleSearchClick();
+        }
+    };
+
     return (
         <>
             <Reset />
@@ -129,6 +135,7 @@ export default function ReservationPage() {
                         <SearchBarContainer>
                             <Search
                                 placeholder="여행 관련 키워드를 검색해보세요."
+                                onKeyPress={handleKeyPress}
                                 value={searchQuery}
                                 onChange={handleSearchInputChange}
                             />

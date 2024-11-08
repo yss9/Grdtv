@@ -1,8 +1,7 @@
+import React, { useState, useEffect } from "react";
 import { Reset } from "styled-reset";
-import IamAgent from "../../components/Agent/AgentPerspective/IamAgent"
-import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
-
-import Maratang from "../../public/Img/maratang.png"
+import IamAgent from "../../components/Agent/AgentPerspective/IamAgent";
+import IamAgent2 from "../../components/Agent/AgentPerspective/IamAgent2";
 import {
     SubTitleWrapper,
     SubTitle2,
@@ -10,40 +9,83 @@ import {
     Agents,
     Container,
     Wrapper,
-} from './agentperspectivestyle'
-import React, { useState } from "react";
+} from './agentperspectivestyle';
 import TopBarComponent from "../../components/TopBar/TopBar";
+import MyProfile2 from '../../images/도라에몽.jpeg';
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
-const AgentData = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.', reviewImg:Maratang },
-];
+const getAuthToken = () => {
+    return Cookies.get('jwt');
+};
 
+const processProfilePicture = (profilePicture) => {
+    if (profilePicture) {
+        return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+    } else {
+        return MyProfile2;
+    }
+};
 
 export default function ReservationPage() {
+    const [agentData, setAgentData] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const token = getAuthToken();
 
-    const [selectedCountry, setSelectedCountry] = useState("");
+    // fetchUserData 함수 생성
+    const fetchUserData = () => {
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
 
-    const handleCountryChange = (event) => {
-        setSelectedCountry(event.target.value);
+        fetch(`http://localhost:8080/api/users/my-info?userId=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                const formattedData = {
+                    author: data.nickname || '익명 사용자',
+                    introduce: data.agentDetails?.introduction || '자기소개가 없습니다.',
+                    hashtags: data.agentDetails?.hashtags || ['#정보없음'],
+                    spec: data.agentDetails?.specIntroduction || ['경력이 없습니다.'],
+                    image: processProfilePicture(data.agentDetails?.profilePicture),
+                    score: data.agentDetails?.averageReviewRating?.toFixed(1) || '0.0',
+                    number: data.agentDetails?.reviewCount || '0',
+                    agentreview: data.agentDetails?.latestReview || '리뷰가 없습니다.',
+                };
+                setAgentData(formattedData);
+            })
+            .catch(error => console.error("Error fetching user data:", error));
     };
 
-    const name = AgentData[0];
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    const openModal = () => setIsEditing(true);
+    const closeModal = () => {
+        setIsEditing(false); // 모달을 닫음
+        fetchUserData(); // 최신 데이터로 프로필 갱신
+    };
 
     return (
         <>
             <Reset />
             <Container>
-                <div style={{height: '55px'}}></div>
-                <TopBarComponent/>
+                <div style={{ height: '55px' }}></div>
+                <TopBarComponent />
                 <Wrapper>
                     <SubTitleWrapper>
-                        <SubTitle2>많은 여행자들에게 <p>{name.author}</p> 님의 프로필이 보여지고 있어요.</SubTitle2>
+                        {agentData && (
+                            <SubTitle2>
+                                <p>{agentData.author}</p> 님의 프로필이 보여지고 있어요.
+                            </SubTitle2>
+                        )}
                     </SubTitleWrapper>
                     <AgentContainer>
                         <Agents>
-                            {AgentData.map((review, index) => (
-                                <IamAgent key={index} review={review}/>
-                            ))}
+                            {agentData && (
+                                isEditing
+                                    ? <IamAgent2 key={agentData.author} review={agentData} closeModal={closeModal} />
+                                    : <IamAgent key={agentData.author} review={agentData} openModal={openModal} />
+                            )}
                         </Agents>
                     </AgentContainer>
                 </Wrapper>
