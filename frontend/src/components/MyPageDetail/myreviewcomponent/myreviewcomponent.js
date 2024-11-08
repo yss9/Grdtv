@@ -47,12 +47,12 @@ const Date = styled.div`
     border-radius: 0.5rem;
 `;
 
-function MyReviewComponent({ title, image, date }) {
+function MyReviewComponent({ title, thumbnail, date }) {
     const formattedDate = date ? date.split('T')[0] : 'No date available';
 
     return (
         <Container>
-            <Thumbnail />
+            <Thumbnail src={thumbnail}/>
             <Title>{title}</Title>
             <Date>{formattedDate}</Date>
         </Container>
@@ -88,6 +88,7 @@ export default function MyReviews() {
                     key={review.boardID}
                     title={review.title}
                     date={review.createDate}
+                    thumbnail={review.thumbnail}
                 />
             ))}
         </Wrapper>

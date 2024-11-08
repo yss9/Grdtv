@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
-import Thumnail from "../../../public/Img/forprofile/img.png";
 
 const Wrapper = styled.div`
     display: grid;
@@ -30,7 +29,7 @@ const Thumbnail = styled.img`
 function MyReviewComponent({ title, image, date }) {
     return (
         <Container>
-            <Thumbnail src={image || Thumnail} />
+            <Thumbnail src={image} />
         </Container>
     );
 }
@@ -71,7 +70,7 @@ export default function Mytagcomponent() {
                 <MyReviewComponent
                     key={review.boardID}
                     title={review.title}
-                    image={review.imageUrl || review.thumbnail}
+                    image={review.thumbnail}
                     date={review.createDate}
                 />
             ))}

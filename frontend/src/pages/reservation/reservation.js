@@ -11,45 +11,27 @@ import {
     SeeAllBtn2, SeeAllBtnWrapper
 } from './reservationstyle';
 import React, { useState, useEffect } from "react";
-import Agent2 from "../../components/Agent/Agent2"
-import Agent3 from "../../components/Agent/Agent3"
+import Agent2 from "../../components/Agent/Agent2";
+import Agent3 from "../../components/Agent/Agent3";
 import TopBarComponent from "../../components/TopBar/TopBar";
-import MyProfile2 from "../../public/Img/forprofile/img.png";
-import AgentProfile from "../../public/Img/forprofile/AgentProfile.png"
-import AgentProfile2 from "../../public/Img/forprofile/AgentProfile2.png"
-import AgentProfile3 from "../../public/Img/forprofile/AgentProfile3.png"
-import AgentProfile4 from "../../public/Img/forprofile/AgentProfile4.png"
-import AgentProfile5 from "../../public/Img/forprofile/AgentProfile5.png"
-import AgentProfile6 from "../../public/Img/forprofile/AgentProfile6.png"
-import AgentNoProfile from "../../public/Img/forprofile/img_1.png"
+import Profile from '../../images/도라에몽.jpeg';
 
 const processProfilePicture = (profilePicture) => {
     if (profilePicture) {
         return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
     } else {
-        return MyProfile2;
+        return Profile;
     }
 };
-const Agent2Data = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile },
-    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2 },
-    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentProfile3 },
-    { author: '미국 길라잡이', introduce: '미국 전역 여행 안내합니다.', hashtags: ['#미국여행', '#로드트립', '#대자연'], spec: ['미국 10년 거주', '영어 능통'], image: AgentProfile4 },
-    { author: '독일 전문가', introduce: '독일의 모든 것을 안내합니다.', hashtags: ['#독일여행', '#맥주투어', '#역사탐방'], spec: ['독일 6년 거주', '독일어 자격증'], image: AgentProfile5 },
-    { author: '스페인 가이드', introduce: '스페인의 아름다움을 경험하세요.', hashtags: ['#스페인여행', '#예술투어', '#현지체험'], spec: ['스페인 5년 거주', '스페인어 능통'], image: AgentProfile6 },
-    { author: '이탈리아 탐험가', introduce: '이탈리아의 숨은 매력을 알려드립니다.', hashtags: ['#이탈리아여행', '#와인투어', '#미식여행'], spec: ['이탈리아 8년 거주', '이탈리아어 능통'], image: AgentNoProfile },
-    { author: '캐나다 전문가', introduce: '캐나다 자연 탐험의 진수를 보여드립니다.', hashtags: ['#캐나다여행', '#자연탐험', '#액티비티'], spec: ['캐나다 7년 거주', '영어 능통'], image: AgentNoProfile },
-    { author: '호주 가이드', introduce: '호주의 다양한 매력을 안내합니다.', hashtags: ['#호주여행', '#해변', '#현지투어'], spec: ['호주 5년 거주', '영어 능통'], image: AgentNoProfile },
-    { author: '영국 여행 전문가', introduce: '영국의 역사와 문화를 체험하세요.', hashtags: ['#영국여행', '#역사탐방', '#문화체험'], spec: ['영국 6년 거주', '영어 능통'], image: AgentNoProfile }
-];
 const Agent3Data = [
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
-    { author: '행복', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile6, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!'},
-    { author: '여정', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentProfile5, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.' },
+    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image:Profile , score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
+    { author: '행복', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image:Profile , score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!'},
+    { author: '여정', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image:Profile , score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.' },
 ];
 
 export default function ReservationPage() {
     const [agentData, setAgentData] = useState([]);
+    const [agent2Data, setAgent2Data] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCountry, setSelectedCountry] = useState("");
 
@@ -59,24 +41,39 @@ export default function ReservationPage() {
     const totalIndicators = Math.ceil(agentData.length / reviewsPerPage);
 
     useEffect(() => {
-        // 백엔드에서 데이터 가져오기
         axios.get("http://localhost:8080/api/users/agents")
             .then((response) => {
                 const fetchedData = response.data.map((agent) => ({
                     author: agent.nickname,
                     introduce: agent.introduction || '소개 내용이 없습니다.',
-                    hashtags: agent.hashtags,
-                    spec: agent.specIntroduction,
+                    hashtags: agent.hashtags || [],
+                    spec: agent.specIntroduction || [],
                     image: processProfilePicture(agent.profilePicture),
                     score: agent.averageReviewRating,
-                    number: '0', // 평점 개수 미지원 시 0으로 기본값 설정
-                    agentreview: '', // 리뷰가 없는 경우 빈 문자열로 설정
+                    number: '0',
+                    agentreview: '',
                 }));
                 setAgentData(fetchedData);
             })
             .catch((error) => console.error("Error fetching agents:", error));
     }, []);
 
+    useEffect(() => {
+        if (selectedCountry) {
+            axios.get(`http://localhost:8080/api/users/agents?country=${selectedCountry}`)
+                .then((response) => {
+                    const fetchedAgent2Data = response.data.map((agent) => ({
+                        author: agent.nickname,
+                        introduce: agent.introduction,
+                        hashtags: agent.hashtags || [],
+                        spec: agent.specIntroduction || [],
+                        image: processProfilePicture(agent.profilePicture),
+                    }));
+                    setAgent2Data(fetchedAgent2Data);
+                })
+                .catch((error) => console.error("Error fetching Agent2 data:", error));
+        }
+    }, [selectedCountry]);
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
         const clickX = event.clientX - boundingRect.left;
@@ -88,8 +85,6 @@ export default function ReservationPage() {
     const handleCountryChange = (event) => {
         setSelectedCountry(event.target.value);
     };
-    const visibleAgents2 = Agent2Data.slice(0, 6); // Adjust the number here as needed
-
 
     return (
         <>
@@ -155,8 +150,9 @@ export default function ReservationPage() {
                     <SeeAllBtnWrapper>
                         <SeeAllBtn2>
                             <p>전체보기</p>
-                            <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2" />
+                            <svg width="11" height="16" viewBox="0 0 11 16" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
                             </svg>
                         </SeeAllBtn2>
                     </SeeAllBtnWrapper>
@@ -176,35 +172,32 @@ export default function ReservationPage() {
                                 <Select value={selectedCountry} onChange={handleCountryChange}>
                                     <option value="">국가 선택</option>
                                     <optgroup label="America">
-                                        <option value="usa">USA</option>
-                                        <option value="canada">Canada</option>
+                                        <option value="미국">미국</option>
                                     </optgroup>
                                     <optgroup label="Europe">
-                                        <option value="uk">UK</option>
-                                        <option value="italy">Italy</option>
-                                        <option value="france">France</option>
+                                        <option value="이탈리아">이탈리아</option>
                                     </optgroup>
                                     <optgroup label="Asia">
-                                        <option value="japan">Japan</option>
-                                        <option value="china">China</option>
+                                        <option value="일본">일본</option>
                                     </optgroup>
                                 </Select>
                                 <SeeAllBtn>
                                     <p>전체보기</p>
-                                    <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2" />
+                                    <svg width="11" height="16" viewBox="0 0 11 16" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
                                     </svg>
                                 </SeeAllBtn>
                             </SelectContainer>
                         </SelectWrapper>
                         <AgentContainer>
                             <Agents2>
-                                {visibleAgents2.slice(0, 3).map((review, index) => (
+                                {agent2Data.slice(0, 3).map((review, index) => (
                                     <Agent2 key={index} review={review} />
                                 ))}
                             </Agents2>
                             <Agents2>
-                                {visibleAgents2.slice(3, 6).map((review, index) => (
+                                {agent2Data.slice(3, 6).map((review, index) => (
                                     <Agent2 key={index} review={review} />
                                 ))}
                             </Agents2>
