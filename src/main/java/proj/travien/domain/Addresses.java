@@ -35,4 +35,9 @@ public class Addresses {
     public int hashCode() {
         return 31;
     }
+
+    @Override
+    public String toString() {
+        return address;
+    }
 }
