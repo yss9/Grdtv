@@ -3,7 +3,7 @@ import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import {ChatPageWrapper, Main, Wrapper} from "./chatPageStyle";
+import {ChatPageWrapper, Main, PointModal, Wrapper} from "./chatPageStyle";
 import WebSocketService from "./WebSocketService";
 
 import TopBarComponent from "../../components/TopBar/TopBar";
@@ -73,20 +73,19 @@ const ChatPage = () => {
     useEffect(() => {
         const fetchNicknames = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                const response = await axios.get('http://localhost:8080/chat/userRooms', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log('받은 값:',response.data)
                 setNicknames(response.data);
-                // console.log('nicknames:',response.data);
 
                 // 토큰에서 내 닉네임 가져오기
                 const userPayload = jwtDecode(token);
-                // console.log("userPayload:", userPayload);
                 const extractedUsername = userPayload.nickname;
+                console.log('extractedUsername:',extractedUsername)
                 setUsername(extractedUsername);
-                // console.log("extractedUsername", extractedUsername);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
@@ -178,36 +177,11 @@ const ChatPage = () => {
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
-
-            // try {
-            //     // 진행 상황 업데이트 요청
-            //     const response = await axios.post(
-            //         'http://localhost:8080/api/booking/update-progress',
-            //         null, // POST 요청에서 본문이 필요하지 않으므로 null로 설정
-            //         {
-            //             params: {
-            //                 userId: userId,
-            //                 agentId: targetUserNickname,
-            //                 progress: 25
-            //             },
-            //             headers: {
-            //                 'Authorization': `Bearer ${token}`,
-            //                 'Accept': '*/*'
-            //             }
-            //         }
-            //     );
-            //     console.log('Update progress response:', response.data);
-            // } catch (error) {
-            //     console.error('Failed to update progress', error);
-            //     console.error('Error details:', error.response?.data); // 서버에서 받은 오류 메시지 출력
-            // }
-            //
-            //
             try {
                 // 진행 상황 조회 요청
                 const response = await axios.get('http://localhost:8080/api/booking/progress', {
                     params: {
-                        userId: userId,
+                        userId: username,
                         agentId: targetUserNickname
                     },
                     headers: {
@@ -227,15 +201,18 @@ const ChatPage = () => {
 
     const onClickProcessButton = async(stepValue) => {
         const token = Cookies.get('jwt');
+        if (stepValue === 3){
+            handleOpenPointModal()
+        }
         if (token) {
             try {
                 // 진행 상황 업데이트 요청
                 const response = await axios.post(
                     'http://localhost:8080/api/booking/update-progress',
-                    null, // POST 요청에서 본문이 필요하지 않으므로 null로 설정
+                    null,
                     {
                         params: {
-                            userId: userId,
+                            userId: username,
                             agentId: chatUsername,
                             progress: stepValue
                         },
@@ -249,7 +226,7 @@ const ChatPage = () => {
                 setStep(stepValue)
             } catch (error) {
                 console.error('Failed to update progress', error);
-                console.error('Error details:', error.response?.data); // 서버에서 받은 오류 메시지 출력
+                console.error('Error details:', error.response?.data);
             }
         }
     }
@@ -282,6 +259,7 @@ const ChatPage = () => {
     }
 
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisiblePointModal, setIsVisiblePointModal] = useState(false);
 
     const handleOpenModal = () => {
         setIsVisible(true);
@@ -291,12 +269,22 @@ const ChatPage = () => {
         setIsVisible(false);
     };
 
+    const handleOpenPointModal = () => {
+        setIsVisiblePointModal(true);
+    };
+
+    const handleClosePointModal = () => {
+        setIsVisiblePointModal(false);
+    }
 
     return (
         <Wrapper>
             <Reset/>
             <div style={{height: '40px'}}></div>
-            <TopBarComponent/>
+            <TopBarComponent
+                step={step}
+                style={{zIndex: '1000'}}
+            />
             <ChatPageWrapper>
                 <SideBarComponent/>
                 <ChatListComponent
@@ -334,6 +322,33 @@ const ChatPage = () => {
                     )}
                 </Main>
             </ChatPageWrapper>
+            {isVisiblePointModal && (
+                <PointModal onClick={handleClosePointModal}>
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            backgroundColor: '#fefefe',
+                            margin: '15% auto',
+                            padding: '20px',
+                            border: '1px solid #888',
+                            width: '30%',
+                        }}
+                    >
+                        <span
+                            onClick={handleClosePointModal}
+                            style={{
+                                color: '#aaa',
+                                float: 'right',
+                                fontSize: '28px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            ×
+                        </span>
+                    </div>
+                </PointModal>
+            )}
         </Wrapper>
     );
 };

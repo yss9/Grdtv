@@ -126,8 +126,7 @@ const ChatRoomComponent = ({
                                styles,
                                input,
                                setInput,
-                               handleOpenModal,
-                               handleCloseModal,
+                               handleOpenModal, handleCloseModal,
                                handleFileChange,
                                onClickSendFile,
                                handleSendMessage,
@@ -138,7 +137,7 @@ const ChatRoomComponent = ({
                                handleVoiceMessageUpload,
                                userId,
                                onClickProcessButton,
-                               step
+                               step,
                            }) => {
     const token = Cookies.get('jwt');
 

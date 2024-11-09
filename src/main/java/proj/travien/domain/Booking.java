@@ -22,7 +22,7 @@ public class Booking {
     private User agent; // 예약을 진행 중인 대행자
 
     @Column(nullable = false)
-    private int progress = 0; // 예약 진행도 (0, 25, 50, 75, 100)
+    private int progress = 1; // 예약 진행도 (1, 2, 3, 4)
 
     // 기본 생성자
     public Booking() {

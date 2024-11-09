@@ -122,13 +122,21 @@ public class ChatController {
     public ResponseEntity<List<String>> getUserChatRooms(HttpServletRequest request) {
         String token = getTokenFromRequest(request);
         Long id = jwtUtil.extractId(token);
+        String myNickname = jwtUtil.extractNickname(token);
+
         List<UserChatRoom> userChatRooms = userChatRoomRepository.findByUserId(id);
-        List<String> roomIds = userChatRooms.stream()
+        List<String> otherUserNicknames = userChatRooms.stream()
                 .map(userChatRoom -> chatRoomRepository.findById(userChatRoom.getChatRoomId()).get().getRoomId())
+                .map(roomId -> {
+                    // 방 ID에서 자신의 닉네임을 제외하고 상대방 닉네임을 추출
+                    String[] nicknames = roomId.split("_");
+                    return (nicknames[0].equals(myNickname)) ? nicknames[1] : nicknames[0];
+                })
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(roomIds, HttpStatus.OK);
+        return new ResponseEntity<>(otherUserNicknames, HttpStatus.OK);
     }
+
 
     @PostMapping("/uploadFile/{roomId}")
     public ResponseEntity<String> uploadFile(@PathVariable String roomId,

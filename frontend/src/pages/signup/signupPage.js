@@ -89,15 +89,6 @@ export default function SignupPage() {
 
     const onClickSubmit = () => {
 
-        if (glopler) {
-            if (verificationFile == null) {
-                alert("인증 파일을 첨부해 주세요.")
-                return;
-            }
-        }
-
-        console.log('glopler:',glopler)
-
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
 
@@ -111,20 +102,13 @@ export default function SignupPage() {
                 gender: gender,
                 mbti: MBTI,
                 nickname: nickName,
-                isAgent: glopler,
             })], { type: 'application/json' }));
-
-            formData.append('isAgent', glopler ? 'true' : 'false');
 
             if (profilePicture) {
                 formData.append('profilePicture', profilePicture);
             }
 
-            if (verificationFile) {
-                formData.append('verificationFile', verificationFile);
-            }
-
-            console.log(id, pw, name, birthday, MBTI, nickName, glopler, profilePicture, verificationFile)
+            console.log(id, pw, name, birthday, MBTI, nickName, profilePicture)
 
             axios.post('http://localhost:8080/api/users/signup', formData, {
                 headers: {
@@ -133,7 +117,7 @@ export default function SignupPage() {
             })
                 .then(response => {
                     console.log(response.data);
-                    setStep(5);
+                    setStep(4);
                 })
                 .catch(error => {
                     console.error(error);
@@ -298,7 +282,7 @@ export default function SignupPage() {
                 </LogoWrapper>
                 <ContentsWrapper>
                     <ProgressBar>
-                        <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "20%" : step === 3 ? "40%" : step === 4 ? "60%" : "80%" }}></Progress>
+                        <Progress style={{ marginLeft: step === 1 ? "0" : step === 2 ? "25%" : step === 3 ? "50%" : "75%" }}></Progress>
                     </ProgressBar>
                     <AnimatePresence>
                         {step === 1 && (
@@ -347,20 +331,11 @@ export default function SignupPage() {
                                 nickName={nickName}
                                 onChangeNickName={onChangeNickName}
                                 goToSecondPage={goToSecondPage}
-                                goToFourthPage={goToFourthPage}
+                                goToFourthPage={onClickSubmit}
                                 pageVariants={pageVariants}
                             />
                         )}
                         {step === 4 && (
-                            <GloplerForm
-                                pageVariants={pageVariants}
-                                onClickGlopler={onClickGlopler}
-                                handleVerificationFileChange={handleVerificationFileChange}
-                                goToThirdPage={goToThirdPage}
-                                onClickSubmit={onClickSubmit}
-                            />
-                        )}
-                        {step === 5 && (
                             <SignUpComplete
                                 imgFile={imgFile}
                                 onClickLogin={onClickLogin}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Cookies from "js-cookie";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const BlogContainer=styled.div`
   width: 25rem;
@@ -123,6 +124,7 @@ const GoChatBtn=styled.button`
     background-color: #4e53ed;
   border: none;
   display: flex;
+    cursor: pointer;
   p{
     margin-right: 0.5rem;
   }
@@ -226,6 +228,7 @@ const ReviewContent=styled.div`
 
 const Agent = ({ review, pageType }) => {
 
+    const navigate = useNavigate();
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
     const [username, setUsername] = useState('');
@@ -249,6 +252,29 @@ const Agent = ({ review, pageType }) => {
         } else {
             console.error('No JWT token found in cookies');
         }
+        try {
+            // 진행 상황 업데이트 요청
+            const response = await axios.post(
+                'http://localhost:8080/api/booking/update-progress',
+                null,
+                {
+                    params: {
+                        userId: username,
+                        agentId: review.author,
+                        progress: 1
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                }
+            );
+            console.log('Progress Update complete')
+        } catch (error) {
+            console.error('Failed to update progress', error);
+            console.error('Error details:', error.response?.data);
+        }
+        navigate('/chat')
     };
 
     useEffect(() => {

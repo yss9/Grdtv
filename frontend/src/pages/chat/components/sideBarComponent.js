@@ -19,9 +19,8 @@ const SideBarHeader = styled.div`
     align-items: center;
 `
 
-const SideBarComponent = () => {
+const SideBarComponent = ({step}) => {
     return (
-
         <SideBar>
             <div style={{ width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black' }}>
                 <SideBarHeader>
@@ -33,12 +32,12 @@ const SideBarComponent = () => {
                         완료된 채팅
                 </SideBarHeader>
             </div>
-            <br />
-            <hr style={{ margin: '0 7px' }} />
-            <br />
-            <div style={{ display: "flex", justifyContent: "center", margin: '10px 0 0 0' }}>
-                도쿄 예약 대행<br /><br /><br />○○ 예약 대행
-            </div>
+            {/*<br />*/}
+            {/*<hr style={{ margin: '0 7px' }} />*/}
+            {/*<br />*/}
+            {/*<div style={{ display: "flex", justifyContent: "center", margin: '10px 0 0 0' }}>*/}
+            {/*    도쿄 예약 대행<br /><br /><br />○○ 예약 대행*/}
+            {/*</div>*/}
         </SideBar>
     );
 };

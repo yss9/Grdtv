@@ -39,7 +39,7 @@ export const ProgressBar = styled.div`
 `
 export const Progress = styled.div`
     height: 100%;
-    width: 20%;
+    width: 25%;
     border-radius: 5px;
     background-color: #fd9800;
     transition: margin-left 0.5s ease;
