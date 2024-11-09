@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import BottomBarComponent from './bottomBarComponent';
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie";
 
 // styled-components
 const ChatRoomWrapper = styled.div`
@@ -135,10 +136,11 @@ const ChatRoomComponent = ({
                                bottomRef,
                                isAgent,
                                handleVoiceMessageUpload,
-                               userId
+                               userId,
+                               onClickProcessButton,
+                               step
                            }) => {
-
-    const [step, setStep] = useState(1);
+    const token = Cookies.get('jwt');
 
     const serverUrl = 'http://localhost:8080';
 
@@ -149,6 +151,8 @@ const ChatRoomComponent = ({
     const isPdf = (filePath) => {
         return filePath.match(/\.pdf$/);
     };
+
+
 
     return (
         <ChatRoomWrapper>
@@ -179,10 +183,10 @@ const ChatRoomComponent = ({
             </ProcessWrapper>
             {isAgent ? (
                 <div style={{width: '100%',height: '60px'}}>
-                    {step === 1 ? <ProcessButton onClick={() => setStep(2)}>대행 진행하기</ProcessButton>
-                        : step === 2 ? <ProcessButton onClick={() => setStep(3)}>입금 진행하기</ProcessButton>
-                            : step === 3 ? <ProcessButton onClick={() => setStep(4)}>여행 완료하기</ProcessButton>
-                                : <ProcessButton onClick={() => setStep(1)}>step1(임시)</ProcessButton>
+                    {step === 1 ? <ProcessButton onClick={() => onClickProcessButton(2)}>대행 진행하기</ProcessButton>
+                        : step === 2 ? <ProcessButton onClick={() => onClickProcessButton(3)}>입금 진행하기</ProcessButton>
+                            : step === 3 ? <ProcessButton onClick={() => onClickProcessButton(4)}>여행 완료하기</ProcessButton>
+                                : <ProcessButton onClick={() => onClickProcessButton(1)}>step1(임시)</ProcessButton>
                     }
                 </div>
             ) : (

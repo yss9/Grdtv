@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 
 // Google Places API 키
-const apiKey = 'AIzaSyDHNaifEbMYJPv6_mg2QJLKuJT3AqxFc7Y';
+const apiKey = '키 넣기';
 
 const librariesPlace = 'places';
 const osakaLocations = [

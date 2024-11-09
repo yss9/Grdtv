@@ -47,6 +47,7 @@ const ChatPage = () => {
 
     const [id, setId] = useState(null);
     const [isAgent, setIsAgent] = useState(false);
+    const [step, setStep] = useState(0);
 
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
@@ -161,9 +162,10 @@ const ChatPage = () => {
 
     const handleAddUser = async (targetUserNickname) => {
         setMessages([]);
-        const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
+        const token = Cookies.get('jwt'); // Get JWT token from cookies
         if (token) {
             try {
+                // Chat room 생성 요청
                 const response = await axios.post('http://localhost:8080/chat/createRoom', [username, targetUserNickname], {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -176,10 +178,83 @@ const ChatPage = () => {
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
+
+            // try {
+            //     // 진행 상황 업데이트 요청
+            //     const response = await axios.post(
+            //         'http://localhost:8080/api/booking/update-progress',
+            //         null, // POST 요청에서 본문이 필요하지 않으므로 null로 설정
+            //         {
+            //             params: {
+            //                 userId: userId,
+            //                 agentId: targetUserNickname,
+            //                 progress: 25
+            //             },
+            //             headers: {
+            //                 'Authorization': `Bearer ${token}`,
+            //                 'Accept': '*/*'
+            //             }
+            //         }
+            //     );
+            //     console.log('Update progress response:', response.data);
+            // } catch (error) {
+            //     console.error('Failed to update progress', error);
+            //     console.error('Error details:', error.response?.data); // 서버에서 받은 오류 메시지 출력
+            // }
+            //
+            //
+            try {
+                // 진행 상황 조회 요청
+                const response = await axios.get('http://localhost:8080/api/booking/progress', {
+                    params: {
+                        userId: userId,
+                        agentId: targetUserNickname
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log('Fetch progress response:', response.data);
+                setStep(response.data)
+
+            } catch (error) {
+                console.error('Failed to fetch progress', error);
+            }
         } else {
             console.error('No JWT token found in cookies');
         }
     };
+
+    const onClickProcessButton = async(stepValue) => {
+        const token = Cookies.get('jwt');
+        if (token) {
+            try {
+                // 진행 상황 업데이트 요청
+                const response = await axios.post(
+                    'http://localhost:8080/api/booking/update-progress',
+                    null, // POST 요청에서 본문이 필요하지 않으므로 null로 설정
+                    {
+                        params: {
+                            userId: userId,
+                            agentId: chatUsername,
+                            progress: stepValue
+                        },
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': '*/*'
+                        }
+                    }
+                );
+                console.log('Progress Update complete')
+                setStep(stepValue)
+            } catch (error) {
+                console.error('Failed to update progress', error);
+                console.error('Error details:', error.response?.data); // 서버에서 받은 오류 메시지 출력
+            }
+        }
+    }
+
+
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             handleSendMessage()
@@ -249,6 +324,8 @@ const ChatPage = () => {
                             isAgent={isAgent}
                             handleVoiceMessageUpload={handleVoiceMessageUpload}
                             userId={userId}
+                            onClickProcessButton={onClickProcessButton}
+                            step={step}
                         />
                     ) : (
                         <div>

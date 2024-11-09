@@ -1,5 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
+import Cookies from "js-cookie";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode";
 
 const BlogContainer=styled.div`
   width: 25rem;
@@ -226,11 +229,50 @@ const ReviewPhoto=styled.img`
 
 const Agent = ({ review, pageType }) => {
 
+    const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
+    const [username, setUsername] = useState('');
 
     const toggleHeart = () => {
         setIsHeartFilled(!isHeartFilled);
     };
+
+    const handleAddUser = async() => {
+        if (token) {
+            try {
+                const response = await axios.post('http://localhost:8080/chat/createRoom', [username, review.author], {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log('Chat room created with ID:', response.data);
+            } catch (error) {
+                console.error('Failed to create chat room:', error);
+            }
+        } else {
+            console.error('No JWT token found in cookies');
+        }
+    };
+
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+        fetchNicknames();
+    }, [token]);
+
 
 
     return (
@@ -261,7 +303,7 @@ const Agent = ({ review, pageType }) => {
                                     ))}
                                 </HashTags>
                                 <GoChatBtnWrapper>
-                                    <GoChatBtn>
+                                    <GoChatBtn onClick={handleAddUser}>
                                         <p>채팅하기</p>
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0_746_1335)">

@@ -112,7 +112,7 @@ const BottomBarComponent = ({
                                 }}
                                 onClick={onClickSendFile}
                             >
-                                전송하기
+                                파일 전송하기
                             </button>
                             <button
                                 style={{
@@ -122,7 +122,7 @@ const BottomBarComponent = ({
                                 }}
                                 onClick={handleVoiceMessageUpload}
                             >
-                                음성 전송하기
+                                음성 파일 전송하기
                             </button>
                         </div>
                     </ChatModal>
