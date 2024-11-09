@@ -376,10 +376,11 @@ public class UserService {
         return user.getPoints();
     }
 
+
     // 포인트 추가
     @Transactional
-    public boolean addUserPoints(String userId, int pointsToAdd) {
-        User user = userRepository.findByUserId(userId).orElse(null);
+    public boolean addPointsByNickname(String nickname, int pointsToAdd) {
+        User user = userRepository.findByNickname(nickname).orElse(null);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
@@ -392,7 +393,7 @@ public class UserService {
         userRepository.save(user);
 
         // 포인트 히스토리 저장
-        PointsHistory history = new PointsHistory(userId, pointsToAdd, "add");
+        PointsHistory history = new PointsHistory(nickname, pointsToAdd, "add");
         pointsHistoryRepository.save(history);
 
         return true;
@@ -400,8 +401,8 @@ public class UserService {
 
     // 포인트 차감
     @Transactional
-    public boolean deductUserPoints(String userId, int pointsToDeduct) {
-        User user = userRepository.findByUserId(userId).orElse(null);
+    public boolean deductPointsByNickname(String nickname, int pointsToDeduct) {
+        User user = userRepository.findByNickname(nickname).orElse(null);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
@@ -418,11 +419,12 @@ public class UserService {
         userRepository.save(user);
 
         // 포인트 히스토리 저장
-        PointsHistory history = new PointsHistory(userId, pointsToDeduct, "deduct");
+        PointsHistory history = new PointsHistory(nickname, pointsToDeduct, "deduct");
         pointsHistoryRepository.save(history);
 
         return true;
     }
+
 
     //관리자 포인트 조정
     public boolean adjustPoints(String userId, int points) {
