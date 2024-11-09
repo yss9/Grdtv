@@ -278,13 +278,18 @@ export default function BoardDetail() {
                             {username === nickname && (
                                 <div>
                                     <Button
-                                        onClick={() => navigate(`/board/${boardID}/edit`, {
-                                            state: { title, addressTitle, body, image, addresses }
-                                        })}
+                                        onClick={() => {
+                                            // state 전달 시 콘솔로 확인
+                                            console.log("Navigating with state:", { title, addressTitle, body, image, addresses });
+                                            navigate(`/board/${boardID}/edit`, {
+                                                state: { title, addressTitle, body, image, addresses }
+                                            });
+                                        }}
                                         style={{ background: '#4E53EE', color: 'white' }}
                                     >
                                         수정하기
                                     </Button>
+
                                     <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: 'white' }}>
                                         삭제하기
                                     </Button>

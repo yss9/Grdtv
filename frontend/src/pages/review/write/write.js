@@ -47,6 +47,35 @@ export default function BoardWrite(props) {
 
     const isFormValid = title && body && country && addressTitle && addresses.every(address => address.address);
 
+    useEffect(() => {
+        if (props.isEdit && boardID) {
+
+            console.log("props.isEdit:", props.isEdit); // 값 확인
+            console.log("boardID:", boardID); // 값 확인
+
+            const fetchBoardData = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/posts/${boardID}/`);
+                    const boardData = response.data;
+
+                    console.log("타이틀:", boardData)
+
+                    // 가져온 게시물 데이터를 상태에 설정
+                    setTitle(boardData.title);
+                    setBody(boardData.body);
+                    setAddressTitle(boardData.addressTitle);
+                    setCountry(boardData.country);
+                    // 이미지나 다른 필드들도 가져와서 설정할 수 있습니다.
+                } catch (error) {
+                    console.error('게시물 데이터를 가져오는 데 실패했습니다.', error);
+                }
+            };
+
+            fetchBoardData();
+        }
+    }, [props.isEdit, boardID]);
+
+
 
 
 
