@@ -1,5 +1,8 @@
 package proj.travien.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import proj.travien.domain.Addresses;
 import proj.travien.domain.Post;
 import proj.travien.dto.AddressResponseDto;
-import proj.travien.repository.ImageRepository;
+import proj.travien.repository.AddressesRepository;
 import proj.travien.repository.PostRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,13 +29,11 @@ public class PostService {
     private PostRepository postRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private AddressesRepository addressesRepository;
 
 
-//	public BoardService(BoardRepository bRepo, ReplyRepository rRepo) {
-//		this.boardRepository = bRepo;
-//		this.replyRepository = rRepo;
-//	}
+
+
 
     @Transactional
     public void writePost(Post post) { // title, body, address
@@ -100,21 +101,6 @@ public class PostService {
 
 
 
-
-  /*  public Post createPost(MultipartFile image, String title, String body, Set address) throws IOException {
-        // 이미지 저장
-        String fileName = image.getOriginalFilename();
-        byte[] bytes = image.getBytes();
-        Path path = Paths.get(UPLOAD_DIR + fileName);
-        Files.write(path, bytes);
-
-        // Post 객체 생성 및 저장
-        Post post = new Post(title, body, path.toString(), address); // 이미지 파일의 경로를 저장
-        post.setImageUrl("http://localhost:8000/api/posts/" + post.getBoardID() + "/image"); // 이미지 URL 설정
-        return postRepository.save(post);
-    }
-*/
-
     /**
      * 게시물 업로드
      */
@@ -126,26 +112,47 @@ public class PostService {
         post.setAddressTitle(addressTitle);
         post.setCountry(country);
 
-        Set<Addresses> addresses = new HashSet<>();
-        for (Addresses address : addressStrings) {
-            address.setPost(post);
-            addresses.add(address);
-        }
+        Set<Addresses> addresses = getAddressesSet(addressStrings, post);
 
         post.setAddresses(addresses);
 
         return postRepository.save(post);
     }
 
-      /* public Optional<Post> getPostById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isPresent()) {
-            Post fetchedPost = post.get();
-            fetchedPost.setImageUrl("http://localhost:8000/api/posts/" + fetchedPost.getBoardID() + "/image");
-            return Optional.of(fetchedPost);
+    private Set<Addresses> getAddressesSet(Set<Addresses> addressStrings, Post post) {
+        Set<Addresses> addresses = new HashSet<>();
+        for (Addresses address : addressStrings) {
+            address.setPost(post);
+            addresses.add(address);
         }
-        return Optional.empty();
-    }*/
+        return addresses;
+    }
+
+
+    /**
+     * 게시물 수정
+     */
+    @Transactional
+    public Post updatePost(Long boardID, Post updatedPost, Set<Addresses> addresses) {
+        Post post = postRepository.findById(boardID).get();
+
+        // 기존 주소 삭제
+        addressesRepository.deleteAll(post.getAddresses());
+
+        // 게시물의 제목, 본문, 나라, 주소 제목 등을 업데이트
+        post.setTitle(updatedPost.getTitle());
+        post.setCountry(updatedPost.getCountry());
+        post.setBody(updatedPost.getBody());
+        post.setAddressTitle(updatedPost.getAddressTitle());
+
+        // 새 주소들을 추가
+        Set<Addresses> updatedAddresses = getAddressesSet(addresses, post);
+        post.setAddresses(updatedAddresses);
+
+        return postRepository.save(post);
+    }
+
+
 
 
     /**
@@ -168,9 +175,10 @@ public class PostService {
      */
     private final ObjectMapper objectMapper;
 
-    public PostService(PostRepository postRepository, ObjectMapper objectMapper) {
+    public PostService(AddressesRepository addressesRepository, PostRepository postRepository, ObjectMapper objectMapper) {
         this.postRepository = postRepository;
         this.objectMapper = objectMapper;
+        this.addressesRepository = addressesRepository;
     }
 
 
@@ -306,22 +314,13 @@ public class PostService {
     }
 
 
-    public Post updatePost(Long id, Post updatedPost) {
-        return postRepository.findById(id)
-                .map(post -> {
-                    post.update(updatedPost.getTitle(), updatedPost.getBody(),updatedPost.getAddresses(),
-                            updatedPost.getCountry(), updatedPost.getNickname(), updatedPost.getMbti(), updatedPost.getProfilePicture());
-                    return postRepository.save(post);
-                })
-                .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
-    }
 
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
 
     /**
-     * 검색
+     * 검색44
      */
     @Transactional(readOnly = true)
     public List<Post> searchPosts(String keyword) {

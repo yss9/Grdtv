@@ -54,7 +54,6 @@ public class PostController {
     }
 
 
-
     /**
      * 게시물 업로드
      */
@@ -91,7 +90,6 @@ public class PostController {
     }
 
 
-
     /**
      * 루트 추천 (특정 placename에 맞는 포스트 검색)
      */
@@ -106,7 +104,6 @@ public class PostController {
                     .body(Collections.emptyList());
         }
     }
-
 
 
     /**
@@ -142,14 +139,38 @@ public class PostController {
     }
 
 
+    /**
+     * 게시물 수정
+     */
+    @PutMapping("/{boardID}")
+    public Object updatePost(@PathVariable Long boardID,
+                                           @RequestParam("title") String title,
+                                           @RequestParam("body") String body,
+                                           @RequestParam("addresses") Set<String> addresses,
+                                           @RequestParam("addressTitle") String addressTitle,
+                                           @RequestParam("country") String country,
+                                           @RequestParam("userId") String userId) {
 
-    @PutMapping("/{id}/")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post updatedPost) {
+
+        // 게시물 수정 로직
+        Set<Addresses> addressEntities = addresses.stream()
+                .map(address -> Addresses.builder().address(address).build())
+                .collect(Collectors.toSet());
+
+        // Post 객체에 사용자 정보 업데이트
+        Post updatedPost = new Post();
+        updatedPost.setTitle(title);
+        updatedPost.setBody(body);
+        updatedPost.setAddressTitle(addressTitle);
+        updatedPost.setCountry(country);
+
         try {
-            Post post = postService.updatePost(id, updatedPost);
-            return ResponseEntity.ok(post);
+            // 게시물 수정 서비스 호출
+            Post savedPost = postService.updatePost(boardID, updatedPost, addressEntities);
+            return savedPost;  // 수정된 게시물 반환
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 게시물이 없을 경우 처리
         }
     }
 
@@ -166,7 +187,6 @@ public class PostController {
         // Implement your report logic here
         return ResponseEntity.ok().build();
     }
-
 
 
     @GetMapping("/{id}/image")
@@ -217,7 +237,6 @@ public class PostController {
     }
 
 
-
     /**
      * 썸네일 반환
      */
@@ -263,8 +282,6 @@ public class PostController {
         List<Map<String, Object>> titles = postService.getTitleAndBoardIDList();
         return ResponseEntity.ok(titles);
     }
-
-
 
 
 }

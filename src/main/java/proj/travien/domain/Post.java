@@ -8,6 +8,7 @@ import java.util.Set;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.context.annotation.Lazy;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Getter
 @Setter
 @Entity
+@ToString(exclude = {"addresses", "likes", "images"})
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +37,12 @@ public class Post {
 
     private String AddressTitle;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Addresses> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Image> images = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -63,15 +66,13 @@ public class Post {
         this.profilePicture = profilePicture;
     }
 
-    public void update(String title, String body, Set<Addresses> addresses, String country, String nickname, String mbti, String profilePicture) {
-        this.title = title;
-        this.body = body;
-        this.addresses = addresses;
-        this.country = country;
-        this.nickname = nickname;
-        this.mbti = mbti;
-        this.profilePicture = profilePicture;
+    public void update(Post post) {
+        this.title = post.getTitle();
+        this.body = post.getBody();
+        this.addresses = post.getAddresses();
+        this.country = post.getCountry();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -117,5 +118,34 @@ public class Post {
     private String profilePicture;
 
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "boardID=" + boardID +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", createDate=" + createDate +
+                ", AddressTitle='" + AddressTitle + '\'' +
+                ", likesCount=" + likesCount +
+                ", verified=" + verified +
+                ", country='" + country + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", mbti='" + mbti + '\'' +
+                ", profilePicture='" + profilePicture + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                '}';
+    }
+
+    public void setAddresses(Set<Addresses> addresses) {
+        if (this.addresses != null) {
+            for (Addresses address : this.addresses) {
+                address.setPost(null);  // 기존 address의 post 참조를 null로 설정
+            }
+        }
+        this.addresses = addresses;
+        for (Addresses address : this.addresses) {
+            address.setPost(this);  // 새로 설정된 address의 post 참조를 현재 post로 설정
+        }
+    }
 
 }
