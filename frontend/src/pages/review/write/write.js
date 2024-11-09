@@ -273,13 +273,12 @@ export default function BoardWrite(props) {
 
 
                         <S.InputWrapper>
-                            <label>국가 선택:</label>
                             <input
                                 type="text"
                                 placeholder="국가를 검색하세요"
                                 value={searchTerm}
                                 onChange={handleSearchChange}
-                                style={{ width: "100%", padding: "10px" }}
+                                style={{ width: "100%", height: "25px", padding: "10px",borderRadius:"15px", fontSize: "15px"}}
                             />
                             {/* 필터링된 국가 목록 표시 */}
                             {filteredCountries.length > 0 && (
