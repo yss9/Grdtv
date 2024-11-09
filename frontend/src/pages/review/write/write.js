@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import axios from "axios";
 import * as S from "./style";
 import {Modal, Tooltip} from 'antd';
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import TopBarComponent from "../../../components/TopBar/TopBar";
 import MapComponent from "./MapComponent";
 import ReactQuill, {Quill} from 'react-quill';
@@ -36,6 +36,10 @@ export default function BoardWrite(props) {
 
     const [modalMessage, setModalMessage] = useState(""); // 모달 메시지 상태 추가
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const { boardID } = useParams();
+
+    console.log("boardID를 찍어보섿ㄱ다:",boardID)
+
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -43,6 +47,39 @@ export default function BoardWrite(props) {
     };
 
     const isFormValid = title && body && country && addressTitle && addresses.every(address => address.address);
+
+    useEffect(() => {
+        if (props.isEdit && boardID) {
+
+            console.log("props.isEdit:", props.isEdit); // 값 확인
+            console.log("boardID:", boardID); // 값 확인
+
+            const fetchBoardData = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/posts/${boardID}/`);
+                    const boardData = response.data;
+
+                    console.log("타이틀:", boardData)
+
+                    // 가져온 게시물 데이터를 상태에 설정
+                    setTitle(boardData.title);
+                    setBody(boardData.body);
+                    setAddressTitle(boardData.addressTitle);
+                    setCountry(boardData.country);
+                    // 이미지나 다른 필드들도 가져와서 설정할 수 있습니다.
+                } catch (error) {
+                    console.error('게시물 데이터를 가져오는 데 실패했습니다.', error);
+                }
+            };
+
+            fetchBoardData();
+        }
+    }, [props.isEdit, boardID]);
+
+
+
+
+
 
     useEffect(() => {
         if (window.google) {
@@ -155,35 +192,45 @@ export default function BoardWrite(props) {
         }
     };
 
-
-
+    // 게시물 수정하기
     const onClickUpdate = async () => {
-        const boardID = new URLSearchParams(window.location.search).get('boardID');
 
-        if (title === "" && body === "" && !image) {
-            alert("수정할 내용이 없습니다.");
+        if (!isFormValid) {
+            setModalMessage("제목, 본문, 경로 제목, 주소를 모두 입력해 주세요.");
+            setIsModalVisible(true);
             return;
         }
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
 
         const addressStrings = addresses.map(address => address.address);
 
         const formData = new FormData();
-        formData.append('image', image);
+        formData.append('userId', userId);
         formData.append('title', title);
-        formData.append('body', body);
-        formData.append('addressTitle', addressTitle); // addressTitle 추가
-        formData.append('addresses', JSON.stringify(addressStrings));
+        formData.append('body', body); // 본문 전송
+        formData.append('addressTitle', addressTitle);
+        formData.append('addresses', JSON.stringify(addressStrings)); // 주소 리스트 전송
         formData.append('country', country);
 
+        if (image) {
+            formData.append('image', image); // 이미지가 있으면 추가
+        }
+
+        // 게시물 ID가 정상적으로 설정되어 있는지 확인
+        console.log("게시물 수정 요청, boardID:", boardID);
+
         try {
-            const response = await axios.put(`http://localhost:8080/api/posts/${boardID}/`, formData);
-            console.log(response.data);
-            alert("게시물 수정이 정상적으로 완료되었습니다!");
-            navigate(`/board/${response.data.boardID}`);
+            const response = await axios.put(`http://localhost:8080/api/posts/${boardID}`, formData);
+            console.log("게시물 수정 성공:", response.data);
+            navigate(`/board/${boardID}`);
         } catch (error) {
-            console.log(error);
+            console.error("게시물 수정 실패:", error);
         }
     };
+
+
 
     const addAddressField = () => {
         if (addresses.length < 10) {
@@ -259,7 +306,7 @@ export default function BoardWrite(props) {
             <TopBarComponent />
             <S.Container>
                 <S.Wrapper>
-                    <S.Title>{props.isEdit ? "Review 수정" : "리뷰 작성하기"}</S.Title>
+                    <S.Title>{props.isEdit ? "리뷰 수정하기" : "리뷰 작성하기"}</S.Title>
 
                     <S.InputWrapper>
                         <S.Subject
