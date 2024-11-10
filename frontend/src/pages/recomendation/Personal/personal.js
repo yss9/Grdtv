@@ -11,7 +11,7 @@ import {
 import BestCourse from "../../../components/BestCourse/BestCourse";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const GOOGLE_MAPS_API_KEY = 'YOUR_API_KEY';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
 
 const PersonalRecData = [];
 const CourseData = [];
@@ -27,6 +27,7 @@ export default function PersonalRecPage() {
 
     const location = useLocation();
     const { results, KeywordData = [] } = location.state || {};
+    console.log(results);
     const reviewsPerPage = 4;
     const startIndex = activeIndex * reviewsPerPage;
     const visibleAgents = CourseData.slice(startIndex, startIndex + reviewsPerPage);

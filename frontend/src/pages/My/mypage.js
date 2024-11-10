@@ -119,13 +119,13 @@
                             <NameWrapper>{userData.nickname}</NameWrapper>
                             <IntroduceWrapper>
                                 <Mbti>{processMbti(userData.mbti)}</Mbti>
-                                <Introduce>{userData.introduce}</Introduce>
+                                <Introduce>{userData.statusMessage}</Introduce>
                             </IntroduceWrapper>
                         </MyProfileContainer>
                     )}
                     <SettingWrapper>
                         <SettingContainer>
-                            <ProfileSettingBtn>
+                            <ProfileSettingBtn onClick={() => navigate('/myprofile')}>
                                 <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clipPath="url(#clip0_767_1672)">
                                         <path

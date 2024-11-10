@@ -20,9 +20,9 @@ public class FollowService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean followAgent(String userId, String agentId) {
-        User user = userRepository.findByUserId(userId).orElse(null);
-        User agent = userRepository.findByUserId(agentId).orElse(null);
+    public boolean followAgent(String userNickname, String agentNickname) {
+        User user = userRepository.findByNickname(userNickname).orElse(null);
+        User agent = userRepository.findByNickname(agentNickname).orElse(null);
 
         if (user == null || agent == null || !agent.isAgent()) {
             return false;

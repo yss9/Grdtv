@@ -15,6 +15,7 @@ import RecMbtiPage from "./pages/recomendation/MBTI/mbti";
 import RecPersonalPage from "./pages/recomendation/Personal/personal";
 import RouteRecomendation from "./pages/recomendation/Information/RouteRecomendation/routeRecomendation";
 import MyPage from "./pages/My/mypage"
+import MyProfileModify from "./pages/My/myprofilemodify"
 import InformationPage from "./pages/recomendation/Information/information"
 import BoardDetail from "./pages/review/detail/detail";
 import BoardList from "./pages/review/list/list";
@@ -57,6 +58,7 @@ function App() {
                 <Route path="/recomendation/information/:placename" element={<InformationPage />} />
                 <Route path="/routeRec" element={<RouteRecomendation />} />
                 <Route path="/my" element={<MyPage/>}/>
+                <Route path="/myprofile" element={<MyProfileModify/>}/>
                 <Route path="/chatbot" element={<Chatbotset/>}/>
                 <Route path="/keyword" element={<KeywordSelection/>}/>
                 <Route path="/exboard" element={<BoardEx/>}/>

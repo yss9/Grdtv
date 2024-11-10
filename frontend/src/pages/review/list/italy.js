@@ -38,7 +38,8 @@ const Dropdown = styled.select`
 
 const BlogContainer=styled.div`
   height: 18rem;
-  background-color: white;
+    width: 840px;
+ background-color: white;
   margin-bottom: 40px;
   border-radius: 15px;
   border: 2px solid black;
@@ -48,7 +49,6 @@ const BlogContainer=styled.div`
 const ContentWrapper = styled.div`
   width: 65%;
   height: 100%;
-  //background-color: #61dafb;
   border-radius: 15px 0 0 15px;
   // 스타일 정의
   align-items: center;
@@ -171,9 +171,28 @@ const BPic=styled.img`
     object-fit: cover; /* 이미지를 가득 채우도록 설정 */
 `;
 
-const Wrapper=styled.div`
+const Wrapper = styled.div`
     width: 100%;
-`
+`;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+`;
+
+const PageButton = styled.button`
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: ${(props) => (props.isActive ? "#333" : "#ddd")};
+    color: ${(props) => (props.isActive ? "#fff" : "#333")};
+    border: none;
+    cursor: pointer;
+    &:hover {
+        background-color: #aaa;
+    }
+`;
+
 const BlogList = () => {
     const [posts, setPosts] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState("");
@@ -182,6 +201,9 @@ const BlogList = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null); // 사용자 데이터를 저장할 상태
     const token = getAuthToken(); // JWT 토큰 가져오기
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 3;
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -287,7 +309,15 @@ const BlogList = () => {
         console.log(id);
     };
 
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     return (
         <Wrapper>
@@ -311,9 +341,10 @@ const BlogList = () => {
                 </SubTitle2>
             </SubTitleContainer>
             <BlogWrapper>
-                <Blogs>
-                        {posts.length > 0 ? (
-                            posts.map((post) => (
+                <div style={{display:'flex', flexDirection:'column'}}>
+                    <Blogs>
+                        {currentPosts.length > 0 ? (
+                            currentPosts.map((post) => (
                                 <BlogContainer  key={post.boardID} onClick={() => onClickMoveToBoardDetail(post.boardID)}>
                                     <ContentWrapper>
                                         <Content>
@@ -354,7 +385,22 @@ const BlogList = () => {
                         ) : (
                             <div>No posts available for {selectedCountry}</div>
                         )}
-                </Blogs>
+                    </Blogs>
+                    {posts.length > postsPerPage && (
+                        <Pagination>
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <PageButton
+                                    key={index + 1}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    isActive={currentPage === index + 1}
+                                >
+                                    {index + 1}
+                                </PageButton>
+                            ))}
+                        </Pagination>
+                    )}
+                </div>
+
                 <MyMenuWrapper>
                     {userData && (
                         <MyMenuContainer>
@@ -364,7 +410,7 @@ const BlogList = () => {
                                 />
                                 <PContainer2>
                                     <Pname2>{userData.nickname}</Pname2>
-                                    <PIntro>{userData.introduce}</PIntro>
+                                    <PIntro>{userData.statusMessage}</PIntro>
                                 </PContainer2>
                             </Profile2>
                             <ButtonContainer>
@@ -372,14 +418,8 @@ const BlogList = () => {
                                 <VirticalLine/>
                                 <GoWrite onClick={handleGoWrite}>글쓰기</GoWrite>
                             </ButtonContainer>
-                            <BookMarkContainer>
-                                <BookMarkTitle>즐겨찾기</BookMarkTitle>
-                                <BookMarked1></BookMarked1>
-                                <BookMarked2></BookMarked2>
-                            </BookMarkContainer>
                         </MyMenuContainer>
                     )}
-
                 </MyMenuWrapper>
             </BlogWrapper>
         </Wrapper>
