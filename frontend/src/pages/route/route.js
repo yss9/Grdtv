@@ -36,6 +36,7 @@ export default function RoutePage() {
                     })).filter(item => item.country && item.name);
 
                     setDestinations(data);
+                    console.log('csv 파일 불러옴. destinations:',data)
                 },
                 error: (error) => {
                     console.error('Error loading CSV file:', error);
@@ -59,7 +60,7 @@ export default function RoutePage() {
                 <TopBarComponent />
                 <RecWrapper>
                     <RecContainer>
-                        <RecTitle>여행지 탐색</RecTitle>
+                        <RecTitle>여행지 정보</RecTitle>
                         <RecSubTitle>
                             <p>처음 접하는 해외 여행에 어려움을 겪고 있을까요?</p>
                             <p>원하는 키워드를 선정해 맞춤형 여행 루트를 받아보세요.</p>

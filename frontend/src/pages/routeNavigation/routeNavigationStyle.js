@@ -13,3 +13,12 @@ export const DestinationInput = styled.input`
         display: none;  // Chrome, Safari, Opera
     }
 `
+export const BottomButton = styled.button`
+    border: none;
+    border-radius: 10px;
+    font-family: Regular,sans-serif;
+    padding: 3%;
+    position: relative;
+    top: 66%;
+    cursor: pointer;
+`

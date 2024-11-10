@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import {DirectionsRenderer, GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import './MapPage.css';
-import {DestinationInput} from "./routeNavigationStyle";
+import {BottomButton, DestinationInput} from "./routeNavigationStyle";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {searchPlaceInCountry} from './apiService';
@@ -58,6 +58,18 @@ const MapPage = () => {
 
     const [directions, setDirections] = useState(null);
 
+    const initLocationsInfo = {
+        '오사카성': { lat: 35.8338393, lng: 128.7457322 },
+        '우메다 스카이빌딩 공중정원': { lat: 34.7055, lng: 135.4892 },
+        '가메스시': { lat: 37.53564069999999, lng: 126.8956608 },
+        '우메다 한큐백화점': { lat: 34.7033, lng: 135.5009 },
+        '브루클린 로스팅 컴퍼니': { lat: 34.6765, lng: 135.5038 },
+        '야키니쿠엔 닝구': { lat: 34.6731, lng: 135.4970 },
+        '그랑 프론트 오사카': { lat: 34.7051, lng: 135.4959 },
+        '신세카이 혼도리 상점가': { lat: 34.6525, lng: 135.5060 },
+    };
+
+    const [additionalPlacesInfo, setAdditionalPlacesInfo] = useState({'':{lat:'', lang:''}});
 
     const openModal = (field, index = null) => {
         setSelectedField(field);
@@ -68,10 +80,6 @@ const MapPage = () => {
 
     const closeModal = () => {
         setModalIsOpen(false);
-    };
-
-    const handleLocationClick = (location) => {
-        setSelectedLocation(location);
     };
 
     const handleSelectComplete = () => {
@@ -91,26 +99,6 @@ const MapPage = () => {
     };
 
     const updateMarkers = (newRoute) => {
-
-        console.log(`~~ handleSelectComplete 함수
-                    route:${newRoute}`)
-        console.log(newRoute)
-
-        const initLocationsInfo = {
-            '오사카성': { lat: 35.8338393, lng: 128.7457322 },
-            '우메다 스카이빌딩 공중정원': { lat: 34.7055, lng: 135.4892 },
-            '가메스시': { lat: 37.53564069999999, lng: 126.8956608 },
-            '우메다 한큐백화점': { lat: 34.7033, lng: 135.5009 },
-            '브루클린 로스팅 컴퍼니': { lat: 34.6765, lng: 135.5038 },
-            '야키니쿠엔 닝구': { lat: 34.6731, lng: 135.4970 },
-            '그랑 프론트 오사카': { lat: 34.7051, lng: 135.4959 },
-            '신세카이 혼도리 상점가': { lat: 34.6525, lng: 135.5060 },
-        };
-        const additionalPlacesInfo = selectedPlaces.reduce((acc, place) => {
-            acc[place.name] = { lat: place.lat, lng: place.lng };
-            return acc;
-        }, {});
-
         const allLocationsInfo = { ...initLocationsInfo, ...additionalPlacesInfo };
 
         const newMarkers = [
@@ -186,6 +174,7 @@ const MapPage = () => {
         }
     }
 
+    // 검색한 장소를 클릭
     const onClickAdd = (placeName) => {
         const selectedPlace = placesData[placeName];
         if (selectedPlace) {
@@ -194,38 +183,24 @@ const MapPage = () => {
                 lat: selectedPlace.lat,
                 lng: selectedPlace.lng
             };
-
-            setSelectedPlaces(prevSelected => [...prevSelected, newPlace]);
-            console.log('Selected Places:', [...selectedPlaces, newPlace]); // 디버깅용 출력
+            setAdditionalPlacesInfo({[placeName]:{lat:selectedPlace.lat, lng:selectedPlace.lng}})
+            console.log('선택한 장소:',{[placeName]:{lat:selectedPlace.lat, lng:selectedPlace.lng}})
         }
 
-        setSelectedLocation(placeName);
+        //버튼 누르면 실행되는 코드 가져옴
         const newRoute = { ...route };
         if (selectedField === '경유지') {
             if (editIndex !== null) {
-                newRoute.경유지[editIndex] = selectedLocation;
+                newRoute.경유지[editIndex] = placeName;
             } else {
-                newRoute.경유지.push(selectedLocation);
+                newRoute.경유지.push(placeName);
             }
         } else {
-            newRoute[selectedField] = selectedLocation;
+            newRoute[selectedField] = placeName;
         }
         setRoute(newRoute);
-        console.log('selectedLocation:',selectedLocation)
-
-        // const newMarkers = [
-        //     ...selectedPlaces.map(loc => loc && { lat: loc.lat, lng: loc.lng }),
-        //     {lat: selectedPlace.lat, lng: selectedPlace.lng},
-        // ].filter(Boolean);
-        //
-        // const newMarkers = [
-        //     newRoute.출발지 && allLocationsInfo[newRoute.출발지],
-        //     ...newRoute.경유지.map(loc => allLocationsInfo[loc]),
-        //     newRoute.도착지 && allLocationsInfo[newRoute.도착지]
-        // ].filter(Boolean);
-
-        // setMarkers(newMarkers);
-        // console.log('onClickAdd!!!!!!!!!!!!!', newMarkers)
+        updateMarkers(newRoute);
+        closeModal();
     };
 
     const handleSearch = () => {
@@ -333,7 +308,7 @@ const MapPage = () => {
             <div className="map-page">
                 <div className="sidebar">
                     <img style={{width: '200px', cursor:'pointer'}} src='/Img/Logo1.png' onClick={handleGoMain}></img>
-                    <h1 style={{marginTop: "20%", marginBottom: "20%"}}>오직 {nicknames}님을 위한 경로</h1>
+                    <h1 style={{marginTop: "20%", marginBottom: "20%"}}>오직 {username}님을 위한 경로</h1>
                     <div><br/></div>
                     <Droppable droppableId="travelLocations">
                         {(provided) => (
@@ -410,67 +385,15 @@ const MapPage = () => {
                                     onClick={() => openModal('경유지')}
                                 >경유지 추가
                                 </button>
-                                <button onClick={handleGoMain} style={{
-                                    border: "none",
-                                    borderRadius: "10px",
-                                    fontFamily: "Regular",
-                                    padding: "3%",
-                                    position: "relative",
-                                    top: "66%",
-                                }}> 나가기
-                                </button>
+                                <BottomButton onClick={handleGoMain}>나가기</BottomButton>
 
-                                {/*아래 두 줄은 테스트코드*/}
-                                <button onClick={() => searchPlaceInCountry('고메스시', apiKey)}>검색</button>
-                                <button onClick={sendPlace}>경로 저장 (DB 저장)</button>
+                                {/*아래 두 줄은 DB 저장 코드*/}
+                                {/*<button onClick={() => searchPlaceInCountry('고메스시', apiKey)}>검색</button>*/}
+                                {/*<button onClick={sendPlace}>경로 저장 (DB 저장)</button>*/}
 
-                                <button onClick={handleGoReservation} style={{
-                                    border: "none",
-                                    borderRadius: "10px",
-                                    fontFamily: "Regular",
-                                    padding: "3%",
-                                    position: "relative",
-                                    top: "66%",
-                                    left: "26%"
-                                }}
-                                > 예약 대행 신청하러 가기
-                                </button>
-
-                                {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~테스트 코드~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
-                                <div>
-                                    <input
-                                        type="text"
-                                        value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
-                                        placeholder="Enter a place"
-                                    />
-                                    <button onClick={handleSearch}>Search</button>
-
-                                    {placesData && Object.keys(placesData).length > 0 ? (
-                                        Object.keys(placesData).map((placeName) => (
-                                            <div key={placeName} className="location-item"
-                                                 onClick={() => onClickAdd(placeName)}>
-                                                <span>{placeName}</span>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p>No places found</p>
-                                    )}
-
-                                    {/* 선택된 장소들을 표시하는 부분 */}
-                                    {selectedPlaces.length > 0 && (
-                                        <div>
-                                            <h3>Selected Places</h3>
-                                            {selectedPlaces.map((place, index) => (
-                                                <div key={index}>
-                                                    <p>Name: {place.name}</p>
-                                                    <p>Latitude: {place.lat}</p>
-                                                    <p>Longitude: {place.lng}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                <BottomButton onClick={handleGoReservation} style={{left: "26%"}}>
+                                    예약 대행 신청하러 가기
+                                </BottomButton>
                             </div>
 
                         )}
@@ -514,6 +437,8 @@ const MapPage = () => {
                     style={customStyles}
                     contentLabel="Select Location Modal"
                 >
+
+                    {/*검색 모달*/}
                     <div className="modal-content">
                         <h2>{selectedField}를 선택해 주세요.</h2>
                         <DestinationInput
@@ -522,7 +447,7 @@ const MapPage = () => {
                             onKeyDown={handleKeyDownEnter} type="text"
                                           placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
-                            {isSearched ? (
+                            {(isSearched && query) ? (
                                 <div>
                                     {placesData && Object.keys(placesData).length > 0 ? (
                                         Object.keys(placesData).map((placeName) => (
@@ -542,9 +467,8 @@ const MapPage = () => {
                                         <div
                                             key={location.name}
                                             className={`location-item ${selectedLocation === location.name ? 'selected' : ''}`}
-                                            onClick={() => handleLocationClick(location.name)}
+                                            onClick={() => setSelectedLocation(location.name)}
                                         >
-                                            <img src={location.img} alt={location.name}/>
                                             <span>{location.name}</span>
                                         </div>
                                     ))}
