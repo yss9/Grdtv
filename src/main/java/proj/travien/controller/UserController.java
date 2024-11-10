@@ -265,10 +265,10 @@ public class UserController {
     }
 
     @Operation(summary = "포인트 추가")
-    @PostMapping("/{userId}/points/add")
-    public ResponseEntity<?> addUserPoints(@PathVariable String userId, @RequestParam int pointsToAdd) {
+    @PostMapping("/{nickname}/points/add")
+    public ResponseEntity<?> addUserPoints(@PathVariable String nickname, @RequestParam int points) {
         try {
-            boolean success = userService.addUserPoints(userId, pointsToAdd);
+            boolean success = userService.addPointsByNickname(nickname, points);
             if (success) {
                 return ResponseEntity.ok("Points added successfully");
             } else {
@@ -280,10 +280,10 @@ public class UserController {
     }
 
     @Operation(summary = "포인트 차감")
-    @PostMapping("/{userId}/points/deduct")
-    public ResponseEntity<?> deductUserPoints(@PathVariable String userId, @RequestParam int pointsToDeduct) {
+    @PostMapping("/{nickname}/points/deduct")
+    public ResponseEntity<?> deductUserPoints(@PathVariable String nickname, @RequestParam int points) {
         try {
-            boolean success = userService.deductUserPoints(userId, pointsToDeduct);
+            boolean success = userService.deductPointsByNickname(nickname, points);
             if (success) {
                 return ResponseEntity.ok("Points deducted successfully");
             } else {
@@ -293,6 +293,33 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "포인트 전송")
+    @PostMapping("/transfer-points")
+    public ResponseEntity<?> transferPoints(
+            @RequestParam("userNickname") String userNickname,
+            @RequestParam("agentNickname") String agentNickname,
+            @RequestParam("points") int points) {
+        try {
+            // 사용자 포인트 차감 및 예약대행자 포인트 추가
+            boolean userDeducted = userService.deductPointsByNickname(userNickname, points);
+            if (!userDeducted) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to deduct points from user");
+            }
+
+            boolean agentAdded = userService.addPointsByNickname(agentNickname, points);
+            if (agentAdded) {
+                return ResponseEntity.ok("Points transferred successfully");
+            } else {
+                // 포인트 추가 실패 시 사용자에게 차감된 포인트를 복구
+                userService.addPointsByNickname(userNickname, points);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add points to agent");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 
 
     @Setter
