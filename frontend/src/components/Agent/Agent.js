@@ -232,10 +232,58 @@ const Agent = ({ review, pageType }) => {
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
     const [username, setUsername] = useState('');
+    const [favoriteAgents, setFavoriteAgents] = useState([]);
 
-    const toggleHeart = () => {
+
+    useEffect(() => {
+        const fetchFavoriteAgents = async () => {
+            if (!token) return;
+
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/follow/followed-agents?userId=${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setFavoriteAgents(response.data);
+
+                // review.author가 서버에서 가져온 에이전트 목록에 있는지 확인
+                const isFavorite = response.data.some(agent => agent.agentDetails.nickname === review.author);
+                setIsHeartFilled(isFavorite);
+            } catch (error) {
+                console.error('Failed to fetch favorite agents:', error);
+            }
+        };
+
+        if (review.author) { // review.author가 있을 때만 fetchFavoriteAgents 실행
+            fetchFavoriteAgents();
+        }
+    }, [token, review.author]); // review.author와 token이 변경될 때마다 실행
+
+
+    const toggleHeart = async () => {
         setIsHeartFilled(!isHeartFilled);
+
+        if (token && review.author) {
+            const decodedToken = jwtDecode(token);
+            const nickname = decodedToken.nickname;
+            try {
+                await axios.post(`http://localhost:8080/api/follow/follow-agent?userNickname=${nickname}&agentNickname=${review.author}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                });
+                console.log('Agent followed/unfollowed successfully');
+            } catch (error) {
+                console.error('Failed to follow/unfollow agent:', error);
+            }
+        }
     };
+
 
     const handleAddUser = async() => {
         if (token) {
@@ -289,6 +337,7 @@ const Agent = ({ review, pageType }) => {
                 const userPayload = jwtDecode(token);
                 const extractedUsername = userPayload.nickname;
                 setUsername(extractedUsername);
+
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }

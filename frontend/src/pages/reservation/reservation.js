@@ -16,6 +16,8 @@ import Agent3 from "../../components/Agent/Agent3";
 import TopBarComponent from "../../components/TopBar/TopBar";
 import Profile from '../../images/도라에몽.jpeg';
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 const processProfilePicture = (profilePicture) => {
     if (profilePicture) {
@@ -24,6 +26,11 @@ const processProfilePicture = (profilePicture) => {
         return Profile;
     }
 };
+
+const getAuthToken = () => {
+    return Cookies.get('jwt');
+};
+
 const Agent3Data = [
     { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image:Profile , score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
     { author: '행복', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image:Profile , score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!'},
@@ -35,13 +42,52 @@ export default function ReservationPage() {
     const [agent2Data, setAgent2Data] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCountry, setSelectedCountry] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");  // State to hold search input value
-    const navigate = useNavigate();  // Use useNavigate instead of useHistory
+    const [searchQuery, setSearchQuery] = useState("");
+    const [latestProgressData, setLatestProgressData] = useState(null);
+    const navigate = useNavigate();
+    const token = getAuthToken();
 
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
     const visibleAgents = agentData.slice(startIndex, startIndex + reviewsPerPage);
     const totalIndicators = Math.ceil(agentData.length / reviewsPerPage);
+
+    useEffect(() => {
+        const fetchProgressData = async () => {
+            try {
+                const token = Cookies.get('jwt');
+                if (!token) {
+                    console.error('토큰이 없습니다.');
+                    return;
+                }
+                const decodedToken = jwtDecode(token);
+                const nickname = decodedToken.nickname;
+
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/booking/all-progress?nickname=${nickname}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const progressArray = response.data;
+                    if (progressArray.length > 0) {
+                        setLatestProgressData(progressArray[progressArray.length - 1]);
+                    }
+
+                    console.log(progressArray);
+                    console.log(latestProgressData.progress)
+
+                } catch (error) {
+                    console.error('Progress data를 가져오는 중 오류 발생:', error);
+                }
+            } catch (error) {
+                console.error('토큰 디코딩 중 오류 발생:', error);
+            }
+        };
+
+        fetchProgressData();
+    }, []);
 
     useEffect(() => {
         axios.get("http://localhost:8080/api/users/agents")
@@ -154,7 +200,14 @@ export default function ReservationPage() {
                         <SubTitle2><p>여행 님</p>과 예약을 진행한 적이 있어요.</SubTitle2>
                     </SubTitleWrapper>
                     <ProgressContainer>
-                        <Progress/>
+                        {latestProgressData ? (
+                            <Progress
+                                currentStage={latestProgressData.progress}
+                                agentName={latestProgressData.agentNickname}
+                            />
+                        ) : (
+                            <p>진행 데이터가 없습니다.</p>
+                        )}
                     </ProgressContainer>
                     <SubTitleWrapper>
                         <SubTitle2>최근 등록된 글로플러 리스트예요.</SubTitle2>

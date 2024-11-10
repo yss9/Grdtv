@@ -1,88 +1,130 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Agent from "../Agent/Agent";
-import {Reset} from "styled-reset";
+import { Reset } from "styled-reset";
 import Progress from "../Agent/progress";
-import AgentProfile from "../../../src/public/Img/forprofile/AgentProfile.png"
-import AgentProfile2 from "../../../src/public/Img/forprofile/AgentProfile2.png"
-import AgentProfile3 from "../../../src/public/Img/forprofile/AgentProfile3.png"
-import Maratang from "../../../src/public/Img/maratang.png"
-import Sushi from "../../../src/public/Img/sushi2.png"
-import Sushi2 from "../../../src/public/Img/sushi.png"
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
+import axios from "axios";
+import Profile from '../../images/도라에몽.jpeg';
+
 const SelectTitle = styled.div`
-  width: 82rem;
-  height: 2.5em;
-  background-color: white;
-  display: flex;
+    width: 82rem;
+    height: 2.5em;
+    background-color: white;
+    display: flex;
 `;
 
 const Tab = styled.div`
-  width: 50%;
-  background-color: ${props => (props.active ? '#000000' : 'white')};
-  color: ${props => (props.active ? 'white' : 'black')};  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  
+    width: 50%;
+    background-color: ${props => (props.active ? '#000000' : 'white')};
+    color: ${props => (props.active ? 'white' : 'black')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 `;
 
 const ReviewWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
- // background-color: #61dafb;
-  //padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const Review = styled.div`
-  margin-top: 4em;
-  width:80rem;
-  //background-color: orange;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  p{
-    margin-top: 1em;
-
-  }
+    margin-top: 30px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    p {
+        margin-top: 1em;
+    }
 `;
 
-const AgentWrapper=styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  //background-color: palevioletred;
-`
-const Agents=styled.div`
-  width: 100%;
-  height: 32rem;
-  //background-color: gray;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
+const AgentWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
-const AgentData=[ //백엔드 데이터 요청 부분
-    { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image: AgentProfile, score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.', reviewImg: Maratang },
-    { author: '나미 맛집 전문가', introduce: '현지 맛집을 잘 알아요!', hashtags: ['#일본맛집', '#현지정보', '#여행꿀팁'], spec: ['일본 8년 거주', 'JLPT N2', '유학 경험'], image: AgentProfile2, score: '4.8', number: '410', agentreview: '맛집 추천이 정말 훌륭했어요!', reviewImg: Sushi },
-    { author: '프랑스 전문가', introduce: '프랑스 여행은 저에게 맡겨주세요!', hashtags: ['#프랑스여행', '#문화탐방', '#와인투어'], spec: ['프랑스 7년 거주', '프랑스어 능통'], image: AgentProfile3, score: '4.9', number: '320', agentreview: '프랑스의 다양한 문화와 음식을 즐겼습니다.', reviewImg: Sushi2 },
-];
+const Agents = styled.div`
+    width: 100%;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
 
 export default function MyReservation() {
     const [activeTab, setActiveTab] = useState('myWrite');
+    const [favoriteAgents, setFavoriteAgents] = useState([]);
+    const [progressData, setProgressData] = useState([]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
 
-    const [activeIndex] = useState(0);
-    const reviewsPerPage = 3;
-    const startIndex = activeIndex * reviewsPerPage;
-    const visibleAgents = AgentData.slice(startIndex, startIndex + reviewsPerPage);
+    useEffect(() => {
+        const fetchFavoriteAgents = async () => {
+            const token = Cookies.get('jwt');
+            if (!token) return;
+
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/follow/followed-agents?userId=${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setFavoriteAgents(response.data.map(agent => ({
+                    author: agent.agentDetails.nickname,
+                    introduce: agent.agentDetails.introduction,
+                    hashtags: agent.agentDetails.hashtags,
+                    spec: agent.agentDetails.specIntroduction,
+                    image: agent.agentDetails.profilePicture
+                        ? `http://localhost:8080/${agent.agentDetails.profilePicture}`
+                        : Profile,
+                    score: agent.agentDetails.averageReviewRating,
+                    number: 0,
+                })));
+            } catch (error) {
+                console.error('Failed to fetch favorite agents:', error);
+            }
+        };
+
+        const fetchProgressData = async () => {
+            const token = Cookies.get('jwt');
+            if (!token) return;
+
+            const decodedToken = jwtDecode(token);
+            const nickname = decodedToken.nickname;
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/booking/all-progress?nickname=${nickname}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setProgressData(response.data);
+            } catch (error) {
+                console.error('Failed to fetch progress data:', error);
+            }
+        };
+
+        if (activeTab === 'myWrite') {
+            fetchProgressData();
+        } else if (activeTab === 'joayo') {
+            fetchFavoriteAgents();
+        }
+    }, [activeTab]);
 
     return (
         <>
-            <Reset/>
+            <Reset />
             <SelectTitle>
                 <Tab active={activeTab === 'myWrite'} onClick={() => handleTabClick('myWrite')}>
                     진행도
@@ -94,14 +136,16 @@ export default function MyReservation() {
             <ReviewWrapper>
                 {activeTab === 'myWrite' ? (
                     <Review>
-                        <Progress/>
+                        {progressData.map((progress, index) => (
+                            <Progress key={index} currentStage={progress.progress} agentName={progress.agentNickname} />
+                        ))}
                     </Review>
                 ) : (
                     <Review>
                         <AgentWrapper>
                             <Agents>
-                                {visibleAgents.map((review, index) => (
-                                    <Agent key={index} review={review} pageType={1}/>// 페이지 타입 1이면 하트 채워져있음
+                                {favoriteAgents.map((agent, index) => (
+                                    <Agent key={index} review={agent} pageType={1} />
                                 ))}
                             </Agents>
                         </AgentWrapper>
