@@ -32,6 +32,7 @@ export default function ReviewPage() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
     const [setReqData] = useState([]);
+    const [topReviewerNickname, setTopReviewerNickname] = useState("");
     const [bestReviews, setBestReviews] = useState([]);
     const [filteredRegions, setFilteredRegions] = useState([]);
     const reviewsPerPage = 3;
@@ -42,21 +43,25 @@ export default function ReviewPage() {
         const fetchBestReviews = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/likes/best-reviews');
-                // bestPosts 배열을 상태에 설정
+
                 if (Array.isArray(response.data.bestPosts)) {
-                    setBestReviews(response.data.bestPosts); // 상태 업데이트
+                    setBestReviews(response.data.bestPosts);
+                    if (response.data.bestPosts.length > 0) {
+                        setTopReviewerNickname(response.data.bestPosts[0].nickname);
+                    }
                 } else {
                     console.error("Expected an array but got:", response.data.bestPosts);
-                    setBestReviews([]); // 빈 배열로 설정
+                    setBestReviews([]);
                 }
             } catch (error) {
                 console.error("Error fetching best reviews:", error);
-                setBestReviews([]); // 빈 배열로 설정
+                setBestReviews([]);
             }
         };
 
         fetchBestReviews();
     }, []);
+
 
     const startIndex = activeIndex * reviewsPerPage;
     const visibleReviews = bestReviews.slice(startIndex, startIndex + reviewsPerPage);
@@ -171,7 +176,7 @@ export default function ReviewPage() {
                 <SubTitleContainer>
                     <SubTitle1>
                         <BestReviewTitle>오늘의 BEST 리뷰어 </BestReviewTitle>
-                        <BestReiviewer>> 김라멘 님</BestReiviewer>
+                        <BestReiviewer>> {topReviewerNickname} 님</BestReiviewer>
                         <IndicatorContainer>
                             {Array.from({ length: Math.ceil(bestReviews.length / reviewsPerPage) }).map((_, index) => (
                                 <Indicator

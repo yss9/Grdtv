@@ -177,7 +177,7 @@ export const Blogs = styled.div`
 
 export const MyMenuWrapper = styled.div`
     width: 27%;
-    height: 700px;
+    height: 180px;
     background-color: #f5f6f8;
     border-radius: 15px;
 
@@ -188,8 +188,8 @@ export const MyMenuContainer = styled.div`
 `
 export const Profile2 = styled.div`
     width: 100%;
-    height: 12vh;
-    //background-color: palevioletred;
+    height: 120px;
+   // background-color: palevioletred;
     border-radius: 15px 15px 0 0;
     display: flex;
     align-items: center;
@@ -240,6 +240,7 @@ export const ButtonContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 0 0 15px 15px;
 `
 export const VirticalLine = styled.div`
     height: 80%;
