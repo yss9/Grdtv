@@ -35,8 +35,8 @@ public class BookingController {
     }
 
     @GetMapping("/all-progress")
-    public ResponseEntity<List<Map<String, Object>>> getAllProgress(@RequestParam String userId) {
-        List<Booking> bookings = bookingService.getAllUniqueProgress(userId);
+    public ResponseEntity<List<Map<String, Object>>> getAllProgress(@RequestParam String nickname) {
+        List<Booking> bookings = bookingService.getAllUniqueProgress(nickname);
 
         List<Map<String, Object>> result = bookings.stream().map(booking -> {
             Map<String, Object> map = new HashMap<>();

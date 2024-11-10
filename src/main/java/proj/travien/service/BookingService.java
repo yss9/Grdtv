@@ -7,6 +7,7 @@ import proj.travien.domain.User;
 import proj.travien.repository.BookingRepository;
 import proj.travien.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,10 +63,6 @@ public class BookingService {
                 .orElse(0);  // 예약이 존재하지 않으면 0 반환
     }
 
-    public List<Booking> getAllProgress(String userNickname) {
-        return bookingRepository.findAllByUser_NicknameOrAgent_Nickname(userNickname, userNickname);
-    }
-
     public List<Booking> getAllUniqueProgress(String userNickname) {
         List<Booking> bookings = bookingRepository.findAllByUser_NicknameOrAgent_Nickname(userNickname, userNickname);
 
@@ -78,7 +75,7 @@ public class BookingService {
                         (existing, replacement) -> existing // 중복되는 경우 기존 값을 유지
                 ));
 
-        return uniqueBookings.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(uniqueBookings.values());
     }
 
     public boolean setSendedStatus(String userNickname, String agentNickname, boolean status) {
