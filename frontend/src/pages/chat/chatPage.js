@@ -3,7 +3,16 @@ import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import {ChatPageWrapper, Main, PointModal, Wrapper} from "./chatPageStyle";
+import {
+    ChatPageWrapper,
+    Main,
+    ModalBackground,
+    PointModal,
+    ProfileImg,
+    ProfileImgContainer,
+    Wrapper,
+    Button, ModalFont
+} from "./chatPageStyle";
 import WebSocketService from "./WebSocketService";
 
 import TopBarComponent from "../../components/TopBar/TopBar";
@@ -48,9 +57,29 @@ const ChatPage = () => {
     const [id, setId] = useState(null);
     const [isAgent, setIsAgent] = useState(false);
     const [step, setStep] = useState(0);
+    const [profilePictures, setProfilePictures] = useState({}); // 프로필 사진 저장 상태
 
     const decodedToken = jwtDecode(token);
     const userId = decodedToken.userId;
+
+    const [pointInput, setPointInput] = useState('');
+    const handlePointInputChange = (event) => {
+        setPointInput(event.target.value);
+    };
+
+    const onClickRequestPoints = () => {
+        if (pointInput) {
+            const message = {
+                sender: username,
+                content: `${username} 님께서 ${pointInput} 포인트를 요청했어요!|button`,
+                type: 'CHAT'
+            };
+            WebSocketService.sendMessage(message);
+            setPointInput('');
+            handleClosePointModal();
+        }
+    };
+
 
     useEffect(() => {
         const fetchMyInfo = async () => {
@@ -277,6 +306,35 @@ const ChatPage = () => {
         setIsVisiblePointModal(false);
     }
 
+    useEffect(() => {
+        const fetchProfilePictures = async () => {
+            try {
+                const pictures = {};
+                const fetchPromises = nicknames
+                    .filter(nickname => nickname !== username)
+                    .map(async (nickname) => {
+                        const response = await axios.get(`http://localhost:8080/api/users/profile-picture/${nickname}`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                        let imageUrl = response.data.replace('static\\', '').replace(/\\/g, '/');
+
+                        console.log('이미지 가져옴:', imageUrl);
+                        pictures[nickname] = imageUrl; // 수정된 이미지 URL 저장
+                        setProfilePictures(pictures);
+                    });
+
+                // 모든 요청이 완료될 때까지 대기
+                await Promise.all(fetchPromises);
+
+            } catch (error) {
+                console.error('Failed to fetch profile pictures', error);
+            }
+        };
+        fetchProfilePictures();
+    }, [nicknames, username]);
+
     return (
         <Wrapper>
             <Reset/>
@@ -291,6 +349,7 @@ const ChatPage = () => {
                     nicknames={nicknames}
                     username={username}
                     handleAddUser={handleAddUser}
+                    profilePictures={profilePictures}
                 />
                 <Main>
                     {joined ? (
@@ -314,6 +373,7 @@ const ChatPage = () => {
                             userId={userId}
                             onClickProcessButton={onClickProcessButton}
                             step={step}
+                            profilePictures={profilePictures}
                         />
                     ) : (
                         <div>
@@ -323,31 +383,50 @@ const ChatPage = () => {
                 </Main>
             </ChatPageWrapper>
             {isVisiblePointModal && (
-                <PointModal onClick={handleClosePointModal}>
-                    <div
+                <ModalBackground onClick={handleClosePointModal}>
+                    <PointModal
                         onClick={(e) => e.stopPropagation()}
-                        style={{
-                            backgroundColor: '#fefefe',
-                            margin: '15% auto',
-                            padding: '20px',
-                            border: '1px solid #888',
-                            width: '30%',
-                        }}
                     >
-                        <span
+                        <div
                             onClick={handleClosePointModal}
                             style={{
                                 color: '#aaa',
-                                float: 'right',
-                                fontSize: '28px',
+                                fontSize: '40px',
                                 fontWeight: 'bold',
                                 cursor: 'pointer',
+                                position: 'absolute', // 절대 위치 설정
+                                top: '20px', // 부모의 위쪽에 고정
+                                right: '20px', // 부모의 오른쪽에 고정
                             }}
                         >
                             ×
-                        </span>
-                    </div>
-                </PointModal>
+                        </div>
+                        <ProfileImgContainer style={{width:'150px', height:'150px'}}>
+                            <ProfileImg
+                                src={'http://localhost:8080/' + profilePictures[chatUsername] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'}
+                                alt={'프로필사진'}/>
+                        </ProfileImgContainer>
+                        <ModalFont>
+                            <span style={{color: 'black'}}>
+                                {chatUsername}
+                            </span>&nbsp;님
+                        </ModalFont>
+                        <div style={{height: '50px', borderBottom: '2px solid gray'}}>
+                            <input
+                                style={{width:'200px',height:'48px', float: 'left', fontSize:'25px', textAlign:'right', border: "none", marginRight:'5px'}}
+                                size="1"
+                                value={pointInput}
+                                onChange={handlePointInputChange}
+                            />
+                            <ModalFont style={{float:'right'}}>
+                                포인트
+                            </ModalFont>
+                        </div>
+                        <Button onClick={onClickRequestPoints}>
+                            요청하기
+                        </Button>
+                    </PointModal>
+                </ModalBackground>
             )}
         </Wrapper>
     );

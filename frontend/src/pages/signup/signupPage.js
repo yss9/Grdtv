@@ -102,11 +102,12 @@ export default function SignupPage() {
                 gender: gender,
                 mbti: MBTI,
                 nickname: nickName,
+                profilePicture: profilePicture
             })], { type: 'application/json' }));
 
-            if (profilePicture) {
-                formData.append('profilePicture', profilePicture);
-            }
+            // if (profilePicture) {
+            //     formData.append('profilePicture', profilePicture);
+            // }
 
             console.log(id, pw, name, birthday, MBTI, nickName, profilePicture)
 

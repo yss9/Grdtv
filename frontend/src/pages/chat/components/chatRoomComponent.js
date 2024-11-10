@@ -4,6 +4,7 @@ import BottomBarComponent from './bottomBarComponent';
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import Cookies from "js-cookie";
+import {ProfileImgContainer, ProfileImg, PointButton} from "../chatPageStyle";
 
 // styled-components
 const ChatRoomWrapper = styled.div`
@@ -16,23 +17,23 @@ const ChatHeader = styled.div`
     padding: 15px;
     background-color: white;
     width: calc(100% - 30px);
-    height: 25px;
+    height: 40px;
 `
 const ReviewButton = styled.div`
     float: left;
     border: 1px solid #4E53ED;
     border-radius: 20px;
-    width: 80px;
-    height: 28px;
+    width: 85px;
+    height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 13px;
+    font-size: 15px;
     margin-left: 35px;
     cursor: pointer;
 `
 const Username = styled.div`
-    font-size: 15px;
+    font-size: 20px;
     margin-left: 20px;
 `
 const ChatRoom = styled.div`
@@ -49,14 +50,14 @@ const ChatRoom = styled.div`
     
 `
 const ChatBubble = styled.div`
-    max-width: 40%;
-    padding: 10px;
+    max-width: 30%;
+    padding: 20px;
     margin-bottom: 10px;
     position: relative;
 `
 const GloplerListButton = styled.button`
-    width: 115px;
-    height: 32px;
+    width: 120px;
+    height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,7 +71,7 @@ const GloplerListButton = styled.button`
 const ProcessWrapper = styled.div`
     position: relative;
     width: 100%;
-    height: 40px;
+    height: 45px;
     background-color: #d9d9d9;
     border-radius: 0 30px 30px 0;
     margin-bottom: 5px;
@@ -119,6 +120,9 @@ const ProcessButton = styled.button`
 `
 
 
+
+
+
 const ChatRoomComponent = ({
                                chatUsername,
                                messages,
@@ -138,6 +142,7 @@ const ChatRoomComponent = ({
                                userId,
                                onClickProcessButton,
                                step,
+                               profilePictures
                            }) => {
     const token = Cookies.get('jwt');
 
@@ -151,19 +156,37 @@ const ChatRoomComponent = ({
         return filePath.match(/\.pdf$/);
     };
 
-
+    const handleSendPoints = async (points) => {
+        try {
+            // 포인트 전송 API 호출
+            // const response = await axios.post('http://localhost:8080/api/points/send', {
+            //     fromUser: chatUsername,
+            //     toUser: username,
+            //     points: points,
+            // }, {
+            //     headers: {
+            //         'Authorization': `Bearer ${token}`,
+            //     }
+            // });
+            // console.log('포인트 전송 성공:', response.data);
+        } catch (error) {
+            console.error('포인트 전송 실패:', error);
+        }
+    };
 
     return (
         <ChatRoomWrapper>
             <ChatHeader>
-                <img
-                    style={{
-                        width: '45px',
-                        float: 'left',
-                    }}
-                    src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'
-                    alt='채팅방'
-                />
+                <ProfileImgContainer>
+                    <ProfileImg
+                        src={'http://localhost:8080/'+profilePictures[chatUsername] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'}
+                        alt='채팅방'
+                        onError={(e) => {
+                            e.target.onerror = null; // 무한 루프 방지
+                            e.target.src = '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'; // 대체 이미지 설정
+                        }}
+                    />
+                </ProfileImgContainer>
                 <Username>{chatUsername}</Username>
                 <ReviewButton>리뷰 &nbsp;&gt;</ReviewButton>
                 <GloplerListButton>글로플러 목록</GloplerListButton>
@@ -201,6 +224,9 @@ const ChatRoomComponent = ({
                         style={{
                             ...(message.sender === username ? styles.myMessage : styles.otherMessage),
                             width: 'auto',
+                            backgroundColor: message.content.includes('|button') ? '#FF9900' : undefined,
+                            border: message.content.includes('|button') ? 'none' : '1px solid #4E53ED',
+                            color: message.content.includes('|button') ? 'white' : 'black',
                         }}
                     >
                         {isImage(message.content) ? (
@@ -220,12 +246,27 @@ const ChatRoomComponent = ({
                             <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
                                 파일 다운로드
                             </a>
+                        ) : message.content.includes('|button') ? (
+                            <>
+                                <div>{message.content.split('|button')[0]}</div>
+                                <PointButton
+                                    onClick={() => {
+                                        // 정규식을 사용해 '포인트' 앞의 숫자를 추출
+                                        const match = message.content.match(/(\d+)\s*포인트/);
+                                        const points = match ? parseInt(match[1], 10) : 0; // 숫자가 없으면 기본값 0
+                                        handleSendPoints(points);
+                                    }}
+                                >
+                                    포인트 입금하기
+                                </PointButton>
+                            </>
                         ) : (
-                            // 일반 텍스트 메시지
                             message.content
                         )}
                     </ChatBubble>
+
                 ))}
+
                 <div ref={bottomRef}></div>
             </ChatRoom>
 

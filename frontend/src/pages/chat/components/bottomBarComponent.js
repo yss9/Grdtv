@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {ModalBackground} from "../chatPageStyle";
 
 const BottomBar = styled.div`
     overflow: hidden;
@@ -30,17 +31,6 @@ const ChatInput = styled.input`
     border: none;
     float: right;
     outline: none;
-`
-const ChatModal = styled.div`
-    display: block;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1;
 `
 
 const BottomBarComponent = ({
@@ -76,7 +66,7 @@ const BottomBarComponent = ({
                     +
                 </button>
                 {isVisible && (
-                    <ChatModal onClick={handleCloseModal}>
+                    <ModalBackground onClick={handleCloseModal}>
                         <div
                             onClick={(e) => e.stopPropagation()}
                             style={{
@@ -125,7 +115,7 @@ const BottomBarComponent = ({
                                 음성 파일 전송하기
                             </button>
                         </div>
-                    </ChatModal>
+                    </ModalBackground>
                     )}
             </div>
             <SendButton onClick={handleSendMessage}>

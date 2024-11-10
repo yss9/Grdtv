@@ -153,13 +153,16 @@ public class UserService {
         return true;
     }
 
-    // 프로필 사진 로드
-    public Resource loadProfilePicture(String userId) throws IOException {
-        User user = userRepository.findByUserId(userId).orElse(null);
-        if (user == null || user.getProfilePicture() == null) {
-            throw new FileNotFoundException("Profile picture not found for user: " + userId);
-        }
-        return new FileSystemResource(Paths.get("src/main/resources").resolve(user.getProfilePicture()).toAbsolutePath().toString());
+    public String getProfilePicturePath(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("User not found with nickname: " + nickname));
+        return user.getProfilePicture();
+    }
+
+    public String getProfilePictureByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getProfilePicture(); // profilePicture 필드가 파일 경로를 저장한다고 가정
     }
 
     // 검증 파일 로드

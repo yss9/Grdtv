@@ -210,17 +210,32 @@ public class UserController {
         return new ResponseEntity<>(nicknames, HttpStatus.OK);
     }
 
-    @Operation(summary = "프로필 사진 조회")
-    @GetMapping("/profile-picture/{userId}")
-    public ResponseEntity<Resource> getProfilePicture(@PathVariable String userId) {
+
+
+    @Operation(summary = "프로필 사진 경로 조회")
+    @GetMapping("/profile-picture/{nickname}")
+    public ResponseEntity<String> getProfilePicture(@PathVariable String nickname) {
         try {
-            Resource file = userService.loadProfilePicture(userId);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                    .body(file);
-        } catch (IOException e) {
-            log.error("Error loading profile picture for userId: {}", userId, e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            String profilePicturePath = userService.getProfilePicturePath(nickname);
+            if (profilePicturePath == null || profilePicturePath.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile picture not set for user: " + nickname);
+            }
+            return ResponseEntity.ok(profilePicturePath);
+        } catch (RuntimeException e) {
+            log.error("Error retrieving profile picture path for nickname: {}", nickname, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error retrieving profile picture path for nickname: {}", nickname, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving profile picture");
+        }
+    }
+    @GetMapping("/profile-picture")
+    public ResponseEntity<String> getProfilePictureByNickname(@RequestParam("nickname") String nickname) {
+        try {
+            String profilePicturePath = userService.getProfilePictureByNickname(nickname);
+            return ResponseEntity.ok(profilePicturePath);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
 

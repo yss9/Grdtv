@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from "axios";
+import Cookies from "js-cookie";
+import {ProfileImgContainer, ProfileImg} from "../chatPageStyle";
 
 const ChatListWrapper = styled.aside`
     width: 18%;
@@ -29,10 +32,16 @@ const SidebarContentInput = styled.input`
     border-radius: 20px;
     border: none;
     background-color: #E8E8E8;
-    height: 30px;
+    height: 40px;
 `
+const ChatContainer = styled.div`
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+`;
 
-const ChatListComponent = ({ nicknames, username, handleAddUser }) => {
+const ChatListComponent = ({ nicknames, username, handleAddUser, profilePictures }) => {
+
+
     return (
         <ChatListWrapper>
             <SidebarContentInput type="text" placeholder="채팅방 내용, 참여자 검색" />
@@ -47,35 +56,37 @@ const ChatListComponent = ({ nicknames, username, handleAddUser }) => {
                                     cursor: 'pointer',
                                     padding: '10px',
                                     overflowX: 'hidden',
-
                                 }}
                                 onClick={() => handleAddUser(nickname)}
                                 key={nickname}
                             >
-                                <img
-                                    style={{
-                                        width: '50px',
-                                        float: 'left',
-                                    }}
-                                    src='/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'
-                                    alt='채팅방'
-                                />
-                                <div
-                                    style={{
-                                        float: 'right',
-                                        width: 'calc(100% - 70px)',
-                                        padding: '0 10px',
-                                    }}
-                                >
-                                    <div>
-                                        <ChatItem>
-                                            {nickname}
-                                        </ChatItem>
+                                <ChatContainer>
+                                    <ProfileImgContainer>
+                                        <ProfileImg
+                                            src={'http://localhost:8080/' + profilePictures[nickname] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'}
+                                            alt='채팅방'
+                                            onError={(e) => {
+                                                e.target.onerror = null; // 무한 루프 방지
+                                                e.target.src = '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'; // 대체 이미지 설정
+                                            }}
+                                        />
+                                    </ProfileImgContainer>
+                                    <div
+                                        style={{
+                                            width: 'calc(100% - 70px)',
+                                            padding: '0 10px',
+                                        }}
+                                    >
+                                        <div>
+                                            <ChatItem>
+                                                {nickname}
+                                            </ChatItem>
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: 'gray' }}>
+                                            메세지를 보내서 글로플러와...
+                                        </div>
                                     </div>
-                                    <div style={{ fontSize: '12px', color: 'gray' }}>
-                                        메세지를 보내서 글로플러와...
-                                    </div>
-                                </div>
+                                </ChatContainer>
                             </div>
                         )
                     ))}
