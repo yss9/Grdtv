@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import googleMapsApiLoader from 'google-maps-api-loader';
 import Modal from 'react-modal';
-import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
+import {DirectionsRenderer, GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import './MapPage.css';
 import {DestinationInput} from "./routeNavigationStyle";
@@ -56,6 +56,8 @@ const MapPage = () => {
     const [placesData, setPlacesData] = useState([]);
     const [selectedPlaces, setSelectedPlaces] = useState([]); // 선택된 장소들을 저장할 상태 변수
 
+    const [directions, setDirections] = useState(null);
+
 
     const openModal = (field, index = null) => {
         setSelectedField(field);
@@ -104,14 +106,24 @@ const MapPage = () => {
             '그랑 프론트 오사카': { lat: 34.7051, lng: 135.4959 },
             '신세카이 혼도리 상점가': { lat: 34.6525, lng: 135.5060 },
         };
+        const additionalPlacesInfo = selectedPlaces.reduce((acc, place) => {
+            acc[place.name] = { lat: place.lat, lng: place.lng };
+            return acc;
+        }, {});
+
+        const allLocationsInfo = { ...initLocationsInfo, ...additionalPlacesInfo };
+
         const newMarkers = [
-            newRoute.출발지 && initLocationsInfo[newRoute.출발지],
-            ...newRoute.경유지.map(loc => initLocationsInfo[loc]),
-            newRoute.도착지 && initLocationsInfo[newRoute.도착지]
+            newRoute.출발지 && allLocationsInfo[newRoute.출발지],
+            ...newRoute.경유지.map(loc => allLocationsInfo[loc]),
+            newRoute.도착지 && allLocationsInfo[newRoute.도착지]
         ].filter(Boolean);
 
         setMarkers(newMarkers);
+        console.log('뉴마커',newMarkers)
+
     };
+
 
     const onDragEnd = (result) => {
         if (!result.destination) return;
@@ -199,13 +211,21 @@ const MapPage = () => {
             newRoute[selectedField] = selectedLocation;
         }
         setRoute(newRoute);
+        console.log('selectedLocation:',selectedLocation)
 
-        const newMarkers = [
-            ...selectedPlaces.map(loc => loc && { lat: loc.lat, lng: loc.lng }),
-            {lat: selectedPlace.lat, lng: selectedPlace.lng},
-        ].filter(Boolean);
+        // const newMarkers = [
+        //     ...selectedPlaces.map(loc => loc && { lat: loc.lat, lng: loc.lng }),
+        //     {lat: selectedPlace.lat, lng: selectedPlace.lng},
+        // ].filter(Boolean);
+        //
+        // const newMarkers = [
+        //     newRoute.출발지 && allLocationsInfo[newRoute.출발지],
+        //     ...newRoute.경유지.map(loc => allLocationsInfo[loc]),
+        //     newRoute.도착지 && allLocationsInfo[newRoute.도착지]
+        // ].filter(Boolean);
 
-        setMarkers(newMarkers);
+        // setMarkers(newMarkers);
+        // console.log('onClickAdd!!!!!!!!!!!!!', newMarkers)
     };
 
     const handleSearch = () => {
@@ -218,6 +238,8 @@ const MapPage = () => {
         const request = {
             query: query,
             fields: ['name', 'geometry'],
+            location: new window.google.maps.LatLng(35.6895, 139.6917), // 도쿄를 중심으로 검색 (예시)
+            radius: 50000 // 반경 50km 내에서 검색 (필요에 따라 조정 가능)
         };
 
         service.textSearch(request, (results, status) => {
@@ -259,14 +281,11 @@ const MapPage = () => {
                     }
                 });
                 setNicknames(response.data);
-                // console.log('nicknames:',response.data);
 
                 // 토큰에서 내 닉네임 가져오기
                 const userPayload = jwtDecode(token);
-                // console.log("userPayload:", userPayload);
                 const extractedUsername = userPayload.nickname;
                 setUsername(extractedUsername);
-                // console.log("extractedUsername", extractedUsername);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
@@ -276,6 +295,37 @@ const MapPage = () => {
     }, [token]);
 
     // 지도 로드
+    const calculateRoute = () => {
+        if (route.출발지 && route.도착지) {
+            const waypoints = route.경유지.map(waypoint => ({
+                location: waypoint,
+                stopover: true
+            }));
+
+            const service = new window.google.maps.DirectionsService();
+            service.route(
+                {
+                    origin: route.출발지,
+                    destination: route.도착지,
+                    waypoints: waypoints,
+                    travelMode: window.google.maps.TravelMode.WALKING,
+                },
+                (result, status) => {
+                    if (status === window.google.maps.DirectionsStatus.OK) {
+                        setDirections(result);
+                    } else {
+                        console.error(`Error fetching directions ${status}`);
+                    }
+                }
+            );
+        }
+    };
+
+    useEffect(() => {
+        if (route.출발지 && route.도착지) {
+            calculateRoute();
+        }
+    }, [route]);
 
 
     return (
@@ -288,7 +338,7 @@ const MapPage = () => {
                     <Droppable droppableId="travelLocations">
                         {(provided) => (
                             <div style={{fontSize: "20px"}} {...provided.droppableProps} ref={provided.innerRef}>
-                                
+
                                 {/*출발지*/}
                                 <Draggable key="출발지" draggableId="출발지" index={0}>
                                     {(provided) => (
@@ -307,7 +357,7 @@ const MapPage = () => {
                                     )}
                                 </Draggable>
                                 <div className="arrow">▼</div>
-                                
+
                                 {/*경유지*/}
                                 {route.경유지.map((waypoint, index) => (
                                     <React.Fragment key={`fragment-${index}`}>
@@ -331,7 +381,7 @@ const MapPage = () => {
                                     </React.Fragment>
                                 ))}
                                 {provided.placeholder}
-                                
+
                                 {/*도착지*/}
                                 <Draggable key="도착지" draggableId="도착지" index={route.경유지.length + 1}>
                                     {(provided) => (
@@ -438,16 +488,19 @@ const MapPage = () => {
                             onError={(e) => console.error('Error loading map', e)}
                         >
                             {markers.map((marker, index) => (
-                                <Marker key={index} position={marker} label={`${index + 1}`}/>
+                                <Marker key={index} position={marker} label={`${index + 1}`} />
                             ))}
 
-                            {markers.length > 1 && (
-                                <Polyline
-                                    path={markers}
+                            {/*네비게이션 출력*/}
+                            {directions && (
+                                <DirectionsRenderer
+                                    directions={directions}
                                     options={{
-                                        strokeColor: '#FF0000',
-                                        strokeOpacity: 1.0,
-                                        strokeWeight: 2,
+                                        polylineOptions: {
+                                            strokeColor: '#FF0000',
+                                            strokeOpacity: 1.0,
+                                            strokeWeight: 2,
+                                        },
                                     }}
                                 />
                             )}
