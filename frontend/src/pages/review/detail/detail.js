@@ -195,21 +195,22 @@ export default function BoardDetail() {
             fetchLikeStatus();
         }
     }, [boardID, token]);
-    
+
     const handleLikeClick = async () => {
+        if (!token) {
+            notification.error({
+                message: '로그인 필요',
+                description: '좋아요를 누르려면 로그인해주세요.'
+            });
+            return;
+        }
+
         try {
             const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
             const id = decodedToken.id;
 
-            console.log("boardID:", boardID);  // boardID 값 확인
-            console.log("user_id:", id);  // user_id 값 확인
-
-
-            // 좋아요 토글 요청
             const response = await axios.post(`http://localhost:8080/api/likes/toggle?boardID=${boardID}&id=${id}`);
 
-            // 서버로부터 받은 응답 업데이트
             setIsLiked(response.data.isLiked);
             setLikesCount(response.data.likesCount);
         } catch (error) {
@@ -219,6 +220,18 @@ export default function BoardDetail() {
                 description: '좋아요 상태를 업데이트하는 데 실패했습니다.'
             });
         }
+    };
+
+
+    const handleCommentToggle = () => {
+        if (!token) {
+            notification.error({
+                message: '로그인 필요',
+                description: '댓글을 작성하려면 로그인해주세요.'
+            });
+            return;
+        }
+        setShowWriteComment(!showWriteComment);
     };
 
 
@@ -274,46 +287,45 @@ export default function BoardDetail() {
                     </S.CardWrapper>
                     {/* 작성자와 토큰 내의 사용자 이름이 같을 경우 수정 및 삭제 버튼 표시 */}
 
-                        <S.BottomWrapper>
-                            {username === nickname && (
-                                <div>
-                                    <Button
-                                        onClick={() => {
-                                            // state 전달 시 콘솔로 확인
-                                            console.log("Navigating with state:", { title, addressTitle, body, image, addresses });
-                                            navigate(`/board/${boardID}/edit`, {
-                                                state: { title, addressTitle, body, image, addresses }
-                                            });
-                                        }}
-                                        style={{ background: '#4E53EE', color: 'white' }}
-                                    >
-                                        수정하기
-                                    </Button>
+                    <S.BottomWrapper>
+                        {username === nickname && (
+                            <div>
+                                <Button
+                                    onClick={() => {
+                                        // state 전달 시 콘솔로 확인
+                                        console.log("Navigating with state:", { title, addressTitle, body, image, addresses });
+                                        navigate(`/board/${boardID}/edit`, {
+                                            state: { title, addressTitle, body, image, addresses }
+                                        });
+                                    }}
+                                    style={{ background: '#4E53EE', color: 'white' }}
+                                >
+                                    수정하기
+                                </Button>
 
-                                    <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: 'white' }}>
-                                        삭제하기
-                                    </Button>
-                                </div>
-                                )}
-                            <Button
-                                onClick={() => navigate(`/review`)}
-                                style={{ background: '#4E53EE', color: 'white' }}
-                            >
-                                목록보기
-                            </Button>
+                                <Button onClick={onClickBoardDelete} style={{ background: '#4E53EE', color: 'white' }}>
+                                    삭제하기
+                                </Button>
+                            </div>
+                        )}
+                        <Button
+                            onClick={() => navigate(`/review`)}
+                            style={{ background: '#4E53EE', color: 'white' }}
+                        >
+                            목록보기
+                        </Button>
 
-                        </S.BottomWrapper>
-
+                    </S.BottomWrapper>
 
 
                     <div>
-                        <Button onClick={() => setShowWriteComment(!showWriteComment)}>
+                        <Button onClick={handleCommentToggle}>
                             {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
                         </Button>
                         {showWriteComment ? (
                             <BoardCommentWrite boardID={boardID} />
                         ) : (
-                            <BoardCommentList /> // 댓글 목록 컴포넌트 렌더링
+                            <BoardCommentList />
                         )}
                     </div>
 
