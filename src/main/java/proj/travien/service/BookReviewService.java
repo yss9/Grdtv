@@ -38,4 +38,9 @@ public class BookReviewService {
     public void deleteReview(Long reviewId) {
         bookReviewRepository.deleteById(reviewId);
     }
+
+    // 모든 리뷰를 반환하는 메서드 추가
+    public List<BookReview> getAllReviews() {
+        return bookReviewRepository.findAll();
+    }
 }

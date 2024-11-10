@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.Booking;
-import proj.travien.dto.BookingDTO;
 import proj.travien.service.BookingService;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,5 +47,31 @@ public class BookingController {
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(result);
+    }
+
+    // isSended 값을 true로 설정하는 API
+    @PostMapping("/set-sended")
+    public ResponseEntity<Void> setSended(@RequestBody Map<String, String> request) {
+        String userNickname = request.get("userNickname");
+        String agentNickname = request.get("agentNickname");
+
+        boolean updated = bookingService.setSendedStatus(userNickname, agentNickname, true);
+        if (updated) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+
+    // 현재 isSended 값을 조회하는 API
+    @GetMapping("/check-sended")
+    public ResponseEntity<Boolean> checkSended(@RequestParam String userNickname, @RequestParam String agentNickname) {
+        Boolean isSended = bookingService.checkSendedStatus(userNickname, agentNickname);
+        if (isSended != null) {
+            return ResponseEntity.ok(isSended);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 }

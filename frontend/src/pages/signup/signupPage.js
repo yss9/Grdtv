@@ -26,11 +26,9 @@ export default function SignupPage() {
     const [birthday, setBirthday] = useState("");
     const [gender, setGender] = useState("");
     const [nickName, setNickName] = useState("");
-    const [glopler, setGlopler] = useState(false);
     const imgRef = useRef();
     const [imgFile, setImgFile] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
-    const [verificationFile, setVerificationFile] = useState(null);
     const [percentageIE, setPercentageIE] = useState(null);
     const [percentageSN, setPercentageSN] = useState(null);
     const [percentageFT, setPercentageFT] = useState(null);
@@ -57,10 +55,7 @@ export default function SignupPage() {
                 birthday,
                 gender,
                 nickName,
-                glopler,
-                imgFile,
                 profilePicture,
-                verificationFile
             };
             localStorage.setItem('signupData', JSON.stringify(signupData));
             console.log(signupData)
@@ -92,7 +87,7 @@ export default function SignupPage() {
         const MBTI = IE + percentageIE + "/" + SN + percentageSN + "/" + FT + percentageFT + "/" + PJ + percentagePJ;
         console.log(MBTI)
 
-        if (id && pw && name && birthday && gender && MBTI && nickName) {
+        if (id && pw && name && birthday && gender && MBTI && nickName && profilePicture) {
             const formData = new FormData();
             formData.append('user', new Blob([JSON.stringify({
                 userId: id,
@@ -104,9 +99,7 @@ export default function SignupPage() {
                 nickname: nickName,
             })], { type: 'application/json' }));
 
-            if (profilePicture) {
-                formData.append('profilePicture', profilePicture);
-            }
+            formData.append('profilePicture', profilePicture);
 
             console.log(id, pw, name, birthday, MBTI, nickName, profilePicture)
 
@@ -131,10 +124,6 @@ export default function SignupPage() {
     const handleProfilePictureChange = (event) => {
         setProfilePicture(event.target.files[0]);
         saveImgFile(event);
-    };
-
-    const handleVerificationFileChange = (event) => {
-        setVerificationFile(event.target.files[0]);
     };
 
     const saveImgFile = (event) => {
@@ -197,9 +186,6 @@ export default function SignupPage() {
     }
     const onChangeNickName = (event) => {
         setNickName(event.target.value)
-    }
-    const onClickGlopler = (isGlopler) => {
-        setGlopler(isGlopler);
     }
 
     const [percentValue, setPercentValue] = useState([51, 51, 51, 51]);
@@ -265,10 +251,7 @@ export default function SignupPage() {
             setBirthday(parsedData.birthday || "");
             setGender(parsedData.gender || "");
             setNickName(parsedData.nickName || "");
-            setImgFile(parsedData.imgFile || "");
             setProfilePicture(parsedData.profilePicture || null);
-            setGlopler(parsedData.glopler || false);
-            setVerificationFile(parsedData.verificationFile || null);
         }
     }, []);
 

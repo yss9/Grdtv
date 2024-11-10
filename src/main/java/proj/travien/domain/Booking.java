@@ -24,6 +24,9 @@ public class Booking {
     @Column(nullable = false)
     private int progress = 1; // 예약 진행도 (1, 2, 3, 4)
 
+    @Column(nullable = false)
+    private boolean isSended = false; // 포인트 전송 여부
+
     // 기본 생성자
     public Booking() {
     }

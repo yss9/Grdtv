@@ -81,6 +81,20 @@ public class BookingService {
         return uniqueBookings.values().stream().collect(Collectors.toList());
     }
 
+    public boolean setSendedStatus(String userNickname, String agentNickname, boolean status) {
+        Booking booking = bookingRepository.findByUser_NicknameAndAgent_Nickname(userNickname, agentNickname)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+        booking.setSended(status);
+        bookingRepository.save(booking);
+        return true;
+    }
+
+    public Boolean checkSendedStatus(String userNickname, String agentNickname) {
+        return bookingRepository.findByUser_NicknameAndAgent_Nickname(userNickname, agentNickname)
+                .map(Booking::isSended)
+                .orElse(null); // null 반환 시 NOT_FOUND
+    }
+
     // userNickname과 agentNickname을 조합하여 유니크한 키를 생성하는 헬퍼 메서드
     private String generateBookingKey(String userNickname, String agentNickname) {
         if (userNickname.compareTo(agentNickname) < 0) {

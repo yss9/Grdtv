@@ -210,17 +210,32 @@ public class UserController {
         return new ResponseEntity<>(nicknames, HttpStatus.OK);
     }
 
-    @Operation(summary = "프로필 사진 조회")
-    @GetMapping("/profile-picture/{userId}")
-    public ResponseEntity<Resource> getProfilePicture(@PathVariable String userId) {
+
+
+    @Operation(summary = "프로필 사진 경로 조회")
+    @GetMapping("/profile-picture/{nickname}")
+    public ResponseEntity<String> getProfilePicture(@PathVariable String nickname) {
         try {
-            Resource file = userService.loadProfilePicture(userId);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                    .body(file);
-        } catch (IOException e) {
-            log.error("Error loading profile picture for userId: {}", userId, e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            String profilePicturePath = userService.getProfilePicturePath(nickname);
+            if (profilePicturePath == null || profilePicturePath.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile picture not set for user: " + nickname);
+            }
+            return ResponseEntity.ok(profilePicturePath);
+        } catch (RuntimeException e) {
+            log.error("Error retrieving profile picture path for nickname: {}", nickname, e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error retrieving profile picture path for nickname: {}", nickname, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving profile picture");
+        }
+    }
+    @GetMapping("/profile-picture")
+    public ResponseEntity<String> getProfilePictureByNickname(@RequestParam("nickname") String nickname) {
+        try {
+            String profilePicturePath = userService.getProfilePictureByNickname(nickname);
+            return ResponseEntity.ok(profilePicturePath);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
 
@@ -250,10 +265,10 @@ public class UserController {
     }
 
     @Operation(summary = "포인트 추가")
-    @PostMapping("/{userId}/points/add")
-    public ResponseEntity<?> addUserPoints(@PathVariable String userId, @RequestParam int pointsToAdd) {
+    @PostMapping("/{nickname}/points/add")
+    public ResponseEntity<?> addUserPoints(@PathVariable String nickname, @RequestParam int points) {
         try {
-            boolean success = userService.addUserPoints(userId, pointsToAdd);
+            boolean success = userService.addPointsByNickname(nickname, points);
             if (success) {
                 return ResponseEntity.ok("Points added successfully");
             } else {
@@ -265,10 +280,10 @@ public class UserController {
     }
 
     @Operation(summary = "포인트 차감")
-    @PostMapping("/{userId}/points/deduct")
-    public ResponseEntity<?> deductUserPoints(@PathVariable String userId, @RequestParam int pointsToDeduct) {
+    @PostMapping("/{nickname}/points/deduct")
+    public ResponseEntity<?> deductUserPoints(@PathVariable String nickname, @RequestParam int points) {
         try {
-            boolean success = userService.deductUserPoints(userId, pointsToDeduct);
+            boolean success = userService.deductPointsByNickname(nickname, points);
             if (success) {
                 return ResponseEntity.ok("Points deducted successfully");
             } else {
@@ -278,6 +293,36 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "포인트 전송")
+    @PostMapping("/transfer-points")
+    public ResponseEntity<?> transferPoints(@RequestBody Map<String, Object> request) {
+        try {
+            String userNickname = (String) request.get("userNickname");
+            String agentNickname = (String) request.get("agentNickname");
+            int points = (int) request.get("points");
+
+            // 사용자 포인트 차감 및 예약대행자 포인트 추가
+            boolean userDeducted = userService.deductPointsByNickname(userNickname, points);
+            if (!userDeducted) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to deduct points from user");
+            }
+
+            boolean agentAdded = userService.addPointsByNickname(agentNickname, points);
+            if (agentAdded) {
+                return ResponseEntity.ok("Points transferred successfully");
+            } else {
+                // 포인트 추가 실패 시 사용자에게 차감된 포인트를 복구
+                userService.addPointsByNickname(userNickname, points);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add points to agent");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
+
 
 
     @Setter
