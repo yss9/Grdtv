@@ -296,11 +296,12 @@ public class UserController {
 
     @Operation(summary = "포인트 전송")
     @PostMapping("/transfer-points")
-    public ResponseEntity<?> transferPoints(
-            @RequestParam("userNickname") String userNickname,
-            @RequestParam("agentNickname") String agentNickname,
-            @RequestParam("points") int points) {
+    public ResponseEntity<?> transferPoints(@RequestBody Map<String, Object> request) {
         try {
+            String userNickname = (String) request.get("userNickname");
+            String agentNickname = (String) request.get("agentNickname");
+            int points = (int) request.get("points");
+
             // 사용자 포인트 차감 및 예약대행자 포인트 추가
             boolean userDeducted = userService.deductPointsByNickname(userNickname, points);
             if (!userDeducted) {
@@ -319,6 +320,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+
 
 
 

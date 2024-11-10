@@ -5,6 +5,7 @@ import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import Cookies from "js-cookie";
 import {ProfileImgContainer, ProfileImg, PointButton} from "../chatPageStyle";
+import WebSocketService from "../WebSocketService";
 
 // styled-components
 const ChatRoomWrapper = styled.div`
@@ -50,10 +51,15 @@ const ChatRoom = styled.div`
     
 `
 const ChatBubble = styled.div`
-    max-width: 30%;
+    max-width: 300px;
+    min-width: 200px;
     padding: 20px;
     margin-bottom: 10px;
     position: relative;
+    line-height: 1.5;
+    // 긴 문장 줄바꿈
+    word-wrap: break-word;
+    word-break: break-word;
 `
 const GloplerListButton = styled.button`
     width: 120px;
@@ -145,8 +151,8 @@ const ChatRoomComponent = ({
                                profilePictures
                            }) => {
     const token = Cookies.get('jwt');
-
     const serverUrl = 'http://localhost:8080';
+    const [isSended, setIsSended] = useState(false);
 
     const isImage = (filePath) => {
         return filePath.match(/\.(jpeg|jpg|gif|png)$/);
@@ -159,20 +165,71 @@ const ChatRoomComponent = ({
     const handleSendPoints = async (points) => {
         try {
             // 포인트 전송 API 호출
-            // const response = await axios.post('http://localhost:8080/api/points/send', {
-            //     fromUser: chatUsername,
-            //     toUser: username,
-            //     points: points,
-            // }, {
-            //     headers: {
-            //         'Authorization': `Bearer ${token}`,
-            //     }
-            // });
-            // console.log('포인트 전송 성공:', response.data);
+            const response = await axios.post('http://localhost:8080/api/users/transfer-points', {
+                userNickname: username,
+                agentNickname: chatUsername,
+                points: points,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json', // JSON 형식 명시
+                }
+            });
+            console.log('포인트 전송 성공:', response.data);
+            await handleIsSendedTrue();
         } catch (error) {
             console.error('포인트 전송 실패:', error);
+            console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
         }
     };
+    const handleIsSendedTrue = async () => {
+        try {
+            // 포인트 전송 API 호출
+            const response = await axios.post('http://localhost:8080/api/booking/set-sended', {
+                userNickname: username,
+                agentNickname: chatUsername,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            console.log('포인트 전송 완료 상태 업데이트 성공:', response.data);
+            await pointSendedMessage();
+        } catch (error) {
+            console.error('포인트 전송 완료 상태 업데이트 실패:', error);
+            console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
+        }
+    };
+
+    const pointSendedMessage = () => {
+        const message = {
+            sender: username,
+            content: `포인트 입금이 완료되었어요!\n글로플과 함께 특별하고 믿을 수 있는 여행을 떠나보아요!|button`,
+            type: 'CHAT'
+        };
+        WebSocketService.sendMessage(message);
+    };
+    
+    useEffect(() => {
+        const getIsSended = async () => {
+            try {
+                // 포인트 전송 API 호출
+                const response = await axios.get('http://localhost:8080/api/booking/check-sended', {
+                    params: {
+                        userNickname: username,
+                        agentNickname: chatUsername,
+                    },
+                });
+                console.log('포인트 전송 상태 가져오기 성공:', response.data);
+                setIsSended(response.data);
+            } catch (error) {
+                console.error('포인트 전송 상태 가져오기 실패:', error);
+                console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
+            }
+        };
+        getIsSended();
+    }, [token]);
+
 
     return (
         <ChatRoomWrapper>
@@ -249,16 +306,21 @@ const ChatRoomComponent = ({
                         ) : message.content.includes('|button') ? (
                             <>
                                 <div>{message.content.split('|button')[0]}</div>
-                                <PointButton
-                                    onClick={() => {
-                                        // 정규식을 사용해 '포인트' 앞의 숫자를 추출
-                                        const match = message.content.match(/(\d+)\s*포인트/);
-                                        const points = match ? parseInt(match[1], 10) : 0; // 숫자가 없으면 기본값 0
-                                        handleSendPoints(points);
-                                    }}
-                                >
-                                    포인트 입금하기
-                                </PointButton>
+                                {(isAgent||isSended) ? (
+                                    <></>
+                                ) : (
+                                    <PointButton
+                                        onClick={() => {
+                                            // 정규식을 사용해 '포인트' 앞의 숫자를 추출
+                                            const match = message.content.match(/(\d+)\s*포인트/);
+                                            const points = match ? parseInt(match[1], 10) : 0; // 숫자가 없으면 기본값 0
+                                            handleSendPoints(points);
+                                        }}
+                                    >
+                                        포인트 입금하기
+                                    </PointButton>
+                                )}
+
                             </>
                         ) : (
                             message.content
