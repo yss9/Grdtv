@@ -132,7 +132,7 @@ export default function TopBarComponent({ fontColor }) {
     };
 
     const handleGoRoute = () => {
-        navigate('/route');
+        navigate('/routeNavigation');
     };
 
     const handleGoMbti = () => {
