@@ -364,7 +364,7 @@ const BlogList = () => {
                                 />
                                 <PContainer2>
                                     <Pname2>{userData.nickname}</Pname2>
-                                    <PIntro>{userData.introduce}</PIntro>
+                                    <PIntro>{userData.statusMessage}</PIntro>
                                 </PContainer2>
                             </Profile2>
                             <ButtonContainer>

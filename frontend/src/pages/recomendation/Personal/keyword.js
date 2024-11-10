@@ -126,7 +126,6 @@ const KeywordSelection = () => {
     const navigate = useNavigate();
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [page, setPage] = useState(0);
-    const [results, setResults] = useState([]);
     const [navigated, setNavigated] = useState(false); // 새로운 상태 추가
 
     const toggleKeyword = (keyword) => {
