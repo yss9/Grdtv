@@ -26,14 +26,15 @@ public class FollowController {
 
     @Operation(summary = "예약대행자 팔로우")
     @PostMapping("/follow-agent")
-    public ResponseEntity<?> followAgent(@RequestParam String userId, @RequestParam String agentId) {
-        boolean followed = followService.followAgent(userId, agentId);
+    public ResponseEntity<?> followAgent(@RequestParam String userNickname, @RequestParam String agentNickname) {
+        boolean followed = followService.followAgent(userNickname, agentNickname);
         if (followed) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not follow the agent");
         }
     }
+
 
     @Operation(summary = "팔로우한 예약대행자")
     @GetMapping("/followed-agents")
