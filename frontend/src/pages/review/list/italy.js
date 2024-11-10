@@ -414,7 +414,7 @@ const BlogList = () => {
                                 </PContainer2>
                             </Profile2>
                             <ButtonContainer>
-                                <MyWrites>나의 글</MyWrites>
+                                <MyWrites onClick={() => navigate('/my')}>나의 글</MyWrites>
                                 <VirticalLine/>
                                 <GoWrite onClick={handleGoWrite}>글쓰기</GoWrite>
                             </ButtonContainer>

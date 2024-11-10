@@ -66,6 +66,14 @@ export default function MyReservation() {
         setActiveTab(tab);
     };
 
+    const processProfilePicture = (profilePicture) => {
+        if (profilePicture) {
+            return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+        } else {
+            return Profile;
+        }
+    };
+
     useEffect(() => {
         const fetchFavoriteAgents = async () => {
             const token = Cookies.get('jwt');
@@ -85,9 +93,7 @@ export default function MyReservation() {
                     introduce: agent.agentDetails.introduction,
                     hashtags: agent.agentDetails.hashtags,
                     spec: agent.agentDetails.specIntroduction,
-                    image: agent.agentDetails.profilePicture
-                        ? `http://localhost:8080/${agent.agentDetails.profilePicture}`
-                        : Profile,
+                    image: processProfilePicture(agent.agentDetails.profilePicture)|| Profile,
                     score: agent.agentDetails.averageReviewRating,
                     number: 0,
                 })));
