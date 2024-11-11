@@ -167,14 +167,20 @@ export const Title = styled.h1`
 export const Contents = styled.div`
   padding-bottom: 120px;
   display: flex;
-  flex-direction: column; /* 자식 요소를 수직으로 배치 */
-  justify-content: center; /* 수직 가운데 정렬 */
-  align-items: center; /* 수평 가운데 정렬 */
-  text-align: center; /* 텍스트 가운데 정렬 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   color: #515151;
-  font-family: regular;
-  margin-top:60px;
+  font-family: Regular;
+  margin-top: 60px;
+
+  img {
+    width: 100px;
+    height: 100px;
+  }
 `;
+
 
 export const BottomWrapper = styled.div`
   display: flex;
