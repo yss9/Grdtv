@@ -14,6 +14,7 @@ import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 
 import BoardCommentWrite from "../../reviewComment/write/write";
 import BoardCommentList from "../../reviewComment/list/list";
+import {Reset} from "styled-reset";
 
 
 export default function BoardDetail() {
@@ -242,6 +243,7 @@ export default function BoardDetail() {
 
     return (
         <>
+            <Reset />
             <TopBarComponent />
             <S.Container>
                 <S.Wrapper>
