@@ -254,7 +254,10 @@ export default function BoardDetail() {
     return (
         <>
             <Reset />
-            <TopBarComponent />
+            <div style={{height:"60px"}}>
+
+            </div>
+            <TopBarComponent/>
             <S.Container>
                 <S.Wrapper>
                     <S.CardWrapper>
