@@ -7,10 +7,10 @@ import TopBarComponent from "../../../components/TopBar/TopBar";
 import { Avatar, AvatarWrapper } from "./style";
 import MapComponent from "./MapComponent";
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
-import parse from 'html-react-parser'
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import parse from 'html-react-parser';
 
 import BoardCommentWrite from "../../reviewComment/write/write";
 import BoardCommentList from "../../reviewComment/list/list";
@@ -238,7 +238,21 @@ export default function BoardDetail() {
 
 
 
-    let bodyParsed = parse(body);
+    // bodyParsed 설정 시 스타일 직접 추가
+    let bodyParsed = parse(body, {
+        replace: (domNode) => {
+            if (domNode.name === 'img') {
+                // img 태그를 찾아서 스타일 속성 추가
+                return (
+                    <img
+                        src={domNode.attribs.src}
+                        alt={domNode.attribs.alt || ''}
+                        style={{ width: '500px', height: '500px' }}
+                    />
+                );
+            }
+        }
+    });
 
     return (
         <>
@@ -281,7 +295,7 @@ export default function BoardDetail() {
                             {/*<S.Contents>{body}</S.Contents>*/}
                             {bodyParsed}
                             <S.ImageWrapper>
-                                {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100%' }} />}
+                                {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100px', height: '100px' }}  />}
                             </S.ImageWrapper>
                         </S.Body>
                     </S.CardWrapper>
