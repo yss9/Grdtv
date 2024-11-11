@@ -264,7 +264,10 @@ export default function BoardDetail() {
                                     <S.Title>{title}</S.Title>
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
-                                    <Avatar src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : '/default-avatar.png'} />
+                                    <Avatar
+                                        src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : 'http://localhost:8080/image/no_image.png'}
+                                    />
+
                                     <S.Writer>{nickname}</S.Writer>
                                 </AvatarWrapper>
                                 <S.Date>{formatCreateDate(createDate)}</S.Date>
