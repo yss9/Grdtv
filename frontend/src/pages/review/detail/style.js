@@ -61,14 +61,13 @@ export const Avatar = styled.img`
 
 export const Writer = styled.div`
   padding-left: 10px;
-  margin-right: 300px;
+  margin-right: 400px;
   font-family: Regular;
   color: #515151;
 `;
 
 export const Date = styled.div`
-  padding-left: 10px;
-  margin-right: 600px;
+  margin-right: 650px;
   font-family: Regular;
   color: #515151;
 `;
