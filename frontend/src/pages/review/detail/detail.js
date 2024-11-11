@@ -83,6 +83,7 @@ export default function BoardDetail() {
             setImage(postData.image);
             setNickname(postData.nickname); // 닉네임 설정
             setPostOwnerId(postData.userId); // 게시글 작성자의 ID 설정
+            setProfile(postData.profilePicture); // 사용자 프로필 설정
 
             // Process addresses to remove any unwanted characters
             const processedAddresses = postData.addresses.map(address => {
@@ -116,9 +117,6 @@ export default function BoardDetail() {
                             'Authorization': `Bearer ${token}`
                         }
                     });
-                    setProfile(response.data.profilePicture);
-
-                    console.log(response.data.profilePicture);
 
                 } else {
                     console.error('No JWT token found in cookies');
@@ -238,8 +236,6 @@ export default function BoardDetail() {
 
 
 
-
-    // bodyParsed 설정 시 스타일 직접 추가
     let bodyParsed = parse(body, {
         replace: (domNode) => {
             if (domNode.name === 'img') {
