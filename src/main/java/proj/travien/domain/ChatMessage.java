@@ -11,6 +11,7 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(length = 10000)
     private String content;
     private String sender;
     private MessageType type;
