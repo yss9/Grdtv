@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.BookReview;
 import proj.travien.service.BookReviewService;
+import proj.travien.service.UserService;
+
 import java.util.List;
 
 
@@ -13,9 +15,11 @@ import java.util.List;
 public class BookReviewController {
 
     private final BookReviewService bookReviewService;
+    private final UserService userService;
 
-    public BookReviewController(BookReviewService bookReviewService) {
+    public BookReviewController(BookReviewService bookReviewService, UserService userService) {
         this.bookReviewService = bookReviewService;
+        this.userService = userService;
     }
 
     /**
@@ -55,6 +59,13 @@ public class BookReviewController {
     @GetMapping("/")
     public ResponseEntity<List<BookReview>> getAllReviews() {
         List<BookReview> reviews = bookReviewService.getAllReviews();
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/agent/review")
+    public ResponseEntity<List<BookReview>> getReviewsByUsername(@RequestParam String nickname){
+        Long id = userService.getIdByNickname(nickname);
+        List<BookReview> reviews = bookReviewService.getReviewsByUserId(id);
         return ResponseEntity.ok(reviews);
     }
 }
