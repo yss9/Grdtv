@@ -102,7 +102,6 @@ export default function ReservationPage() {
                     number: '0',
                     agentreview: '',
                 }));
-
                 setAgentData(fetchedData);
             })
             .catch((error) => console.error("Error fetching agents:", error));

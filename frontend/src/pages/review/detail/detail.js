@@ -7,13 +7,14 @@ import TopBarComponent from "../../../components/TopBar/TopBar";
 import { Avatar, AvatarWrapper } from "./style";
 import MapComponent from "./MapComponent";
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz';
-import parse from 'html-react-parser'
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import parse from 'html-react-parser';
 
 import BoardCommentWrite from "../../reviewComment/write/write";
 import BoardCommentList from "../../reviewComment/list/list";
+import {Reset} from "styled-reset";
 
 
 export default function BoardDetail() {
@@ -82,6 +83,7 @@ export default function BoardDetail() {
             setImage(postData.image);
             setNickname(postData.nickname); // 닉네임 설정
             setPostOwnerId(postData.userId); // 게시글 작성자의 ID 설정
+            setProfile(postData.profilePicture); // 사용자 프로필 설정
 
             // Process addresses to remove any unwanted characters
             const processedAddresses = postData.addresses.map(address => {
@@ -115,9 +117,6 @@ export default function BoardDetail() {
                             'Authorization': `Bearer ${token}`
                         }
                     });
-                    setProfile(response.data.profilePicture);
-
-                    console.log(response.data.profilePicture);
 
                 } else {
                     console.error('No JWT token found in cookies');
@@ -237,12 +236,28 @@ export default function BoardDetail() {
 
 
 
-
-    let bodyParsed = parse(body);
+    let bodyParsed = parse(body, {
+        replace: (domNode) => {
+            if (domNode.name === 'img') {
+                // img 태그를 찾아서 스타일 속성 추가
+                return (
+                    <img
+                        src={domNode.attribs.src}
+                        alt={domNode.attribs.alt || ''}
+                        style={{ width: '500px', height: '500px' }}
+                    />
+                );
+            }
+        }
+    });
 
     return (
         <>
-            <TopBarComponent />
+            <Reset />
+            <div style={{height:"60px"}}>
+
+            </div>
+            <TopBarComponent/>
             <S.Container>
                 <S.Wrapper>
                     <S.CardWrapper>
@@ -252,7 +267,10 @@ export default function BoardDetail() {
                                     <S.Title>{title}</S.Title>
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
-                                    <Avatar src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : '/default-avatar.png'} />
+                                    <Avatar
+                                        src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : 'http://localhost:8080/image/no_image.png'}
+                                    />
+
                                     <S.Writer>{nickname}</S.Writer>
                                 </AvatarWrapper>
                                 <S.Date>{formatCreateDate(createDate)}</S.Date>
@@ -281,7 +299,7 @@ export default function BoardDetail() {
                             {/*<S.Contents>{body}</S.Contents>*/}
                             {bodyParsed}
                             <S.ImageWrapper>
-                                {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100%' }} />}
+                                {image && <img src={`http://localhost:8080/${image.replace('src/main/resources/static/', '')}`} alt="Post Image" style={{ width: '100px', height: '100px' }}  />}
                             </S.ImageWrapper>
                         </S.Body>
                     </S.CardWrapper>

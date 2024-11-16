@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 import {useNavigate} from "react-router-dom";
+import Modal from "../../pages/reservation/modal";
 
 const BlogContainer=styled.div`
   width: 25rem;
@@ -233,7 +234,40 @@ const Agent = ({ review, pageType }) => {
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
     const [username, setUsername] = useState('');
     const [favoriteAgents, setFavoriteAgents] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [reviewNum, setReviewNum] = useState(0);
+    const [firstReview,setFirstReview] = useState('');
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
 
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // 리뷰 데이터를 가져와서 review.number와 review.agentreview에 할당
+    useEffect(() => {
+        const fetchReviews = async () => {
+            if (!review.author) return;
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/bookReviews/agent/review`, {
+                    params: {
+                        nickname: review.author
+                    }
+                });
+                console.log(response.data);
+                const reviews = response.data;
+                setReviewNum(reviews.length); // 리뷰의 개수를 review.number에 설정
+                setFirstReview(reviews.length > 0 ? reviews[0].content : "리뷰가 없습니다."); // 첫 번째 리뷰의 내용을 agentreview에 설정
+
+            } catch (error) {
+                console.error('Failed to fetch agent reviews:', error);
+            }
+        };
+
+        fetchReviews();
+    }, [review.author]);
 
     useEffect(() => {
         const fetchFavoriteAgents = async () => {
@@ -406,12 +440,12 @@ const Agent = ({ review, pageType }) => {
                                     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8.5 0L10.8482 5.57786L16.584 6.21885L12.2995 10.3071L13.4962 16.2812L8.5 13.23L3.50383 16.2812L4.70053 10.3071L0.416019 6.21885L6.1518 5.57786L8.5 0Z" fill="#FF9D2A"/>
                                     </svg>
-                                    <p>{review.score}({review.number})</p>
+                                    <p>{review.score}({reviewNum})</p>
                                 </StarAvg>
-                                <SeeAllBtn>
-                                    <p style={{fontFamily: "SubTitle", marginBottom:"10px"}}>전체보기</p>
+                                <SeeAllBtn onClick={openModal}>
+                                    <p style={{ fontFamily: "SubTitle", marginBottom: "10px" }}>전체보기</p>
                                     <svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
+                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2" />
                                     </svg>
                                 </SeeAllBtn>
                             </SubWrapper>
@@ -426,13 +460,14 @@ const Agent = ({ review, pageType }) => {
                                             <path d="M78.5 0L80.8482 5.57786L86.584 6.21885L82.2995 10.3071L83.4962 16.2812L78.5 13.23L73.5038 16.2812L74.7005 10.3071L70.416 6.21885L76.1518 5.57786L78.5 0Z" fill="#FF9D2A"/>
                                         </svg>
                                     </UserStar>
-                                    <ReviewContent>{review.agentreview}</ReviewContent>
+                                    <ReviewContent>{firstReview}</ReviewContent>
                                 </ReviewDetail>
                             </UserReview>
                         </ReviewWrapper>
                     </Content>
                 </ContentWrapper>
             </BlogContainer>
+            {isModalOpen && <Modal agentId={review} onClose={closeModal} />}
         </>
     );
 };

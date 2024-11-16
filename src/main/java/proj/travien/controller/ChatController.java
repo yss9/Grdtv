@@ -165,11 +165,11 @@ public class ChatController {
         String transcript;
         try {
             byte[] audioBytes = file.getBytes();
-            transcript = speechToTextService.convertSpeechToText(audioBytes, "ko-KR"); // 언어 코드를 필요에 따라 변경
+            transcript = speechToTextService.convertSpeechToText(audioBytes, "en-US"); // 언어 코드를 필요에 따라 변경
         } catch (IOException e) {
             return new ResponseEntity<>("음성 파일 처리 오류", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        System.out.println(transcript);
         // 변환된 텍스트를 WebSocket을 통해 전송하기 위해 텍스트만 반환
         return new ResponseEntity<>(transcript, HttpStatus.OK);
     }
