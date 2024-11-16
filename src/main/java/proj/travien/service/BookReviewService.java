@@ -76,4 +76,12 @@ public class BookReviewService {
         // 사용자 업데이트 (persist)
         userRepository.save(user);
     }
+
+    public BookReview addReviewByUser(User user, String content, int star) {
+        BookReview bookReview = new BookReview(user, content, star);
+        bookReviewRepository.save(bookReview);
+        updateUserAverageStar(user);
+        return bookReview;
+    }
+
 }
