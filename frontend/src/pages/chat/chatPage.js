@@ -63,6 +63,8 @@ const ChatPage = () => {
     const userId = decodedToken.userId;
 
     const [pointInput, setPointInput] = useState('');
+
+
     const handlePointInputChange = (event) => {
         setPointInput(event.target.value);
     };
@@ -334,6 +336,7 @@ const ChatPage = () => {
         };
         fetchProfilePictures();
     }, [nicknames, username]);
+
 
     return (
         <Wrapper>

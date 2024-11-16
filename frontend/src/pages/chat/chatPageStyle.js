@@ -69,6 +69,7 @@ export const Button = styled.div`
     align-items: center;
     color: white;
     margin-top: 50px;
+    cursor: pointer;
 `
 export const ModalFont = styled.div`
     font-size: 25px;
@@ -90,3 +91,50 @@ export const PointButton = styled.div`
     font-weight: bold;
     margin-top: 20px;
 `
+export const ReviewContentsWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`
+export const ReviewSentence = styled.div`
+    font-size: 20px;
+    color: gray;
+    margin: 20px 0;
+    line-height: 1.5;
+`
+export const ReviewInputWrapper = styled.div`
+    width: 250px;
+    height: 100px;
+    border: none;
+    border-bottom: 1px solid gray;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 100%; /* 가로선 길이 */
+        height: 1px; /* 가로선 두께 */
+        background-color: gray; /* 가로선 색상 */
+        top: 50%; /* 세로 중앙 */
+        transform: translateY(-50%);
+    }
+`;
+export const ReviewInput = styled.textarea`
+    width: 100%;
+    font-size: 15px;
+    height: calc(100% - 15px);
+    line-height: 3.4;
+    border: none;
+    resize: none; /* 크기 조정 방지 */
+    outline: none; /* 클릭 시 나타나는 테두리 제거 */
+    overflow: hidden; /* 기본 스크롤 숨기기 */
+    scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
+    -ms-overflow-style: none; /* IE에서 스크롤바 숨기기 */
+
+    &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge에서 스크롤바 숨기기 */
+    }
+`;
+
+
