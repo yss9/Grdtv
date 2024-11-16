@@ -158,7 +158,7 @@ const ChatRoomComponent = ({
                                handleVoiceMessageUpload,
                                userId,
                                onClickProcessButton,
-                               step,
+                               step, setStep,
                                profilePictures
                            }) => {
     const token = Cookies.get('jwt');
@@ -193,9 +193,34 @@ const ChatRoomComponent = ({
             });
             console.log('포인트 전송 성공:', response.data);
             await handleIsSendedTrue();
+            setIsSended(true);
         } catch (error) {
             console.error('포인트 전송 실패:', error);
             console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
+        }
+
+        try {
+            // 진행 상황 업데이트 요청
+            const response = await axios.post(
+                'http://localhost:8080/api/booking/update-progress',
+                null,
+                {
+                    params: {
+                        userId: username,
+                        agentId: chatUsername,
+                        progress: 3
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                }
+            );
+            console.log('Progress Update complete')
+            setStep(3)
+        } catch (error) {
+            console.error('Failed to update progress', error);
+            console.error('Error details:', error.response?.data);
         }
     };
     const handleIsSendedTrue = async () => {
@@ -224,6 +249,7 @@ const ChatRoomComponent = ({
             type: 'CHAT'
         };
         WebSocketService.sendMessage(message);
+
     };
     
     useEffect(() => {
@@ -267,7 +293,7 @@ const ChatRoomComponent = ({
         if (token) {
             try {
                 const response = await axios.post(
-                    `http://localhost:8080/api/bookReviews/agent/23`,
+                    `http://localhost:8080/api/bookReviews/agent/${chatUsername}`,
                     null,
                     {
                         params: {
@@ -282,6 +308,32 @@ const ChatRoomComponent = ({
             }
         }
     }
+
+    // 실시간 진행도 업데이트
+    useEffect(() => {
+        const fetchProgress = async () => {
+            if (chatUsername) {
+                try {
+                    // 진행 상황 조회 요청
+                    const response = await axios.get('http://localhost:8080/api/booking/progress', {
+                        params: {
+                            userId: username,
+                            agentId: chatUsername
+                        },
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    console.log('실시간 진행도 업데이트 성공:', response.data);
+                    setStep(response.data);
+                } catch (error) {
+                    console.error('실시간 진행도 업데이트 실패', error);
+                }
+            }
+        };
+
+        fetchProgress();
+    }, [chatUsername, username, token, messages]); // 의존성 배열에 필요한 값 추가
 
 
     return (
@@ -298,7 +350,11 @@ const ChatRoomComponent = ({
                     />
                 </ProfileImgContainer>
                 <Username>{chatUsername}</Username>
-                <ReviewButton onClick={onClickReviewButton}>리뷰 &nbsp;&gt;</ReviewButton>
+                {isAgent ? (
+                    <></>
+                ) : (
+                    <ReviewButton onClick={onClickReviewButton}>리뷰 &nbsp;&gt;</ReviewButton>
+                )}
                 <GloplerListButton>글로플러 목록</GloplerListButton>
             </ChatHeader>
             <ProcessWrapper>

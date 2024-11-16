@@ -90,6 +90,7 @@ export const PointButton = styled.div`
     font-size: 17px;
     font-weight: bold;
     margin-top: 20px;
+    cursor: pointer;
 `
 export const ReviewContentsWrapper = styled.div`
     display: flex;

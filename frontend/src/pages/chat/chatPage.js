@@ -59,8 +59,17 @@ const ChatPage = () => {
     const [step, setStep] = useState(0);
     const [profilePictures, setProfilePictures] = useState({}); // 프로필 사진 저장 상태
 
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.userId;
+    let decodedToken = null;
+    let userId = null;
+    try {
+        if (!token) {
+            throw new Error('Token is not provided.');
+        }
+        decodedToken = jwtDecode(token);
+        userId = decodedToken.userId;
+    } catch (error) {
+        console.error('Error decoding token:', error.message);
+    }
 
     const [pointInput, setPointInput] = useState('');
 
@@ -208,23 +217,6 @@ const ChatPage = () => {
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
-            try {
-                // 진행 상황 조회 요청
-                const response = await axios.get('http://localhost:8080/api/booking/progress', {
-                    params: {
-                        userId: username,
-                        agentId: targetUserNickname
-                    },
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log('Fetch progress response:', response.data);
-                setStep(response.data)
-
-            } catch (error) {
-                console.error('Failed to fetch progress', error);
-            }
         } else {
             console.error('No JWT token found in cookies');
         }
@@ -235,29 +227,31 @@ const ChatPage = () => {
         if (stepValue === 3){
             handleOpenPointModal()
         }
-        if (token) {
-            try {
-                // 진행 상황 업데이트 요청
-                const response = await axios.post(
-                    'http://localhost:8080/api/booking/update-progress',
-                    null,
-                    {
-                        params: {
-                            userId: username,
-                            agentId: chatUsername,
-                            progress: stepValue
-                        },
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': '*/*'
+        else {
+            if (token) {
+                try {
+                    // 진행 상황 업데이트 요청
+                    const response = await axios.post(
+                        'http://localhost:8080/api/booking/update-progress',
+                        null,
+                        {
+                            params: {
+                                userId: username,
+                                agentId: chatUsername,
+                                progress: stepValue
+                            },
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': '*/*'
+                            }
                         }
-                    }
-                );
-                console.log('Progress Update complete')
-                setStep(stepValue)
-            } catch (error) {
-                console.error('Failed to update progress', error);
-                console.error('Error details:', error.response?.data);
+                    );
+                    console.log('Progress Update complete')
+                    setStep(stepValue)
+                } catch (error) {
+                    console.error('Failed to update progress', error);
+                    console.error('Error details:', error.response?.data);
+                }
             }
         }
     }
@@ -376,6 +370,7 @@ const ChatPage = () => {
                             userId={userId}
                             onClickProcessButton={onClickProcessButton}
                             step={step}
+                            setStep={setStep}
                             profilePictures={profilePictures}
                         />
                     ) : (
