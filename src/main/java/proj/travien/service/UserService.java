@@ -50,6 +50,13 @@ public class UserService {
         userRepository.save(user);  // 사용자 정보 저장
     }
 
+    //BookReview에 사용되는 Service
+    public User getUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with nickname: " + nickname));
+    }
+
+
     // 회원가입 시 기본 사용자로만 등록
     public boolean createUser(UserDTO userDTO, MultipartFile profilePictureFile, MultipartFile verificationFile) {
         if (isUserIdInUse(userDTO.getUserId()) || isNicknameInUse(userDTO.getNickname())) {

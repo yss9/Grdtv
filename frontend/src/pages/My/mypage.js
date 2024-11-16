@@ -24,7 +24,7 @@
         const [activeItem, setActiveItem] = useState('Left');
         const [highlightPosition, setHighlightPosition] = useState({ left: 0, width: 0 });
         const [userData, setUserData] = useState(null); // 사용자 데이터를 저장할 상태
-        const token = getAuthToken(); // JWT 토큰 가져오기
+        const token = getAuthToken();
 
         useEffect(() => {
             const selectedElement = document.querySelector(`div[data-item="${activeItem}"]`);

@@ -16,7 +16,7 @@ import {
     Mbti, Name, Place, PlaceName, PlaceWrapper,
     Profile, RouteName, Routes, SaveBtn, Top, Triangle, User
 } from "../similarityStlye";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import Cutie from '../../../../images/blingbling.png'
 
@@ -26,7 +26,8 @@ const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
 const getAuthToken = () => {
     return Cookies.get('jwt');
 };
-const Card = ({  content }) => (
+
+const Card = ({ content }) => (
     <StyledCard>
         <div>{content}</div>
     </StyledCard>
@@ -73,6 +74,7 @@ const Carousel = ({ children, active, setActive }) => {
         </>
     );
 };
+
 const generateRouteMap = (travelDestinations) => {
     const baseURL = `https://maps.googleapis.com/maps/api/staticmap?key=${GOOGLE_MAPS_API_KEY}`;
     const markers = travelDestinations
@@ -87,9 +89,9 @@ const Scroll = () => {
     const [active, setActive] = useState(1);
     const [placeImages, setPlaceImages] = useState({});
     const [userInfo, setUserInfo] = useState({ age: '', gender: '', mbti: '' });
-    const [userName, setUserName] = useState('');
     const [recommendations, setRecommendations] = useState([]);
     const [routeMap, setRouteMap] = useState('');
+    const [nicknames, setNicknames] = useState([]);
     const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
 
     useEffect(() => {
@@ -162,19 +164,18 @@ const Scroll = () => {
             // 추천 데이터 가져오기
             const recommendationResponse = await axios.post('/api/info-recommend', {
                 age: dateOfBirth,
-                gender: gender,
-                mbti: mbti,
+                gender,
+                mbti
             });
-            console.log("Recommendation Response:", recommendationResponse.data); // Log the response
 
-            setRecommendations(recommendationResponse.data);
+            const recommendationsData = recommendationResponse.data;
 
-            // 추천 사용자의 이름 가져오기
-            if (recommendationResponse.data.length > 0) {
-                const recommendation = recommendationResponse.data[0];
-                setUserName(getNickname(recommendation.age, recommendation.gender, recommendation.mbti));
-            }
-
+            // 닉네임 설정
+            const generatedNicknames = recommendationsData.map(user => {
+                return getNickname(user.age, user.gender, user.mbti);
+            });
+            setNicknames(generatedNicknames);
+            setRecommendations(recommendationsData);
         } catch (error) {
             console.error("Error during the request:", error);
             alert('정보를 가져오는 중 오류가 발생했습니다.');
@@ -192,28 +193,87 @@ const Scroll = () => {
         }
     }, [isGoogleMapsScriptLoaded, recommendations]);
 
+
+
     const getNickname = (age, gender, mbti) => {
+        if (!age || !gender || !mbti) return "익명의 여행자";
+
         const birthYear = parseInt(age.substring(0, 4));
         const isE = mbti.charAt(0) === 'E';
         const isF = gender === 'F';
 
+        // 랜덤 닉네임 선택 함수
+        const getRandomNickname = (nicknames) => {
+            const randomIndex = Math.floor(Math.random() * nicknames.length);
+            return nicknames[randomIndex];
+        };
+
         if (birthYear >= 1984 && birthYear <= 1993) {
             // 1984-1993년생
-            if (isE) {
-                return isF ? "화려한 매력의 사교 여왕" : "멋진 분위기 황제";
-            } else {
-                return isF ? "은은한 매력의 감성 여신" : "든든한 따뜻한 왕자";
-            }
+            const nicknames = isF
+                ? isE
+                    ? [
+                        "화려한 매력의 사교 여왕",
+                        "반짝이는 파티의 주인공",
+                        "에너지가 넘치는 여신",
+                        "활발한 무대의 주인공"
+                    ]
+                    : [
+                        "은은한 매력의 감성 여신",
+                        "조용히 빛나는 내면의 여왕",
+                        "평온한 분위기의 여신",
+                        "고요한 바다의 여신"
+                    ]
+                : isE
+                    ? [
+                        "멋진 분위기 황제",
+                        "유쾌한 리더",
+                        "대담한 모험가",
+                        "활력 넘치는 리더"
+                    ]
+                    : [
+                        "든든한 따뜻한 왕자",
+                        "신뢰받는 듬직한 친구",
+                        "차분한 매력의 왕자",
+                        "침착한 전략가"
+                    ];
+            return getRandomNickname(nicknames);
         } else if (birthYear >= 1994 && birthYear <= 2004) {
             // 1994-2004년생
-            if (isE) {
-                return isF ? "톡톡 분위기 메이커 매력 공주" : "활력 에너지 대마왕";
-            } else {
-                return isF ? "매혹적인 신비로운 요정" : "로맨틱 감성 왕자";
-            }
+            const nicknames = isF
+                ? isE
+                    ? [
+                        "톡톡 분위기 메이커 매력 공주",
+                        "활발한 에너지의 여왕",
+                        "매혹적인 대화의 달인",
+                        "웃음을 전파하는 무대의 여왕"
+                    ]
+                    : [
+                        "매혹적인 신비로운 요정",
+                        "차분하고 우아한 소녀",
+                        "비밀스러운 매력을 가진 요정",
+                        "고요한 달빛의 요정"
+                    ]
+                : isE
+                    ? [
+                        "활력 에너지 대마왕",
+                        "모두를 웃게 하는 유머왕",
+                        "에너지가 넘치는 모험가",
+                        "무대를 휘어잡는 스타"
+                    ]
+                    : [
+                        "로맨틱 감성 왕자",
+                        "조용히 다가오는 매력의 신사",
+                        "섬세한 감성을 가진 왕자",
+                        "차분한 신비주의 왕자"
+                    ];
+            return getRandomNickname(nicknames);
         }
+
         return "익명의 여행자";
     };
+
+
 
     const saveRoute = async (userInfoId) => {
         try {
@@ -257,6 +317,11 @@ const Scroll = () => {
         return gender === 'F' ? '여성' : gender === 'M' ? '남성' : '정보 없음';
     };
 
+    useEffect(() => {
+        loadGoogleMapsScript().then(() => {
+            fetchRecommendations();
+        });
+    }, []);
 
     return (
         <StyledApp>
@@ -270,7 +335,7 @@ const Scroll = () => {
                                     <Left>
                                         <Profile src={Cutie}></Profile>
                                         <User>
-                                            <Name>{userName}</Name>
+                                            <Name>{nicknames[index]}</Name>
                                             <Detail>
                                                 <Gender>{getGenderText(recommendation.gender)}</Gender>ᆞ
                                                 <Age>{calculateAge(recommendation.age)}세</Age>ᆞ
@@ -287,13 +352,10 @@ const Scroll = () => {
                                         <RouteName>당신과 유사한 사용자의 루트</RouteName>
                                         <Routes>
                                             {recommendation.travelDestinations.map((place, index) => (
-                                                <>
-                                                    <PlaceWrapper key={index}>
-                                                        <Place src={placeImages[place] || ''} alt={place} />
-                                                        <PlaceName>{place}</PlaceName>
-                                                    </PlaceWrapper>
-                                                    {index < recommendation.travelDestinations.length - 1 && <Triangle />} {/* 마지막 요소가 아닐 경우에만 Triangle 렌더링 */}
-                                                </>
+                                                <PlaceWrapper key={index}>
+                                                    <Place src={placeImages[place] || ''} alt={place} />
+                                                    <PlaceName>{place}</PlaceName>
+                                                </PlaceWrapper>
                                             ))}
                                         </Routes>
                                     </Left2>
@@ -307,4 +369,5 @@ const Scroll = () => {
         </StyledApp>
     );
 };
+
 export default Scroll;

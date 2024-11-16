@@ -4,6 +4,7 @@ package proj.travien.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proj.travien.domain.BookReview;
+import proj.travien.domain.User;
 import proj.travien.service.BookReviewService;
 import proj.travien.service.UserService;
 
@@ -22,17 +23,16 @@ public class BookReviewController {
         this.userService = userService;
     }
 
-    /**
-     * userId에 대해 리뷰를 쓸 수 있다.
-     */
-    @PostMapping("/agent/{userId}")
-    public ResponseEntity<BookReview> addReview(@PathVariable Long userId,
+    @PostMapping("/agent/{nickname}")
+    public ResponseEntity<BookReview> addReview(@PathVariable String nickname,
                                                 @RequestParam String content,
                                                 @RequestParam int star) {
 
-        BookReview bookReview = bookReviewService.addReview(userId, content, star);
+        User user = userService.getUserByNickname(nickname);
+        BookReview bookReview = bookReviewService.addReviewByUser(user, content, star);
         return ResponseEntity.ok(bookReview);
     }
+
 
     /**
      * userId에 대한 리뷰만 확인할 수 있다
