@@ -242,12 +242,14 @@ const BlogList = () => {
         axios
             .get(`http://localhost:8080/api/posts/${country}`)
             .then((response) => {
-                setPosts(response.data); // 선택된 국가의 게시글 데이터 상태에 저장
+                const sortedPosts = response.data.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+                setPosts(sortedPosts); // 정렬된 데이터를 상태에 저장
             })
             .catch((error) => {
                 console.error(`Error fetching posts for ${country}:`, error);
             });
     };
+
 
     const fetchLikes = (boardID) => {
         axios

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Reset } from 'styled-reset';
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 import React from 'react';
 import {
     Explain, Horizonalline, Mbti,
@@ -13,6 +15,10 @@ import {
     RefreshBtn, SubTitle, SubTitleWrapper
 } from "../Personal/personalstyle";
 import GlopleCharacter from '../../../images/GlopleCharacter.png'
+
+const getAuthToken = () => {
+    return Cookies.get('jwt');
+};
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
 
@@ -37,6 +43,7 @@ const mbtiRecommendations = {
 
 
 export default function RecMbtiPage() {
+    const token = getAuthToken();
     const navigate = useNavigate();
     const [selectedDimensions, setSelectedDimensions] = useState({
         E_I: "E",
@@ -47,6 +54,7 @@ export default function RecMbtiPage() {
     const [displayedPlaces, setDisplayedPlaces] = useState([]);
     const [placeImages, setPlaceImages] = useState({});
     const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
+    const [previousPlaces, setPreviousPlaces] = useState([]); // 이전에 보여준 장소를 저장
 
     useEffect(() => {
         loadGoogleMapsScript();
@@ -69,9 +77,44 @@ export default function RecMbtiPage() {
     const refreshPlaces = () => {
         const mbtiType = `${selectedDimensions.E_I}${selectedDimensions.N_S}${selectedDimensions.T_F}${selectedDimensions.J_P}`;
         const places = mbtiRecommendations[mbtiType] || [];
-        const shuffled = [...places].sort(() => 0.5 - Math.random());
-        setDisplayedPlaces(shuffled.slice(0, 3));
+
+        // 이전 장소를 제외한 새로운 장소 목록 생성
+        const filteredPlaces = places.filter(place => !previousPlaces.includes(place));
+
+        // 충분한 새로운 장소가 없는 경우 이전 장소 초기화
+        const availablePlaces = filteredPlaces.length >= 3 ? filteredPlaces : places;
+
+        // 새로 고른 장소 랜덤으로 선택
+        const shuffled = [...availablePlaces].sort(() => 0.5 - Math.random());
+        const newPlaces = shuffled.slice(0, 3);
+
+        setDisplayedPlaces(newPlaces);
+        setPreviousPlaces(newPlaces); // 새로 선택한 장소를 이전 장소로 저장
     };
+
+    const fetchUserInfo = async () => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
+            const response = await fetch(`http://localhost:8080/api/users/my-info?userId=${userId}`);
+            const data = await response.json();
+
+            const mbti = data.mbti;
+            const dimensions = {
+                E_I: mbti.startsWith("I") ? "I" : "E",
+                N_S: mbti.includes("/N") ? "N" : "S",
+                T_F: mbti.includes("/T") ? "T" : "F",
+                J_P: mbti.includes("/P") ? "P" : "J"
+            };
+            setSelectedDimensions(dimensions);
+        } catch (error) {
+            console.error("Failed to fetch user info:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserInfo();
+    }, []);
 
     const fetchPlacePhoto = (placeName) => {
         if (!isGoogleMapsLoaded) return;
