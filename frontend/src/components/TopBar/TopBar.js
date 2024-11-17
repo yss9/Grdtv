@@ -48,15 +48,14 @@ const MenuContainer = styled.div`
 `;
 
 const Recomendation = styled.div`
-  position: relative;
+  position: relative; /* 추가 */
   font-weight: bolder;
   font-size: 14px;
   cursor: pointer;
-  //background-color: pink;
   height: 2.5em;
   display: flex;
   align-items: center;
-  
+  z-index: 2; /* 적당한 z-index 값 추가 */
 `;
 
 const RecomendationList = styled.ul`
@@ -73,9 +72,12 @@ const RecomendationList = styled.ul`
   opacity: 0;
   transition: opacity 0.8s;
   pointer-events: none;
-  :hover{
+  z-index: 10; /* svg보다 높은 값 설정 */
+  
+  :hover {
     background-color: white;
   }
+
   ${Recomendation}:hover & {
     opacity: 1;
     pointer-events: auto;
@@ -89,8 +91,9 @@ const RecomendationItem = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
-    z-index: 3;
+  z-index: 10; /* 필요시 추가 */
 `;
+
 
 const RecomendationDropdown = ({ children }) => {
     return <RecomendationList>{children}</RecomendationList>;

@@ -12,13 +12,14 @@ const MainReviewData = [
 ];
 
 const PopupContainer = styled.div`
-    position: absolute;
     padding: 10px;
+    position: absolute; // 클릭 위치에 고정
     display: flex;
     flex-direction: column;
     align-items: center;
-    top: ${({ y }) => y}px;
+    top: ${({ y }) => y- 100}px;
     left: ${({ x }) => x-350}px;
+
     background: linear-gradient(
             133.4deg,
             #000000 0.96%,
@@ -30,9 +31,9 @@ const PopupContainer = styled.div`
             rgba(0, 0, 0, 0.159736) 98.78%,
             rgba(0, 0, 0, 0) 100.83%
     );
-    box-shadow: inset 0px 4px 4px #181945,
-    inset 0px 4px 4px rgba(255, 255, 255, 0.25),
-    inset 0px 4px 200px rgba(0, 0, 0, 0.25),
+    box-shadow: inset 0 4px 4px #181945,
+    inset 0 4px 4px rgba(255, 255, 255, 0.25),
+    inset 0 4px 200px rgba(0, 0, 0, 0.25),
     inset 2px 2px 10px rgba(0, 0, 0, 0.3);
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     backdrop-filter: blur(2px);

@@ -21,8 +21,8 @@ const PopupContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    top: ${({ y }) => y}px;
-    left: ${({ x }) => x-350}px;
+    top: ${({ y }) => y-100}px;
+    left: ${({ x }) => x}px;
     background: linear-gradient(
             133.4deg,
             #000000 0.96%,
@@ -34,13 +34,13 @@ const PopupContainer = styled.div`
             rgba(0, 0, 0, 0.159736) 98.78%,
             rgba(0, 0, 0, 0) 100.83%
     );
-    box-shadow: inset 0px 4px 4px #181945,
-    inset 0px 4px 4px rgba(255, 255, 255, 0.25),
-    inset 0px 4px 200px rgba(0, 0, 0, 0.25),
+    box-shadow: inset 0 4px 4px #181945,
+    inset 0 4px 4px rgba(255, 255, 255, 0.25),
+    inset 0 4px 200px rgba(0, 0, 0, 0.25),
     inset 2px 2px 10px rgba(0, 0, 0, 0.3);
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
     backdrop-filter: blur(2px);
-    border-radius: 30px 0 30px 30px;
+    border-radius: 0 30px 30px 30px;
     width: 350px;
     height: 400px;
     border: 2px solid #999cff;
@@ -64,7 +64,7 @@ const CountryName = styled.div`
 
 const CloseBtn = styled.div`
     cursor: pointer;
-    margin-right: 10px;
+    margin-left: 10px;
 `;
 
 const GaugeBarWrapper = styled.div`
@@ -159,7 +159,6 @@ const Popup = ({ x, y, onClose }) => {
     return (
         <PopupContainer x={x} y={y}>
             <TopWrapper>
-                <CountryName>러시아</CountryName>
                 <CloseBtn onClick={handleClose}>
                     <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -168,6 +167,7 @@ const Popup = ({ x, y, onClose }) => {
                         />
                     </svg>
                 </CloseBtn>
+                <CountryName>러시아</CountryName>
             </TopWrapper>
             <BtnWrapper>
                 <SeeMoreBtn>
