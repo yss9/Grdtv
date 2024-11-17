@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     display:flex;
     flex-direction:column;
@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
     }
 `;
 
+
 export const Map = styled.div`
     width: 100%;
     position: relative;
@@ -20,18 +21,17 @@ export const Map = styled.div`
     overflow-x: hidden; /* 필요 시 조정 */
     display: flex;
     justify-content: center;
+
     svg path:hover {
         fill: #4e53ed;
+        animation: blink 1.5s steps(5, start) infinite;
+
     }
 
     ::-webkit-scrollbar {
         display: none;
     }
     
-    #map-container {
-        width: 100%;
-        height: 100%; /* 필요 시 수정 */
-    }
 `;
 
 
