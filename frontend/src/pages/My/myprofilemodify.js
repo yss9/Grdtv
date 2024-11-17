@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Reset } from "styled-reset";
 import React, { useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
 import MyProfile2 from "../../public/Img/forprofile/img.png";
@@ -15,11 +15,11 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
     width: 1500px;
-    height: 725px;
+    height: 800px;
 `;
 
 const MyProfileContainer = styled.div`
-    height: 24em;
+    height: 28em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -27,7 +27,7 @@ const MyProfileContainer = styled.div`
     font-family: Regular;
 `;
 
-const Mbti = styled.input`
+const InputField = styled.input`
     width: 120px;
     height: 30px;
     background-color: black;
@@ -89,6 +89,8 @@ const Myprofilemodify = () => {
     const [nickname, setNickname] = useState("");
     const [mbti, setMbti] = useState("");
     const [introduction, setIntroduction] = useState("");
+    const [dateOfBirth, setDateOfBirth] = useState("");
+    const [gender, setGender] = useState("");
     const token = getAuthToken();
 
     useEffect(() => {
@@ -106,6 +108,8 @@ const Myprofilemodify = () => {
                     setNickname(response.data.nickname || "");
                     setMbti(response.data.mbti || "");
                     setIntroduction(response.data.statusMessage || "");
+                    setDateOfBirth(response.data.dateOfBirth || "");
+                    setGender(response.data.gender || "");
                     setProfileImagePreview(processProfilePicture(response.data.profilePicture));
                 } else {
                     console.error("No JWT token found in cookies");
@@ -136,6 +140,8 @@ const Myprofilemodify = () => {
     const handleNicknameChange = (e) => setNickname(e.target.value);
     const handleMbtiChange = (e) => setMbti(e.target.value);
     const handleIntroductionChange = (e) => setIntroduction(e.target.value);
+    const handleDateOfBirthChange = (e) => setDateOfBirth(e.target.value);
+    const handleGenderChange = (e) => setGender(e.target.value);
 
     const handleSubmit = async () => {
         if (!token) {
@@ -146,15 +152,15 @@ const Myprofilemodify = () => {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
 
-        // 유저 프로필 정보 (닉네임, MBTI, 소개 메시지)
         const userDataJson = {
             nickname,
             mbti,
             statusMessage: introduction,
+            dateOfBirth,
+            gender,
         };
 
         try {
-            // 프로필 이미지가 파일인 경우 FormData로 업로드
             if (profileImage && profileImage instanceof File) {
                 const formData = new FormData();
                 formData.append("profilePicture", profileImage);
@@ -165,8 +171,8 @@ const Myprofilemodify = () => {
                     formData,
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`, // Authorization 헤더 추가
-                            "Content-Type": "multipart/form-data", // 이미지 업로드를 위한 Content-Type
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "multipart/form-data",
                         },
                     }
                 );
@@ -178,14 +184,13 @@ const Myprofilemodify = () => {
                 }
             }
 
-            // 유저 정보 (닉네임, MBTI, 소개 메시지) JSON 형태로 업로드
             const response = await axios.post(
                 `http://localhost:8080/api/users/update-profile?userId=${userId}`,
                 userDataJson,
                 {
                     headers: {
-                        "Content-Type": "application/json", // JSON 형태로 보내기 위해 Content-Type 설정
-                        Authorization: `Bearer ${token}`, // Authorization 헤더 추가
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -201,7 +206,6 @@ const Myprofilemodify = () => {
             alert("프로필 업데이트 중 오류가 발생했습니다.");
         }
     };
-
 
     return (
         <>
@@ -220,8 +224,10 @@ const Myprofilemodify = () => {
                                 <input type="text" value={nickname} onChange={handleNicknameChange} placeholder="닉네임" />
                             </NameWrapper>
                             <IntroduceWrapper>
-                                <Mbti type="text" value={mbti} onChange={handleMbtiChange} placeholder="MBTI" />
+                                <InputField type="text" value={mbti} onChange={handleMbtiChange} placeholder="MBTI" />
                                 <Introduce type="text" value={introduction} onChange={handleIntroductionChange} placeholder="소개 메시지" />
+                                <InputField type="text" value={dateOfBirth} onChange={handleDateOfBirthChange} placeholder="생년월일" />
+                                <InputField type="text" value={gender} onChange={handleGenderChange} placeholder="성별" />
                             </IntroduceWrapper>
                             <button onClick={handleSubmit}>저장</button>
                         </MyProfileContainer>

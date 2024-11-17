@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
-    overflow: hidden; /* 가로 스크롤바 감춤 */
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -11,25 +13,34 @@ export const Wrapper = styled.div`
 `;
 
 export const Map = styled.div`
-    margin-top: 50px;
+    width: 100%;
+    position: relative;
+    max-height: 84vh;
+    overflow-y: scroll;
+    overflow-x: hidden; /* 필요 시 조정 */
     display: flex;
     justify-content: center;
-    align-items: center;
-
     svg path:hover {
-        fill: #4E53ED;
+        fill: #4e53ed;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    
+    #map-container {
+        width: 100%;
+        height: 100%; /* 필요 시 수정 */
     }
 `;
 
 
 
 export const Background = styled.div`
-    background-image: url("/backColors.jpg");
-    height: 100vh;
-    width: 100vw;
     display: flex;
+    min-height: 100vh;
+    background: linear-gradient(296.58deg, rgba(78, 83, 237, 0.2) -4.34%, rgba(36, 38, 110, 0.2) 48.36%, rgba(29, 31, 88, 0.2) 61.81%, rgba(0, 0, 0, 0.2) 95.7%), #1C1C1C;
     flex-direction: column;
-    //background-repeat: no-repeat;
 `;
 
 export const BtnWrapper=styled.div`
