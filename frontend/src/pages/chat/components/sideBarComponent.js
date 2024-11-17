@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
+import {SideBarHeaderWrapper} from "../chatPageStyle";
 
 const SideBar = styled.aside`
     width: 12%;
@@ -17,27 +18,42 @@ const SideBarHeader = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 `
 
-const SideBarComponent = ({step}) => {
+const SideBarComponent = ({handleRecentChatting}) => {
+
+    const [activeHeader, setActiveHeader] = useState(1);
+
+    const handleHeaderClick = (headerIndex) => {
+        setActiveHeader(headerIndex); // 클릭된 헤더의 인덱스 저장
+    };
+
     return (
         <SideBar>
-            <div style={{ width: '100%', height: '45px', backgroundColor: "rgba(255, 255, 255, 0.6)", margin: '20px 0 20px 0', color: 'black' }}>
+            <SideBarHeaderWrapper
+                isActive={activeHeader === 1}
+                onClick={() => {
+                    handleHeaderClick(1);
+                    handleRecentChatting(true);
+                }}
+            >
                 <SideBarHeader>
-                        최근 채팅
+                    최근 채팅
                 </SideBarHeader>
-            </div>
-            <div>
-                <SideBarHeader style={{ display: "flex", justifyContent: "center", margin: '0 0 10px 0' }}>
-                        완료된 채팅
+            </SideBarHeaderWrapper>
+
+            <SideBarHeaderWrapper
+                isActive={activeHeader === 2}
+                onClick={() => {
+                    handleHeaderClick(2);
+                    handleRecentChatting(false);
+                }}
+            >
+                <SideBarHeader>
+                    완료된 채팅
                 </SideBarHeader>
-            </div>
-            {/*<br />*/}
-            {/*<hr style={{ margin: '0 7px' }} />*/}
-            {/*<br />*/}
-            {/*<div style={{ display: "flex", justifyContent: "center", margin: '10px 0 0 0' }}>*/}
-            {/*    도쿄 예약 대행<br /><br /><br />○○ 예약 대행*/}
-            {/*</div>*/}
+            </SideBarHeaderWrapper>
         </SideBar>
     );
 };

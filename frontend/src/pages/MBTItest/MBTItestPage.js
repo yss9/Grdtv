@@ -61,14 +61,18 @@ const MBTItestPage = () => {
     const [step, setStep] = useState(0);
     const [result, setResult] = useState([null]);
     const [resultMBTI, setResultMBTI] = useState(null);
+    const [page, setPage] = useState('/');
 
-    const onClickAnswer = (selected) => {
-        let value;
-        if (selected === 1) value = answers[step*2-2].value;
-        else value = answers[step*2-1].value;
-        setters[value]?.();
-        setResultMBTI(result[0].split(" ")[0]+result[1].split(" ")[0]+result[2].split(" ")[0]+result[3].split(" ")[0])
-        setStep(step+1);
+    const onClickAnswer = async (selected) => {
+        const goToNextStep = () => {
+            let value;
+            if (selected === 1) value = answers[step*2-2].value;
+            else value = answers[step*2-1].value;
+            setters[value]?.();
+            setResultMBTI(result[0].split(" ")[0]+result[1].split(" ")[0]+result[2].split(" ")[0]+result[3].split(" ")[0])
+            setStep(step+1);
+        }
+        await goToNextStep();
     }
 
 
@@ -90,10 +94,45 @@ const MBTItestPage = () => {
         setResult([firstResult, secondResult, thirdResult, fourthResult]);
     }, [E, I, N, S, T, F, J, P]);
 
+    const getSignupDataWithExpiry = (key) => {
+        const itemStr = localStorage.getItem(key);
+        if (!itemStr) {
+            return null; // 데이터가 없는 경우
+        }
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+        if (now.getTime() > item.expiry) {
+            // 만료된 경우 데이터 삭제
+            localStorage.removeItem(key);
+            return null;
+        }
+        return item.value;
+    }; // 가져오기
+
+    useEffect(() => {
+        const pageData = getSignupDataWithExpiry('pageData');
+        console.log(pageData);
+        if (pageData) setPage(pageData);
+    }, []); // 사용하기
+
+    const setDataWithExpiry = (key, value, expiryInMinutes) => {
+        try {
+            const now = new Date();
+            const dataWithExpiry = {
+                value, // 실제 데이터
+                expiry: now.getTime() + expiryInMinutes * 60 * 1000 // 만료 시간 (밀리초 단위)
+            };
+            localStorage.setItem(key, JSON.stringify(dataWithExpiry));
+        } catch {
+            console.log('mbti 저장 실패')
+        }
+    }; // 저장하기
+
     const onClickSaveButton = () => {
-        localStorage.setItem('mbtiResult', JSON.stringify(result));
-        navigate('/signup');
-    }
+        // 1분 후 만료
+        setDataWithExpiry('mbtiResult', JSON.stringify(result), 1);
+        navigate(page)
+    } // 적용
     
     return (
         <div style={containerStyle}>
@@ -150,7 +189,6 @@ const MBTItestPage = () => {
                                     <ResultCharacter src={`/Img/character/${resultMBTI}.png`} alt="Character"/>
                                     <MBTIResult>
                                         {resultMBTI}
-                                        {result}
                                     </MBTIResult>
                                     <ResultButtonWrapper>
                                         <ResultButton onClick={() => (setStep(0))}>다시 테스트하기</ResultButton>

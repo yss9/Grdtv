@@ -12,6 +12,7 @@ import {useNavigate} from "react-router-dom";
 import Popup2 from "../test/Popup2";
 import Popup from "../test/Popup";
 import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 export default function MainPage() {
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -19,11 +20,27 @@ export default function MainPage() {
     const [popupType, setPopupType] = useState(''); // 팝업 종류를 상태로 관리합니다.
     const [isLoggedIn, setIsLoggedIn] = useState(!!Cookies.get('jwt'));
 
+    const isTokenValid = (token) => {
+        try {
+            const { exp } = jwtDecode(token); // 토큰의 만료 시간 (exp) 추출
+            const now = Math.floor(Date.now() / 1000); // 현재 시간 (초 단위)
+            return exp > now; // 만료 시간과 현재 시간 비교
+        } catch (error) {
+            console.error("Invalid token:", error);
+            return false; // 토큰이 잘못되었거나 만료된 경우
+        }
+    };
     useEffect(() => {
         const token = Cookies.get('jwt');
-        setIsLoggedIn(!!token);
-        console.log(!!token);
-    }, [isLoggedIn]);
+        if (token && isTokenValid(token)) {
+            setIsLoggedIn(true); // 토큰이 유효하면 로그인 상태로 설정
+        } else {
+            setIsLoggedIn(false); // 토큰이 없거나 만료되었으면 로그아웃 상태로 설정
+            Cookies.remove('jwt'); // 만료된 토큰 제거 (옵션)
+        }
+        console.log("Is logged in:", !!token && isTokenValid(token));
+    }, []);
+
 
     const handleClosePopup = () => {
         setShowPopup(false);
@@ -60,20 +77,20 @@ export default function MainPage() {
             <Reset />
             <Background>
                 <Wrapper>
-                    <BtnWrapper>
-                        <div>
-                            {isLoggedIn ? (
-                                <LoginBtn onClick={handleLogout}>로그아웃</LoginBtn>
-                            ) : (
-                                <LoginBtn onClick={handleGoLogin}>로그인</LoginBtn>
-                            )}
-                        </div>
+                    {isLoggedIn ? (
+                        <BtnWrapper>
+                            <LoginBtn style={{width: '100px', borderRadius: '15px', marginRight: '50px'}} onClick={handleLogout}>로그아웃</LoginBtn>
+                        </BtnWrapper>
+                    ) : (
+                        <BtnWrapper>
+                            <LoginBtn onClick={handleGoLogin}>로그인</LoginBtn>
+                            <VirticalLineWrapper>
+                                <VirticalLine/>
+                            </VirticalLineWrapper>
+                            <RegisterBtn onClick={handleGoSignUp}>회원가입</RegisterBtn>
+                        </BtnWrapper>
+                    )}
 
-                        <VirticalLineWrapper>
-                            <VirticalLine/>
-                        </VirticalLineWrapper>
-                        <RegisterBtn onClick={handleGoSignUp}>회원가입</RegisterBtn>
-                    </BtnWrapper>
                     <TopBarComponent fontColor="white"/>
                     <Map>
                         <svg width="1306" height="662" viewBox="0 0 1306 662" fill="none"

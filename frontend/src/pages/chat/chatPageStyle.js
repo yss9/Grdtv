@@ -137,5 +137,11 @@ export const ReviewInput = styled.textarea`
         display: none; /* Chrome, Safari, Edge에서 스크롤바 숨기기 */
     }
 `;
-
-
+export const SideBarHeaderWrapper = styled.div`
+    width: 100%;
+    height: 40px;
+    padding: 20px 0;
+    transition: 0.3s;
+    background-color: ${({ isActive }) => (isActive ? 'rgba(255, 255, 255, 0.7)' : 'transparent')};
+    color: ${({ isActive }) => (isActive ? 'black' : 'white')};
+`;

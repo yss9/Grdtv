@@ -39,57 +39,61 @@ const ChatContainer = styled.div`
     align-items: center; /* 세로 중앙 정렬 */
 `;
 
-const ChatListComponent = ({ nicknames, username, handleAddUser, profilePictures }) => {
+const ChatListComponent = ({ nicknames, handleAddUser, profilePictures, chattingNicknames, chatEndedNicknames, isRecentChatting }) => {
 
+    if (isRecentChatting) {
+        nicknames = chattingNicknames;
+    } else {
+        nicknames = chatEndedNicknames;
+    }
 
     return (
         <ChatListWrapper>
             <SidebarContentInput type="text" placeholder="채팅방 내용, 참여자 검색" />
             <ChatList>
                 <div>
-                    {nicknames.map((nickname) => (
-                        nickname !== username && (
-                            <div
-                                style={{
-                                    width: '100%',
-                                    borderBottom: '1px solid lightgray',
-                                    cursor: 'pointer',
-                                    padding: '10px',
-                                    overflowX: 'hidden',
-                                }}
-                                onClick={() => handleAddUser(nickname)}
-                                key={nickname}
-                            >
-                                <ChatContainer>
-                                    <ProfileImgContainer>
-                                        <ProfileImg
-                                            src={'http://localhost:8080/' + profilePictures[nickname] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'}
-                                            alt='채팅방'
-                                            onError={(e) => {
-                                                e.target.onerror = null; // 무한 루프 방지
-                                                e.target.src = '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'; // 대체 이미지 설정
-                                            }}
-                                        />
-                                    </ProfileImgContainer>
-                                    <div
-                                        style={{
-                                            width: 'calc(100% - 70px)',
-                                            padding: '0 10px',
+                    {nicknames && nicknames.length > 0 && nicknames.map((nickname) => (
+                        <div
+                            style={{
+                                width: '100%',
+                                borderBottom: '1px solid lightgray',
+                                cursor: 'pointer',
+                                padding: '10px',
+                                overflowX: 'hidden',
+                            }}
+                            onClick={() => handleAddUser(nickname)}
+                            key={nickname}
+                        >
+                            <ChatContainer>
+                                <ProfileImgContainer>
+                                    <ProfileImg
+                                        src={
+                                            'http://localhost:8080/' + profilePictures[nickname] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'
+                                        }
+                                        alt='채팅방'
+                                        onError={(e) => {
+                                            e.target.onerror = null; // 무한 루프 방지
+                                            e.target.src = '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'; // 대체 이미지 설정
                                         }}
-                                    >
-                                        <div>
-                                            <ChatItem>
-                                                {nickname}
-                                            </ChatItem>
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: 'gray' }}>
-                                            메세지를 보내서 글로플러와...
-                                        </div>
+                                    />
+                                </ProfileImgContainer>
+                                <div
+                                    style={{
+                                        width: 'calc(100% - 70px)',
+                                        padding: '0 10px',
+                                    }}
+                                >
+                                    <div>
+                                        <ChatItem>{nickname}</ChatItem>
                                     </div>
-                                </ChatContainer>
-                            </div>
-                        )
+                                    <div style={{ fontSize: '12px', color: 'gray' }}>
+                                        메세지를 보내서 글로플러와 대화해 보세요.
+                                    </div>
+                                </div>
+                            </ChatContainer>
+                        </div>
                     ))}
+
                 </div>
             </ChatList>
         </ChatListWrapper>

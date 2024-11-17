@@ -194,7 +194,9 @@ const ChatRoomComponent = ({
             console.log('포인트 전송 성공:', response.data);
             await handleIsSendedTrue();
             setIsSended(true);
+            setStep(3)
         } catch (error) {
+            alert('포인트가 부족합니다.')
             console.error('포인트 전송 실패:', error);
             console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
         }
@@ -217,7 +219,6 @@ const ChatRoomComponent = ({
                 }
             );
             console.log('Progress Update complete')
-            setStep(3)
         } catch (error) {
             console.error('Failed to update progress', error);
             console.error('Error details:', error.response?.data);
@@ -374,7 +375,7 @@ const ChatRoomComponent = ({
                     {step === 1 ? <ProcessButton onClick={() => onClickProcessButton(2)}>대행 진행하기</ProcessButton>
                         : step === 2 ? <ProcessButton onClick={() => onClickProcessButton(3)}>입금 진행하기</ProcessButton>
                             : step === 3 ? <ProcessButton onClick={() => onClickProcessButton(4)}>여행 완료하기</ProcessButton>
-                                : <ProcessButton onClick={() => onClickProcessButton(1)}>step1(임시)</ProcessButton>
+                                : <ProcessButton onClick={() => onClickProcessButton(1)}>reset(임시)</ProcessButton>
                     }
                 </div>
             ) : (
@@ -390,9 +391,9 @@ const ChatRoomComponent = ({
                         style={{
                             ...(message.sender === username ? styles.myMessage : styles.otherMessage),
                             width: 'auto',
-                            backgroundColor: message.content.includes('|button') ? '#FF9900' : undefined,
-                            border: message.content.includes('|button') ? 'none' : '1px solid #4E53ED',
-                            color: message.content.includes('|button') ? 'white' : 'black',
+                            backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
+                            border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
+                            color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
                         }}
                     >
                         {isImage(message.content) ? (
@@ -430,6 +431,10 @@ const ChatRoomComponent = ({
                                     </PointButton>
                                 )}
 
+                            </>
+                        ) : message.content.includes('|stt') ? (
+                            <>
+                                <div>{message.content.split('|stt')[0]}</div>
                             </>
                         ) : (
                             message.content
