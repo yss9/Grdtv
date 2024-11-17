@@ -233,7 +233,7 @@ const Agent = ({ review, pageType }) => {
     const token = Cookies.get('jwt'); // 쿠키에서 JWT 토큰 가져오기
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
     const [username, setUsername] = useState('');
-    const [favoriteAgents, setFavoriteAgents] = useState([]);
+    const [ setFavoriteAgents] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [reviewNum, setReviewNum] = useState(0);
     const [firstReview,setFirstReview] = useState('');
@@ -247,7 +247,6 @@ const Agent = ({ review, pageType }) => {
         setIsModalOpen(false);
     };
 
-    // 리뷰 데이터를 가져와서 review.number와 review.agentreview에 할당
     useEffect(() => {
         const fetchReviews = async () => {
             if (!review.author) return;
