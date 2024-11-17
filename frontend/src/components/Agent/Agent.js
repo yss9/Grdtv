@@ -237,6 +237,8 @@ const Agent = ({ review, pageType }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [reviewNum, setReviewNum] = useState(0);
     const [firstReview,setFirstReview] = useState('');
+    const [isAgent, setIsAgent] = useState(false);
+
     const openModal = () => {
         setIsModalOpen(true);
     };
@@ -379,6 +381,26 @@ const Agent = ({ review, pageType }) => {
         fetchNicknames();
     }, [token]);
 
+    // 내가 글로플러인지 확인
+    useEffect(() => {
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
+        const fetchMyInfo = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/my-info', {
+                    params: {
+                        userId: userId,
+                    },
+                });
+                setIsAgent(response.data.agent);
+                console.log('isAgent:', isAgent)
+            } catch (error) {
+                console.error('Failed to fetch myInfo', error);
+            }
+        };
+
+        fetchMyInfo();
+    }, [token]);
 
 
     return (
@@ -409,19 +431,21 @@ const Agent = ({ review, pageType }) => {
                                     ))}
                                 </HashTags>
                                 <GoChatBtnWrapper>
-                                    <GoChatBtn onClick={handleAddUser}>
-                                        <p>채팅하기</p>
-                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clipPath="url(#clip0_746_1335)">
-                                                <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="white"/>
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0_746_1335">
-                                                    <rect width="18" height="18" fill="white"/>
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-                                    </GoChatBtn>
+                                    {isAgent ? (<>{/*글로플러에게는 채팅하기 버튼 뜨지 않음*/}</>) : (
+                                        <GoChatBtn onClick={handleAddUser}>
+                                            <p>채팅하기</p>
+                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_746_1335)">
+                                                    <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="white"/>
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_746_1335">
+                                                        <rect width="18" height="18" fill="white"/>
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                        </GoChatBtn>
+                                    )}
                                 </GoChatBtnWrapper>
                             </PContainer>
                         </Profile>

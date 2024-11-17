@@ -113,7 +113,11 @@ export default function RecMbtiPage() {
     };
 
     useEffect(() => {
-        fetchUserInfo();
+        const executeFunctions = async () => {
+            await fetchUserInfo(); // fetchUserInfo가 완료될 때까지 대기
+            mbtiTestResult(); // fetchUserInfo가 완료된 후 실행
+        };
+        executeFunctions();
     }, []);
 
     const fetchPlacePhoto = (placeName) => {
@@ -168,6 +172,51 @@ export default function RecMbtiPage() {
         });
     };
 
+    const setSignupDataWithExpiry = (key, value, expiryInMinutes) => {
+        const now = new Date();
+        const dataWithExpiry = {
+            value, // 실제 데이터
+            expiry: now.getTime() + expiryInMinutes * 60 * 1000 // 만료 시간 (밀리초 단위)
+        };
+        localStorage.setItem(key, JSON.stringify(dataWithExpiry));
+    }; // mbti 검사 페이지 이동하기 전, 현재 페이지 주소 저장하기 (돌아오기 위해)
+
+    const getSignupDataWithExpiry = (key) => {
+        const itemStr = localStorage.getItem(key);
+        if (!itemStr) {
+            return null; // 데이터가 없는 경우
+        }
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+        if (now.getTime() > item.expiry) {
+            // 만료된 경우 데이터 삭제
+            localStorage.removeItem(key);
+            return null;
+        }
+        return item.value;
+    }; // mbti 검사 결과 가져오기
+
+    const mbtiTestResult = () => {
+        const mbtiSavedData = getSignupDataWithExpiry('mbtiResult');
+        if (mbtiSavedData) {
+            const parsedArray = JSON.parse(mbtiSavedData);
+            console.log('parsedArray',parsedArray)
+            const dimensions = {
+                E_I: parsedArray[0].split(' ')[0],
+                N_S: parsedArray[1].split(' ')[0],
+                T_F: parsedArray[2].split(' ')[0],
+                J_P: parsedArray[3].split(' ')[0],
+            };
+            console.log('dimensions',dimensions)
+            setSelectedDimensions(dimensions);
+        }
+    }
+
+    const onClickMBTItest = () => {
+        setSignupDataWithExpiry('pageData', '/recomendation/mbti', 5);
+        navigate('/MBTItest')
+    } // mbti 검사하러 가기 버튼 클릭
+
     return (
         <>
             <Reset />
@@ -183,7 +232,7 @@ export default function RecMbtiPage() {
                                 <p>나의 MBTI와 나와 비슷한 성향의 사용자 데이터를 통해 맞춤형 여행 정보를 제공합니다.</p>
                             </MbtiSubTitle>
                             <WriteMbtiBtnWrapper>
-                                <WriteMbtiBtn>
+                                <WriteMbtiBtn onClick={onClickMBTItest}>
                                     <p>MBTI 검사하기</p>
                                     <svg width="12" height="18" viewBox="0 0 12 18" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">

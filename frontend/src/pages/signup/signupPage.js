@@ -189,28 +189,76 @@ export default function SignupPage() {
     }
 
     const [percentValue, setPercentValue] = useState([51, 51, 51, 51]);
-    const [mbtiResult, setMbtiResult] = useState([]);
+
+    const setSignupDataWithExpiry = (key, value, expiryInMinutes) => {
+        const now = new Date();
+        const dataWithExpiry = {
+            value, // 실제 데이터
+            expiry: now.getTime() + expiryInMinutes * 60 * 1000 // 만료 시간 (밀리초 단위)
+        };
+        localStorage.setItem(key, JSON.stringify(dataWithExpiry));
+    }; // 저장하기
+
+    const getSignupDataWithExpiry = (key) => {
+        const itemStr = localStorage.getItem(key);
+        if (!itemStr) {
+            return null; // 데이터가 없는 경우
+        }
+        const item = JSON.parse(itemStr);
+        const now = new Date();
+        if (now.getTime() > item.expiry) {
+            // 만료된 경우 데이터 삭제
+            localStorage.removeItem(key);
+            return null;
+        }
+        return item.value;
+    }; // 가져오기
 
     useEffect(() => {
-        // localStorage에서 JSON 문자열을 불러와 배열로 변환
-        const storedResult = localStorage.getItem('mbtiResult');
-        const parsedResult = JSON.parse(storedResult);
-        console.log(parsedResult);
-        if (storedResult) {
-            setMbtiResult(parsedResult);
-            setIE(parsedResult[0].split(' ')[0]);
-            setSN(parsedResult[1].split(' ')[0]);
-            setFT(parsedResult[2].split(' ')[0]);
-            setPJ(parsedResult[3].split(' ')[0]);
-            for (let i = 0; i < 4; i++) {
-                setPercentValue((prevValues) => {
-                    const newValues = [...prevValues]; // 이전 배열을 복사
-                    newValues[i] = parsedResult[i].split(' ')[1]; // i번째 요소 업데이트
-                    return newValues; // 새로운 배열 반환
-                });
-            }
+        const savedData = getSignupDataWithExpiry('signupData');
+        console.log(savedData);
+        if (savedData) {
+            setId(savedData.id || "");
+            setPw(savedData.pw || "");
+            setName(savedData.name || "");
+            setBirthday(savedData.birthday || "");
+            setGender(savedData.gender || "");
+            setNickName(savedData.nickName || "");
+            setProfilePicture(savedData.profilePicture || null);
         }
-    }, []);
+        const mbtiSavedData = getSignupDataWithExpiry('mbtiResult');
+        if (mbtiSavedData) {
+            const parsedArray = JSON.parse(mbtiSavedData);
+            setIE(parsedArray[0].split(' ')[0])
+            setSN(parsedArray[1].split(' ')[0])
+            setFT(parsedArray[2].split(' ')[0])
+            setPJ(parsedArray[3].split(' ')[0])
+            setPercentValue((prevValues) => {
+                const newValues = [...prevValues];
+                parsedArray.forEach((item, index) => {
+                    newValues[index] = item.split(' ')[1];
+                });
+                return newValues;
+            });
+        }
+    }, []); // 사용하기
+
+    const onClickMBTItest = () => {
+        const signupData = {
+            id: id,
+            pw: pw,
+            name: name,
+            birthday: birthday,
+            gender: gender,
+            nickName: nickName,
+        };
+        // 5분 후 만료
+        setSignupDataWithExpiry('signupData', signupData, 5);
+        setSignupDataWithExpiry('pageData', '/signUp', 5);
+        navigate('/MBTItest')
+    } // 적용
+
+
 
     const handleChange = (percentIndex) => (event) => {
         const newValue = parseFloat(event.target.value, 10); // 값을 정수로 변환
@@ -240,26 +288,9 @@ export default function SignupPage() {
         navigate('/')
     }
 
-    useEffect(() => {
-        const savedData = localStorage.getItem('signupData');
-        console.log(savedData)
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            setId(parsedData.id || "");
-            setPw(parsedData.pw || "");
-            setName(parsedData.name || "");
-            setBirthday(parsedData.birthday || "");
-            setGender(parsedData.gender || "");
-            setNickName(parsedData.nickName || "");
-            setProfilePicture(parsedData.profilePicture || null);
-        }
-    }, []);
-
-
     return (
         <>
             <Wrapper>
-
                 <LogoWrapper>
                     <Logo onClick={handleGoHome} src='/Img/Logo2.png'></Logo>
                 </LogoWrapper>
@@ -304,6 +335,7 @@ export default function SignupPage() {
                                 goToFirstPage={goToFirstPage}
                                 goToThirdPage={goToThirdPage}
                                 pageVariants={pageVariants}
+                                onClickMBTItest={onClickMBTItest}
                             />
                         )}
                         {step === 3 && (

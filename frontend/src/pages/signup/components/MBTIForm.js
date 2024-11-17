@@ -21,6 +21,7 @@ const MBTIForm = ({
                       goToFirstPage,
                       goToThirdPage,
                       pageVariants,
+                      onClickMBTItest
                   }) => {
     const navigate = useNavigate();
 
@@ -154,7 +155,7 @@ const MBTIForm = ({
 
                 <div style={{height:'30px'}}></div>
                 <BoldText>아직 MBTI에 대해서 잘 모른다면?</BoldText>
-                <p style={{cursor: "pointer"}} onClick={() => (navigate('/MBTItest'))}>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
+                <p style={{cursor: "pointer"}} onClick={onClickMBTItest}>글로플에서 제공하는 MBTI 테스트 하러 가기 ></p>
                 <br/><br/><br/><br/>
 
                 <ButtonContainer>

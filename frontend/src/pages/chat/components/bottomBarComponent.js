@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ModalBackground} from "../chatPageStyle";
+import {ModalBackground, Button} from "../chatPageStyle";
 
 const BottomBar = styled.div`
     overflow: hidden;
@@ -72,9 +72,10 @@ const BottomBarComponent = ({
                             style={{
                                 backgroundColor: '#fefefe',
                                 margin: '15% auto',
-                                padding: '20px',
+                                padding: '30px',
                                 border: '1px solid #888',
                                 width: '30%',
+                                borderRadius: '20px',
                             }}
                         >
                             <span
@@ -94,26 +95,26 @@ const BottomBarComponent = ({
                                 type="file"
                                 onChange={handleFileChange}
                             />
-                            <button
+                            <Button
                                 style={{
-                                    marginLeft: '40%',
-                                    padding: '5px 10px',
-                                    textAlign: 'center',
+                                    margin: '10px auto',
+                                    width: '130px',
+                                    fontSize: '17px',
                                 }}
                                 onClick={onClickSendFile}
                             >
-                                파일 전송하기
-                            </button>
-                            <button
+                                파일 전송
+                            </Button>
+                            <Button
                                 style={{
-                                    marginLeft: '40%',
-                                    padding: '5px 10px',
-                                    textAlign: 'center',
+                                    margin: '0 auto',
+                                    width: '160px',
+                                    fontSize: '17px',
                                 }}
                                 onClick={handleVoiceMessageUpload}
                             >
-                                음성 파일 전송하기
-                            </button>
+                                음성 파일 전송
+                            </Button>
                         </div>
                     </ModalBackground>
                     )}

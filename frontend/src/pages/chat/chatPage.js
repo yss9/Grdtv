@@ -59,10 +59,27 @@ const ChatPage = () => {
     const [step, setStep] = useState(0);
     const [profilePictures, setProfilePictures] = useState({}); // 프로필 사진 저장 상태
 
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.userId;
+    const [chatEndedNicknames, setChatEndedNicknames] = useState(null);
+    const [chattingNicknames, setChattingNicknames] = useState(null);
+
+    const [isRecentChatting, setIsRecentChatting] = useState(true);
+
+
+    let decodedToken = null;
+    let userId = null;
+    try {
+        if (!token) {
+            throw new Error('Token is not provided.');
+        }
+        decodedToken = jwtDecode(token);
+        userId = decodedToken.userId;
+    } catch (error) {
+        console.error('Error decoding token:', error.message);
+    }
 
     const [pointInput, setPointInput] = useState('');
+
+
     const handlePointInputChange = (event) => {
         setPointInput(event.target.value);
     };
@@ -102,26 +119,66 @@ const ChatPage = () => {
     useEffect(() => {
         const fetchNicknames = async () => {
             try {
+                // 닉네임 목록 가져오기
                 const response = await axios.get('http://localhost:8080/chat/userRooms', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log('받은 값:',response.data)
+                console.log('받은 값:', response.data);
                 setNicknames(response.data);
 
                 // 토큰에서 내 닉네임 가져오기
                 const userPayload = jwtDecode(token);
                 const extractedUsername = userPayload.nickname;
-                console.log('extractedUsername:',extractedUsername)
+                console.log('extractedUsername:', extractedUsername);
                 setUsername(extractedUsername);
+
+                // 진행 상황 조회 요청 및 분류
+                const progressResponses = await Promise.all(
+                    response.data.map(async (nickname) => {
+                        try {
+                            const progressResponse = await axios.get('http://localhost:8080/api/booking/progress', {
+                                params: {
+                                    userId: extractedUsername,
+                                    agentId: nickname
+                                },
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+                            console.log(`진행 상황 업데이트 성공 (${nickname}):`, progressResponse.data);
+                            return { nickname, progress: progressResponse.data };
+                        } catch (error) {
+                            console.error(`진행 상황 업데이트 실패 (${nickname}):`, error);
+                            return { nickname, progress: null }; // 실패한 경우 기본값 처리
+                        }
+                    })
+                );
+
+                // 진행 상황에 따라 분류
+                const ended = progressResponses
+                    .filter(item => item.progress === 4)
+                    .map(item => item.nickname);
+                const ongoing = progressResponses
+                    .filter(item => item.progress !== 4)
+                    .map(item => item.nickname);
+
+                console.log('완료된 채팅:', ended);
+                console.log('진행 중인 채팅:', ongoing);
+
+                // 상태 업데이트
+                setChatEndedNicknames(ended);
+                setChattingNicknames(ongoing);
             } catch (error) {
                 console.error('Failed to fetch nicknames', error);
             }
         };
 
         fetchNicknames();
-    }, [token]);
+    }, [token, isRecentChatting]);
+
+
 
 
 
@@ -178,7 +235,7 @@ const ChatPage = () => {
             // WebSocket을 통해 텍스트 메시지 전송
             WebSocketService.sendMessage({
                 sender: username,
-                content: transcript,
+                content: `STT 메세지입니다.\n${transcript}|stt`,
                 type: 'CHAT',
             });
         } catch (error) {
@@ -206,23 +263,6 @@ const ChatPage = () => {
             } catch (error) {
                 console.error('Invalid token or failed to create chat room:', error);
             }
-            try {
-                // 진행 상황 조회 요청
-                const response = await axios.get('http://localhost:8080/api/booking/progress', {
-                    params: {
-                        userId: username,
-                        agentId: targetUserNickname
-                    },
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log('Fetch progress response:', response.data);
-                setStep(response.data)
-
-            } catch (error) {
-                console.error('Failed to fetch progress', error);
-            }
         } else {
             console.error('No JWT token found in cookies');
         }
@@ -233,29 +273,31 @@ const ChatPage = () => {
         if (stepValue === 3){
             handleOpenPointModal()
         }
-        if (token) {
-            try {
-                // 진행 상황 업데이트 요청
-                const response = await axios.post(
-                    'http://localhost:8080/api/booking/update-progress',
-                    null,
-                    {
-                        params: {
-                            userId: username,
-                            agentId: chatUsername,
-                            progress: stepValue
-                        },
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': '*/*'
+        else {
+            if (token) {
+                try {
+                    // 진행 상황 업데이트 요청
+                    const response = await axios.post(
+                        'http://localhost:8080/api/booking/update-progress',
+                        null,
+                        {
+                            params: {
+                                userId: username,
+                                agentId: chatUsername,
+                                progress: stepValue
+                            },
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': '*/*'
+                            }
                         }
-                    }
-                );
-                console.log('Progress Update complete')
-                setStep(stepValue)
-            } catch (error) {
-                console.error('Failed to update progress', error);
-                console.error('Error details:', error.response?.data);
+                    );
+                    console.log('Progress Update complete')
+                    setStep(stepValue)
+                } catch (error) {
+                    console.error('Failed to update progress', error);
+                    console.error('Error details:', error.response?.data);
+                }
             }
         }
     }
@@ -305,6 +347,9 @@ const ChatPage = () => {
     const handleClosePointModal = () => {
         setIsVisiblePointModal(false);
     }
+    const handleRecentChatting = (value) => {
+        setIsRecentChatting(value);
+    }
 
     useEffect(() => {
         const fetchProfilePictures = async () => {
@@ -335,6 +380,7 @@ const ChatPage = () => {
         fetchProfilePictures();
     }, [nicknames, username]);
 
+
     return (
         <Wrapper>
             <Reset/>
@@ -344,16 +390,19 @@ const ChatPage = () => {
                 style={{zIndex: '1000'}}
             />
             <ChatPageWrapper>
-                <SideBarComponent/>
+                <SideBarComponent handleRecentChatting={handleRecentChatting}/>
                 <ChatListComponent
                     nicknames={nicknames}
-                    username={username}
                     handleAddUser={handleAddUser}
                     profilePictures={profilePictures}
+                    chattingNicknames={chattingNicknames}
+                    chatEndedNicknames={chatEndedNicknames}
+                    isRecentChatting={isRecentChatting}
                 />
                 <Main>
                     {joined ? (
                         <ChatRoomComponent
+
                             chatUsername={chatUsername}
                             messages={messages}
                             username={username}
@@ -373,6 +422,7 @@ const ChatPage = () => {
                             userId={userId}
                             onClickProcessButton={onClickProcessButton}
                             step={step}
+                            setStep={setStep}
                             profilePictures={profilePictures}
                         />
                     ) : (
@@ -413,12 +463,26 @@ const ChatPage = () => {
                         </ModalFont>
                         <div style={{height: '50px', borderBottom: '2px solid gray'}}>
                             <input
-                                style={{width:'200px',height:'48px', float: 'left', fontSize:'25px', textAlign:'right', border: "none", marginRight:'5px'}}
+                                style={{
+                                    width: '200px',
+                                    height: '48px',
+                                    float: 'left',
+                                    fontSize: '25px',
+                                    textAlign: 'right',
+                                    border: 'none',
+                                    marginRight: '5px'
+                                }}
                                 size="1"
                                 value={pointInput}
-                                onChange={handlePointInputChange}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    // 숫자만 허용 (정규식 사용)
+                                    if (/^\d*$/.test(value)) {
+                                        handlePointInputChange(e);
+                                    }
+                                }}
                             />
-                            <ModalFont style={{float:'right'}}>
+                            <ModalFont style={{float: 'right'}}>
                                 포인트
                             </ModalFont>
                         </div>

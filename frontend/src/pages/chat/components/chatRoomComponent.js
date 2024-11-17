@@ -2,10 +2,17 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import BottomBarComponent from './bottomBarComponent';
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
 import Cookies from "js-cookie";
-import {ProfileImgContainer, ProfileImg, PointButton} from "../chatPageStyle";
+import {
+    ProfileImgContainer,
+    ProfileImg,
+    PointButton,
+    ModalBackground,
+    ReviewContentsWrapper,
+    ReviewSentence, ReviewInput, Button, ReviewInputWrapper
+} from "../chatPageStyle";
 import WebSocketService from "../WebSocketService";
+import {jwtDecode} from "jwt-decode";
 
 // styled-components
 const ChatRoomWrapper = styled.div`
@@ -125,7 +132,11 @@ const ProcessButton = styled.button`
     //box-shadow: #515151 1px 5px;
 `
 
-
+const StarSVG = ({ fill = "#C4C4C4" }) => (
+    <svg width="45" height="45" viewBox="0 0 48 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.1958 3.70821C21.3932 0.0229654 26.6068 0.0229607 27.8042 3.7082L30.5109 12.0385C31.0464 13.6866 32.5822 14.8024 34.3151 14.8024H43.0741C46.949 14.8024 48.5601 19.7609 45.4253 22.0385L38.3391 27.1869C36.9371 28.2055 36.3505 30.011 36.886 31.6591L39.5927 39.9894C40.7901 43.6746 36.5722 46.7391 33.4373 44.4615L26.3511 39.3131C24.9492 38.2945 23.0508 38.2945 21.6489 39.3131L14.5627 44.4615C11.4278 46.7391 7.20991 43.6746 8.40731 39.9894L11.114 31.6591C11.6495 30.011 11.0629 28.2055 9.66091 27.1869L2.57473 22.0385C-0.560124 19.7609 1.05098 14.8024 4.92587 14.8024H13.6849C15.4178 14.8024 16.9536 13.6866 17.4891 12.0385L20.1958 3.70821Z" fill={fill} />
+    </svg>
+);
 
 
 
@@ -147,12 +158,17 @@ const ChatRoomComponent = ({
                                handleVoiceMessageUpload,
                                userId,
                                onClickProcessButton,
-                               step,
+                               step, setStep,
                                profilePictures
                            }) => {
     const token = Cookies.get('jwt');
     const serverUrl = 'http://localhost:8080';
     const [isSended, setIsSended] = useState(false);
+    const [isOpenReviewModal, setIsOpenReviewModal] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(0);
+    const [reviewInputValue, setReviewInputValue] = useState('');
+
 
     const isImage = (filePath) => {
         return filePath.match(/\.(jpeg|jpg|gif|png)$/);
@@ -177,9 +193,35 @@ const ChatRoomComponent = ({
             });
             console.log('포인트 전송 성공:', response.data);
             await handleIsSendedTrue();
+            setIsSended(true);
+            setStep(3)
         } catch (error) {
+            alert('포인트가 부족합니다.')
             console.error('포인트 전송 실패:', error);
             console.error('Error details:', error.response?.data); // 백엔드에서 반환된 에러 메시지 출력
+        }
+
+        try {
+            // 진행 상황 업데이트 요청
+            const response = await axios.post(
+                'http://localhost:8080/api/booking/update-progress',
+                null,
+                {
+                    params: {
+                        userId: username,
+                        agentId: chatUsername,
+                        progress: 3
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                }
+            );
+            console.log('Progress Update complete')
+        } catch (error) {
+            console.error('Failed to update progress', error);
+            console.error('Error details:', error.response?.data);
         }
     };
     const handleIsSendedTrue = async () => {
@@ -208,6 +250,7 @@ const ChatRoomComponent = ({
             type: 'CHAT'
         };
         WebSocketService.sendMessage(message);
+
     };
     
     useEffect(() => {
@@ -230,6 +273,69 @@ const ChatRoomComponent = ({
         getIsSended();
     }, [token]);
 
+    const onClickReviewButton = () => {
+        setIsOpenReviewModal(true);
+    }
+
+    const handleCloseReviewModal = () => {
+        setIsOpenReviewModal(false);
+    }
+
+    const handleReviewInputChange = (event) => {
+        const newValue = event.target.value;
+        if (newValue.length <= 35) { // maxLength 검증
+            setReviewInputValue(newValue);
+        }
+    };
+
+    const handleReviewUpload = async () => {
+        console.log(rating);
+        console.log(reviewInputValue);
+        if (token) {
+            try {
+                const response = await axios.post(
+                    `http://localhost:8080/api/bookReviews/agent/${chatUsername}`,
+                    null,
+                    {
+                        params: {
+                            star: rating,
+                            content: reviewInputValue,
+                        },
+                    }
+                );
+                console.log('Review Update complete')
+            } catch (error) {
+                console.error('Failed to update review', error);
+            }
+        }
+    }
+
+    // 실시간 진행도 업데이트
+    useEffect(() => {
+        const fetchProgress = async () => {
+            if (chatUsername) {
+                try {
+                    // 진행 상황 조회 요청
+                    const response = await axios.get('http://localhost:8080/api/booking/progress', {
+                        params: {
+                            userId: username,
+                            agentId: chatUsername
+                        },
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    console.log('실시간 진행도 업데이트 성공:', response.data);
+                    setStep(response.data);
+                } catch (error) {
+                    console.error('실시간 진행도 업데이트 실패', error);
+                }
+            }
+        };
+
+        fetchProgress();
+    }, [chatUsername, username, token, messages]); // 의존성 배열에 필요한 값 추가
+
 
     return (
         <ChatRoomWrapper>
@@ -245,7 +351,11 @@ const ChatRoomComponent = ({
                     />
                 </ProfileImgContainer>
                 <Username>{chatUsername}</Username>
-                <ReviewButton>리뷰 &nbsp;&gt;</ReviewButton>
+                {isAgent ? (
+                    <></>
+                ) : (
+                    <ReviewButton onClick={onClickReviewButton}>리뷰 &nbsp;&gt;</ReviewButton>
+                )}
                 <GloplerListButton>글로플러 목록</GloplerListButton>
             </ChatHeader>
             <ProcessWrapper>
@@ -265,7 +375,7 @@ const ChatRoomComponent = ({
                     {step === 1 ? <ProcessButton onClick={() => onClickProcessButton(2)}>대행 진행하기</ProcessButton>
                         : step === 2 ? <ProcessButton onClick={() => onClickProcessButton(3)}>입금 진행하기</ProcessButton>
                             : step === 3 ? <ProcessButton onClick={() => onClickProcessButton(4)}>여행 완료하기</ProcessButton>
-                                : <ProcessButton onClick={() => onClickProcessButton(1)}>step1(임시)</ProcessButton>
+                                : <ProcessButton onClick={() => onClickProcessButton(1)}>reset(임시)</ProcessButton>
                     }
                 </div>
             ) : (
@@ -281,9 +391,9 @@ const ChatRoomComponent = ({
                         style={{
                             ...(message.sender === username ? styles.myMessage : styles.otherMessage),
                             width: 'auto',
-                            backgroundColor: message.content.includes('|button') ? '#FF9900' : undefined,
-                            border: message.content.includes('|button') ? 'none' : '1px solid #4E53ED',
-                            color: message.content.includes('|button') ? 'white' : 'black',
+                            backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
+                            border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
+                            color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
                         }}
                     >
                         {isImage(message.content) ? (
@@ -322,6 +432,10 @@ const ChatRoomComponent = ({
                                 )}
 
                             </>
+                        ) : message.content.includes('|stt') ? (
+                            <>
+                                <div>{message.content.split('|stt')[0]}</div>
+                            </>
                         ) : (
                             message.content
                         )}
@@ -331,6 +445,88 @@ const ChatRoomComponent = ({
 
                 <div ref={bottomRef}></div>
             </ChatRoom>
+
+
+            {isOpenReviewModal && (
+                <ModalBackground onClick={handleCloseReviewModal}>
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            backgroundColor: '#fefefe',
+                            margin: '15% auto',
+                            padding: '20px',
+                            border: '1px solid #888',
+                            width: '330px',
+                            borderRadius: '15px'
+                        }}
+                    >
+                        <span
+                            onClick={handleCloseReviewModal}
+                            style={{
+                                color: '#aaa',
+                                float: 'right',
+                                fontSize: '28px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                            }}
+                        >
+                                ×
+                            </span>
+
+                        <ReviewContentsWrapper>
+                            <ProfileImgContainer style={{width: '150px', height: '150px', marginTop: '20px'}}>
+                                <ProfileImg
+                                    src={'http://localhost:8080/' + profilePictures[chatUsername] || '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'}
+                                    alt='채팅방'
+                                    onError={(e) => {
+                                        e.target.onerror = null; // 무한 루프 방지
+                                        e.target.src = '/Img/프로토타입%20용%20임시%20채팅상대%20이미지.png'; // 대체 이미지 설정
+                                    }}
+                                />
+                            </ProfileImgContainer>
+                            <ReviewSentence>
+                                <span style={{color: 'black'}}>
+                                {chatUsername}
+                            </span> 님에게<br/>리뷰를 남겨주세요.
+                            </ReviewSentence>
+                            <div className="star-rating" style={{display: 'flex', gap: '4px'}}>
+                                {[...Array(5)].map((star, index) => {
+                                    const ratingValue = index + 1;
+
+                                    return (
+                                        <label key={index}>
+                                            <input
+                                                type="radio"
+                                                name="rating"
+                                                value={ratingValue}
+                                                onClick={() => setRating(ratingValue)}
+                                                style={{display: 'none'}} // Hide the input
+                                            />
+                                            <div
+                                                onMouseEnter={() => setHover(ratingValue)}
+                                                onMouseLeave={() => setHover(0)}
+                                                onClick={() => setRating(ratingValue)}
+                                                style={{cursor: 'pointer'}}
+                                            >
+                                                <StarSVG
+                                                    fill={ratingValue <= (hover || rating) ? "#FFDD53" : "#C4C4C4"}/>
+                                            </div>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                            <ReviewInputWrapper>
+                                <ReviewInput
+                                    type="text"
+                                    value={reviewInputValue}
+                                    onChange={handleReviewInputChange}
+                                    maxLength="35"/>
+                            </ReviewInputWrapper>
+                            <Button onClick={handleReviewUpload} style={{backgroundColor: '#4E53ED', width: '150px'}}>리뷰 쓰기</Button>
+                        </ReviewContentsWrapper>
+                    </div>
+                </ModalBackground>
+            )}
 
 
             <BottomBarComponent
@@ -346,6 +542,8 @@ const ChatRoomComponent = ({
                 handleVoiceMessageUpload={handleVoiceMessageUpload}
             />
         </ChatRoomWrapper>
+
+
     );
 };
 
