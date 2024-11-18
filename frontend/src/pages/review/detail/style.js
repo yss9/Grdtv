@@ -59,6 +59,15 @@ export const Avatar = styled.img`
  
 `;
 
+export const PImg = styled.img`
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: #7d7d7d;
+  object-fit: cover; /* 이미지를 가득 채우도록 설정 */
+
+`;
+
 export const Writer = styled.div`
   padding-left: 10px;
   margin-right: 400px;
