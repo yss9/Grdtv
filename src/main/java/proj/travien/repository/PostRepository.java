@@ -22,4 +22,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.nickname = :nickname")
     List<Post> findByNickname(String nickname);
 
+    List<Post> findByTitleContaining(String placeName);
 }
