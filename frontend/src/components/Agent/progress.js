@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import AgentProfile from '../../images/도라에몽.jpeg';
+import AgentProfile from '../../images/img_1.png';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,7 +20,6 @@ const ProfileImgContainer = styled.div`
 const ProfileImg = styled.img`
     width: 150px;
     height: 150px;
-    background-color: pink;
     border-radius: 100%;
 `;
 

@@ -5,7 +5,7 @@
     import TopBarComponent from "../../components/TopBar/TopBar";
     import MyReview from "../../components/MyPageDetail/MyReview";
     import MyReservation from "../../components/MyPageDetail/MyReservation";
-    import MyProfile2 from '../../public/Img/forprofile/img.png'; // 임시 이미지
+    import MyProfile2 from '../../public/Img/forprofile/img_1.png'; // 임시 이미지
     import { Reset } from "styled-reset";
     import {
     GloplerSettingBtn, Introduce, IntroduceWrapper,

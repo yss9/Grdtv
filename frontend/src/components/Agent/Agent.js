@@ -43,7 +43,6 @@ const PImg=styled.img`
     width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #7d7d7d;
     object-fit: cover;
 `;
 const PContainer=styled.div`
@@ -52,7 +51,6 @@ const PContainer=styled.div`
   width: 15rem;
   height: 100%;
   margin-left: 10px;
-  //background-color: palevioletred;
 `;
 const Pname=styled.div`
   height: 35%;

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import Mainreview from './mainreview';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const PopupContainer = styled.div`
     position: absolute;
@@ -95,6 +96,7 @@ const GoReservationBtn = styled.button`
     border-radius: 15px;
     margin-top: 40px;
     font-family: Regular;
+    cursor: pointer;
 `;
 
 const BtnWrapper = styled.div`
@@ -127,7 +129,8 @@ const MainReviews = styled.div`
 const Popup = ({ x, y, onClose, country }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [reviewData, setReviewData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -210,7 +213,7 @@ const Popup = ({ x, y, onClose, country }) => {
                     </GaugeBarWrapper>
                 </>
             )}
-            <GoReservationBtn>예약 바로가기</GoReservationBtn>
+            <GoReservationBtn onClick={() => navigate('/reservation')}>예약 바로가기</GoReservationBtn>
         </PopupContainer>
     );
 };

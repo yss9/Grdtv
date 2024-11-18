@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
-import MyProfile2 from "../../public/Img/forprofile/img.png";
+import MyProfile2 from "../../public/Img/forprofile/img_1.png";
 const getAuthToken = () => {
     return Cookies.get('jwt');
 };
@@ -11,7 +11,7 @@ const BlogContainer = styled.div`
     width: 800px;
     height: 380px;
     background-color: white;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     display: flex;
     justify-content: space-between;

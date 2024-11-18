@@ -14,7 +14,7 @@ import React, { useState, useEffect } from "react";
 import Agent2 from "../../components/Agent/Agent2";
 import Agent3 from "../../components/Agent/Agent3";
 import TopBarComponent from "../../components/TopBar/TopBar";
-import Profile from '../../images/도라에몽.jpeg';
+import Profile from '../../images/img_1.png';
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
@@ -27,9 +27,6 @@ const processProfilePicture = (profilePicture) => {
     }
 };
 
-const getAuthToken = () => {
-    return Cookies.get('jwt');
-};
 
 const Agent3Data = [
     { author: '김여행자', introduce: '친절하고 꼼꼼한 여행 파트너!', hashtags: ['#친절', '#꼼꼼', '#여행전문'], spec: ['중국어 전문가', '중국 5년 거주'], image:Profile , score: '4.7', number: '340', agentreview: '꼼꼼하게 챙겨주셔서 너무 좋았어요.' },
@@ -45,7 +42,6 @@ export default function ReservationPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [latestProgressData, setLatestProgressData] = useState(null);
     const navigate = useNavigate();
-    const token = getAuthToken();
 
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
@@ -63,31 +59,26 @@ export default function ReservationPage() {
                 const decodedToken = jwtDecode(token);
                 const nickname = decodedToken.nickname;
 
-                try {
-                    const response = await axios.get(`http://localhost:8080/api/booking/all-progress?nickname=${nickname}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    const progressArray = response.data;
-                    if (progressArray.length > 0) {
-                        setLatestProgressData(progressArray[progressArray.length - 1]);
+                const response = await axios.get(`http://localhost:8080/api/booking/all-progress?nickname=${nickname}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
+                });
 
-                    console.log(progressArray);
-                    console.log(latestProgressData.progress)
-
-                } catch (error) {
-                    console.error('Progress data를 가져오는 중 오류 발생:', error);
+                const progressArray = response.data;
+                if (progressArray.length > 0) {
+                    setLatestProgressData(progressArray[progressArray.length - 1]);
                 }
+
+                console.log(progressArray);
             } catch (error) {
-                console.error('토큰 디코딩 중 오류 발생:', error);
+                console.error('데이터를 가져오는 중 오류 발생:', error);
             }
         };
 
         fetchProgressData();
     }, []);
+
 
     useEffect(() => {
         axios.get("http://localhost:8080/api/users/agents")

@@ -16,7 +16,6 @@ const ProfileImg=styled.img`
     margin-left: 15px;
     height: 90px;
     border-radius: 50%;
-    //background-color: orchid;
 `
 const Container=styled.div`
     width: 280px;
