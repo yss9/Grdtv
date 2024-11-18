@@ -103,7 +103,7 @@
                 return MyProfile2;
             }
         };
-
+        //원래 introduce태그에 {userdata.statusMessage}해야함.
         return (
             <>
                 <Reset />
@@ -119,7 +119,7 @@
                             <NameWrapper>{userData.nickname}</NameWrapper>
                             <IntroduceWrapper>
                                 <Mbti>{processMbti(userData.mbti)}</Mbti>
-                                <Introduce>{userData.statusMessage}</Introduce>
+                                <Introduce>나는야 여행을 좋아하는 20대</Introduce>
                             </IntroduceWrapper>
                         </MyProfileContainer>
                     )}

@@ -53,7 +53,7 @@ const NameWrapper = styled.div`
     justify-content: center;
     align-items: center;
     color: #515151;
-    font-family: "Regular";
+    font-family: "Regular"; 
     font-size: 1.7rem;
     font-weight: bold;
 `;

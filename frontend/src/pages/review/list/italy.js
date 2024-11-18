@@ -419,7 +419,7 @@ const BlogList = () => {
                                 />
                                 <PContainer2>
                                     <Pname2>{userData.nickname}</Pname2>
-                                    <PIntro>{userData.statusMessage}</PIntro>
+                                    <PIntro>나는야 여행을 좋아하는 20대</PIntro>
                                 </PContainer2>
                             </Profile2>
                             <ButtonContainer>
