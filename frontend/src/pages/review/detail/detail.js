@@ -15,6 +15,7 @@ import parse from 'html-react-parser';
 import BoardCommentWrite from "../../reviewComment/write/write";
 import BoardCommentList from "../../reviewComment/list/list";
 import {Reset} from "styled-reset";
+import MyProfile2 from "../../../public/Img/forprofile/img_1.png";
 
 
 export default function BoardDetail() {
@@ -36,7 +37,7 @@ export default function BoardDetail() {
     //사용자 정보
     const [nickname, setNickname] = useState("");
     const [username, setUsername] = useState("");
-    const [profile, setProfile] = useState(null); // 사용자 데이터를 저장할 상태
+    const [profilePicture, setProfilePicture] = useState(null); // 사용자 데이터를 저장할 상태
     const [showWriteComment, setShowWriteComment] = useState(false); // 댓글 작성 모드 상태
     const [postOwnerId, setPostOwnerId] = useState(0); // 게시글 작성자의 ID
     const [userId, setUserId] = useState(0); // 로그인한 사용자의 ID
@@ -83,7 +84,7 @@ export default function BoardDetail() {
             setImage(postData.image);
             setNickname(postData.nickname); // 닉네임 설정
             setPostOwnerId(postData.userId); // 게시글 작성자의 ID 설정
-            setProfile(postData.profilePicture); // 사용자 프로필 설정
+            setProfilePicture(postData.profilePicture); // 사용자 프로필 설정
 
             // Process addresses to remove any unwanted characters
             const processedAddresses = postData.addresses.map(address => {
@@ -233,6 +234,14 @@ export default function BoardDetail() {
         setShowWriteComment(!showWriteComment);
     };
 
+    const processProfilePicture = (profilePicture) => {
+        if (profilePicture) {
+            return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+        } else {
+            return MyProfile2;
+        }
+    };
+
 
 
 
@@ -267,9 +276,7 @@ export default function BoardDetail() {
                                     <S.Title>{title}</S.Title>
                                 </S.TitleWrapper>
                                 <AvatarWrapper>
-                                    <Avatar
-                                        src={profile ? `http://localhost:8080/${profile.replace('static/', '')}` : 'http://localhost:8080/image/no_image.png'}
-                                    />
+                                    <S.PImg src={processProfilePicture(profilePicture)}></S.PImg>
 
                                     <S.Writer>{nickname}</S.Writer>
                                 </AvatarWrapper>
@@ -341,11 +348,12 @@ export default function BoardDetail() {
                             {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
                         </Button>
                         {showWriteComment ? (
-                            <BoardCommentWrite boardID={boardID} />
+                            <BoardCommentWrite boardID={boardID} onToggleComment={handleCommentToggle} />
                         ) : (
                             <BoardCommentList />
                         )}
                     </div>
+
 
                 </S.Wrapper>
             </S.Container>

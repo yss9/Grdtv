@@ -105,7 +105,6 @@ const MapPage = () => {
         setEditIndex(index);
         setSelectedLocation(index !== null && field === '경유지' ? route.경유지[index] : route[field]);
         setModalIsOpen(true);
-        handleSearch();
     };
 
     const closeModal = () => {
@@ -133,11 +132,13 @@ const MapPage = () => {
 
         const newMarkers = [
             newRoute.출발지 && allLocationsInfo[newRoute.출발지],
-            ...newRoute.경유지.map((loc) => allLocationsInfo[loc]),
-            newRoute.도착지 && allLocationsInfo[newRoute.도착지],
+            ...newRoute.경유지.map(loc => allLocationsInfo[loc]),
+            newRoute.도착지 && allLocationsInfo[newRoute.도착지]
         ].filter(Boolean);
 
         setMarkers(newMarkers);
+        console.log('뉴마커',newMarkers)
+
     };
 
 
@@ -162,27 +163,27 @@ const MapPage = () => {
         updateMarkers(newRoute);
     };
 
-    // const sendPlace = () => {
-    //     const combinedLocations = [
-    //         route.출발지,
-    //         ...route.경유지,
-    //         route.도착지
-    //     ].filter(location => location !== '');
-    //     console.log('combinedLocations:', combinedLocations);
-    //     if (combinedLocations.length < 2) {
-    //         alert("여행지를 2개 이상 선택해 주세요.")
-    //     }
-    //     else {
-    //         axios.post('http://localhost:8080/api/navigations', combinedLocations)
-    //             .then(response => {
-    //                 console.log(response.data);
-    //             })
-    //             .catch(error => {
-    //                 console.error(error);
-    //                 alert("경로 저장에 실패했습니다. 다시 시도해주세요.");
-    //             });
-    //     }
-    // }
+    const sendPlace = () => {
+        const combinedLocations = [
+            route.출발지,
+            ...route.경유지,
+            route.도착지
+        ].filter(location => location !== '');
+        console.log('combinedLocations:', combinedLocations);
+        if (combinedLocations.length < 2) {
+            alert("여행지를 2개 이상 선택해 주세요.")
+        }
+        else {
+            axios.post('http://localhost:8080/api/navigations', combinedLocations)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("경로 저장에 실패했습니다. 다시 시도해주세요.");
+                });
+        }
+    }
 
     const handleGoMain=() =>{
         navigate('/');
@@ -192,20 +193,24 @@ const MapPage = () => {
         navigate('/reservation');
     }
 
-    // const onChangeSearchQuery = (event) => {
-    //     setSearchQuery(event.target.value)
-    // }
+    const onChangeSearchQuery = (event) => {
+        setSearchQuery(event.target.value)
+    }
 
     // 검색한 장소를 클릭
     const onClickAdd = (placeName) => {
         const selectedPlace = placesData[placeName];
         if (selectedPlace) {
-            setAdditionalPlacesInfo((prevInfo) => ({
-                ...prevInfo,
-                [placeName]: { lat: selectedPlace.lat, lng: selectedPlace.lng },
-            }));
+            const newPlace = {
+                name: placeName,
+                lat: selectedPlace.lat,
+                lng: selectedPlace.lng
+            };
+            setAdditionalPlacesInfo({[placeName]:{lat:selectedPlace.lat, lng:selectedPlace.lng}})
+            console.log('선택한 장소:',{[placeName]:{lat:selectedPlace.lat, lng:selectedPlace.lng}})
         }
 
+        //버튼 누르면 실행되는 코드 가져옴
         const newRoute = { ...route };
         if (selectedField === '경유지') {
             if (editIndex !== null) {
@@ -222,15 +227,14 @@ const MapPage = () => {
     };
 
     const handleSearch = () => {
-        let searchQuery = localStorage.getItem('country');
-        if (query) searchQuery = query;
+        if (!query) return;
 
         const service = new window.google.maps.places.PlacesService(
             document.createElement('div')
         );
 
         const request = {
-            query: searchQuery,
+            query: query,
             fields: ['name', 'geometry'],
             location: new window.google.maps.LatLng(coordinates.lat, coordinates.lng), // 도쿄를 중심으로 검색 (예시)
             radius: 50000 // 반경 50km 내에서 검색 (필요에 따라 조정 가능)
@@ -303,7 +307,6 @@ const MapPage = () => {
                     destination: route.도착지,
                     waypoints: waypoints,
                     travelMode: window.google.maps.TravelMode.WALKING,
-                    optimizeWaypoints: false, // 순서 유지
                 },
                 (result, status) => {
                     if (status === window.google.maps.DirectionsStatus.OK) {
@@ -315,7 +318,6 @@ const MapPage = () => {
             );
         }
     };
-
 
     useEffect(() => {
         if (route.출발지 && route.도착지) {
@@ -474,22 +476,35 @@ const MapPage = () => {
                             type="text"
                             placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
-                            <div>
-                                {placesData && Object.keys(placesData).length > 0 ? (
-                                    Object.keys(placesData).map((placeName) => (
-                                        <div key={placeName} className="location-item"
-                                             onClick={() => onClickAdd(placeName)}>
-                                            <span>{placeName}</span>
+                            {(isSearched && query) ? (
+                                <div>
+                                    {placesData && Object.keys(placesData).length > 0 ? (
+                                        Object.keys(placesData).map((placeName) => (
+                                            <div key={placeName} className="location-item"
+                                                 onClick={() => onClickAdd(placeName)}>
+                                                <span>{placeName}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No places found</p>
+                                    )}
+                                </div>
+
+                            ) : (
+                                <div>
+                                    {searchLocations.map((location) => (
+                                        <div
+                                            key={location.name}
+                                            className={`location-item ${selectedLocation === location.name ? 'selected' : ''}`}
+                                            onClick={() => setSelectedLocation(location.name)}
+                                        >
+                                            <span>{location.name}</span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <p>No places found</p>
-                                )}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        <button className="black-button" style={{borderRadius: '20px'}}
-                                onClick={handleSelectComplete}>선택 완료
-                        </button>
+                        <button className="black-button" style={{borderRadius:'20px'}} onClick={handleSelectComplete}>선택 완료</button>
                     </div>
                 </Modal>
             </div>
