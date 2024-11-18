@@ -10,6 +10,7 @@ export const ModalWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+    z-index: 5000;
 `;
 
 export const ModalContent = styled.div`
@@ -17,7 +18,7 @@ export const ModalContent = styled.div`
     border-radius: 10px;
     padding: 50px;
     width: 40%;
-    height: 30%;
+    height: 45%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 

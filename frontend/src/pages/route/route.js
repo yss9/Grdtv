@@ -1,62 +1,71 @@
 import { Wrapper } from "../review/reviewstyle";
-import { Reset } from 'styled-reset';
+import { Reset } from "styled-reset";
 import React, { useState, useEffect } from "react";
 import {
-    RecBtnWrapper, RecContainer, RecSubTitle,
-    RecTitle, RecWrapper, RecInput, RecList, RecListItem, RecListCountry,
+    RecBtnWrapper,
+    RecContainer,
+    RecSubTitle,
+    RecTitle,
+    RecWrapper,
+    RecInput,
+    RecList,
+    RecListItem,
+    RecListCountry,
 } from "./routestyle";
 import TopBarComponent from "../../components/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
-import Papa from 'papaparse';
+import Papa from "papaparse";
+import ListModal from "./ListModal";
 
 export default function RoutePage() {
     const [showModal, setShowModal] = useState(false);
-    const [destinations, setDestinations] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터를 저장할 상태
+    const [showListModal, setShowListModal] = useState(false);
+
+    useEffect(() => {
+        // CSV 파일 경로
+        const csvFilePath = "/data/country_codes.csv";
+
+        // CSV 데이터 읽기
+        Papa.parse(csvFilePath, {
+            download: true,
+            header: true,
+            complete: (result) => {
+                setData(result.data); // 데이터 저장
+                setFilteredData(result.data); // 초기에는 전체 데이터를 표시
+            },
+        });
+    }, []);
+
+    useEffect(() => {
+        // 검색어에 따라 데이터를 필터링
+        const filtered = data.filter((row) =>
+            row.Country.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredData(filtered);
+    }, [searchQuery, data]);
 
     const openModal = () => {
         setShowModal(true);
-    }
+    };
 
     const closeModal = () => {
         setShowModal(false);
-    }
+        setShowListModal(false);
+    };
 
-    useEffect(() => {
-        // Load CSV file
-        const fetchCSVData = async () => {
-            Papa.parse('./countries.csv', {
-                download: true,
-                header: true,
-                complete: (result) => {
-                    const data = result.data.map(item => ({
-                        country: item['나라'],
-                        name: item['도시명']
-                    })).filter(item => item.country && item.name);
-
-                    setDestinations(data);
-                    console.log('csv 파일 불러옴. destinations:',data)
-                },
-                error: (error) => {
-                    console.error('Error loading CSV file:', error);
-                }
-            });
-        };
-
-        fetchCSVData();
-    }, []);
-
-    const filteredDestinations = destinations.filter(destination =>
-        destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.country.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleViewList = () => {
+        setShowListModal(true);
+    };
 
     return (
         <>
             <Reset />
             <Wrapper>
-                <div style={{ height: '55px' }}></div>
+                <div style={{ height: "55px" }}></div>
                 <TopBarComponent />
                 <RecWrapper>
                     <RecContainer>
@@ -72,19 +81,36 @@ export default function RoutePage() {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
-                                <p style={{ fontFamily: "SubTitle", fontSize: "12px", paddingBottom: "10px" }}>목록에서 찾아보기</p>
+                                <p
+                                    onClick={handleViewList}
+                                    style={{
+                                        fontFamily: "SubTitle",
+                                        fontSize: "12px",
+                                        paddingBottom: "10px",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    목록에서 찾아보기
+                                </p>
                                 <RecList>
-                                    {filteredDestinations.map((destination, index) => (
-                                        <RecListItem key={index} onClick={openModal}>
-                                            {destination.name}
-                                            <RecListCountry>{destination.country}</RecListCountry>
-                                        </RecListItem>
-                                    ))}
+                                    {filteredData.length > 0 ? (
+                                        filteredData.map((row, index) => (
+                                            <RecListItem key={index} onClick={openModal}>
+                                                {row.Country}
+                                                <RecListCountry></RecListCountry>
+                                            </RecListItem>
+                                        ))
+                                    ) : (
+                                        <p style={{ fontSize: "12px", color: "gray" }}>
+                                            검색 결과가 없습니다.
+                                        </p>
+                                    )}
                                 </RecList>
                             </div>
                         </RecBtnWrapper>
                     </RecContainer>
                 </RecWrapper>
+                <ListModal isOpen={showListModal} onClose={closeModal} />
                 <Modal isOpen={showModal} onClose={closeModal} />
             </Wrapper>
         </>

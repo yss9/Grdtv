@@ -77,7 +77,7 @@ export const RecListItem = styled.li`
     background-color: rgba(0, 0, 0, 0.45);
     color: white;
     cursor: pointer;
-    
+    height: 20px;
     &:hover {
         background-color: #f0f0f0;
     }
@@ -87,4 +87,34 @@ export const RecListCountry = styled.p`
     font-family: Regular;
     color: lightgray;
     margin-top: 5px;
+`
+export const ListModalContent = styled.div`
+    padding: 20px; /* 내부 여백 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 옵션: 그림자 추가 */
+    border-radius: 8px; /* 옵션: 모서리 둥글게 */
+    background-color: #fff; /* 옵션: 배경색 */
+    z-index: 10000;
+`
+export const List = styled.div`
+    height: 500px; /* 원하는 최대 높이 설정 */
+    width: 300px;
+    overflow-y: auto;  /* 세로 스크롤 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 비활성화 */
+`
+export const ListRecListItem = styled.li`
+    padding: 0.7em;
+    font-size: 13px;
+    font-family: Regular;
+    cursor: pointer;
+    border-radius: 20px;
+
+    &:hover {
+        background-color: rgb(78, 83, 238);
+        color: white;
+    }
+`;
+export const ListModalCloseButton = styled.div`
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
 `

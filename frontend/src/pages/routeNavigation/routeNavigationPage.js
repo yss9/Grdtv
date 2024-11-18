@@ -168,12 +168,6 @@ const MapPage = () => {
         setSearchQuery(event.target.value)
     }
 
-    const handleKeyDownEnter = (event) => {
-        if (event.key === 'Enter'){
-            handleSearch()
-        }
-    }
-
     // 검색한 장소를 클릭
     const onClickAdd = (placeName) => {
         const selectedPlace = placesData[placeName];
@@ -443,9 +437,12 @@ const MapPage = () => {
                         <h2>{selectedField}를 선택해 주세요.</h2>
                         <DestinationInput
                             value={query}
-                            onChange={(e) => setQuery(e.target.value)} // 사용자의 입력을 query 상태로 업데이트
-                            onKeyDown={handleKeyDownEnter} type="text"
-                                          placeholder={`${selectedField}를 선택해 주세요.`}/>
+                            onChange={(e) => {
+                                setQuery(e.target.value); // 상태 업데이트
+                                handleSearch();          // handleSearch 함수 호출
+                            }}
+                            type="text"
+                            placeholder={`${selectedField}를 선택해 주세요.`}/>
                         <div className="location-list">
                             {(isSearched && query) ? (
                                 <div>
