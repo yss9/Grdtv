@@ -68,6 +68,10 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public Long getCommentCountByBoardID(Long boardID) {
+        return commentRepository.countByPostBoardID(boardID);
+    }
+
 
     /**
      * 댓글 삭제 메서드
