@@ -5,7 +5,7 @@ import {jwtDecode} from "jwt-decode";
 import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
 
-export default function BoardCommentWrite({ boardID }) {
+export default function BoardCommentWrite({ boardID, onToggleComment }) {
 
     // 쿠키에서 JWT 토큰 가져오기
     const token = Cookies.get('jwt');
@@ -45,6 +45,7 @@ export default function BoardCommentWrite({ boardID }) {
             console.log(response.data);
 
             alert("댓글 등록 완료"); // Alert message
+            onToggleComment();  // 댓글 작성 모드 닫기
 
             navigate(`/board/${boardID}`);  // 직접 boardID를 사용
         } catch (error) {

@@ -341,11 +341,12 @@ export default function BoardDetail() {
                             {showWriteComment ? '댓글 목록 보기' : '댓글 작성하기'}
                         </Button>
                         {showWriteComment ? (
-                            <BoardCommentWrite boardID={boardID} />
+                            <BoardCommentWrite boardID={boardID} onToggleComment={handleCommentToggle} />
                         ) : (
                             <BoardCommentList />
                         )}
                     </div>
+
 
                 </S.Wrapper>
             </S.Container>
