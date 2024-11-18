@@ -339,17 +339,21 @@ public class PostService {
     /**
      * title과 boardID만 존재하는 목록
      */
+    // Service Layer
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> getTitleAndBoardIDList() {
-        return postRepository.findAll().stream()
+    public List<Map<String, Object>> getTitleBoardID(String placeName) {
+        return postRepository.findByTitleContaining(placeName).stream()
                 .map(post -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("title", post.getTitle());
                     map.put("boardID", post.getBoardID());
+                    map.put("profilePicture", post.getProfilePicture());  // profilePicture 추가
                     return map;
                 })
                 .collect(Collectors.toList());
     }
+
+
 
 
 }
