@@ -47,7 +47,7 @@ export default function ReviewPage() {
                 if (Array.isArray(response.data.bestPosts)) {
                     setBestReviews(response.data.bestPosts);
                     if (response.data.bestPosts.length > 0) {
-                        setTopReviewerNickname(response.data.bestPosts[0].nickname);
+                        setTopReviewerNickname(response.data.bestPosts[0].post.nickname);
                     }
                 } else {
                     console.error("Expected an array but got:", response.data.bestPosts);
@@ -190,16 +190,24 @@ export default function ReviewPage() {
                 </SubTitleContainer>
                 <BestReviewContainer>
                     <BestReviews>
-                        {visibleReviews.map((review, index) => (
-                            <BestReview1 key={index} review={{
-                                boardID:review.boardID,
-                                title: review.title,
-                                author: review.nickname,
-                                likesCount: review.likesCount,
-                                thumbnail: review.thumbnail
-                                 }}  />
-                        ))}
+                        {visibleReviews.map((review, index) => {
+                            const post = review.post; // post 객체를 추출
+                            return (
+                                <BestReview1
+                                    key={index}
+                                    review={{
+                                        boardID: post.boardID,
+                                        title: post.title,
+                                        author: post.nickname,
+                                        likesCount: post.likesCount,
+                                        thumbnail: post.thumbnail,
+                                        commentCount: review.commentCount // commentCount는 post 외부
+                                    }}
+                                />
+                            );
+                        })}
                     </BestReviews>
+
                 </BestReviewContainer>
                 <DownContainer>
                     <DownWrapper>

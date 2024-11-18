@@ -213,25 +213,7 @@ export default function ReservationPage() {
                                       onClick={handleGaugeClick}/>
                         </GaugeBarWrapper>
                     </AgentContainer>
-                    <SubTitleWrapper>
-                        <SubTitle2>최근 본 글로플러 목록</SubTitle2>
-                    </SubTitleWrapper>
-                    <SeeAllBtnWrapper>
-                        <SeeAllBtn2>
-                            <p>전체보기</p>
-                            <svg width="11" height="16" viewBox="0 0 11 16" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
-                            </svg>
-                        </SeeAllBtn2>
-                    </SeeAllBtnWrapper>
-                    <RecentViewAgentContainer>
-                        <RecentViewAgentWrapper>
-                            {Agent3Data.map((review, index) => (
-                                <Agent3 key={index} review={review}/>
-                            ))}
-                        </RecentViewAgentWrapper>
-                    </RecentViewAgentContainer>
+
                     <DownWrapper>
                         <SubTitleWrapper>
                             <SubTitle2>글로플러 찾아보기</SubTitle2>
