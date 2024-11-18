@@ -116,9 +116,8 @@ export const Agents=styled.div`
     justify-content: space-between;
 `
 export const Agents2=styled.div`
-    width: 65%;
-    height: 20.5rem;
-    //background-color: gray;
+    width: 75%;
+    height: 400px;
     display: flex;
     justify-content: space-between;
 `
@@ -156,13 +155,11 @@ export const SelectWrapper=styled.div`
     margin-top: 1rem;
 `
 export const SelectContainer=styled.div`
-    //margin-left: 60vh;
     display: flex;
     align-items: center;
     width: 85%;
-    //background-color: #61dafb;
-    justify-content: space-between;
-
+    height: 70px;
+    justify-content: flex-start;
 `
 export const Select=styled.select`
     width: 20rem;
@@ -240,7 +237,6 @@ export const RecentViewAgentContainer=styled.div`
     margin-top: 10px;
 `
 export const RecentViewAgentWrapper=styled.div`
-    //background-color: beige;
     width: 85%;
     display: flex;
     justify-content: space-between;

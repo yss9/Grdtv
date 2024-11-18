@@ -6,9 +6,8 @@ import {
     SubTitle, SubTitleWrapper, SearchBarWrapper, SearchBarContainer,
     Magnifier, Search, Icon, SubTitle2,
     AgentContainer, Agents, GaugeBar, GaugeBarWrapper,
-    SelectContainer, Select, SelectWrapper, SeeAllBtn, Agents2, DownWrapper,
-    Container, Wrapper, ProgressContainer, RecentViewAgentContainer, RecentViewAgentWrapper,
-    SeeAllBtn2, SeeAllBtnWrapper
+    SelectContainer, Select, SelectWrapper,  Agents2, DownWrapper,
+    Container, Wrapper, ProgressContainer
 } from './reservationstyle';
 import React, { useState, useEffect } from "react";
 import Agent2 from "../../components/Agent/Agent2";
@@ -213,7 +212,6 @@ export default function ReservationPage() {
                                       onClick={handleGaugeClick}/>
                         </GaugeBarWrapper>
                     </AgentContainer>
-
                     <DownWrapper>
                         <SubTitleWrapper>
                             <SubTitle2>글로플러 찾아보기</SubTitle2>
@@ -232,13 +230,6 @@ export default function ReservationPage() {
                                         <option value="일본">일본</option>
                                     </optgroup>
                                 </Select>
-                                <SeeAllBtn>
-                                    <p>전체보기</p>
-                                    <svg width="11" height="16" viewBox="0 0 11 16" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 1L9 8L1 15" stroke="black" strokeWidth="2"/>
-                                    </svg>
-                                </SeeAllBtn>
                             </SelectContainer>
                         </SelectWrapper>
                         <AgentContainer>

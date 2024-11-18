@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const BlogContainer=styled.div`
-  width: 19rem;
-  //width: 30%;
-  height: 19rem;
+  width: 350px;
+  height: 370px;
   background-color: white;
   border-radius: 15px;
   display: flex;
@@ -40,6 +42,7 @@ const PImg=styled.img`
     width: 100px;
   height: 100px;
   border-radius: 50%;
+    object-fit: cover;
 `;
 const PContainer=styled.div`
     display: flex;
@@ -74,13 +77,12 @@ const Read=styled.div`
 const GoChatBtnWrapper=styled.div`
     width: 95%;
   height: 20%;
-   //background-color: #61dafb;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 `
 const GoChatBtn=styled.button`
-  width: 48%;
+  width: 96%;
   height: 80%;
   justify-content: center;
   border-radius: 15px;
@@ -91,6 +93,7 @@ const GoChatBtn=styled.button`
   border: none;
   display: flex;
   cursor: pointer;
+    
   p{
     margin-right: 0.5rem;
     font-family: "Regular";
@@ -117,35 +120,129 @@ const Spec=styled.li`
     list-style: inside;
   margin: 0 0 0.4rem 0 ;
 `
-const DetailPageBtn=styled.button`
-  width: 48%;
-  height: 80%;
-  justify-content: center;
-  border-radius: 15px;
-  align-items: center;
-  font-size: 17px;
-  color: black;
-  cursor: pointer;
-  background-color: transparent;
-  border: 2px solid black;
-  display: flex;
-  font-family: "Regular";
+
+const HashTags=styled.div`
+  text-align: left;
+`
+const HashTag=styled.text`
+    margin: 7px;
+    font-family: Regular;
+    font-size: 15px;
+  color: #9d9d9d;
+`
+const ReadTitle=styled.div`
+    width: 100%;
+  height: 15%;
+  font-size: 20px;
+  color: #515151;
+  margin: 0.8rem 0 0.4rem 0.8rem;
+  font-weight: bold;
+text-align: center;
+  font-style: normal;
+  line-height: 25px;
+
+  background: linear-gradient(270deg, rgba(78, 83, 238, 0.2) -15.09%, rgba(78, 83, 238, 0.4) 11.32%, rgba(78, 83, 238, 0.379114) 21.37%, rgba(78, 83, 238, 0.6) 35.56%, rgba(78, 83, 238, 0.8) 59.12%, #4E53EE 90.24%), #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
 `
-
 
 const Agent = ({ review, pageType }) => {
 
     const navigate = useNavigate();
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
+    const [ setFavoriteAgents] = useState([]);
+    const [username] = useState('');
+    const token = Cookies.get('jwt');
 
-    const toggleHeart = () => {
+    const handleAddUser = async() => {
+        if (token) {
+            try {
+                const response = await axios.post('http://localhost:8080/chat/createRoom', [username, review.author], {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log('Chat room created with ID:', response.data);
+            } catch (error) {
+                console.error('Failed to create chat room:', error);
+            }
+        } else {
+            console.error('No JWT token found in cookies');
+        }
+        try {
+            // 진행 상황 업데이트 요청
+            const response = await axios.post(
+                'http://localhost:8080/api/booking/update-progress',
+                null,
+                {
+                    params: {
+                        userId: username,
+                        agentId: review.author,
+                        progress: 1
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                }
+            );
+            console.log('Progress Update complete')
+        } catch (error) {
+            console.error('Failed to update progress', error);
+            console.error('Error details:', error.response?.data);
+        }
+        navigate('/chat')
+    };
+    useEffect(() => {
+        const fetchFavoriteAgents = async () => {
+            if (!token) return;
+
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
+
+            try {
+                const response = await axios.get(`http://localhost:8080/api/follow/followed-agents?userId=${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setFavoriteAgents(response.data);
+
+                // review.author가 서버에서 가져온 에이전트 목록에 있는지 확인
+                const isFavorite = response.data.some(agent => agent.agentDetails.nickname === review.author);
+                setIsHeartFilled(isFavorite);
+            } catch (error) {
+                console.error('Failed to fetch favorite agents:', error);
+            }
+        };
+
+        if (review.author) { // review.author가 있을 때만 fetchFavoriteAgents 실행
+            fetchFavoriteAgents();
+        }
+    }, [token, review.author]);
+
+    const toggleHeart = async () => {
         setIsHeartFilled(!isHeartFilled);
+
+        if (token && review.author) {
+            const decodedToken = jwtDecode(token);
+            const nickname = decodedToken.nickname;
+            try {
+                await axios.post(`http://localhost:8080/api/follow/follow-agent?userNickname=${nickname}&agentNickname=${review.author}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': '*/*'
+                    }
+                });
+                console.log('Agent followed/unfollowed successfully');
+            } catch (error) {
+                console.error('Failed to follow/unfollow agent:', error);
+            }
+        }
     };
 
-    const onClickDetailPageBtn = () => {
-        navigate('/gloplerDetail');
-    }
 
     return (
         <>
@@ -158,7 +255,7 @@ const Agent = ({ review, pageType }) => {
                                     <Heart onClick={toggleHeart}>
                                         {isHeartFilled ? (
                                             <svg width="38" height="38" viewBox="-3.3 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#5F6368"/>
+                                                <path d="M14.985 26.9853L12.8144 25.0735C10.2994 22.8382 8.20359 20.9118 6.55689 19.2941C4.91018 17.6765 3.59281 16.2206 2.61976 14.9412C1.64671 13.6618 0.973054 12.4706 0.583832 11.3971C0.194611 10.3235 0 9.22059 0 8.08823C0 5.77941 0.793413 3.85294 2.36527 2.30882C3.93713 0.764706 5.8982 0 8.2485 0C9.5509 0 10.7784 0.264706 11.9611 0.808824C13.1437 1.35294 14.1467 2.10294 15 3.08824C15.8533 2.10294 16.8563 1.35294 18.0389 0.808824C19.2216 0.264706 20.4491 0 21.7515 0C24.1018 0 26.0629 0.779412 27.6347 2.32353C29.2066 3.86765 30 5.79412 30 8.10294C30 9.23529 29.8054 10.3382 29.4162 11.4118C29.0269 12.4853 28.3533 13.6765 27.3802 14.9559C26.4072 16.2353 25.0898 17.6912 23.4431 19.3088C21.7964 20.9265 19.7156 22.8529 17.1856 25.0882L15.015 27L14.985 26.9853Z" fill="#ff0000"/>
                                             </svg>
                                         ) : (
                                             <svg width="38" height="38" viewBox="0 8 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -171,6 +268,12 @@ const Agent = ({ review, pageType }) => {
                             <PImg src={review.image}></PImg>
                             <Pname>{review.author}</Pname>
                         </Profile>
+                        <ReadTitle>"{review.introduce}"</ReadTitle>
+                        <HashTags>
+                            {review.hashtags.map((tag, index) => (
+                                <HashTag key={index}>{tag}</HashTag>
+                            ))}
+                        </HashTags>
                         <Read>
                             <Specs>
                                 {review.spec.map((tag, index) => (
@@ -179,8 +282,7 @@ const Agent = ({ review, pageType }) => {
                             </Specs>
                         </Read>
                         <GoChatBtnWrapper>
-                            <DetailPageBtn onClick={onClickDetailPageBtn}>상세 페이지</DetailPageBtn>
-                            <GoChatBtn>
+                            <GoChatBtn onClick={handleAddUser}>
                                 <p>채팅하기</p>
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M1.8 14.4C1.305 14.4 0.882 14.22 0.531 13.869C0.18 13.518 0 13.095 0 12.6V1.8C0 1.305 0.18 0.882 0.531 0.531C0.882 0.18 1.305 0 1.8 0H16.2C16.695 0 17.118 0.18 17.469 0.531C17.82 0.882 18 1.305 18 1.8V18L14.4 14.4H1.8Z" fill="#E8E8E8"/>
