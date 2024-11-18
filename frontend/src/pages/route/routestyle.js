@@ -63,6 +63,7 @@ export const RecList = styled.ul`
     overflow-y: auto;
     border-radius: 3px;
     width: 235%;
+    height: 180px;
     // 스크롤바 숨기기~♥
     -ms-overflow-style: none;  // IE, Edge 
     scrollbar-width: none;  // Firefox
@@ -77,7 +78,7 @@ export const RecListItem = styled.li`
     background-color: rgba(0, 0, 0, 0.45);
     color: white;
     cursor: pointer;
-    height: 20px;
+    height: 25px;
     &:hover {
         background-color: #f0f0f0;
     }

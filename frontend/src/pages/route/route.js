@@ -24,6 +24,9 @@ export default function RoutePage() {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터를 저장할 상태
     const [showListModal, setShowListModal] = useState(false);
+    const [country, setCountry] = useState('');
+    const [countryEng, setCountryEng] = useState('');
+    const [code, setCode] = useState('');
 
     useEffect(() => {
         // CSV 파일 경로
@@ -48,7 +51,10 @@ export default function RoutePage() {
         setFilteredData(filtered);
     }, [searchQuery, data]);
 
-    const openModal = () => {
+    const openModal = (row) => {
+        setCountry(row.Country);
+        setCountryEng(row.CountryEng);
+        setCode(row.Code);
         setShowModal(true);
     };
 
@@ -95,9 +101,10 @@ export default function RoutePage() {
                                 <RecList>
                                     {filteredData.length > 0 ? (
                                         filteredData.map((row, index) => (
-                                            <RecListItem key={index} onClick={openModal}>
+                                            <RecListItem key={index} onClick={() => openModal(row)}>
                                                 {row.Country}
-                                                <RecListCountry></RecListCountry>
+                                                <RecListCountry>{row.CountryEng}</RecListCountry>
+
                                             </RecListItem>
                                         ))
                                     ) : (
@@ -111,7 +118,7 @@ export default function RoutePage() {
                     </RecContainer>
                 </RecWrapper>
                 <ListModal isOpen={showListModal} onClose={closeModal} />
-                <Modal isOpen={showModal} onClose={closeModal} />
+                <Modal country={country} countryEng={countryEng} code={code} isOpen={showModal} onClose={closeModal} />
             </Wrapper>
         </>
     );

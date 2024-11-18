@@ -1,5 +1,6 @@
 export const searchPlaceInCountry = async (query) => {
-    const url = `/api/search-place?country=$JP&query=${encodeURIComponent(query)}`;
+    const code = localStorage.getItem("code");
+    const url = `/api/search-place?country=${code}&query=${encodeURIComponent(query)}`;
 
     try {
         const response = await fetch(url);

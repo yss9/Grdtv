@@ -18,7 +18,7 @@ export const ModalContent = styled.div`
     border-radius: 10px;
     padding: 50px;
     width: 40%;
-    height: 45%;
+    height: auto;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
@@ -46,11 +46,12 @@ export const ModalSubtitle = styled.h3`
 
 export const ModalText = styled.p`
     font-family: Regular;
-  font-size: 12px;
+  font-size: 18px;
   line-height: 1.5;
   text-align: left;
     float: left;
     color: gray;
+    margin-right: 30px;
 `;
 
 export const CloseButton = styled.button`
