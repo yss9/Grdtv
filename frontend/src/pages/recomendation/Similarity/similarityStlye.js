@@ -53,6 +53,11 @@ export const Subtitle2 = styled.div`
     line-height: 1.6;
     font-family: Regular;
     
+    a{
+        font-size: 14px;
+        margin-top: 20px;
+    }
+    
     p{
         margin-left: 20px;
     }
