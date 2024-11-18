@@ -33,7 +33,6 @@ const Profile=styled.div`
  width: 100%;
  height: 55%;
   flex-direction: column;
-//background-color: green;
   display: flex;
   align-items: center;
 `;
@@ -41,7 +40,6 @@ const PImg=styled.img`
     width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-color: #7d7d7d;
 `;
 const PContainer=styled.div`
     display: flex;
@@ -49,11 +47,9 @@ const PContainer=styled.div`
   justify-content: left;
   width: 100%;
   height: 0.5rem;
-  //background-color: palevioletred;
 `;
 const Pname=styled.div`
   height: 15%;
-  //background-color: orchid;
   display: flex;
   align-items: center;
   font-size: 20px;

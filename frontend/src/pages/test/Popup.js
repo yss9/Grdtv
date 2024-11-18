@@ -1,15 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Mainreview from './mainreview';
-import Osaka from '../../public/Img/osaka.png';
-import Sushi from '../../public/Img/sushi.png';
-import Sushi2 from '../../public/Img/sushi2.png';
-
-const MainReviewData = [
-    { image: Osaka, title: '오사카 최고의 맛집', sentence:'글로플러가 엄선한 맛집 list'  },
-    { image: Sushi, title: '도쿄의 전통 스시', sentence:'도쿄 최고의 초밥집'  },
-    { image: Sushi2, title: '스시의 본고장 일본', sentence:'최고의 스시를 맛보다' },
-];
+import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 const PopupContainer = styled.div`
     padding: 10px;
@@ -104,6 +97,8 @@ const GoReservationBtn = styled.button`
     border-radius: 15px;
     margin-top: 40px;
     font-family: Regular;
+    cursor: pointer;
+
 `;
 
 const BtnWrapper = styled.div`
@@ -133,13 +128,37 @@ const MainReviews = styled.div`
     margin-top: 10px;
 `;
 
-const Popup = ({ x, y, onClose }) => {
+const Popup = ({ x, y, onClose, country }) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [reviewData, setReviewData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            setIsLoading(true); // 데이터 요청 전 로딩 시작
+            try {
+                const response = await axios.get(`http://localhost:8080/api/posts/${country}`);
+                const formattedData = response.data.map(item => ({
+                    image: item.thumbnail,
+                    title: item.title,
+                    sentence: new Date(item.createDate).toLocaleDateString(),
+                }));
+                setReviewData(formattedData);
+            } catch (error) {
+                console.error('Error fetching review data:', error);
+            } finally {
+                setIsLoading(false); // 요청 완료 후 로딩 종료
+            }
+        };
+
+        if (country) fetchReviews();
+    }, [country]);
 
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
-    const visibleReviews = MainReviewData.slice(startIndex, startIndex + reviewsPerPage);
-    const totalIndicators = Math.ceil(MainReviewData.length / reviewsPerPage);
+    const visibleReviews = reviewData.slice(startIndex, startIndex + reviewsPerPage);
+    const totalIndicators = Math.ceil(reviewData.length / reviewsPerPage);
 
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
@@ -156,7 +175,7 @@ const Popup = ({ x, y, onClose }) => {
     return (
         <PopupContainer x={x} y={y}>
             <TopWrapper>
-                <CountryName>일본</CountryName>
+                <CountryName>{country}</CountryName>
                 <CloseBtn onClick={handleClose}>
                     <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -166,29 +185,37 @@ const Popup = ({ x, y, onClose }) => {
                     </svg>
                 </CloseBtn>
             </TopWrapper>
-            <BtnWrapper>
-                <SeeMoreBtn>
-                    리뷰 더 보기
-                    <svg
-                        width="11"
-                        height="16"
-                        viewBox="0 0 11 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path d="M1 1L9 8L1 15" stroke="#C0C0C0" strokeOpacity="0.8" strokeWidth="2" />
-                    </svg>
-                </SeeMoreBtn>
-            </BtnWrapper>
-            <MainReviews>
-                {visibleReviews.map((review, index) => (
-                    <Mainreview key={index} review={review} />
-                ))}
-            </MainReviews>
-            <GaugeBarWrapper>
-                <GaugeBar completion={(activeIndex + 1) / totalIndicators * 100} onClick={handleGaugeClick} />
-            </GaugeBarWrapper>
-            <GoReservationBtn>예약 바로가기</GoReservationBtn>
+            {isLoading ? ( // 로딩 중일 때 표시
+                <div style={{ color: 'white', marginTop: '20px' }}>로딩 중...</div>
+            ) : reviewData.length === 0 ? ( // 데이터가 없을 때 메시지 표시
+                <div style={{ color: 'white', marginTop: '20px' }}>해당 블로그가 존재하지 않습니다.</div>
+            ) : ( // 데이터가 있을 때 리뷰 표시
+                <>
+                    <BtnWrapper>
+                        <SeeMoreBtn>
+                            리뷰 더 보기
+                            <svg
+                                width="11"
+                                height="16"
+                                viewBox="0 0 11 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M1 1L9 8L1 15" stroke="#C0C0C0" strokeOpacity="0.8" strokeWidth="2" />
+                            </svg>
+                        </SeeMoreBtn>
+                    </BtnWrapper>
+                    <MainReviews>
+                        {visibleReviews.map((review, index) => (
+                            <Mainreview key={index} review={review} />
+                        ))}
+                    </MainReviews>
+                    <GaugeBarWrapper>
+                        <GaugeBar completion={(activeIndex + 1) / totalIndicators * 100} onClick={handleGaugeClick} />
+                    </GaugeBarWrapper>
+                </>
+            )}
+            <GoReservationBtn onClick={() => navigate('/reservation')}>예약 바로가기</GoReservationBtn>
         </PopupContainer>
     );
 };

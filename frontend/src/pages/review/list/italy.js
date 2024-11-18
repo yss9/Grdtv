@@ -3,9 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import {
     Blogs,
-    BlogWrapper, BookMarkContainer, BookMarked1, BookMarked2, BookMarkTitle,
-    ButtonContainer,
-    GoTravelTitle, GoWrite,
+    BlogWrapper, ButtonContainer, GoTravelTitle, GoWrite,
     MyMenuContainer, MyMenuWrapper, MyWrites, PContainer2, PImg2,
     PIntro, Pname2, Profile2,
     SubTitle2,
@@ -14,7 +12,8 @@ import {
 import {useNavigate} from "react-router-dom";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
-import MyProfile2 from "../../../public/Img/forprofile/img.png";
+import MyProfile2 from "../../../public/Img/forprofile/img_1.png";
+import PhotoforThumbnail from '../../../images/cutie.png'
 
 
 const getAuthToken = () => {
@@ -165,7 +164,7 @@ const BPicWrapper=styled.div`
 const BPic=styled.img`
     width: 12.5rem;
   height: 14.5rem;
-  background-color: #8e8e8e;
+  background-color: white;
   border: none;
   border-radius: 5px;
     object-fit: cover; /* 이미지를 가득 채우도록 설정 */
@@ -242,13 +241,19 @@ const BlogList = () => {
         axios
             .get(`http://localhost:8080/api/posts/${country}`)
             .then((response) => {
-                const sortedPosts = response.data.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
-                setPosts(sortedPosts); // 정렬된 데이터를 상태에 저장
+                const sortedPosts = response.data
+                    .map((post) => ({
+                        ...post,
+                        thumbnail: post.thumbnail || PhotoforThumbnail,
+                    }))
+                    .sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+                setPosts(sortedPosts);
             })
             .catch((error) => {
                 console.error(`Error fetching posts for ${country}:`, error);
             });
     };
+
 
 
     const fetchLikes = (boardID) => {
@@ -380,7 +385,9 @@ const BlogList = () => {
                                         </Content>
                                     </ContentWrapper>
                                     <BPicWrapper>
-                                        <BPic src={post.thumbnail} alt="Thumbnail"></BPic>
+                                        <BPic
+                                            src={post.thumbnail}
+                                        />
                                     </BPicWrapper>
                                 </BlogContainer>
                             ))

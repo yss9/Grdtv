@@ -26,7 +26,7 @@ const Thumbnail = styled.img`
     background-color: navy;
 `;
 
-function MyReviewComponent({ title, image, date }) {
+function MyReviewComponent({image}) {
     return (
         <Container>
             <Thumbnail src={image} />
