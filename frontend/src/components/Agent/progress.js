@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import AgentProfile from '../../images/img_1.png';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,6 +20,7 @@ const ProfileImg = styled.img`
     width: 150px;
     height: 150px;
     border-radius: 100%;
+    object-fit:cover;
 `;
 
 const ProgressContainer = styled.div`
@@ -84,13 +84,13 @@ const ProgressData = [
     { stage: 4, completion: 100 },
 ];
 
-export default function Progress({ currentStage, agentName }) {
+export default function Progress({ currentStage, agentName, profilePictureUrl }) {
     const currentProgress = ProgressData.find(data => data.stage === currentStage)?.completion || 0;
 
     return (
         <Wrapper>
             <ProfileImgContainer>
-                <ProfileImg src={AgentProfile} alt="Agent Profile" />
+                <ProfileImg src={profilePictureUrl} alt="Agent Profile" />
             </ProfileImgContainer>
             <ProgressContainer>
                 <AgentName>{agentName}</AgentName>
