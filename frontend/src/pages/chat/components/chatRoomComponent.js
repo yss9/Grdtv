@@ -159,7 +159,7 @@ const ChatRoomComponent = ({
                                userId,
                                onClickProcessButton,
                                step, setStep,
-                               profilePictures
+                               profilePictures, loading, setLoading
                            }) => {
     const token = Cookies.get('jwt');
     const serverUrl = 'http://localhost:8080';
@@ -308,6 +308,7 @@ const ChatRoomComponent = ({
                 console.error('Failed to update review', error);
             }
         }
+        setIsOpenReviewModal(false);
     }
 
     // 실시간 진행도 업데이트
@@ -434,11 +435,15 @@ const ChatRoomComponent = ({
                             </>
                         ) : message.content.includes('|stt') ? (
                             <>
+                                {setLoading(false)}
                                 <div>{message.content.split('|stt')[0]}</div>
                             </>
                         ) : (
                             message.content
                         )}
+                        {loading ? (
+                            <div>...</div>
+                        ) : (<div></div>)}
                     </ChatBubble>
 
                 ))}
