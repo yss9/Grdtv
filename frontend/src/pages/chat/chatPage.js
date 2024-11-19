@@ -228,6 +228,7 @@ const ChatPage = () => {
     const handleVoiceMessageUpload = async (file) => {
         const formData = new FormData();
         formData.append('file', selectedFile);
+        setIsVisible(false)
         setLoading(true);
         console.log('setLoadingTrue!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
