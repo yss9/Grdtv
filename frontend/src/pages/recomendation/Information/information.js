@@ -12,6 +12,21 @@ import {
 import PlaceReview from "../../../components/PlaceReview/placeReview";
 import { useNavigate, useParams } from 'react-router-dom';
 import MyProfile2 from "../../../public/Img/forprofile/img_1.png";
+import axios from "axios";
+import styled from "styled-components";
+
+
+const LimitedTextDiv = styled.div`
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 4; /* 표시할 줄 수 */
+    line-height: 1.5em; /* 줄 높이 설정 */
+    height: 4.5em; /* line-height * 줄 수 */
+    word-break: break-word; /* 긴 단어 줄바꿈 */
+`;
+
 
 export default function Information() {
     const { placename } = useParams();
@@ -20,7 +35,7 @@ export default function Information() {
     const [placeImage, setPlaceImage] = useState("");
     const [reviews, setReviews] = useState([]);
     const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
-
+    const [extractHtml, setExtractHtml] = useState('');
     const navigate = useNavigate();
 
     const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
@@ -124,6 +139,39 @@ export default function Information() {
         navigate('/routeRec', { state: { placename: placename } });
     };
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log(placename);
+                const firstPart = placename.split(',')[0].trim();
+                const response = await axios.get(
+                    `https://ko.wikipedia.org/w/api.php`, {
+                        params: {
+                            action: 'query',
+                            format: 'json',
+                            titles: firstPart,
+                            prop: 'extracts',
+                            exintro: false, // 전체 내용 가져오기
+                            explaintext: true, // 텍스트만 가져오기 (HTML 태그 제외)
+                            origin: '*' // CORS 문제 해결
+                        }
+                    }
+                );
+
+                const pages = response.data.query.pages;
+                const page = pages[Object.keys(pages)[0]];
+                if (page.extract) {
+                    setExtractHtml(page.extract);
+                } else {
+                    console.error('No content found for this page');
+                }
+            } catch (error) {
+                console.error('Error fetching full article:', error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <>
             <Reset />
@@ -141,7 +189,8 @@ export default function Information() {
                         <RightWrapper>
                             <DetailInfoWrapper>
                                 <DetailInfoTitle>{currentPlace.name}</DetailInfoTitle>
-                                <DetailInfo>{currentPlace.address}</DetailInfo>
+                                <DetailInfo><LimitedTextDiv
+                                    dangerouslySetInnerHTML={{__html: extractHtml}}/></DetailInfo>
                             </DetailInfoWrapper>
                             <ReviewContainer>
                                 <ReviewTitle>리뷰</ReviewTitle>
