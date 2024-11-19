@@ -20,10 +20,10 @@ const LimitedTextDiv = styled.div`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    height: 90%;
     text-overflow: ellipsis;
     -webkit-line-clamp: 4; /* 표시할 줄 수 */
     line-height: 1.5em; /* 줄 높이 설정 */
-    height: 4.5em; /* line-height * 줄 수 */
     word-break: break-word; /* 긴 단어 줄바꿈 */
 `;
 

@@ -40,7 +40,7 @@ export const RightWrapper=styled.div`
 `
 export const DetailInfoWrapper=styled.div`
   margin-right: 2.5rem;
-  //background-color: gray;
+ // background-color: gray;
     color: rgba(81, 81, 81, 1);
   height: 50%;
   display: flex;
@@ -57,12 +57,14 @@ export const DetailInfoTitle=styled.text`
 export const DetailInfo=styled.div`
   padding-left: 15px;
     padding-top: 5px;
+    height: 100%;
   font-family: "Regular";
+    //background-color: #0066cc;
     color: rgba(132, 132, 132, 1);
 
 `
 export const ReviewContainer=styled.div`
- // background-color: pink;
+ //background-color: pink;
 `
 export const ReviewTitle=styled.div`
     font-family: SubTitle;
