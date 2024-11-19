@@ -134,7 +134,8 @@ public class PostService {
      */
     @Transactional
     public Post updatePost(Long boardID, Post updatedPost, Set<Addresses> addresses) {
-        Post post = postRepository.findById(boardID).get();
+        Post post = postRepository.findById(boardID)
+                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
 
         // 기존 주소 삭제
         addressesRepository.deleteAll(post.getAddresses());
@@ -149,8 +150,16 @@ public class PostService {
         Set<Addresses> updatedAddresses = getAddressesSet(addresses, post);
         post.setAddresses(updatedAddresses);
 
+        // 썸네일 업데이트
+        String newThumbnail = extractFirstImageUrl(updatedPost.getBody());
+        if (newThumbnail == null) {
+            newThumbnail = "/image/no_image.png"; // 기본 이미지
+        }
+        post.setThumbnail(newThumbnail);
+
         return postRepository.save(post);
     }
+
 
 
 
@@ -291,6 +300,8 @@ public class PostService {
         }
         return null; // 이미지가 없을 경우 null 반환
     }
+
+
 
     /**
      * 썸네일 반환
