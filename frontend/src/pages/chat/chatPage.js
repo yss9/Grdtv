@@ -64,6 +64,8 @@ const ChatPage = () => {
 
     const [isRecentChatting, setIsRecentChatting] = useState(true);
 
+    const [loading, setLoading] = useState(false);
+
 
     let decodedToken = null;
     let userId = null;
@@ -241,6 +243,7 @@ const ChatPage = () => {
         } catch (error) {
             console.error('음성 메시지 전송 실패:', error);
         }
+        setLoading(true);
     };
 
 
@@ -424,6 +427,8 @@ const ChatPage = () => {
                             step={step}
                             setStep={setStep}
                             profilePictures={profilePictures}
+                            loading={loading}
+                            setLoading={setLoading}
                         />
                     ) : (
                         <div>

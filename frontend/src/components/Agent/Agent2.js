@@ -153,9 +153,28 @@ const Agent = ({ review, pageType }) => {
     const navigate = useNavigate();
     const [isHeartFilled, setIsHeartFilled] = useState(pageType === 1);
     const [ setFavoriteAgents] = useState([]);
-    const [username] = useState('');
+    const [username, setUsername] = useState('');
     const token = Cookies.get('jwt');
 
+    useEffect(() => {
+        const fetchNicknames = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/users/nicknames', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                // 토큰에서 내 닉네임 가져오기
+                const userPayload = jwtDecode(token);
+                const extractedUsername = userPayload.nickname;
+                setUsername(extractedUsername);
+
+            } catch (error) {
+                console.error('Failed to fetch nicknames', error);
+            }
+        };
+        fetchNicknames();
+    }, [token]);
     const handleAddUser = async() => {
         if (token) {
             try {
