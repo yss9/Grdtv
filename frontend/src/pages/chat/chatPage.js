@@ -228,6 +228,8 @@ const ChatPage = () => {
     const handleVoiceMessageUpload = async (file) => {
         const formData = new FormData();
         formData.append('file', selectedFile);
+        setLoading(true);
+        console.log('setLoadingTrue!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
         try {
             // 음성 파일을 HTTP로 서버에 업로드
@@ -237,13 +239,12 @@ const ChatPage = () => {
             // WebSocket을 통해 텍스트 메시지 전송
             WebSocketService.sendMessage({
                 sender: username,
-                content: `STT 메세지입니다.\n${transcript}|stt`,
+                content: `\<STT 메세지입니다.\> ${transcript}|stt`,
                 type: 'CHAT',
             });
         } catch (error) {
             console.error('음성 메시지 전송 실패:', error);
         }
-        setLoading(true);
     };
 
 

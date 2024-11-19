@@ -337,7 +337,13 @@ const ChatRoomComponent = ({
         fetchProgress();
     }, [chatUsername, username, token, messages]); // 의존성 배열에 필요한 값 추가
 
-
+    useEffect(() => {
+        const fetchLoading = () => {
+            setLoading(false);
+            console.log('loading...')
+        };
+        fetchLoading();
+    }, [messages]); // 의존성 배열에 필요한 값 추가
     return (
         <ChatRoomWrapper>
             <ChatHeader>
@@ -387,66 +393,78 @@ const ChatRoomComponent = ({
 
             <ChatRoom>
                 {messages.map((message, index) => (
-                    <ChatBubble
-                        key={index}
-                        style={{
-                            ...(message.sender === username ? styles.myMessage : styles.otherMessage),
-                            width: 'auto',
-                            backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
-                            border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
-                            color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
-                        }}
-                    >
-                        {isImage(message.content) ? (
-                            // 이미지일 경우 미리보기
-                            <img
-                                src={`${serverUrl}${message.content}`}
-                                alt="Image preview"
-                                style={{ maxWidth: '200px', maxHeight: '200px' }}
-                            />
-                        ) : isPdf(message.content) ? (
-                            // PDF일 경우 보기 링크 제공
-                            <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
-                                PDF 파일 보기
-                            </a>
-                        ) : message.content.includes('/image/') ? (
-                            // 그 외 파일 다운로드 링크 제공
-                            <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
-                                파일 다운로드
-                            </a>
-                        ) : message.content.includes('|button') ? (
-                            <>
-                                <div>{message.content.split('|button')[0]}</div>
-                                {(isAgent||isSended) ? (
-                                    <></>
-                                ) : (
-                                    <PointButton
-                                        onClick={() => {
-                                            // 정규식을 사용해 '포인트' 앞의 숫자를 추출
-                                            const match = message.content.match(/(\d+)\s*포인트/);
-                                            const points = match ? parseInt(match[1], 10) : 0; // 숫자가 없으면 기본값 0
-                                            handleSendPoints(points);
-                                        }}
-                                    >
-                                        포인트 입금하기
-                                    </PointButton>
-                                )}
+                    <>
+                        <ChatBubble
+                            key={index}
+                            style={{
+                                ...(message.sender === username ? styles.myMessage : styles.otherMessage),
+                                width: 'auto',
+                                backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
+                                border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
+                                color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
+                            }}
+                        >
+                            {isImage(message.content) ? (
+                                // 이미지일 경우 미리보기
+                                <img
+                                    src={`${serverUrl}${message.content}`}
+                                    alt="Image preview"
+                                    style={{ maxWidth: '200px', maxHeight: '200px' }}
+                                />
+                            ) : isPdf(message.content) ? (
+                                // PDF일 경우 보기 링크 제공
+                                <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
+                                    PDF 파일 보기
+                                </a>
+                            ) : message.content.includes('/image/') ? (
+                                // 그 외 파일 다운로드 링크 제공
+                                <a href={`${serverUrl}${message.content}`} target="_blank" rel="noopener noreferrer">
+                                    파일 다운로드
+                                </a>
+                            ) : message.content.includes('|button') ? (
+                                <>
+                                    <div>{message.content.split('|button')[0]}</div>
+                                    {(isAgent||isSended) ? (
+                                        <></>
+                                    ) : (
+                                        <PointButton
+                                            onClick={() => {
+                                                // 정규식을 사용해 '포인트' 앞의 숫자를 추출
+                                                const match = message.content.match(/(\d+)\s*포인트/);
+                                                const points = match ? parseInt(match[1], 10) : 0; // 숫자가 없으면 기본값 0
+                                                handleSendPoints(points);
+                                            }}
+                                        >
+                                            포인트 입금하기
+                                        </PointButton>
+                                    )}
 
-                            </>
-                        ) : message.content.includes('|stt') ? (
-                            <>
-                                {setLoading(false)}
+                                </>
+                            ) : message.content.includes('|stt') ? (
                                 <div>{message.content.split('|stt')[0]}</div>
-                            </>
-                        ) : (
-                            message.content
-                        )}
-                        {loading ? (
-                            <div>...</div>
-                        ) : (<div></div>)}
-                    </ChatBubble>
 
+                            ) : (
+                                message.content
+                            )}
+                        </ChatBubble>
+                        {loading ? (
+                            <ChatBubble
+                                key={index}
+                                style={{
+                                    ...(message.sender === username ? styles.myMessage : styles.otherMessage),
+                                    width: 'auto',
+                                    backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
+                                    border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
+                                    color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
+                                }}
+                            >
+                                STT메세지를 보내는 중입니다...
+
+                            </ChatBubble>
+                        ) : (<></>)}
+                    </>
                 ))}
+
 
                 <div ref={bottomRef}></div>
             </ChatRoom>

@@ -76,6 +76,8 @@ const ChatMessage = styled.div`
 `;
 
 const MessageBubble = styled.div`
+    font-size: 20px;
+    line-height: 1.5;
     max-width: 60%;
     padding: 10px;
     border-radius: 10px;
