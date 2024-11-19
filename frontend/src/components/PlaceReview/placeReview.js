@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const BlogContainer=styled.div`
   width: 20rem;
@@ -9,6 +10,7 @@ const BlogContainer=styled.div`
   justify-content: space-between;
   margin: 10px 10px 10px 10px;
   border-radius: 15px;
+    cursor: pointer;
 
 `
 const ContentWrapper = styled.div`
@@ -34,11 +36,12 @@ const ReviewContent=styled.div`
     padding: 10px;
   //background-color: palevioletred;
 `
-const Profile=styled.image`
+const Profile=styled.img`
     width: 3.7rem;
   height: 3.7rem;
-  background-color: #4e53ed;
+  background-color: white;
   border-radius: 50%;
+    object-fit: cover;
 `
 const ProfileContainer=styled.div`
     //background-color: palegoldenrod;
@@ -49,13 +52,19 @@ const ProfileContainer=styled.div`
   justify-content: center;
 `
 
-const PlaceReview = ({ review  }) => {
+const PlaceReview = ({ review, profilePicture, boardID  }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/board/${boardID}`);
+    };
+
     return (
         <>
-            <BlogContainer>
+            <BlogContainer onClick={handleClick}>
                 <ContentWrapper>
                     <ProfileContainer>
-                        <Profile></Profile>
+                        <Profile src={profilePicture}></Profile>
                     </ProfileContainer>
                     <ReviewDetail>
                         <ReviewContent>{review}</ReviewContent>
