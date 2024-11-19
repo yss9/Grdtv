@@ -6,7 +6,7 @@ import Progress from "../Agent/progress";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
-import Profile from '../../images/도라에몽.jpeg';
+import Profile from '../../images/img_1.png';
 
 const SelectTitle = styled.div`
     width: 82rem;
@@ -93,7 +93,7 @@ export default function MyReservation() {
                     introduce: agent.agentDetails.introduction,
                     hashtags: agent.agentDetails.hashtags,
                     spec: agent.agentDetails.specIntroduction,
-                    image: processProfilePicture(agent.agentDetails.profilePicture)|| Profile,
+                    image: processProfilePicture(agent.agentDetails.profilePicture) || Profile,
                     score: agent.agentDetails.averageReviewRating,
                     number: 0,
                 })));
@@ -115,7 +115,36 @@ export default function MyReservation() {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                setProgressData(response.data);
+
+                // Fetch profile pictures for each progress entry
+                const progressDataWithPictures = await Promise.all(
+                    response.data.map(async (progress) => {
+                        try {
+                            const profilePictureResponse = await axios.get(
+                                `http://localhost:8080/api/users/profile-picture?nickname=${progress.agentNickname}`,
+                                {
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`
+                                    }
+                                }
+                            );
+
+                            const profilePicture = processProfilePicture(profilePictureResponse.data);
+                            return {
+                                ...progress,
+                                profilePicture,
+                            };
+                        } catch (error) {
+                            console.error('Failed to fetch profile picture:', error);
+                            return {
+                                ...progress,
+                                profilePicture: Profile, // Use default profile picture on error
+                            };
+                        }
+                    })
+                );
+
+                setProgressData(progressDataWithPictures);
             } catch (error) {
                 console.error('Failed to fetch progress data:', error);
             }
@@ -143,7 +172,12 @@ export default function MyReservation() {
                 {activeTab === 'myWrite' ? (
                     <Review>
                         {progressData.map((progress, index) => (
-                            <Progress key={index} currentStage={progress.progress} agentName={progress.agentNickname} />
+                            <Progress
+                                key={index}
+                                currentStage={progress.progress}
+                                agentName={progress.agentNickname}
+                                profilePictureUrl={progress.profilePicture}
+                            />
                         ))}
                     </Review>
                 ) : (

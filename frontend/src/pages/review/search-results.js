@@ -5,6 +5,7 @@ import styled from "styled-components";
 import TopBarComponent from "../../components/TopBar/TopBar";
 import { Reset } from 'styled-reset';
 import {Magnifier, Pin, Search, SearchBarContainer, SearchBarWrapper} from "./reviewstyle";
+import MyProfile2 from "../../public/Img/forprofile/img_1.png";
 
  const Blogs = styled.div`
     width: 70%;
@@ -176,6 +177,8 @@ const Wrapper = styled.div`
     align-items: center;
     
 `
+
+
 const SearchResults = () => {
     const [searchResults, setSearchResults] = useState([]);
     const location = useLocation();
@@ -274,6 +277,14 @@ const SearchResults = () => {
         }
     };
 
+    const processProfilePicture = (profilePicture) => {
+        if (profilePicture) {
+            return `http://localhost:8080/${profilePicture.replace('static\\', '').replace(/\\/g, '/')}`;
+        } else {
+            return MyProfile2;
+        }
+    };
+
     return (
         <>
             <Reset/>
@@ -315,7 +326,7 @@ const SearchResults = () => {
                                 <ContentWrapper>
                                     <Content>
                                         <Profile>
-                                            <PImg></PImg>
+                                            <PImg src={processProfilePicture(post.profilePicture)}></PImg>
                                             <PContainer>
                                                 <Pname>{post.nickname}</Pname>
                                                 <Pdate>{formatDate(post.createDate)}</Pdate>
@@ -350,7 +361,7 @@ const SearchResults = () => {
                                     </Content>
                                 </ContentWrapper>
                                 <BPicWrapper>
-                                    <BPic></BPic>
+                                    <BPic src={post.thumbnail}></BPic>
                                 </BPicWrapper>
                             </BlogContainer>
                         ))
