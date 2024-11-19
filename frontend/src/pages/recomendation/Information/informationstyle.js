@@ -48,7 +48,7 @@ export const DetailInfoWrapper=styled.div`
 `
 export const DetailInfoTitle=styled.text`
     font-size: 18px;
- // background-color: paleturquoise;
+  //background-color: paleturquoise;
   padding: 10px;
   font-weight: bold;
   font-family: "Regular";

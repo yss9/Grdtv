@@ -9,22 +9,22 @@ import {
     RecomendationBtn, ReviewTitle, PlaceReviews,
     PlaceReivewContainer, GaugeBar, GaugeBarWrapper
 } from "./informationstyle";
-import PlaceReivew from "../../../components/PlaceReview/placeReview";
+import PlaceReview from "../../../components/PlaceReview/placeReview";
 import { useNavigate, useParams } from 'react-router-dom';
+import MyProfile2 from "../../../public/Img/forprofile/img_1.png";
 
 export default function Information() {
     const { placename } = useParams();
     const [activeIndex, setActiveIndex] = useState(0);
-    const [currentPlace, setCurrentPlace] = useState({}); // 장소 정보를 저장할 상태
-    const [placeImage, setPlaceImage] = useState(""); // 장소 이미지를 저장할 상태
-    const [filteredReviews, setFilteredReviews] = useState([]); // 리뷰 리스트를 저장할 상태
+    const [currentPlace, setCurrentPlace] = useState({});
+    const [placeImage, setPlaceImage] = useState("");
+    const [reviews, setReviews] = useState([]);
     const [isGoogleMapsScriptLoaded, setIsGoogleMapsScriptLoaded] = useState(false);
 
     const navigate = useNavigate();
 
-    const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0'; // 본인의 API 키로 교체하세요
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyCCkm0KlwV72tLvvEG9c4YuPHgo_j2_qz0';
 
-    // Google Maps API 스크립트 로드
     const loadGoogleMapsScript = () => {
         return new Promise((resolve) => {
             if (window.google && window.google.maps && window.google.maps.places) {
@@ -47,7 +47,6 @@ export default function Information() {
         });
     }, []);
 
-    // 장소 사진 및 상세 정보 가져오기
     useEffect(() => {
         if (isGoogleMapsScriptLoaded) {
             fetchPlaceDetails(placename);
@@ -56,8 +55,6 @@ export default function Information() {
 
     const fetchPlaceDetails = (placeName) => {
         const service = new window.google.maps.places.PlacesService(document.createElement('div'));
-
-        // 1. placeId를 추출하기 위한 요청
         const request = {
             query: placeName,
             fields: ['place_id']
@@ -66,8 +63,6 @@ export default function Information() {
         service.findPlaceFromQuery(request, (results, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK && results[0]) {
                 const placeId = results[0].place_id;
-
-                // 2. placeId를 사용하여 장소 세부 정보를 가져옵니다
                 const detailsRequest = {
                     placeId: placeId,
                     fields: ['name', 'photos', 'formatted_address']
@@ -75,21 +70,17 @@ export default function Information() {
 
                 service.getDetails(detailsRequest, (placeDetails, detailsStatus) => {
                     if (detailsStatus === window.google.maps.places.PlacesServiceStatus.OK && placeDetails) {
-                        // 사진 URL 설정
                         if (placeDetails.photos && placeDetails.photos.length > 0) {
                             const photoUrl = placeDetails.photos[0].getUrl({ maxWidth: 400 });
                             setPlaceImage(photoUrl);
                         }
 
-                        // 장소 상세 정보 설정
                         setCurrentPlace({
                             name: placeDetails.name,
-                            address: placeDetails.formatted_address || "",
-                            reviews: placeDetails.reviews || []
+                            address: placeDetails.formatted_address || ""
                         });
 
-                        // 리뷰 목록 설정 (최대 5개까지 표시)
-                        setFilteredReviews(placeDetails.reviews ? placeDetails.reviews.slice(0, 5).map(review => review.text) : []);
+                        fetchReviews(placeDetails.name);
                     } else {
                         console.error(`Could not fetch details for ${placeName}`);
                     }
@@ -100,11 +91,26 @@ export default function Information() {
         });
     };
 
-    // 리뷰 페이지네이션을 위한 설정
+    const fetchReviews = (placeName) => {
+        fetch(`http://localhost:8080/api/posts/titles/${placeName}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reviews');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setReviews(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
+            });
+    };
+
     const reviewsPerPage = 2;
     const startIndex = activeIndex * reviewsPerPage;
-    const visibleReviews = filteredReviews.slice(startIndex, startIndex + reviewsPerPage);
-    const totalIndicators = Math.ceil(filteredReviews.length / reviewsPerPage);
+    const visibleReviews = reviews.slice(startIndex, startIndex + reviewsPerPage);
+    const totalIndicators = Math.ceil(reviews.length / reviewsPerPage);
 
     const handleGaugeClick = (event) => {
         const boundingRect = event.currentTarget.getBoundingClientRect();
@@ -115,7 +121,7 @@ export default function Information() {
     };
 
     const handleGoRouteRec = () => {
-        navigate('/routeRec', { state: { placename: currentPlace.name } });
+        navigate('/routeRec', { state: { placename: placename } });
     };
 
     return (
@@ -141,8 +147,16 @@ export default function Information() {
                                 <ReviewTitle>리뷰</ReviewTitle>
                                 <PlaceReivewContainer>
                                     <PlaceReviews>
-                                        {visibleReviews.map((review, index) => (
-                                            <PlaceReivew key={index} review={review} />
+                                        {visibleReviews.map((review) => (
+                                            <PlaceReview
+                                                boardID ={review.boardID}
+                                                review={review.title}
+                                                profilePicture={
+                                                    review.profilePicture
+                                                        ? `http://localhost:8080/${review.profilePicture.replace('static\\', '').replace(/\\/g, '/')}`
+                                                        : MyProfile2
+                                                }
+                                            />
                                         ))}
                                     </PlaceReviews>
                                     <GaugeBarWrapper>
