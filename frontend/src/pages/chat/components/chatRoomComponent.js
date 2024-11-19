@@ -9,7 +9,7 @@ import {
     PointButton,
     ModalBackground,
     ReviewContentsWrapper,
-    ReviewSentence, ReviewInput, Button, ReviewInputWrapper
+    ReviewSentence, ReviewInput, Button, ReviewInputWrapper, Sending
 } from "../chatPageStyle";
 import WebSocketService from "../WebSocketService";
 import {jwtDecode} from "jwt-decode";
@@ -447,21 +447,6 @@ const ChatRoomComponent = ({
                                 message.content
                             )}
                         </ChatBubble>
-                        {loading ? (
-                            <ChatBubble
-                                key={index}
-                                style={{
-                                    ...(message.sender === username ? styles.myMessage : styles.otherMessage),
-                                    width: 'auto',
-                                    backgroundColor: message.content.includes('|button') || message.content.includes('|stt') ? '#FF9900' : undefined,
-                                    border: message.content.includes('|button') || message.content.includes('|stt') ? 'none' : '1px solid #4E53ED',
-                                    color: message.content.includes('|button') || message.content.includes('|stt') ? 'white' : 'black',
-                                }}
-                            >
-                                STT메세지를 보내는 중입니다...
-
-                            </ChatBubble>
-                        ) : (<></>)}
                     </>
                 ))}
 
@@ -564,9 +549,14 @@ const ChatRoomComponent = ({
                 isVisible={isVisible}
                 handleVoiceMessageUpload={handleVoiceMessageUpload}
             />
+            {loading ? (
+                <ModalBackground style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}>
+                    <Sending>
+                        STT메세지를 보내는 중입니다...
+                    </Sending>
+                </ModalBackground>
+            ) : (<></>)}
         </ChatRoomWrapper>
-
-
     );
 };
 

@@ -145,3 +145,15 @@ export const SideBarHeaderWrapper = styled.div`
     background-color: ${({ isActive }) => (isActive ? 'rgba(255, 255, 255, 0.7)' : 'transparent')};
     color: ${({ isActive }) => (isActive ? 'black' : 'white')};
 `;
+export const Sending = styled.div`
+    z-index: 10000;
+    width: 300px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fda400;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 300px;
+`
